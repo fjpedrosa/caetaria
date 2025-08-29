@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://whatsapp-cloud-landing.vercel.app/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block development and API routes from indexing
+Disallow: /api/
+Disallow: /_next/
+Disallow: /onboarding/
+
+# Allow important pages
+Allow: /
+Allow: /#pricing
+Allow: /#demo
+Allow: /#features

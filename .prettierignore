@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Environment files
+.env*
+
+# Next.js
+.next/**
+public/sw.js
+public/workbox-*.js
+
+# Generated files
+*.min.js
+*.min.css
+
+# Coverage
+coverage
+.nyc_output
+
+# Logs
+*.log
