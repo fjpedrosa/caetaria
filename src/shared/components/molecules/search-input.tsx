@@ -1,7 +1,9 @@
 import * as React from "react"
+
 import { cn } from "@/lib/utils"
-import { Input, type InputProps } from "../atoms/input"
+
 import { Button } from "../atoms/button"
+import { Input, type InputProps } from "../atoms/input"
 import { Spinner } from "../atoms/spinner"
 
 export interface SearchInputProps extends Omit<InputProps, "leftIcon" | "rightIcon" | "type"> {

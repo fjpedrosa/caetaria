@@ -13,8 +13,8 @@
  * - TypeScript support out of the box
  */
 
-import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 
 /**
  * Custom base query with authentication and error handling

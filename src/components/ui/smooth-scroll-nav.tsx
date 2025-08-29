@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 interface TableOfContentsItem {

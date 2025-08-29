@@ -1,10 +1,11 @@
 import { cookies, headers } from 'next/headers';
-import { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
+
 import type { PriceVariant, PricingPlan } from './ab-testing-types';
+import { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
 
 // Re-export types for backward compatibility
-export { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
 export type { PriceVariant, PricingPlan } from './ab-testing-types';
+export { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
 
 // Helper para obtener variante en Server Components
 export async function getPriceVariant(): Promise<PriceVariant> {

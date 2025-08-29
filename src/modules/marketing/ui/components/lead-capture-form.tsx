@@ -1,14 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { 
+  AlertCircle,
+  Building,
+  CheckCircle, 
+  Loader2, 
+  Mail,
+  MessageSquare,
+  Phone,
+  Send, 
+  Sparkles,
+  User,
+  Users} from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,20 +29,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { 
-  Loader2, 
-  Send, 
-  CheckCircle, 
-  AlertCircle,
-  Sparkles,
-  MessageSquare,
-  Users,
-  Mail,
-  User,
-  Phone,
-  Building
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
 import { LeadSource } from '../../domain/entities/lead';
 
 // Form validation schema
@@ -146,23 +147,23 @@ export function LeadCaptureForm({
     );
   };
 
-  // Success state
+  // Success state - Mobile optimized
   if (submitStatus === 'success') {
     return (
-      <Card className={`p-8 text-center bg-gradient-to-br from-green-50 to-blue-50 border-green-200 ${className}`}>
+      <Card className={`p-6 sm:p-8 text-center bg-gradient-to-br from-green-50 to-blue-50 border-green-200 ${className}`}>
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-green-600" />
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
           </div>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
           Thank You!
         </h3>
-        <p className="text-gray-600 mb-4">
+        <p className="text-sm sm:text-base text-gray-600 mb-4">
           We've received your information and will be in touch within 24 hours.
         </p>
-        <div className="bg-white rounded-lg p-4 border border-green-200">
-          <p className="text-sm text-gray-700">
+        <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-200">
+          <p className="text-xs sm:text-sm text-gray-700">
             ✨ <strong>Next steps:</strong> Check your email for our welcome guide 
             and calendar link to schedule your personalized demo.
           </p>
@@ -172,8 +173,8 @@ export function LeadCaptureForm({
   }
 
   const cardClassName = variant === 'inline' 
-    ? `p-6 bg-white/90 backdrop-blur-sm border border-white/20 ${className}` 
-    : `p-8 bg-white shadow-xl border-0 ${className}`;
+    ? `p-4 sm:p-6 bg-white/90 backdrop-blur-sm border border-white/20 ${className}` 
+    : `p-6 sm:p-8 bg-white shadow-xl border-0 ${className}`;
 
   return (
     <Card className={cardClassName}>
@@ -207,8 +208,8 @@ export function LeadCaptureForm({
       {/* Form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Name Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Name Fields - Mobile optimized single column */}
+          <div className="grid grid-cols-1 gap-4">
             <FormField
               control={form.control}
               name="firstName"
@@ -219,7 +220,9 @@ export function LeadCaptureForm({
                     <Input
                       {...field}
                       placeholder="John"
-                      className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                      autoComplete="given-name"
+                      inputMode="text"
+                      className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
                       disabled={submitStatus === 'loading'}
                     />
                   </FormControl>
@@ -238,7 +241,9 @@ export function LeadCaptureForm({
                     <Input
                       {...field}
                       placeholder="Doe"
-                      className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                      autoComplete="family-name"
+                      inputMode="text"
+                      className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
                       disabled={submitStatus === 'loading'}
                     />
                   </FormControl>
@@ -248,7 +253,7 @@ export function LeadCaptureForm({
             />
           </div>
 
-          {/* Email */}
+          {/* Email - Mobile optimized */}
           <FormField
             control={form.control}
             name="email"
@@ -260,7 +265,10 @@ export function LeadCaptureForm({
                     {...field}
                     type="email"
                     placeholder="john@company.com"
-                    className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                    autoComplete="email"
+                    inputMode="email"
+                    enterKeyHint="next"
+                    className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
                     disabled={submitStatus === 'loading'}
                   />
                 </FormControl>
@@ -269,8 +277,8 @@ export function LeadCaptureForm({
             )}
           />
 
-          {/* Phone & Company */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Phone & Company - Mobile optimized single column */}
+          <div className="grid grid-cols-1 gap-4">
             <FormField
               control={form.control}
               name="phoneNumber"
@@ -282,7 +290,10 @@ export function LeadCaptureForm({
                       {...field}
                       type="tel"
                       placeholder="+1234567890"
-                      className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      enterKeyHint="next"
+                      className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
                       disabled={submitStatus === 'loading'}
                     />
                   </FormControl>
@@ -301,7 +312,10 @@ export function LeadCaptureForm({
                     <Input
                       {...field}
                       placeholder="Acme Corp"
-                      className="border-gray-300 focus:border-green-500 focus:ring-green-500"
+                      autoComplete="organization"
+                      inputMode="text"
+                      enterKeyHint="done"
+                      className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
                       disabled={submitStatus === 'loading'}
                     />
                   </FormControl>
@@ -311,13 +325,13 @@ export function LeadCaptureForm({
             />
           </div>
 
-          {/* Interested Features */}
+          {/* Interested Features - Mobile optimized */}
           {variant === 'default' && (
             <div>
               <Label className="text-gray-700 font-semibold mb-3 block">
                 What are you most interested in?
               </Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {FEATURE_OPTIONS.map((feature) => {
                   const IconComponent = feature.icon;
                   const isSelected = selectedFeatures.includes(feature.id);
@@ -327,23 +341,23 @@ export function LeadCaptureForm({
                       key={feature.id}
                       type="button"
                       onClick={() => toggleFeature(feature.id)}
-                      className={`flex items-center space-x-3 p-3 rounded-lg border-2 transition-all duration-200 text-left ${
+                      className={`flex items-center space-x-3 p-4 min-h-[56px] rounded-lg border-2 transition-all duration-200 text-left touch-manipulation ${
                         isSelected
                           ? 'border-green-500 bg-green-50 text-green-700'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          : 'border-gray-200 hover:border-gray-300 active:border-gray-400 hover:bg-gray-50 active:bg-gray-100'
                       }`}
                       disabled={submitStatus === 'loading'}
                     >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         isSelected ? 'bg-green-100' : 'bg-gray-100'
                       }`}>
-                        <IconComponent className={`w-4 h-4 ${
+                        <IconComponent className={`w-5 h-5 ${
                           isSelected ? 'text-green-600' : 'text-gray-600'
                         }`} />
                       </div>
-                      <span className="font-medium">{feature.label}</span>
+                      <span className="font-medium text-sm sm:text-base flex-1">{feature.label}</span>
                       {isSelected && (
-                        <CheckCircle className="w-5 h-5 text-green-600 ml-auto" />
+                        <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
                       )}
                     </button>
                   );
@@ -352,13 +366,11 @@ export function LeadCaptureForm({
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit Button - Mobile optimized */}
           <Button
             type="submit"
             disabled={submitStatus === 'loading'}
-            className={`w-full py-4 text-lg font-semibold transition-all duration-200 ${
-              variant === 'inline' ? 'py-3' : 'py-4'
-            } bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl`}
+            className={`w-full min-h-[52px] py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 touch-manipulation bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 text-white shadow-lg hover:shadow-xl focus:shadow-xl`}
           >
             {submitStatus === 'loading' ? (
               <>

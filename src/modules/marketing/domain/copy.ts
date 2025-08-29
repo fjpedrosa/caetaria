@@ -6,12 +6,12 @@
 export const MARKETING_COPY = {
   hero: {
     badge: 'Lanzamiento Exclusivo 2025',
-    title: 'Conecta con tus clientes',
-    subtitle: 'en WhatsApp Business',
-    description: 'Caetaria es la plataforma más poderosa para automatizar conversaciones, gestionar clientes y hacer crecer tu negocio con WhatsApp Business API.',
+    title: 'Convierte WhatsApp en tu',
+    subtitle: 'canal de ventas #1',
+    description: 'Automatiza conversaciones, captura 3x más leads calificados y cierra ventas 24/7 con la plataforma de WhatsApp Business más avanzada para África.',
     cta: {
-      primary: 'Acceso Anticipado',
-      secondary: 'Ver cómo funciona'
+      primary: 'Comienza tu prueba gratis',
+      secondary: 'Ver demostración 3 min'
     },
     metrics: {
       messages: '10M+ mensajes',

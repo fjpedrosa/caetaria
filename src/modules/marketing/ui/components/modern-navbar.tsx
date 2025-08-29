@@ -1,34 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { Icon, IconButton } from '@/components/ui/icon';
-import { ThemeToggle } from '@/components/theme-toggle';
-import {
-  navIcons,
-  featureIcons,
-  MessageCircle,
-  Bot,
-  BarChart3,
-  Users,
-  CreditCard,
-  Building2,
-  FileText,
-  HelpCircle,
-  PlayCircle,
-  Zap,
-  Shield,
-  Globe2,
-  Menu,
-  X,
-  ChevronDown,
-  ArrowRight
-} from '@/lib/icons';
+import React, { useEffect,useState } from 'react';
+import { AnimatePresence, motion, useMotionValueEvent,useScroll } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 
-import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { Icon, IconButton } from '@/components/ui/icon';
 // NavigationMenu temporarily disabled due to TypeScript issues
 // import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import {
@@ -38,6 +17,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  ArrowRight,
+  BarChart3,
+  Bot,
+  Building2,
+  ChevronDown,
+  CreditCard,
+  featureIcons,
+  FileText,
+  Globe2,
+  HelpCircle,
+  Menu,
+  MessageCircle,
+  navIcons,
+  PlayCircle,
+  Shield,
+  Users,
+  X,
+  Zap} from '@/lib/icons';
+import { cn } from '@/lib/utils';
 
 interface MegaMenuSection {
   title: string;
@@ -152,7 +151,7 @@ const solutionSections: MegaMenuSection[] = [
 ];
 
 const MegaMenuContent: React.FC<{ sections: MegaMenuSection[] }> = ({ sections }) => (
-  <div className="grid w-[800px] grid-cols-2 gap-8 p-8">
+  <div className="grid w-full max-w-4xl grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 p-6 sm:p-8">
     {sections.map((section) => (
       <div key={section.title} className="space-y-4">
         <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -167,7 +166,7 @@ const MegaMenuContent: React.FC<{ sections: MegaMenuSection[] }> = ({ sections }
               >
                 <Link
                   href={item.href}
-                  className="group flex items-start space-x-3 rounded-lg p-3 hover:bg-accent transition-colors"
+                  className="group flex items-start space-x-3 rounded-lg p-3 min-h-[44px] hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors touch-manipulation"
                 >
                   <div className="flex-shrink-0 mt-1">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -175,7 +174,7 @@ const MegaMenuContent: React.FC<{ sections: MegaMenuSection[] }> = ({ sections }
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                         {item.title}
                       </p>
@@ -310,31 +309,39 @@ export function ModernNavbar() {
             >
               <div className="flex items-center space-x-4">
                 <nav className="flex items-center space-x-1">
-                  {/* Productos Mega Menu */}
+                  {/* Productos Mega Menu - Mobile optimized */}
                   <div className="relative group">
-                    <button className="px-4 py-2 rounded-md bg-transparent hover:bg-accent transition-colors flex items-center gap-1">
+                    <Link href="/productos" 
+                      className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center gap-1 touch-manipulation"
+                      aria-label="Ver productos"
+                    >
                       <motion.span variants={linkVariants}>
                         Productos
                       </motion.span>
-                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                    </button>
-                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
-                      <div className="bg-background border border-border rounded-lg shadow-xl">
+                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180 hidden lg:block" />
+                    </Link>
+                    {/* Desktop-only mega menu */}
+                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 hidden lg:block">
+                      <div className="bg-background border border-border rounded-lg shadow-xl max-w-[90vw] lg:max-w-[800px]">
                         <MegaMenuContent sections={productSections} />
                       </div>
                     </div>
                   </div>
 
-                  {/* Soluciones Mega Menu */}
+                  {/* Soluciones Mega Menu - Mobile optimized */}
                   <div className="relative group">
-                    <button className="px-4 py-2 rounded-md bg-transparent hover:bg-accent transition-colors flex items-center gap-1">
+                    <Link href="/soluciones" 
+                      className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center gap-1 touch-manipulation"
+                      aria-label="Ver soluciones"
+                    >
                       <motion.span variants={linkVariants}>
                         Soluciones
                       </motion.span>
-                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                    </button>
-                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
-                      <div className="bg-background border border-border rounded-lg shadow-xl">
+                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180 hidden lg:block" />
+                    </Link>
+                    {/* Desktop-only mega menu */}
+                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 hidden lg:block">
+                      <div className="bg-background border border-border rounded-lg shadow-xl max-w-[90vw] lg:max-w-[800px]">
                         <MegaMenuContent sections={solutionSections} />
                       </div>
                     </div>
@@ -343,7 +350,10 @@ export function ModernNavbar() {
                   {/* Simple Links */}
                   {NavigationLinks.map((link) => (
                     <div key={link.href}>
-                      <Link href={link.href} className="px-4 py-2 rounded-md bg-transparent hover:bg-accent transition-colors block">
+                      <Link 
+                        href={link.href} 
+                        className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center touch-manipulation"
+                      >
                         <motion.span
                           variants={linkVariants}
                           whileHover={{ y: -2 }}
@@ -373,7 +383,7 @@ export function ModernNavbar() {
                   href="/login"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "sm" }),
-                    "text-sm font-medium hover:bg-accent rounded-full"
+                    "text-sm font-medium hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-full"
                   )}
                 >
                   Iniciar sesión
@@ -388,11 +398,11 @@ export function ModernNavbar() {
                     href="/onboarding"
                     className={cn(
                       buttonVariants({ size: "sm" }),
-                      "btn-primary rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                      "btn-primary rounded-lg shadow-lg hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-all duration-200"
                     )}
                   >
                     <PlayCircle className="w-4 h-4 mr-2" />
-                    Acceso Anticipado
+                    Prueba Gratis
                   </Link>
                 </motion.div>
               </motion.div>
@@ -401,32 +411,37 @@ export function ModernNavbar() {
             {/* Mobile Menu Button */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="md:hidden focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+                  aria-label="Abrir menú de navegación"
+                >
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-80 sm:w-96">
                 <SheetHeader>
                   <SheetTitle>Menú</SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col space-y-4 mt-8">
-                  <Link href="/productos" className="px-4 py-2 rounded-md hover:bg-accent text-foreground transition-colors" onClick={() => setIsOpen(false)}>
+                <nav className="flex flex-col space-y-2 mt-8">
+                  <Link href="/productos" className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation" onClick={() => setIsOpen(false)}>
                     Productos
                   </Link>
-                  <Link href="/soluciones" className="px-4 py-2 rounded-md hover:bg-accent text-foreground transition-colors" onClick={() => setIsOpen(false)}>
+                  <Link href="/soluciones" className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation" onClick={() => setIsOpen(false)}>
                     Soluciones
                   </Link>
                   {NavigationLinks.map((link) => (
-                    <Link key={link.href} href={link.href} className="px-4 py-2 rounded-md hover:bg-accent text-foreground transition-colors" onClick={() => setIsOpen(false)}>
+                    <Link key={link.href} href={link.href} className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation" onClick={() => setIsOpen(false)}>
                       {link.label}
                     </Link>
                   ))}
-                  <div className="pt-4 border-t border-border space-y-2">
-                    <Link href="/login" className="block px-4 py-2 rounded-md hover:bg-accent text-foreground transition-colors" onClick={() => setIsOpen(false)}>
+                  <div className="pt-6 border-t border-border space-y-3">
+                    <Link href="/login" className="block px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation" onClick={() => setIsOpen(false)}>
                       Iniciar sesión
                     </Link>
-                    <Link href="/onboarding" className="block px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium" onClick={() => setIsOpen(false)}>
-                      Acceso Anticipado
+                    <Link href="/onboarding" className="block px-4 py-3 min-h-[48px] rounded-md bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-colors font-semibold flex items-center justify-center touch-manipulation" onClick={() => setIsOpen(false)}>
+                      Prueba Gratis
                     </Link>
                   </div>
                 </nav>

@@ -1,24 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+import { 
+  Check,
+  Code, 
+  Copy, 
+  FileText,
+  Image,
+  MessageSquare,
+  Paperclip,
+  Play, 
+  Terminal,
+  Zap} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Code, 
-  Play, 
-  Copy, 
-  Check,
-  Terminal,
-  Zap,
-  FileText,
-  MessageSquare,
-  Image,
-  Paperclip
-} from 'lucide-react';
 
 interface ApiExample {
   id: string;

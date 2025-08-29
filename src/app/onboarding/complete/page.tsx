@@ -3,11 +3,12 @@
  * Server Component - Completion and dashboard redirect
  */
 
+import { ArrowRight, BarChart3, CheckCircle, MessageSquare, Sparkles, Users } from 'lucide-react';
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OnboardingComplete } from '@/modules/onboarding/ui/components/onboarding-complete';
-import { CheckCircle, ArrowRight, Sparkles, BarChart3, MessageSquare, Users } from 'lucide-react';
-import Link from 'next/link';
 
 const nextStepsFeatures = [
   {

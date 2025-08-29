@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Loader2, Zap, MessageSquare, Bot, Sparkles } from 'lucide-react';
+import { Bot, Loader2, MessageSquare, Sparkles,Zap } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 interface LoadingStateProps {

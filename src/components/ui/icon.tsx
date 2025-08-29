@@ -1,7 +1,8 @@
 import React from 'react';
 import { type LucideIcon } from 'lucide-react';
+
+import { iconAnimations, iconConfig, iconWrapperStyles } from '@/lib/icons';
 import { cn } from '@/lib/utils';
-import { iconConfig, iconAnimations, iconWrapperStyles } from '@/lib/icons';
 
 interface IconProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: LucideIcon;

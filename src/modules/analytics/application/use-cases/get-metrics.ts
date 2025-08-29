@@ -1,6 +1,6 @@
-import { MetricEntity, TimeGranularity, AggregationType } from '../../domain/entities/metric';
-import { MetricsRepository, MetricFilters } from '../ports/analytics-repository';
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
+import { AggregationType,MetricEntity, TimeGranularity } from '../../domain/entities/metric';
+import { MetricFilters,MetricsRepository } from '../ports/analytics-repository';
 
 export interface GetMetricsRequest extends MetricFilters {
   sortBy?: 'name' | 'timestamp' | 'value';

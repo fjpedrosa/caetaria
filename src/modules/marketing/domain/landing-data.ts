@@ -1,15 +1,14 @@
 import { 
-  MessageSquare, 
-  TrendingUp, 
-  Shield, 
-  Check,
-  Star,
-  Users,
-  Zap,
-  HeadphonesIcon,
   Bot,
-  ChartBar
-} from 'lucide-react';
+  ChartBar,
+  Check,
+  HeadphonesIcon,
+  MessageSquare, 
+  Shield, 
+  Star,
+  TrendingUp, 
+  Users,
+  Zap} from 'lucide-react';
 
 export interface Feature {
   icon: any;

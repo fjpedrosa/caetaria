@@ -1,5 +1,5 @@
 // Import web vitals with correct API
-import { onCLS, onFCP, onLCP, onTTFB, onINP } from 'web-vitals';
+import { onCLS, onFCP, onINP,onLCP, onTTFB } from 'web-vitals';
 // Note: FID has been replaced with INP in web-vitals v4
 
 export function reportWebVitals() {

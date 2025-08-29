@@ -3,9 +3,9 @@
  * Application layer - Interface for onboarding data persistence
  */
 
-import { OnboardingSession, OnboardingSessionId } from '../../domain/entities/onboarding-session';
 import { Email } from '../../../marketing/domain/value-objects/email';
 import { Result } from '../../../shared/domain/value-objects/result';
+import { OnboardingSession, OnboardingSessionId } from '../../domain/entities/onboarding-session';
 
 export interface OnboardingRepository {
   /**

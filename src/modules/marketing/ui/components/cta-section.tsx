@@ -1,15 +1,16 @@
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { LeadCaptureForm } from './lead-capture-form';
-import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import { 
   ArrowRight, 
   CheckCircle, 
   Clock, 
-  Users, 
   MessageSquare,
-  Sparkles
-} from 'lucide-react';
+  Sparkles,
+  Users} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+
+import { LeadCaptureForm } from './lead-capture-form';
 
 /**
  * CTA Section Component - Server Component

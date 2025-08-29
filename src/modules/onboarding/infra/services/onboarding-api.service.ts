@@ -1,9 +1,8 @@
 import { baseApi } from '../../../../store/api/base-api'
 import type { 
   OnboardingSession, 
-  OnboardingStep, 
-  OnboardingStatus 
-} from '../../domain/entities/onboarding-session'
+  OnboardingStatus, 
+  OnboardingStep} from '../../domain/entities/onboarding-session'
 import type { 
   BusinessInfo, 
   BusinessType, 

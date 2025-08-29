@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useContext, createContext, useCallback } from 'react';
+import React, { createContext, useCallback,useContext, useEffect } from 'react';
+
+import { EventEntity, EventProperties } from '../../domain/entities/event';
 import { EventType } from '../../domain/value-objects/event-type';
 import { BrowserTrackingService } from '../../infra/adapters/browser-tracking-service';
-import { EventEntity, EventProperties } from '../../domain/entities/event';
 
 interface EventTrackerContextType {
   trackEvent: (type: EventType, name: string, properties?: EventProperties) => Promise<void>;

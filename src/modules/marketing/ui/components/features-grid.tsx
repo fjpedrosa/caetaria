@@ -2,27 +2,27 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Card } from '@/components/ui/card';
+
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { FeatureIcon, Icon, IconWithText } from '@/components/ui/icon';
 import {
-  featureIcons,
   actionIcons,
-  MessageCircle,
-  Zap,
-  Shield,
-  Users,
-  BarChart3,
-  Globe2,
-  Bot,
-  Webhook,
-  Sparkles,
-  ArrowRight,
-  Check,
   Activity,
+  ArrowRight,
+  BarChart3,
+  Bot,
+  Check,
   Cloud,
-  Database
-} from '@/lib/icons';
+  Database,
+  featureIcons,
+  Globe2,
+  MessageCircle,
+  Shield,
+  Sparkles,
+  Users,
+  Webhook,
+  Zap} from '@/lib/icons';
 
 interface Feature {
   title: string;
@@ -133,7 +133,7 @@ export function FeaturesGrid({ features = defaultFeatures }: FeaturesGridProps) 
             animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Badge className="bg-secondary/10 text-secondary hover:bg-secondary/20 px-4 py-2 mb-6 shadow-lg border-0">
+            <Badge variant="secondary" className="px-4 py-2 mb-6">
               <Icon icon={Sparkles} size="small" iconClassName="w-4 h-4 mr-2" />
               Powerful Features
             </Badge>

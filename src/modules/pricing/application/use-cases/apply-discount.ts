@@ -1,7 +1,7 @@
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
 import { DiscountEntity } from '../../domain/entities/discount';
 import { Price } from '../../domain/value-objects/price';
 import { DiscountRepository } from '../ports/pricing-repository';
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
 
 export interface ApplyDiscountRequest {
   discountCode: string;

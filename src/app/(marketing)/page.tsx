@@ -1,14 +1,14 @@
-import { HeroSection } from '@/modules/marketing/ui/components/hero-section';
-import { SocialProof } from '@/modules/marketing/ui/components/social-proof';
-import { FeaturesGrid } from '@/modules/marketing/ui/components/features-grid';
-import { HowItWorks } from '@/modules/marketing/ui/components/how-it-works';
-import { ValueProps } from '@/modules/marketing/ui/components/value-props';
-import { Testimonials } from '@/modules/marketing/ui/components/testimonials';
-import { PricingTeaserAB } from '@/modules/marketing/ui/components/pricing-teaser-ab';
 import { FaqSection } from '@/modules/marketing/ui/components/faq-section';
+import { FeaturesGrid } from '@/modules/marketing/ui/components/features-grid';
 import { FinalCta } from '@/modules/marketing/ui/components/final-cta';
-import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
+import { HeroSection } from '@/modules/marketing/ui/components/hero-section';
+import { HowItWorks } from '@/modules/marketing/ui/components/how-it-works';
 import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
+import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
+import { PricingTeaserAB } from '@/modules/marketing/ui/components/pricing-teaser-ab';
+import { SocialProof } from '@/modules/marketing/ui/components/social-proof';
+import { Testimonials } from '@/modules/marketing/ui/components/testimonials';
+import { ValueProps } from '@/modules/marketing/ui/components/value-props';
 
 /**
  * Landing Page

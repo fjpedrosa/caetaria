@@ -1,8 +1,10 @@
 import * as React from "react"
+
 import { cn } from "@/lib/utils"
-import { Button } from "../atoms/button"
+
 import { Avatar } from "../atoms/avatar"
 import { Badge } from "../atoms/badge"
+import { Button } from "../atoms/button"
 
 export interface HeaderAction {
   label: string

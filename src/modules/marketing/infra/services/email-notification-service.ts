@@ -3,8 +3,8 @@
  * Infrastructure layer - Email service implementation of NotificationService
  */
 
-import { NotificationService, EmailNotification, SlackNotification } from '../../application/ports/notification-service';
-import { Lead, getLeadFullName } from '../../domain/entities/lead';
+import { EmailNotification, NotificationService, SlackNotification } from '../../application/ports/notification-service';
+import { getLeadFullName,Lead } from '../../domain/entities/lead';
 import { Email } from '../../domain/value-objects/email';
 
 // Email service client interface (could be Resend, SendGrid, etc.)

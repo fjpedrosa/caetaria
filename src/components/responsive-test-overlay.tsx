@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Monitor, Tablet, Smartphone, Maximize2, Minimize2, Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useEffect,useState } from 'react';
+import { Eye, EyeOff,Maximize2, Minimize2, Monitor, Smartphone, Tablet } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface ViewportSize {

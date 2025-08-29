@@ -1,26 +1,28 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect,useState } from 'react'
+import { ArrowLeft, CheckCircle2, PartyPopper,Sparkles } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { OnboardingStepper } from './onboarding-stepper'
-import { StepBusinessInfo } from './step-business-info'
-import { StepPhoneConnect } from './step-phone-connect'
-import { StepAutoMessage } from './step-auto-message'
-import { StepPlanSelection } from './step-plan-selection'
-import { StepRegistration } from './step-registration'
-import { Card } from '@/components/ui/card'
+
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, CheckCircle2, Sparkles, PartyPopper } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+
 import type { OnboardingState, OnboardingStep } from '../../domain/types'
 import {
-  useSaveBusinessInfoMutation,
-  useSavePhoneNumberMutation,
-  useSaveAutoMessageMutation,
-  useSavePlanSelectionMutation,
+  useClearOnboardingSessionMutation,
   useCompleteRegistrationMutation,
   useGetOnboardingSessionQuery,
-  useClearOnboardingSessionMutation
-} from '../../infra/fake-onboarding-api'
+  useSaveAutoMessageMutation,
+  useSaveBusinessInfoMutation,
+  useSavePhoneNumberMutation,
+  useSavePlanSelectionMutation} from '../../infra/fake-onboarding-api'
+
+import { OnboardingStepper } from './onboarding-stepper'
+import { StepAutoMessage } from './step-auto-message'
+import { StepBusinessInfo } from './step-business-info'
+import { StepPhoneConnect } from './step-phone-connect'
+import { StepPlanSelection } from './step-plan-selection'
+import { StepRegistration } from './step-registration'
 
 const STORAGE_KEY = 'onboarding_session'
 

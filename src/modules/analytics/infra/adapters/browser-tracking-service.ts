@@ -1,5 +1,5 @@
+import { TrackingContext,TrackingService } from '../../application/ports/tracking-service';
 import { EventEntity } from '../../domain/entities/event';
-import { TrackingService, TrackingContext } from '../../application/ports/tracking-service';
 
 interface StoredSession {
   id: string;

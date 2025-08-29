@@ -1,5 +1,5 @@
-import { Price } from '../value-objects/price';
 import { Currency } from '../value-objects/currency';
+import { Price } from '../value-objects/price';
 
 export interface PricingFeature {
   readonly id: string;

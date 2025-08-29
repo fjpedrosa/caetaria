@@ -1,8 +1,8 @@
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
 import { EventEntity, EventProperties } from '../../domain/entities/event';
 import { EventType } from '../../domain/value-objects/event-type';
 import { AnalyticsRepository } from '../ports/analytics-repository';
 import { TrackingService } from '../ports/tracking-service';
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
 
 export interface TrackEventRequest {
   type: EventType;

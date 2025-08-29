@@ -1,6 +1,6 @@
 // Store configuration exports
+export type { AppDispatch,AppStore, RootState } from './index'
 export { makeStore } from './index'
-export type { AppStore, RootState, AppDispatch } from './index'
 
 // Typed hooks exports
 export { useAppDispatch, useAppSelector } from './hooks'

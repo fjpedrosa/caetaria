@@ -1,7 +1,9 @@
 import * as React from "react"
+
 import { cn } from "@/lib/utils"
-import { Header, type HeaderProps } from "./header"
+
 import { Footer, type FooterProps } from "./footer"
+import { Header, type HeaderProps } from "./header"
 
 export interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   header?: HeaderProps | false

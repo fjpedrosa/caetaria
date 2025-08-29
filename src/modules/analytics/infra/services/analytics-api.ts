@@ -1,8 +1,8 @@
 import { baseApi } from '../../../../store/api/base-api';
 import { EventFilters, MetricFilters } from '../../application/ports/analytics-repository';
-import { TrackEventRequest } from '../../application/use-cases/track-event';
-import { GetMetricsRequest } from '../../application/use-cases/get-metrics';
 import { GenerateReportRequest } from '../../application/use-cases/generate-report';
+import { GetMetricsRequest } from '../../application/use-cases/get-metrics';
+import { TrackEventRequest } from '../../application/use-cases/track-event';
 
 // API types for serialization
 export interface EventApiModel {

@@ -1,31 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { planSelectionSchema, type PlanSelectionFormData } from '../../domain/schemas'
-import type { StepProps } from '../../domain/types'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useEffect,useState } from 'react'
 import { 
-  CreditCard, 
+  BarChart3,
   Check, 
+  CreditCard, 
+  MessageSquare,
+  Shield,
+  Sparkles,
   Star, 
-  Zap,
   TrendingUp,
   Users,
-  MessageSquare,
-  BarChart3,
-  Shield,
-  Sparkles
-} from 'lucide-react'
+  Zap} from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import { usePriceVariant } from '@/modules/pricing/infra/ab-testing-client'
 import type { PricingPlan } from '@/modules/pricing/infra/ab-testing-types'
+
+import { type PlanSelectionFormData,planSelectionSchema } from '../../domain/schemas'
+import type { StepProps } from '../../domain/types'
 
 interface Plan {
   id: 'starter' | 'pro' | 'enterprise'

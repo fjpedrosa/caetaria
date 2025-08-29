@@ -1,5 +1,5 @@
-import { PricingPlanEntity } from '../../domain/entities/pricing-plan';
 import { DiscountEntity } from '../../domain/entities/discount';
+import { PricingPlanEntity } from '../../domain/entities/pricing-plan';
 
 export interface PricingRepository {
   getAllPlans(): Promise<PricingPlanEntity[]>;

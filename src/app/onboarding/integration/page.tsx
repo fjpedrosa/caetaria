@@ -4,11 +4,12 @@
  */
 
 import { Suspense } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { WhatsAppIntegrationForm } from '@/modules/onboarding/ui/components/whatsapp-integration-form';
-import { MessageCircle, Shield, ExternalLink, AlertCircle } from 'lucide-react';
-import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
+import { AlertCircle,ExternalLink, MessageCircle, Shield } from 'lucide-react';
 import Link from 'next/link';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
+import { WhatsAppIntegrationForm } from '@/modules/onboarding/ui/components/whatsapp-integration-form';
 
 export default async function WhatsAppIntegrationPage() {
   return (

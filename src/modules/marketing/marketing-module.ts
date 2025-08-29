@@ -4,22 +4,19 @@
  */
 
 import { 
-  DependencyContainer, 
-  ModuleConfig, 
+  createUseCaseFactory, 
   DEPENDENCY_TOKENS,
-  createUseCaseFactory 
-} from '../shared/application/interfaces/dependency-container';
+  DependencyContainer, 
+  ModuleConfig} from '../shared/application/interfaces/dependency-container';
 
-import { LeadRepository } from './domain/repositories/lead-repository';
 import { AnalyticsService } from './application/ports/analytics-service';
 import { NotificationService } from './application/ports/notification-service';
-
-import { SubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
 import { GetLandingAnalyticsUseCase } from './application/use-cases/get-landing-analytics';
-
+import { SubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
+import { LeadRepository } from './domain/repositories/lead-repository';
 import { SupabaseLeadRepository } from './infra/adapters/supabase-lead-repository';
-import { GoogleAnalyticsService, MockAnalyticsService } from './infra/services/google-analytics-service';
 import { EmailNotificationService } from './infra/services/email-notification-service';
+import { GoogleAnalyticsService, MockAnalyticsService } from './infra/services/google-analytics-service';
 
 /**
  * Landing Module Configuration

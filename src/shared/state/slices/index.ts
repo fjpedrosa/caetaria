@@ -7,39 +7,37 @@
 
 // UI Slice - Global UI state management
 export {
-  // Slice and reducer
-  uiSlice,
-  default as uiReducer,
-  
+  addToast,
+  clearToasts,
+  closeAllModals,
+  closeModal,
   // Actions
   hydrate,
-  toggleSidebar,
+  openModal,
+  removeToast,
+  resetUI,
+  selectFeatureFlag,
+  selectGlobalLoading,
+  selectIsSidebarOpen,
+  selectLayout,
+  selectModal,
+  // Selectors
+  selectSidebar,
+  selectTheme,
+  selectToasts,
+  setFeatureFlag,
+  setFeatureFlags,
+  setGlobalLoading,
+  setLayoutDensity,
   setSidebarOpen,
   setSidebarPinned,
   setSidebarWidth,
-  openModal,
-  closeModal,
-  closeAllModals,
-  addToast,
-  removeToast,
-  clearToasts,
   setTheme,
-  setLayoutDensity,
   toggleAnimations,
-  setGlobalLoading,
-  setFeatureFlag,
-  setFeatureFlags,
-  resetUI,
-  
-  // Selectors
-  selectSidebar,
-  selectIsSidebarOpen,
-  selectModal,
-  selectToasts,
-  selectTheme,
-  selectLayout,
-  selectGlobalLoading,
-  selectFeatureFlag,
+  toggleSidebar,
+  default as uiReducer,
+  // Slice and reducer
+  uiSlice,
 } from './ui-slice'
 
 // Add more slice exports here as you create them

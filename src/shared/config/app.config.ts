@@ -2,7 +2,7 @@
  * Application-wide configuration
  */
 
-import type { AppConfig, Theme, Language } from "../types"
+import type { AppConfig, Language,Theme } from "../types"
 
 export const appConfig: AppConfig = {
   name: process.env.NEXT_PUBLIC_APP_NAME || "Caetaria",

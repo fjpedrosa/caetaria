@@ -1,9 +1,32 @@
 {
-  "semi": false,
+  "trailingComma": "none",
+  "semi": true,
   "singleQuote": true,
+  "parser": "typescript",
+  "useTabs": false,
+  "stylelintIntegration": true,
   "tabWidth": 2,
-  "trailingComma": "all",
   "printWidth": 100,
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["clsx", "cn", "twMerge"]
+  "plugins": [
+    "prettier-plugin-tailwindcss"
+  ],
+  "tailwindFunctions": [
+    "clsx",
+    "cn",
+    "twMerge"
+  ],
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": "*.scss",
+      "options": {
+        "parser": "scss"
+      }
+    }
+  ]
 }

@@ -1,9 +1,10 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { BarChart3,Bot, Zap } from 'lucide-react';
+
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Zap, Bot, BarChart3 } from 'lucide-react';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 
 const iconMap = {

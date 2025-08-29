@@ -4,9 +4,10 @@
  */
 
 import { Suspense } from 'react';
+import { Bot, Globe, MessageSquare, Settings } from 'lucide-react';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BotConfigurationForm } from '@/modules/onboarding/ui/components/bot-configuration-form';
-import { Bot, MessageSquare, Globe, Settings } from 'lucide-react';
 import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
 
 export default async function BotSetupPage() {

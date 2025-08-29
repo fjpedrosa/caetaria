@@ -381,7 +381,7 @@ export function getRequestConfig(endpoint: string) {
  */
 export function getCacheConfig(endpoint: string) {
   // Default cache configuration
-  let config: {
+  const config: {
     ttl: number
     strategy: string
   } = {

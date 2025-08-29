@@ -1,8 +1,8 @@
 // Client-side AB testing utilities
 // This file contains only client-safe functions without server-only imports
 
-import { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
 import type { PriceVariant, PricingPlan } from './ab-testing-types';
+import { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
 
 // Validador de variante
 function isValidVariant(variant: string): variant is PriceVariant {

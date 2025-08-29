@@ -4,11 +4,11 @@
  */
 
 // Re-export all modules
+export * from './analytics';
 export * from './marketing';
 export * from './onboarding'; 
-export * from './shared';
 export * from './pricing';
-export * from './analytics';
+export * from './shared';
 
 // Module configurations for easy setup
 export { LandingModuleConfig } from './marketing/marketing-module';

@@ -1,13 +1,14 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Provider as ReduxProvider } from 'react-redux'
-import { ThemeProvider } from 'next-themes'
-import { makeStore } from '@/store'
 import { useRef } from 'react'
-import type { AppStore } from '@/store'
+import { ThemeProvider } from 'next-themes'
+import { Provider as ReduxProvider } from 'react-redux'
+
 import ErrorBoundary from '@/components/error-boundary'
 import { EventTrackerProvider, ScrollDepthTracker, TimeOnPageTracker, VisibilityTracker } from '@/modules/analytics/ui/components/event-tracker'
+import type { AppStore } from '@/store'
+import { makeStore } from '@/store'
 
 /**
  * Root Providers Component

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { useEffect,useState } from 'react';
+import { ChevronLeft, ChevronRight, Quote,Star } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 interface Testimonial {
   id: string;

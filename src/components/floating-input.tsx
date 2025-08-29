@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, forwardRef, InputHTMLAttributes, ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { forwardRef, InputHTMLAttributes, ReactNode,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { AlertCircle,Check } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
-import { Check, AlertCircle } from 'lucide-react';
 
 interface FloatingInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'placeholder'> {
   label: string;

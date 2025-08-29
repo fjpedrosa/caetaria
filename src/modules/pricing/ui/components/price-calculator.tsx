@@ -1,20 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
+import React, { useEffect,useState } from 'react';
+import { AlertCircle, Check, Percent, Tag } from 'lucide-react';
+
+import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
 import { Input } from '../../../../components/ui/input';
 import { Label } from '../../../../components/ui/label';
+import { Skeleton } from '../../../../components/ui/loading-skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { Badge } from '../../../../components/ui/badge';
 import { Separator } from '../../../../components/ui/separator';
-import { AlertCircle, Check, Percent, Tag } from 'lucide-react';
 import { 
-  useGetPricingPlansQuery, 
   useCalculatePriceMutation,
+  useGetPricingPlansQuery, 
   useLazyValidateDiscountQuery 
 } from '../../infra/services/pricing-api';
-import { Skeleton } from '../../../../components/ui/loading-skeleton';
 
 interface PriceCalculatorProps {
   onPriceCalculated?: (calculation: any) => void;

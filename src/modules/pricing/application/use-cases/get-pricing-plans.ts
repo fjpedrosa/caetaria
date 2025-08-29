@@ -1,6 +1,6 @@
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
 import { PricingPlanEntity } from '../../domain/entities/pricing-plan';
 import { PricingRepository } from '../ports/pricing-repository';
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
 
 export interface GetPricingPlansRequest {
   includeInactive?: boolean;

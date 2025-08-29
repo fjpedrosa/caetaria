@@ -5,8 +5,8 @@
  * Uses the per-request store pattern for Next.js App Router.
  */
 
-import { makeStore } from './store'
 import type { AppStore } from './store'
+import { makeStore } from './store'
 
 /**
  * Store cache for client-side

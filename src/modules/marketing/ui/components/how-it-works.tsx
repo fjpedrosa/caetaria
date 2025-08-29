@@ -1,17 +1,18 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Card } from '@/components/ui/card';
+import { motion, useInView } from 'framer-motion';
+
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { FeatureIcon, Icon } from '@/components/ui/icon';
 import { 
-  UserPlus,
-  Settings,
-  MessageCircle,
-  CheckCircle,
   ArrowRight,
+  CheckCircle,
+  MessageCircle,
+  Settings,
   Sparkles,
+  UserPlus,
   Zap
 } from '@/lib/icons';
 
@@ -73,7 +74,7 @@ export function HowItWorks() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
         >
-          <Badge className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 mb-6 border-0">
+          <Badge variant="outline" className="px-4 py-2 mb-6">
             <Icon icon={Zap} size="small" iconClassName="w-4 h-4 mr-2" />
             Proceso Simple
           </Badge>

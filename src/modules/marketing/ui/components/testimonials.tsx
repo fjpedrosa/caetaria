@@ -1,11 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight,Star } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
 
 /**
  * Testimonials Component - Client Component

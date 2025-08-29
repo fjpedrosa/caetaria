@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
 import type { 
+  AutoMessageFormData,
   BusinessInfoFormData, 
   PhoneNumberFormData, 
-  AutoMessageFormData,
   PlanSelectionFormData,
   RegistrationFormData
 } from '../domain/schemas'

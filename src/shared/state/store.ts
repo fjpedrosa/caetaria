@@ -12,9 +12,11 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
+
 import { baseApi } from '../api/base-api'
-import { uiSlice } from './slices/ui-slice'
+
 import { persistenceMiddleware } from './middleware/persistence'
+import { uiSlice } from './slices/ui-slice'
 
 /**
  * Root reducer combining all slices and RTK Query reducers

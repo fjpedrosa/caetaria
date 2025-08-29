@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { useInView, useAnimation } from 'framer-motion';
+import { useEffect,useRef } from 'react';
+import { useAnimation,useInView } from 'framer-motion';
 
 interface ScrollAnimationOptions {
   once?: boolean;

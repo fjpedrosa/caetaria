@@ -3,9 +3,10 @@
  * Server Component - Common wrapper for onboarding steps
  */
 
-import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
 
 interface OnboardingStepWrapperProps {
   currentStep: string;

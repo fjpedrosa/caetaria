@@ -1,26 +1,27 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { registrationSchema, type RegistrationFormData } from '../../domain/schemas'
-import type { StepProps } from '../../domain/types'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Separator } from '@/components/ui/separator'
 import { 
-  User, 
-  Mail, 
-  Lock, 
+  AlertCircle,
+  Chrome,
   Eye, 
   EyeOff,
-  Chrome,
+  Lock, 
+  Mail, 
   ShieldCheck,
-  AlertCircle
-} from 'lucide-react'
+  User} from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
+
+import { type RegistrationFormData,registrationSchema } from '../../domain/schemas'
+import type { StepProps } from '../../domain/types'
 
 export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
   const [showPassword, setShowPassword] = useState(false)

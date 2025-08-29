@@ -3,8 +3,8 @@
  * Application layer - Business logic for retrieving landing page analytics
  */
 
-import { LeadRepository, LeadFilters } from '../../domain/repositories/lead-repository';
 import { LeadSource, LeadStatus } from '../../domain/entities/lead';
+import { LeadFilters,LeadRepository } from '../../domain/repositories/lead-repository';
 
 export interface LandingAnalyticsInput {
   dateRange?: {

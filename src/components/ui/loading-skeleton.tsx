@@ -1,7 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, Loader2, Sparkles } from 'lucide-react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { CheckCircle2, Loader2, Sparkles,XCircle } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {

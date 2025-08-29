@@ -3,9 +3,9 @@
  * Application layer - Business logic for bot configuration
  */
 
-import { Result, success, failure, isSuccess } from '../../../shared/domain/value-objects/result';
-import { OnboardingSession, OnboardingSessionId, advanceOnboardingStep, updateOnboardingStepData } from '../../domain/entities/onboarding-session';
-import { BotConfiguration, createBotConfiguration, BusinessHours } from '../../domain/value-objects/whatsapp-config';
+import { failure, isSuccess,Result, success } from '../../../shared/domain/value-objects/result';
+import { advanceOnboardingStep, OnboardingSession, OnboardingSessionId, updateOnboardingStepData } from '../../domain/entities/onboarding-session';
+import { BotConfiguration, BusinessHours,createBotConfiguration } from '../../domain/value-objects/whatsapp-config';
 import { OnboardingRepository } from '../ports/onboarding-repository';
 
 export interface ConfigureBotCommand {

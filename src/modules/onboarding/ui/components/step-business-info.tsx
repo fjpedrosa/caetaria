@@ -1,9 +1,9 @@
 'use client'
 
+import { Building2, TrendingUp,Users } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { businessInfoSchema, type BusinessInfoFormData } from '../../domain/schemas'
-import type { StepProps } from '../../domain/types'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Building2, Users, TrendingUp } from 'lucide-react'
+
+import { type BusinessInfoFormData,businessInfoSchema } from '../../domain/schemas'
+import type { StepProps } from '../../domain/types'
 
 const sectorLabels: Record<string, string> = {
   retail: 'Comercio / Retail',

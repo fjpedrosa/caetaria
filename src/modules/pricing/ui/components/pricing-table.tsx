@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import { Button } from '../../../../components/ui/button';
-import { Badge } from '../../../../components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
 import { Check, X } from 'lucide-react';
-import { useGetPricingPlansQuery } from '../../infra/services/pricing-api';
+
+import { Badge } from '../../../../components/ui/badge';
+import { Button } from '../../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
 import { Skeleton } from '../../../../components/ui/loading-skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
+import { useGetPricingPlansQuery } from '../../infra/services/pricing-api';
 
 interface PricingTableProps {
   onPlanSelect?: (planId: string, billingPeriod: 'monthly' | 'yearly') => void;

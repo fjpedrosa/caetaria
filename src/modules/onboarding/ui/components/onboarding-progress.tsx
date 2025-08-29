@@ -6,9 +6,10 @@
  */
 
 import { CheckCircle, Circle } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+import { cn } from '@/lib/utils';
 
 interface Step {
   id: string;

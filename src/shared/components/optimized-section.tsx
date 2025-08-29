@@ -1,7 +1,8 @@
 'use client';
 
-import { Suspense, lazy, ComponentType, ReactNode } from 'react';
+import { ComponentType, lazy, ReactNode,Suspense } from 'react';
 import { motion } from 'framer-motion';
+
 import { useScrollAnimation } from '@/shared/hooks/use-scroll-animations';
 
 interface OptimizedSectionProps {

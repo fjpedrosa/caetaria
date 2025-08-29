@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { baseApi } from './api/base-api'
+
 import { fakeOnboardingApi } from '@/modules/onboarding/infra/fake-onboarding-api'
+
+import { baseApi } from './api/base-api'
 
 // Store configuration function for per-request pattern (SSR-friendly)
 export const makeStore = () => {

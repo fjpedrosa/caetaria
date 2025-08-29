@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { Clock, MessageSquare, Plus, Sparkles, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { autoMessageSchema, type AutoMessageFormData } from '../../domain/schemas'
-import type { StepProps } from '../../domain/types'
+
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
@@ -17,8 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { MessageSquare, Clock, Sparkles, Plus, X } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
+
+import { type AutoMessageFormData,autoMessageSchema } from '../../domain/schemas'
+import type { StepProps } from '../../domain/types'
 
 const messageTemplates = [
   {

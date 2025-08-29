@@ -4,7 +4,7 @@
  */
 
 import { BusinessInfo } from './business-info';
-import { WhatsAppIntegrationConfig, PhoneNumberVerification, BotConfiguration } from './whatsapp-config';
+import { BotConfiguration,PhoneNumberVerification, WhatsAppIntegrationConfig } from './whatsapp-config';
 
 export interface OnboardingStepData {
   readonly businessInfo?: BusinessInfo;

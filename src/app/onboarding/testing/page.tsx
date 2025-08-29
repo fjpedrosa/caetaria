@@ -4,10 +4,11 @@
  */
 
 import { Suspense } from 'react';
+import { AlertTriangle, CheckCircle, TestTube, Zap } from 'lucide-react';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { TestConversation } from '@/modules/onboarding/ui/components/test-conversation';
-import { TestTube, CheckCircle, AlertTriangle, Zap } from 'lucide-react';
 import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
+import { TestConversation } from '@/modules/onboarding/ui/components/test-conversation';
 
 export default async function BotTestingPage() {
   return (

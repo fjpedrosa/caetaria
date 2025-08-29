@@ -4,8 +4,8 @@
  */
 
 import { Lead, LeadId } from '../../domain/entities/lead';
+import { LeadFilters,LeadRepository } from '../../domain/repositories/lead-repository';
 import { Email } from '../../domain/value-objects/email';
-import { LeadRepository, LeadFilters } from '../../domain/repositories/lead-repository';
 
 // Supabase client would be injected
 interface SupabaseClient {

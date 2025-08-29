@@ -56,15 +56,15 @@ module.exports = {
         // Brand colors
         'brand-yellow': {
           50: "oklch(0.97 0.05 85)",
-          100: "oklch(0.94 0.08 82)",
-          200: "oklch(0.90 0.12 80)",
-          300: "oklch(0.85 0.15 78)", 
-          400: "oklch(0.75 0.17 75)", // Primary hover
-          500: "oklch(0.65 0.18 75)", // Primary - Dark yellow
-          600: "oklch(0.60 0.19 73)",
-          700: "oklch(0.55 0.20 72)",
-          800: "oklch(0.45 0.22 70)",
-          900: "oklch(0.35 0.24 68)",
+          100: "oklch(0.94 0.08 83)",
+          200: "oklch(0.90 0.10 84)",
+          300: "oklch(0.86 0.12 85)", 
+          400: "oklch(0.82 0.14 85)", // Primary - Bright yellow
+          500: "oklch(0.78 0.16 82)", // Primary hover
+          600: "oklch(0.74 0.18 80)",
+          700: "oklch(0.70 0.20 78)",
+          800: "oklch(0.60 0.22 75)",
+          900: "oklch(0.50 0.24 70)",
           DEFAULT: "var(--primary)",
         },
         'brand-blue': {

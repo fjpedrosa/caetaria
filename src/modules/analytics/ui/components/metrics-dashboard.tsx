@@ -1,29 +1,29 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import { Button } from '../../../../components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
-import { Badge } from '../../../../components/ui/badge';
+import React, { useMemo,useState } from 'react';
 import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown, 
   Activity, 
-  Users, 
+  BarChart3, 
+  Calendar,
+  Download, 
   Eye, 
   MousePointer, 
-  Calendar,
   RefreshCw,
-  Download 
-} from 'lucide-react';
+  TrendingDown, 
+  TrendingUp, 
+  Users} from 'lucide-react';
+
+import { Badge } from '../../../../components/ui/badge';
+import { Button } from '../../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
+import { Skeleton } from '../../../../components/ui/loading-skeleton';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
 import { 
-  useGetMetricsQuery, 
   useGetEventStatsQuery,
+  useGetMetricsQuery, 
   useGetMetricTrendQuery 
 } from '../../infra/services/analytics-api';
-import { Skeleton } from '../../../../components/ui/loading-skeleton';
 
 interface MetricsDashboardProps {
   dateRange?: {

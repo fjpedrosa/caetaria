@@ -2,7 +2,8 @@
 
 import React, { useRef } from 'react'
 import { Provider } from 'react-redux'
-import { makeStore, type AppStore } from './index'
+
+import { type AppStore,makeStore } from './index'
 
 interface StoreProviderProps {
   children: React.ReactNode

@@ -1,23 +1,23 @@
 'use client';
 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  ArrowRight,
+  ExternalLink,
+  Github,
+  Linkedin,
+  Mail, 
+  MapPin,
+  MessageSquare, 
+  Phone, 
+  Send,
+  Sparkles,
+  Twitter} from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { 
-  MessageSquare, 
-  Mail, 
-  Phone, 
-  MapPin,
-  Twitter,
-  Linkedin,
-  Github,
-  ArrowRight,
-  Send,
-  ExternalLink,
-  Sparkles
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
 
 /**
  * Landing Footer Component - Client Component

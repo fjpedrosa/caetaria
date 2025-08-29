@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+
 import { SmoothScrollNav } from '@/components/ui/smooth-scroll-nav';
 
 // Enable ISR with 1 hour cache for legal content

@@ -1,6 +1,8 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+
 import { cn } from "@/lib/utils"
+
 import { Button, type ButtonProps } from "../atoms/button"
 
 const cardVariants = cva(
@@ -165,4 +167,4 @@ const CardWithActions = React.forwardRef<HTMLDivElement, CardWithActionsProps>(
 )
 CardWithActions.displayName = "CardWithActions"
 
-export { CardWithActions, cardVariants }
+export { cardVariants,CardWithActions }

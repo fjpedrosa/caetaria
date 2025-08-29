@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "denoland.vscode-deno",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-close-tag",
+    "humao.rest-client",
+    "stylelint.vscode-stylelint",
+    "yzhang.markdown-all-in-one"
+  ]
+}

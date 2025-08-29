@@ -1,16 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { AlertCircle,CheckCircle2, MessageCircle, Phone } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { phoneNumberSchema, type PhoneNumberFormData } from '../../domain/schemas'
-import type { StepProps } from '../../domain/types'
+
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Phone, MessageCircle, CheckCircle2, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+import { type PhoneNumberFormData,phoneNumberSchema } from '../../domain/schemas'
+import type { StepProps } from '../../domain/types'
 
 const countryCodes = [
   { code: '+34', country: 'España', flag: '🇪🇸' },

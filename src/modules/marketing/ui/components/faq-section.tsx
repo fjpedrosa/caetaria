@@ -1,5 +1,8 @@
 'use client';
 
+import { motion } from 'framer-motion';
+import { HelpCircle,Plus } from 'lucide-react';
+
 import {
   Accordion,
   AccordionContent,
@@ -7,8 +10,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
-import { motion } from 'framer-motion';
-import { Plus, HelpCircle } from 'lucide-react';
 
 /**
  * FAQ Section Component - Client Component

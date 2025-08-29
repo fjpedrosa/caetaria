@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Roboto_Mono } from 'next/font/google';
-import "./globals.css";
-import { Providers } from './providers';
+
+import { PerformanceDashboard } from "@/components/performance-dashboard";
 import { PerformanceMonitor } from "@/components/performance-monitor";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
-import { PerformanceDashboard } from "@/components/performance-dashboard";
-import { ResponsiveTestOverlay, ResponsiveDebugInfo } from "@/components/responsive-test-overlay";
 
+import { Providers } from './providers';
+
+import "./globals.css";
+ 
 // Optimize font loading
 const inter = Inter({
   subsets: ['latin'],
@@ -120,11 +122,11 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//vercel.app" />
-        
+
         {/* Preconnect for critical resources */}
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {/* Favicon and icons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />

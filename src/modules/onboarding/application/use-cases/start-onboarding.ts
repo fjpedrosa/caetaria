@@ -3,9 +3,9 @@
  * Application layer - Business logic for starting the onboarding process
  */
 
-import { Result, success, failure, isSuccess } from '../../../shared/domain/value-objects/result';
-import { Email, createEmail } from '../../../marketing/domain/value-objects/email';
-import { OnboardingSession, createOnboardingSession } from '../../domain/entities/onboarding-session';
+import { createEmail,Email } from '../../../marketing/domain/value-objects/email';
+import { failure, isSuccess,Result, success } from '../../../shared/domain/value-objects/result';
+import { createOnboardingSession,OnboardingSession } from '../../domain/entities/onboarding-session';
 import { OnboardingRepository } from '../ports/onboarding-repository';
 
 export interface StartOnboardingCommand {

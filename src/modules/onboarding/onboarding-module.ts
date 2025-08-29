@@ -4,11 +4,10 @@
  */
 
 import { 
-  DependencyContainer, 
-  ModuleConfig, 
+  createUseCaseFactory, 
   DEPENDENCY_TOKENS,
-  createUseCaseFactory 
-} from '../shared/application/interfaces/dependency-container';
+  DependencyContainer, 
+  ModuleConfig} from '../shared/application/interfaces/dependency-container';
 
 /**
  * Onboarding Module Configuration

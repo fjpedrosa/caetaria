@@ -1,9 +1,11 @@
 import * as React from "react"
+
 import { cn } from "@/lib/utils"
+
 import { Button } from "../atoms/button"
 import { Spinner } from "../atoms/spinner"
+import { DataTableRow, type TableAction,type TableCell } from "../molecules/data-table-row"
 import { SearchInput } from "../molecules/search-input"
-import { DataTableRow, type TableCell, type TableAction } from "../molecules/data-table-row"
 
 export interface DataTableColumn {
   key: string

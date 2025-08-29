@@ -3,14 +3,12 @@
  * Clean Architecture - Dependency injection configuration
  */
 
-import { 
-  SimpleDependencyContainer, 
-  DependencyContainer, 
-  DEPENDENCY_TOKENS 
-} from './shared/application/interfaces/dependency-container';
-
 import { LandingModuleConfig } from './marketing/marketing-module';
 import { OnboardingModuleConfig } from './onboarding/onboarding-module';
+import { 
+  DEPENDENCY_TOKENS, 
+  DependencyContainer, 
+  SimpleDependencyContainer} from './shared/application/interfaces/dependency-container';
 
 /**
  * Application configuration interface

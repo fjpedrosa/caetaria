@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
-import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
-import { FloatingWhatsAppCTA } from '@/components/floating-whatsapp-cta';
+
 import { CursorTrail } from '@/components/cursor-trail';
-import { SmoothScroll, ScrollToTop } from '@/components/smooth-scroll';
+import { FloatingWhatsAppCTA } from '@/components/floating-whatsapp-cta';
+import { ScrollToTop,SmoothScroll } from '@/components/smooth-scroll';
+import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
+import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
 
 export const metadata: Metadata = {
   title: {

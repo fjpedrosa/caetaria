@@ -3,16 +3,15 @@
  */
 
 import type { 
-  Email, 
-  PhoneNumber, 
-  URL, 
-  UserId, 
-  Timestamp,
   ApiResponse,
-  PaginationParams,
   BusinessInfo,
-  ContactInfo 
-} from "./global"
+  ContactInfo, 
+  Email, 
+  PaginationParams,
+  PhoneNumber, 
+  Timestamp,
+  URL, 
+  UserId} from "./global"
 
 // Base API types
 export interface ApiError {

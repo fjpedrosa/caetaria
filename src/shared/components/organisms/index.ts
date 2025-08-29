@@ -1,4 +1,4 @@
-export { Header, type HeaderProps, type HeaderAction, type HeaderUser } from "./header"
-export { Footer, type FooterProps, type FooterLink, type FooterSection } from "./footer"
+export { DataTable, type DataTableColumn,type DataTableProps } from "./data-table"
+export { Footer, type FooterLink, type FooterProps, type FooterSection } from "./footer"
+export { Header, type HeaderAction, type HeaderProps, type HeaderUser } from "./header"
 export { Layout, type LayoutProps } from "./layout"
-export { DataTable, type DataTableProps, type DataTableColumn } from "./data-table"

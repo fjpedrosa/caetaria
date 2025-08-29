@@ -1,16 +1,17 @@
 'use client'
 
 import { useEffect } from 'react'
+import { ArrowRight, Check, Sparkles } from 'lucide-react'
+
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Check, Sparkles } from 'lucide-react'
+import { useABAnalytics } from '@/modules/analytics/infra/services/ab-analytics'
 import {
-  usePriceVariant,
   formatPriceWithDiscount,
   getPricingMetadata,
+  usePriceVariant,
 } from '@/modules/pricing/infra/ab-testing-client'
-import { useABAnalytics } from '@/modules/analytics/infra/services/ab-analytics'
 
 export function PricingTeaserAB() {
   const { variant, pricing } = usePriceVariant()
@@ -104,19 +105,19 @@ export function PricingTeaserAB() {
 
             <ul className="mb-8 space-y-3">
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Hasta 1.000 conversaciones/mes</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Bot con IA conversacional</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Plantillas pre-diseñadas</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Badge verde verificado</span>
               </li>
             </ul>
@@ -166,23 +167,23 @@ export function PricingTeaserAB() {
 
             <ul className="mb-8 space-y-3">
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span className="font-semibold">Conversaciones ilimitadas</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>IA avanzada + integraciones CRM</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Soporte prioritario 24/7</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Analytics y reportes avanzados</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>API personalizada</span>
               </li>
             </ul>
@@ -211,23 +212,23 @@ export function PricingTeaserAB() {
 
             <ul className="mb-8 space-y-3">
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Todo lo incluido en Pro</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Implementación personalizada</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>SLA dedicado</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Soporte técnico 24/7</span>
               </li>
               <li className="flex items-center">
-                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>Multi-canal y multi-idioma</span>
               </li>
             </ul>

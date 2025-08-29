@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useRef,useState } from 'react';
+import { AnimatePresence,motion, useInView } from 'framer-motion';
+import { ArrowRight, Check, Crown, Loader2,Sparkles, Star, Zap } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Check, ArrowRight, Zap, Star, Sparkles, Crown, Loader2 } from 'lucide-react';
 
 interface PricingPlan {
   name: string;
@@ -148,7 +149,7 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
             animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Badge className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 mb-6 shadow-lg border-0">
+            <Badge variant="outline" className="px-4 py-2 mb-6">
               <Sparkles className="w-4 h-4 mr-2" />
               Flexible Pricing
             </Badge>
@@ -166,41 +167,41 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
             with transparent, usage-based pricing.
           </p>
 
-          {/* Billing Period Toggle */}
+          {/* Billing Period Toggle - Mobile optimized */}
           <motion.div 
-            className="flex items-center justify-center space-x-4 bg-gray-100 rounded-lg p-1 w-fit mx-auto"
+            className="flex items-center justify-center space-x-2 sm:space-x-4 bg-gray-100 rounded-lg p-1 w-fit mx-auto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <button
               onClick={() => setBillingPeriod('monthly')}
-              className={`px-6 py-2 rounded-md text-sm font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2.5 min-h-[44px] rounded-md text-sm font-semibold transition-all touch-manipulation ${
                 billingPeriod === 'monthly'
                   ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'text-gray-600 hover:text-gray-900 active:text-gray-900'
               }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingPeriod('yearly')}
-              className={`px-6 py-2 rounded-md text-sm font-semibold transition-all relative ${
+              className={`px-4 sm:px-6 py-2.5 min-h-[44px] rounded-md text-sm font-semibold transition-all relative touch-manipulation ${
                 billingPeriod === 'yearly'
                   ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'text-gray-600 hover:text-gray-900 active:text-gray-900'
               }`}
             >
               Yearly
-              <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5">
-                Save 20%
+              <Badge className="absolute -top-1.5 sm:-top-2 -right-1.5 sm:-right-2 bg-green-500 text-white text-xs px-1.5 sm:px-2 py-0.5">
+                <span className="hidden sm:inline">Save </span>20%
               </Badge>
             </button>
           </motion.div>
         </motion.div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Pricing Cards Grid - Mobile optimized */}
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => {
             const isPopular = plan.popular;
             const currentPrice = getPrice(plan.price);
@@ -214,65 +215,67 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                 transition={{ duration: 0.8, delay: index * 0.2 }}
               >
                 <Card 
-                  className={`relative p-8 transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
+                  className={`relative p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1 cursor-pointer touch-manipulation ${
                     isPopular 
-                      ? 'ring-2 ring-green-500 shadow-xl scale-105 bg-gradient-to-br from-green-50 to-blue-50' 
+                      ? 'ring-2 ring-green-500 shadow-xl sm:scale-105 bg-gradient-to-br from-green-50 to-blue-50' 
                       : 'hover:shadow-xl bg-white'
                   } ${
                     isSelected ? 'ring-2 ring-blue-500' : ''
                   }`}
                   onClick={() => handlePlanSelect(plan.name)}
                 >
-                {/* Popular Badge */}
+                {/* Popular Badge - Mobile responsive */}
                 {isPopular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 font-semibold">
-                      🎆 Most Popular
+                  <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <Badge className="bg-gradient-to-r from-green-500 to-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 font-semibold text-xs sm:text-sm">
+                      🎆 <span className="hidden sm:inline">Most </span>Popular
                     </Badge>
                   </div>
                 )}
 
-                {/* Plan Header */}
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-6">{plan.description}</p>
+                {/* Plan Header - Mobile responsive */}
+                <div className="text-center mb-6 sm:mb-8">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">{plan.description}</p>
                   
-                  {/* Price */}
+                  {/* Price - Mobile responsive */}
                   <div className="mb-4">
                     <div className="flex items-center justify-center">
-                      <span className="text-5xl font-bold text-gray-900">${currentPrice}</span>
-                      <span className="text-gray-500 ml-2">/{billingPeriod === 'yearly' ? 'year' : 'month'}</span>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">${currentPrice}</span>
+                      <span className="text-gray-500 ml-2 text-sm sm:text-base">/{billingPeriod === 'yearly' ? 'year' : 'month'}</span>
                     </div>
                     
                     {billingPeriod === 'yearly' && (
-                      <div className="text-sm text-green-600 font-semibold mt-2">
-                        Save ${plan.price * 2}/year • 2 months free
+                      <div className="text-xs sm:text-sm text-green-600 font-semibold mt-2">
+                        <span className="block sm:inline">Save ${plan.price * 2}/year</span>
+                        <span className="hidden sm:inline"> • </span>
+                        <span className="block sm:inline">2 months free</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Features List */}
-                <div className="mb-8">
-                  <ul className="space-y-4">
+                {/* Features List - Mobile responsive */}
+                <div className="mb-6 sm:mb-8">
+                  <ul className="space-y-3 sm:space-y-4">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start space-x-3">
+                      <li key={featureIndex} className="flex items-start space-x-3 min-h-[40px]">
                         <div className="flex-shrink-0 w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
                           <Check className="w-3 h-3 text-green-600" />
                         </div>
-                        <span className="text-gray-700">{feature}</span>
+                        <span className="text-sm sm:text-base text-gray-700 leading-relaxed">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* CTA Button */}
+                {/* CTA Button - Mobile optimized */}
                 <Button
                   onClick={() => handlePlanSelect(plan.name)}
-                  className={`w-full py-4 text-lg font-semibold transition-all duration-200 group ${
+                  className={`w-full py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 group min-h-[48px] touch-manipulation ${
                     isPopular
-                      ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-lg'
-                      : 'border-2 border-gray-300 hover:border-green-500 bg-white hover:bg-green-50 text-gray-900'
+                      ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 text-white shadow-lg'
+                      : 'border-2 border-gray-300 hover:border-green-500 active:border-green-600 bg-white hover:bg-green-50 active:bg-green-100 text-gray-900'
                   }`}
                 >
                   {plan.name === 'Enterprise' ? 'Contact Sales' : 'Start Free Trial'}
@@ -283,13 +286,17 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                   )}
                 </Button>
 
-                {/* Trust Indicator */}
-                <div className="text-center mt-4">
-                  <div className="text-sm text-gray-500">
+                {/* Trust Indicator - Mobile responsive */}
+                <div className="text-center mt-3 sm:mt-4">
+                  <div className="text-xs sm:text-sm text-gray-500">
                     {plan.name === 'Enterprise' ? (
                       'Custom pricing available'
                     ) : (
-                      <>14-day free trial • No credit card required</>
+                      <>
+                        <span className="block sm:inline">14-day free trial</span>
+                        <span className="hidden sm:inline"> • </span>
+                        <span className="block sm:inline">No credit card required</span>
+                      </>
                     )}
                   </div>
                 </div>

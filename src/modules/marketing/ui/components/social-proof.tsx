@@ -1,10 +1,11 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Icon } from '@/components/ui/icon';
+import { motion, useInView } from 'framer-motion';
+
 import { Badge } from '@/components/ui/badge';
-import { Star, TrendingUp, Award, Users } from '@/lib/icons';
+import { Icon } from '@/components/ui/icon';
+import { Award, Star, TrendingUp, Users } from '@/lib/icons';
 
 const companies = [
   { name: 'Empresa 1', logo: '🏢' },

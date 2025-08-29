@@ -3,11 +3,11 @@
  * Application layer - Business logic for completing the onboarding process
  */
 
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
-import { OnboardingSession, OnboardingSessionId, advanceOnboardingStep } from '../../domain/entities/onboarding-session';
+import { BusinessRuleError,NotFoundError } from '../../../shared/domain/errors/application-errors';
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
+import { advanceOnboardingStep,OnboardingSession, OnboardingSessionId } from '../../domain/entities/onboarding-session';
 import { isOnboardingComplete } from '../../domain/value-objects/onboarding-step-data';
 import { OnboardingRepository } from '../ports/onboarding-repository';
-import { NotFoundError, BusinessRuleError } from '../../../shared/domain/errors/application-errors';
 
 export interface CompleteOnboardingCommand {
   readonly sessionId: string;

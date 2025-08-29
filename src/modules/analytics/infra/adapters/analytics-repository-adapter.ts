@@ -1,10 +1,9 @@
 import { 
   AnalyticsRepository, 
-  MetricsRepository, 
-  ReportingRepository,
   EventFilters,
-  MetricFilters 
-} from '../../application/ports/analytics-repository';
+  MetricFilters, 
+  MetricsRepository, 
+  ReportingRepository} from '../../application/ports/analytics-repository';
 import { EventEntity } from '../../domain/entities/event';
 import { MetricEntity } from '../../domain/entities/metric';
 import { EventType } from '../../domain/value-objects/event-type';
@@ -12,9 +11,8 @@ import { MetricValue } from '../../domain/value-objects/metric-value';
 import { 
   analyticsApi, 
   EventApiModel, 
-  MetricApiModel,
-  GenerateReportApiResponse 
-} from '../services/analytics-api';
+  GenerateReportApiResponse, 
+  MetricApiModel} from '../services/analytics-api';
 
 // Mappers for converting between domain entities and API models
 export class AnalyticsModelMapper {

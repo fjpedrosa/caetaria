@@ -1,9 +1,9 @@
+import { failure,Result, success } from '../../../shared/domain/value-objects/result';
 import { EventEntity } from '../../domain/entities/event';
 import { MetricEntity } from '../../domain/entities/metric';
 import { EventType } from '../../domain/value-objects/event-type';
 import { MetricValue } from '../../domain/value-objects/metric-value';
 import { AnalyticsRepository, MetricsRepository, ReportingRepository } from '../ports/analytics-repository';
-import { Result, success, failure } from '../../../shared/domain/value-objects/result';
 
 export interface GenerateReportRequest {
   reportType: 'daily' | 'weekly' | 'monthly' | 'custom';

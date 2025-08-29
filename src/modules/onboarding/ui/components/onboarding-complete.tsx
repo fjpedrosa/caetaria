@@ -3,9 +3,10 @@
  * Server Component - Displays completion summary and status
  */
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Bot, CheckCircle, Clock, MessageSquare, Shield,Users } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Clock, Users, MessageSquare, Bot, Shield } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // This would typically come from the onboarding session data
 const completionData = {

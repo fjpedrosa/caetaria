@@ -3,7 +3,7 @@
  * Infrastructure layer - Google Analytics implementation of AnalyticsService
  */
 
-import { AnalyticsService, AnalyticsEvent, LeadAnalyticsData } from '../../application/ports/analytics-service';
+import { AnalyticsEvent, AnalyticsService, LeadAnalyticsData } from '../../application/ports/analytics-service';
 
 // Google Analytics gtag would be available globally
 declare global {

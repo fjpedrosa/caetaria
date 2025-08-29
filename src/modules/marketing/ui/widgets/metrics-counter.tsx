@@ -1,18 +1,18 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useRef,useState } from 'react';
 import { 
-  Users, 
-  MessageSquare, 
-  Globe, 
-  Zap,
-  TrendingUp,
+  Award,
   Clock,
+  Globe, 
+  MessageSquare, 
   Shield,
-  Award
-} from 'lucide-react';
+  TrendingUp,
+  Users, 
+  Zap} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 
 interface Metric {
   id: string;
