@@ -103,14 +103,14 @@ export class TrackEventUseCase {
     }
 
     // Validate property keys
-    const invalidKeys = Object.keys(event.properties).filter(key => 
+    const invalidKeys = Object.keys(event.properties).filter(key =>
       !key.match(/^[a-zA-Z_][a-zA-Z0-9_]*$/) || key.length > 50
     );
 
     if (invalidKeys.length > 0) {
-      return { 
-        isValid: false, 
-        message: `Invalid property keys: ${invalidKeys.join(', ')}` 
+      return {
+        isValid: false,
+        message: `Invalid property keys: ${invalidKeys.join(', ')}`
       };
     }
 

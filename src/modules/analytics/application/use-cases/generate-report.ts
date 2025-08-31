@@ -89,7 +89,7 @@ export class GenerateReportUseCase {
 
       // Create report response
       const reportId = this.generateReportId();
-      
+
       const response: GenerateReportResponse = {
         reportId,
         reportType: request.reportType,
@@ -212,10 +212,10 @@ export class GenerateReportUseCase {
   private generateSummary(data: { events: EventEntity[]; metrics: MetricEntity[]; summary: Record<string, any> }) {
     const uniqueUsers = new Set(data.events.map(e => e.userId).filter(Boolean)).size;
     const uniqueSessions = new Set(data.events.map(e => e.sessionId).filter(Boolean)).size;
-    
+
     const eventsByType = this.groupEventsByType(data.events);
     const topEvents = this.getTopEvents(eventsByType, 5);
-    
+
     const keyMetrics = this.getKeyMetrics(data.metrics);
 
     return {
@@ -298,7 +298,7 @@ export class GenerateReportUseCase {
 
   private calculatePerformanceMetrics(events: EventEntity[], metrics: MetricEntity[]): Record<string, any> {
     const performanceEvents = events.filter(e => e.type.value === 'performance_metric');
-    const performanceMetrics = metrics.filter(m => 
+    const performanceMetrics = metrics.filter(m =>
       m.tags.includes('performance') || m.name.includes('performance')
     );
 
@@ -322,7 +322,7 @@ export class GenerateReportUseCase {
 
   private getKeyMetrics(metrics: MetricEntity[]): Array<{ name: string; value: string; change?: string }> {
     const metricsByName = this.groupMetricsByName(metrics);
-    
+
     return Object.entries(metricsByName)
       .slice(0, 10) // Top 10 metrics
       .map(([name, metricList]) => {
@@ -368,8 +368,8 @@ export class GenerateReportUseCase {
       .map(e => e.getProperty<number>('loadTime'))
       .filter((time): time is number => typeof time === 'number');
 
-    return loadTimes.length > 0 
-      ? loadTimes.reduce((sum, time) => sum + time, 0) / loadTimes.length 
+    return loadTimes.length > 0
+      ? loadTimes.reduce((sum, time) => sum + time, 0) / loadTimes.length
       : 0;
   }
 
@@ -378,19 +378,19 @@ export class GenerateReportUseCase {
 
     const first = metrics[0].value.raw;
     const last = metrics[metrics.length - 1].value.raw;
-    
+
     if (first === 0) return undefined;
-    
+
     const change = ((last - first) / first) * 100;
     const sign = change > 0 ? '+' : '';
-    
+
     return `${sign}${change.toFixed(1)}%`;
   }
 
   private summarizeMetrics(metrics: MetricEntity[]): Record<string, any> {
     if (metrics.length === 0) return {};
 
-    const numericMetrics = metrics.filter(m => 
+    const numericMetrics = metrics.filter(m =>
       m.value.isNumber() || m.value.isCount() || m.value.isDuration()
     );
 

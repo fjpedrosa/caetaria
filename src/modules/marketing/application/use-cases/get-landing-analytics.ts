@@ -54,7 +54,7 @@ export class GetLandingAnalyticsUseCase {
 
   async execute(input: LandingAnalyticsInput): Promise<LandingAnalyticsOutput> {
     const filters: LeadFilters = {};
-    
+
     if (input.dateRange) {
       filters.createdAfter = input.dateRange.from;
       filters.createdBefore = input.dateRange.to;

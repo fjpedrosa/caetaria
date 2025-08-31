@@ -16,7 +16,7 @@ interface SmoothScrollNavProps {
   title?: string;
 }
 
-export function SmoothScrollNav({ items, title = "Table of Contents" }: SmoothScrollNavProps) {
+export function SmoothScrollNav({ items, title = 'Table of Contents' }: SmoothScrollNavProps) {
   useEffect(() => {
     const handleSmoothScroll = (e: Event) => {
       const target = e.target as HTMLAnchorElement;
@@ -24,13 +24,13 @@ export function SmoothScrollNav({ items, title = "Table of Contents" }: SmoothSc
         e.preventDefault();
         const targetId = target.hash.slice(1);
         const targetElement = document.getElementById(targetId);
-        
+
         if (targetElement) {
           targetElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
-          
+
           // Update URL hash
           window.history.pushState(null, '', `#${targetId}`);
         }
@@ -52,8 +52,8 @@ export function SmoothScrollNav({ items, title = "Table of Contents" }: SmoothSc
             key={item.id}
             href={`#${item.id}`}
             className={cn(
-              "flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors duration-200 py-1",
-              "hover:translate-x-1 transform transition-transform duration-200"
+              'flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors duration-200 py-1',
+              'hover:translate-x-1 transform transition-transform duration-200'
             )}
           >
             <ChevronRight className="w-3 h-3 mr-2 opacity-50" />

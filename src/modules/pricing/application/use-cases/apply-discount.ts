@@ -52,8 +52,8 @@ export class ApplyDiscountUseCase {
       const finalPrice = originalPrice.subtract(discountPrice);
 
       // Calculate percentage if it's a fixed amount discount
-      const discountPercentage = discount.type === 'percentage' 
-        ? discount.value 
+      const discountPercentage = discount.type === 'percentage'
+        ? discount.value
         : (discountAmount / originalAmount) * 100;
 
       return success({

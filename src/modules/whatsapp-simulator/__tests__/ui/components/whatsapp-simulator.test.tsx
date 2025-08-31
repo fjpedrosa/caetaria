@@ -4,13 +4,14 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { act,fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { WhatsAppSimulator } from '../../../ui/components/whatsapp-simulator';
+
 import { restaurantReservationScenario } from '../../../scenarios/restaurant-reservation-scenario';
+import { WhatsAppSimulator } from '../../../ui/components/whatsapp-simulator';
 import * as conversationFlowHook from '../../../ui/hooks/use-conversation-flow';
-import * as typingIndicatorHook from '../../../ui/hooks/use-typing-indicator';
 import * as flowExecutionHook from '../../../ui/hooks/use-flow-execution';
+import * as typingIndicatorHook from '../../../ui/hooks/use-typing-indicator';
 
 // Mock the hooks
 jest.mock('../../../ui/hooks/use-conversation-flow');
@@ -64,7 +65,7 @@ describe('WhatsAppSimulator', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockConversationFlow);
     (typingIndicatorHook.useTypingIndicatorWithEvents as jest.Mock).mockReturnValue(mockTypingIndicator);
     (flowExecutionHook.useFlowExecutionWithEvents as jest.Mock).mockReturnValue(mockFlowExecution);
@@ -73,14 +74,14 @@ describe('WhatsAppSimulator', () => {
   describe('Component Rendering', () => {
     it('should render loading state initially', () => {
       render(<WhatsAppSimulator />);
-      
+
       expect(screen.getByText('Cargando simulador...')).toBeInTheDocument();
       expect(screen.getByRole('status')).toHaveClass('animate-spin');
     });
 
     it('should render WhatsApp interface after initialization', async () => {
       const { rerender } = render(<WhatsAppSimulator />);
-      
+
       // Simulate initialization completion
       const mockInitializedFlow = {
         ...mockConversationFlow,
@@ -111,7 +112,7 @@ describe('WhatsAppSimulator', () => {
       };
 
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockInitializedFlow);
-      
+
       rerender(<WhatsAppSimulator />);
 
       await waitFor(() => {
@@ -130,12 +131,12 @@ describe('WhatsAppSimulator', () => {
       };
 
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockInitializedFlow);
-      
+
       render(<WhatsAppSimulator device="iphone14" />);
 
       await waitFor(() => {
-        const frame = screen.getByRole('img', { 
-          name: /demostración avanzada de interfaz de whatsapp/i 
+        const frame = screen.getByRole('img', {
+          name: /demostración avanzada de interfaz de whatsapp/i
         });
         expect(frame).toBeInTheDocument();
       });
@@ -160,7 +161,7 @@ describe('WhatsAppSimulator', () => {
                 payload: { messageIndex: 1 },
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -169,7 +170,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockFlowWithEvents);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           enableEducationalBadges={true}
           scenario={{
             ...restaurantReservationScenario,
@@ -219,7 +220,7 @@ describe('WhatsAppSimulator', () => {
 
     it('should call onBadgeShow callback when badge is displayed', async () => {
       const onBadgeShow = jest.fn();
-      
+
       const mockFlowWithEvents = {
         ...mockConversationFlow,
         state: {
@@ -235,7 +236,7 @@ describe('WhatsAppSimulator', () => {
                 payload: { messageIndex: 1 },
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -244,7 +245,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockFlowWithEvents);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           enableEducationalBadges={true}
           onBadgeShow={onBadgeShow}
           scenario={{
@@ -289,7 +290,7 @@ describe('WhatsAppSimulator', () => {
                 payload: { messageIndex: 2 },
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -298,7 +299,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockFlowWithFlowTrigger);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           scenario={{
             ...restaurantReservationScenario,
             messages: [
@@ -320,7 +321,7 @@ describe('WhatsAppSimulator', () => {
 
     it('should progress through flow steps automatically', async () => {
       jest.useFakeTimers();
-      
+
       const mockFlowWithFlowTrigger = {
         ...mockConversationFlow,
         state: {
@@ -336,7 +337,7 @@ describe('WhatsAppSimulator', () => {
                 payload: { messageIndex: 2 },
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -345,7 +346,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockFlowWithFlowTrigger);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           scenario={{
             ...restaurantReservationScenario,
             messages: [
@@ -383,7 +384,7 @@ describe('WhatsAppSimulator', () => {
     it('should call onFlowStep callback during flow progression', async () => {
       jest.useFakeTimers();
       const onFlowStep = jest.fn();
-      
+
       const mockFlowWithFlowTrigger = {
         ...mockConversationFlow,
         state: {
@@ -399,7 +400,7 @@ describe('WhatsAppSimulator', () => {
                 payload: { messageIndex: 2 },
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -408,7 +409,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockFlowWithFlowTrigger);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           onFlowStep={onFlowStep}
           scenario={{
             ...restaurantReservationScenario,
@@ -616,7 +617,7 @@ describe('WhatsAppSimulator', () => {
   describe('Conversation Completion and Restart', () => {
     it('should handle conversation completion', async () => {
       const onComplete = jest.fn();
-      
+
       const mockCompletionFlow = {
         ...mockConversationFlow,
         state: {
@@ -630,7 +631,7 @@ describe('WhatsAppSimulator', () => {
                 type: 'conversation.completed',
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -639,7 +640,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockCompletionFlow);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           onComplete={onComplete}
           scenario={{
             ...restaurantReservationScenario,
@@ -672,7 +673,7 @@ describe('WhatsAppSimulator', () => {
                 type: 'conversation.completed',
               });
             }, 0);
-            
+
             return { unsubscribe: jest.fn() };
           }),
         },
@@ -681,7 +682,7 @@ describe('WhatsAppSimulator', () => {
       (conversationFlowHook.useConversationFlow as jest.Mock).mockReturnValue(mockCompletionFlow);
 
       render(
-        <WhatsAppSimulator 
+        <WhatsAppSimulator
           autoPlay={true}
           scenario={{
             ...restaurantReservationScenario,
@@ -722,8 +723,8 @@ describe('WhatsAppSimulator', () => {
       render(<WhatsAppSimulator />);
 
       await waitFor(() => {
-        const simulator = screen.getByRole('img', { 
-          name: /demostración avanzada de interfaz de whatsapp/i 
+        const simulator = screen.getByRole('img', {
+          name: /demostración avanzada de interfaz de whatsapp/i
         });
         expect(simulator).toBeInTheDocument();
       });
@@ -816,14 +817,14 @@ describe('WhatsAppSimulator', () => {
 
       const startTime = performance.now();
       render(<WhatsAppSimulator />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Test')).toBeInTheDocument();
       });
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Should render in reasonable time even with many messages
       expect(renderTime).toBeLessThan(1000);
     });

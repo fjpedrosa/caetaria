@@ -2,7 +2,8 @@
  * useTypingIndicator - Coordinate typing states and animations
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef,useState } from 'react';
+
 import { SenderType } from '../../domain/entities';
 import { ConversationEvent } from '../../domain/events';
 
@@ -64,23 +65,23 @@ export function useTypingIndicator(
   const fullConfig = { ...DEFAULT_CONFIG, ...config };
   const animationFrameRef = useRef<number>(0);
   const timeoutsRef = useRef<Map<SenderType, NodeJS.Timeout>>(new Map());
-  
+
   const [typingStates, setTypingStates] = useState<Map<SenderType, TypingState>>(new Map());
   const [animationFrame, setAnimationFrame] = useState<number>(0);
 
   // Animation loop for typing indicators
   useEffect(() => {
     let animationId: number;
-    
+
     const animate = () => {
       setAnimationFrame(prev => prev + 1);
       animationId = requestAnimationFrame(animate);
     };
-    
+
     if (typingStates.size > 0) {
       animationId = requestAnimationFrame(animate);
     }
-    
+
     return () => {
       if (animationId) {
         cancelAnimationFrame(animationId);
@@ -91,15 +92,15 @@ export function useTypingIndicator(
   // Update typing progress for active states
   useEffect(() => {
     const now = Date.now();
-    
+
     setTypingStates(prevStates => {
       const newStates = new Map(prevStates);
       let hasChanges = false;
-      
+
       Array.from(newStates.entries()).forEach(([sender, state]) => {
         const elapsed = now - state.startTime.getTime();
         const newProgress = Math.min(elapsed / state.duration, 1);
-        
+
         if (newProgress !== state.progress) {
           newStates.set(sender, {
             ...state,
@@ -107,14 +108,14 @@ export function useTypingIndicator(
           });
           hasChanges = true;
         }
-        
+
         // Auto-stop typing when duration is reached
         if (newProgress >= 1) {
           newStates.delete(sender);
           hasChanges = true;
         }
       });
-      
+
       return hasChanges ? newStates : prevStates;
     });
   }, [animationFrame]);
@@ -122,13 +123,13 @@ export function useTypingIndicator(
   const startTyping = useCallback(
     (sender: SenderType, duration: number) => {
       if (!fullConfig.showTypingIndicator) return;
-      
+
       // Clear any existing timeout for this sender
       const existingTimeout = timeoutsRef.current.get(sender);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
       }
-      
+
       // Check max concurrent typing limit
       if (typingStates.size >= fullConfig.maxConcurrentTyping) {
         // Remove the oldest typing state
@@ -139,7 +140,7 @@ export function useTypingIndicator(
           return newStates;
         });
       }
-      
+
       const typingState: TypingState = {
         isTyping: true,
         sender,
@@ -147,15 +148,15 @@ export function useTypingIndicator(
         duration,
         progress: 0
       };
-      
+
       setTypingStates(prev => new Map(prev).set(sender, typingState));
-      
+
       // Set timeout to auto-stop typing
       const timeout = setTimeout(() => {
         stopTyping(sender);
         timeoutsRef.current.delete(sender);
       }, duration);
-      
+
       timeoutsRef.current.set(sender, timeout);
     },
     [fullConfig.showTypingIndicator, fullConfig.maxConcurrentTyping, typingStates.size]
@@ -167,7 +168,7 @@ export function useTypingIndicator(
       clearTimeout(timeout);
       timeoutsRef.current.delete(sender);
     }
-    
+
     setTypingStates(prev => {
       const newStates = new Map(prev);
       newStates.delete(sender);
@@ -181,7 +182,7 @@ export function useTypingIndicator(
       clearTimeout(timeout);
     });
     timeoutsRef.current.clear();
-    
+
     setTypingStates(new Map());
   }, []);
 
@@ -217,10 +218,10 @@ export function useTypingIndicator(
           scale: 1
         };
       }
-      
+
       const elapsed = Date.now() - state.startTime.getTime();
       const cyclePosition = (elapsed % fullConfig.animationDuration) / fullConfig.animationDuration;
-      
+
       // Create animated dots
       let dots = '';
       for (let i = 0; i < fullConfig.dotCount; i++) {
@@ -229,7 +230,7 @@ export function useTypingIndicator(
         const isVisible = dotOpacity > 0.4;
         dots += isVisible ? '●' : '○';
       }
-      
+
       // Calculate fade in/out
       let opacity = 1;
       if (elapsed < fullConfig.fadeInDuration) {
@@ -241,10 +242,10 @@ export function useTypingIndicator(
           opacity = Math.max(0, 1 - (fadeOutElapsed / fullConfig.fadeOutDuration));
         }
       }
-      
+
       // Calculate scale animation
       const scaleWave = Math.sin(cyclePosition * Math.PI * 4) * 0.1 + 1;
-      
+
       return {
         dots,
         opacity,

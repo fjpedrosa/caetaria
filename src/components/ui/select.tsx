@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { ChevronDown } from "lucide-react"
+import * as React from 'react'
+import { ChevronDown } from 'lucide-react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 // Simple HTML select implementation for compatibility
 interface SelectProps {
@@ -40,14 +40,14 @@ const SelectContext = React.createContext<{
 const Select: React.FC<SelectProps> = ({ children, onValueChange, defaultValue, value }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue || '');
   const currentValue = value !== undefined ? value : internalValue;
-  
+
   const handleValueChange = React.useCallback((newValue: string) => {
     if (value === undefined) {
       setInternalValue(newValue);
     }
     onValueChange?.(newValue);
   }, [value, onValueChange]);
-  
+
   return (
     <SelectContext.Provider value={{ value: currentValue, onValueChange: handleValueChange }}>
       {children}
@@ -59,7 +59,7 @@ const SelectTrigger = React.forwardRef<HTMLSelectElement, SelectTriggerProps>(
   ({ className, children }, ref) => {
     return (
       <div className={cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2",
+        'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2',
         className
       )}>
         {children}
@@ -67,14 +67,14 @@ const SelectTrigger = React.forwardRef<HTMLSelectElement, SelectTriggerProps>(
     );
   }
 );
-SelectTrigger.displayName = "SelectTrigger";
+SelectTrigger.displayName = 'SelectTrigger';
 
 const SelectValue: React.FC<SelectValueProps> = ({ placeholder }) => {
   const { value } = React.useContext(SelectContext);
   return (
     <span className={cn(
-      "block truncate",
-      !value && "text-gray-500"
+      'block truncate',
+      !value && 'text-gray-500'
     )}>
       {value || placeholder}
     </span>
@@ -83,7 +83,7 @@ const SelectValue: React.FC<SelectValueProps> = ({ placeholder }) => {
 
 const SelectContent: React.FC<SelectContentProps> = ({ children }) => {
   const { value, onValueChange } = React.useContext(SelectContext);
-  
+
   return (
     <select
       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"

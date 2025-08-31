@@ -17,20 +17,20 @@ export class EmailValidationError extends Error {
  */
 export function createEmail(value: string): Email {
   const trimmedValue = value.trim().toLowerCase();
-  
+
   if (!trimmedValue) {
     throw new EmailValidationError('Email cannot be empty');
   }
-  
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(trimmedValue)) {
     throw new EmailValidationError('Invalid email format');
   }
-  
+
   if (trimmedValue.length > 254) {
     throw new EmailValidationError('Email too long');
   }
-  
+
   return trimmedValue as Email;
 }
 

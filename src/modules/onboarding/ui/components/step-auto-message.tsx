@@ -52,7 +52,7 @@ export function StepAutoMessage({ onNext, onPrev, defaultValues }: StepProps) {
   const [selectedTemplate, setSelectedTemplate] = useState('friendly')
   const [keywords, setKeywords] = useState<string[]>(defaultValues?.keywords || [])
   const [keywordInput, setKeywordInput] = useState('')
-  
+
   const {
     register,
     handleSubmit,
@@ -161,7 +161,7 @@ export function StepAutoMessage({ onNext, onPrev, defaultValues }: StepProps) {
           {errors.welcomeMessage && (
             <p className="text-sm text-red-500">{errors.welcomeMessage.message}</p>
           )}
-          
+
           <div className="flex items-start gap-2 p-2 bg-yellow-50 rounded-md">
             <Sparkles className="h-4 w-4 text-yellow-600 mt-0.5" />
             <p className="text-xs text-yellow-800">
@@ -204,13 +204,13 @@ export function StepAutoMessage({ onNext, onPrev, defaultValues }: StepProps) {
               onCheckedChange={(checked) => setValue('enableKeywords', checked)}
             />
           </div>
-          
+
           {enableKeywords && (
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
                 Configura palabras clave que activarán respuestas automáticas
               </p>
-              
+
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -229,7 +229,7 @@ export function StepAutoMessage({ onNext, onPrev, defaultValues }: StepProps) {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               {keywords.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {keywords.map((keyword) => (

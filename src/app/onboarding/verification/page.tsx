@@ -63,7 +63,7 @@ export default async function PhoneVerificationPage() {
                   <p className="text-blue-700">Provide your business phone number</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
                   2
@@ -73,7 +73,7 @@ export default async function PhoneVerificationPage() {
                   <p className="text-blue-700">We'll send a 6-digit code via WhatsApp</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
                   3
@@ -120,12 +120,12 @@ export default async function PhoneVerificationPage() {
                 <h4 className="font-medium text-gray-900 mb-1">Code Expiry</h4>
                 <p>Verification codes expire after 10 minutes</p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Retry Limit</h4>
                 <p>You can request a new code up to 5 times per hour</p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Delivery Time</h4>
                 <p>Codes typically arrive within 30 seconds</p>

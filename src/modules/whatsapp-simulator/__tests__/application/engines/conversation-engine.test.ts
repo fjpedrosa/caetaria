@@ -3,9 +3,9 @@
  * Tests for the core conversation playback engine with RxJS observables
  */
 
-import { TestScheduler } from 'rxjs/testing';
 import { Subject, throwError } from 'rxjs';
 import { take, timeout } from 'rxjs/operators';
+import { TestScheduler } from 'rxjs/testing';
 
 import { ConversationEngine, EngineConfig } from '../../../application/engines/conversation-engine';
 import { Conversation, Message } from '../../../domain/entities';
@@ -79,11 +79,11 @@ describe('ConversationEngine', () => {
   describe('Initialization', () => {
     it('should create engine with default config', () => {
       const defaultEngine = new ConversationEngine();
-      
+
       expect(defaultEngine.getCurrentState().conversation).toBeNull();
       expect(defaultEngine.getCurrentState().isPlaying).toBe(false);
       expect(defaultEngine.getCurrentState().currentMessageIndex).toBe(0);
-      
+
       defaultEngine.destroy();
     });
 
@@ -96,7 +96,7 @@ describe('ConversationEngine', () => {
 
       const customEngine = new ConversationEngine(customConfig);
       expect(customEngine).toBeDefined();
-      
+
       customEngine.destroy();
     });
 
@@ -203,7 +203,7 @@ describe('ConversationEngine', () => {
     it('should reset conversation to beginning', (done) => {
       // First advance conversation
       engine.jumpTo(1);
-      
+
       let stateAfterJump = false;
       engine.playbackState$.subscribe(state => {
         if (!stateAfterJump && state.currentMessageIndex === 1) {
@@ -401,7 +401,7 @@ describe('ConversationEngine', () => {
         progressUpdates++;
         expect(progress.completionPercentage).toBeGreaterThanOrEqual(0);
         expect(progress.completionPercentage).toBeLessThanOrEqual(100);
-        
+
         if (progressUpdates >= 2) {
           done();
         }
@@ -473,7 +473,7 @@ describe('ConversationEngine', () => {
   describe('State Management', () => {
     it('should provide current state synchronously', () => {
       const state = engine.getCurrentState();
-      
+
       expect(state.conversation).toBeNull();
       expect(state.isPlaying).toBe(false);
       expect(state.currentMessageIndex).toBe(0);
@@ -511,22 +511,22 @@ describe('ConversationEngine', () => {
   describe('Resource Management', () => {
     it('should clean up resources on destroy', () => {
       const testEngine = new ConversationEngine();
-      
+
       // Ensure engine is working
       testEngine.loadConversation(testConversation);
-      
+
       // Destroy should not throw
       expect(() => testEngine.destroy()).not.toThrow();
-      
+
       // State should be cleaned up
       expect(() => testEngine.getCurrentState()).not.toThrow();
     });
 
     it('should stop ongoing operations', (done) => {
       engine.loadConversation(testConversation);
-      
+
       let playbackStopped = false;
-      
+
       engine.playbackState$.subscribe(state => {
         if (state.isPlaying) {
           // Stop the engine during playback
@@ -564,11 +564,11 @@ describe('ConversationEngine', () => {
 
       setTimeout(() => {
         // Should not log debug messages
-        const debugCalls = consoleSpy.mock.calls.filter(call => 
+        const debugCalls = consoleSpy.mock.calls.filter(call =>
           call[0] && call[0].includes('[ConversationEngine]')
         );
         expect(debugCalls).toHaveLength(0);
-        
+
         consoleSpy.mockRestore();
       }, 10);
     });
@@ -579,7 +579,7 @@ describe('ConversationEngine', () => {
       engine.loadConversation(testConversation);
 
       const startTime = performance.now();
-      
+
       // Perform rapid operations
       for (let i = 0; i < 100; i++) {
         if (i % 2 === 0) {
@@ -592,7 +592,7 @@ describe('ConversationEngine', () => {
       setTimeout(() => {
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         // Should complete quickly despite many operations
         expect(duration).toBeLessThan(100);
         done();
@@ -601,7 +601,7 @@ describe('ConversationEngine', () => {
 
     it('should maintain performance with complex conversations', () => {
       // Create conversation with many messages
-      const manyMessages = Array.from({ length: 1000 }, (_, i) => 
+      const manyMessages = Array.from({ length: 1000 }, (_, i) =>
         new Message({
           id: `msg-${i}`,
           type: 'text',

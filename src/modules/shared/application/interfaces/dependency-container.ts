@@ -12,33 +12,33 @@ export interface DependencyContainer {
    * Register a dependency with its implementation
    */
   register<T>(token: string | symbol, implementation: T): void;
-  
+
   /**
    * Register a factory function for lazy instantiation
    */
   registerFactory<T>(
-    token: string | symbol, 
+    token: string | symbol,
     factory: (container: DependencyContainer) => T
   ): void;
-  
+
   /**
    * Register a singleton (only one instance will be created)
    */
   registerSingleton<T>(
-    token: string | symbol, 
+    token: string | symbol,
     factory: (container: DependencyContainer) => T
   ): void;
-  
+
   /**
    * Resolve a dependency by its token
    */
   resolve<T>(token: string | symbol): T;
-  
+
   /**
    * Check if a dependency is registered
    */
   has(token: string | symbol): boolean;
-  
+
   /**
    * Clear all dependencies (useful for testing)
    */
@@ -55,11 +55,11 @@ export const DEPENDENCY_TOKENS = {
   NOTIFICATION_SERVICE: Symbol('NotificationService'),
   SUBMIT_LEAD_FORM_USE_CASE: Symbol('SubmitLeadFormUseCase'),
   GET_LANDING_ANALYTICS_USE_CASE: Symbol('GetLandingAnalyticsUseCase'),
-  
+
   // Onboarding module dependencies
   ONBOARDING_SESSION_REPOSITORY: Symbol('OnboardingSessionRepository'),
   ONBOARDING_SERVICE: Symbol('OnboardingService'),
-  
+
   // Shared dependencies
   EMAIL_CLIENT: Symbol('EmailClient'),
   SLACK_CLIENT: Symbol('SlackClient'),
@@ -103,14 +103,14 @@ export class SimpleDependencyContainer implements DependencyContainer {
   }
 
   registerFactory<T>(
-    token: string | symbol, 
+    token: string | symbol,
     factory: (container: DependencyContainer) => T
   ): void {
     this.factories.set(token, factory);
   }
 
   registerSingleton<T>(
-    token: string | symbol, 
+    token: string | symbol,
     factory: (container: DependencyContainer) => T
   ): void {
     if (!this.singletons.has(token)) {

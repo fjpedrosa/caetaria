@@ -12,27 +12,27 @@ export interface OnboardingRepository {
    * Save onboarding session
    */
   save(session: OnboardingSession): Promise<Result<OnboardingSession, Error>>;
-  
+
   /**
    * Find onboarding session by ID
    */
   findById(id: OnboardingSessionId): Promise<Result<OnboardingSession | null, Error>>;
-  
+
   /**
    * Find onboarding session by user email
    */
   findByUserEmail(email: Email): Promise<Result<OnboardingSession | null, Error>>;
-  
+
   /**
    * Update onboarding session
    */
   update(session: OnboardingSession): Promise<Result<OnboardingSession, Error>>;
-  
+
   /**
    * Delete onboarding session
    */
   delete(id: OnboardingSessionId): Promise<Result<boolean, Error>>;
-  
+
   /**
    * Find sessions by status
    */

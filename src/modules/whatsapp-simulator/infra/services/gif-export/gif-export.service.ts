@@ -3,20 +3,20 @@
  * Main service for exporting WhatsApp conversations as animated GIFs
  */
 
-import html2canvas from 'html2canvas';
 import GIF from 'gif.js';
+import html2canvas from 'html2canvas';
+
 import {
-  GifExportService,
+  ErrorCallback,
   ExportOptions,
   Frame,
-  GifExportResult,
   GifExportError,
+  GifExportResult,
+  GifExportService,
   GifGenerationProgress,
+  MemoryMonitor,
   ProgressCallback,
-  ErrorCallback,
-  SuccessCallback,
-  MemoryMonitor
-} from './types';
+  SuccessCallback} from './types';
 
 export class GifExportServiceImpl implements GifExportService {
   private isExporting = false;
@@ -46,7 +46,7 @@ export class GifExportServiceImpl implements GifExportService {
 
     this.isExporting = true;
     this.currentOperation = new AbortController();
-    
+
     try {
       // Initialize
       callbacks?.onProgress?.({
@@ -152,7 +152,7 @@ export class GifExportServiceImpl implements GifExportService {
     const frames: Frame[] = [];
     const frameInterval = 1000 / frameRate; // ms between frames
     const totalFrames = Math.ceil(duration * frameRate);
-    
+
     // Prepare capture options
     const captureOptions: html2canvas.Options = {
       backgroundColor: '#f5f5f5',
@@ -182,11 +182,11 @@ export class GifExportServiceImpl implements GifExportService {
         }
 
         const startTime = performance.now();
-        
+
         try {
           // Capture frame
           const canvas = await html2canvas(element, captureOptions);
-          
+
           const frame: Frame = {
             canvas,
             timestamp: Date.now(),
@@ -202,7 +202,7 @@ export class GifExportServiceImpl implements GifExportService {
           // Wait for next frame interval
           const elapsedTime = performance.now() - startTime;
           const waitTime = Math.max(0, frameInterval - elapsedTime);
-          
+
           if (waitTime > 0) {
             await new Promise(resolve => setTimeout(resolve, waitTime));
           }
@@ -316,7 +316,7 @@ export class GifExportServiceImpl implements GifExportService {
   cleanup(): void {
     this.currentOperation = null;
     this.isExporting = false;
-    
+
     // Force garbage collection if available
     if ((window as any).gc) {
       (window as any).gc();
@@ -342,24 +342,24 @@ export class GifExportServiceImpl implements GifExportService {
 
   private optimizeExportOptions(options: ExportOptions, element: HTMLElement): ExportOptions {
     const optimized = { ...options };
-    
+
     // Get element dimensions
     const rect = element.getBoundingClientRect();
     const area = rect.width * rect.height * options.scale;
-    
+
     // Adjust quality based on area
     if (area > 500000) { // Large area
       optimized.quality = Math.min(optimized.quality, 0.7);
       optimized.frameRate = Math.min(optimized.frameRate, 15);
     }
-    
+
     // Mobile optimization
     if (this.isMobileDevice()) {
       optimized.quality = Math.min(optimized.quality, 0.6);
       optimized.frameRate = Math.min(optimized.frameRate, 12);
       optimized.scale = Math.min(optimized.scale, 0.8);
     }
-    
+
     return optimized;
   }
 
@@ -385,7 +385,7 @@ export class GifExportServiceImpl implements GifExportService {
     const uncompressedSize = frames.reduce((total, frame) => {
       return total + (frame.canvas.width * frame.canvas.height * 4); // 4 bytes per pixel
     }, 0);
-    
+
     return uncompressedSize / blob.size;
   }
 
@@ -405,7 +405,7 @@ export class GifExportServiceImpl implements GifExportService {
     details?: any
   ): GifExportError {
     const suggestions: string[] = [];
-    
+
     switch (type) {
       case 'capture_failed':
         suggestions.push('Try reducing the scale or quality settings');
@@ -438,22 +438,22 @@ export class GifExportServiceImpl implements GifExportService {
     if (error.name === 'AbortError') {
       return this.createError('export_cancelled', 'Export was cancelled by user');
     }
-    
+
     if (error.type) {
       return error as GifExportError;
     }
-    
+
     // Try to categorize unknown errors
     const message = error.message || String(error);
-    
+
     if (message.includes('memory') || message.includes('heap')) {
       return this.createError('memory_limit', message);
     }
-    
+
     if (message.includes('timeout') || message.includes('network')) {
       return this.createError('timeout', message);
     }
-    
+
     return this.createError('unknown', message, error);
   }
 }

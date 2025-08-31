@@ -37,7 +37,7 @@ export class SupabaseLeadRepository implements LeadRepository {
 
   async save(lead: Lead): Promise<void> {
     const row: LeadRow = this.toRow(lead);
-    
+
     const { error } = await this.supabase
       .from('leads')
       .upsert(row);

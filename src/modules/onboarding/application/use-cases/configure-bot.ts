@@ -27,7 +27,7 @@ export class ConfigureBotUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!isSuccess(sessionResult) || !sessionResult.data) {
         return failure(new Error('Onboarding session not found'));
       }

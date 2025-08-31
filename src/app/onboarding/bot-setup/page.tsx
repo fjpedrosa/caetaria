@@ -118,19 +118,19 @@ export default async function BotSetupPage() {
             </CardHeader>
             <CardContent className="text-sm text-gray-600 space-y-3">
               <p>We'll set up these basic commands for you:</p>
-              
+
               <div className="space-y-2">
                 <div className="bg-gray-100 p-2 rounded">
                   <code className="text-xs font-mono text-blue-600">help</code>
                   <p className="text-xs mt-1">Shows available commands and options</p>
                 </div>
-                
+
                 <div className="bg-gray-100 p-2 rounded">
                   <code className="text-xs font-mono text-blue-600">contact</code>
                   <p className="text-xs mt-1">Provides contact information for support</p>
                 </div>
               </div>
-              
+
               <p className="text-xs text-gray-500 mt-2">
                 You can add more commands and customize responses in the dashboard later.
               </p>

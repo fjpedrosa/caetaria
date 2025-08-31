@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Test Conversation Component
@@ -87,7 +87,7 @@ export function TestConversation() {
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const webhookSuccess = Math.random() > 0.2; // 80% success rate
       if (webhookSuccess) {
         setTestStatus(prev => ({ ...prev, webhookConnected: true }));
@@ -111,7 +111,7 @@ export function TestConversation() {
       });
 
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       const messageSuccess = Math.random() > 0.2; // 80% success rate
       if (messageSuccess) {
         setTestStatus(prev => ({ ...prev, messageSent: true }));
@@ -119,7 +119,7 @@ export function TestConversation() {
           type: 'system',
           content: '✅ Test message sent successfully',
         });
-        
+
         addMessage({
           type: 'bot',
           content: 'Hello! Welcome to our business. How can I help you today?',
@@ -129,12 +129,12 @@ export function TestConversation() {
         // Simulate response
         await new Promise(resolve => setTimeout(resolve, 1000));
         setTestStatus(prev => ({ ...prev, responseReceived: true }));
-        
+
         addMessage({
           type: 'system',
           content: '✅ Bot response received successfully',
         });
-        
+
       } else {
         addMessage({
           type: 'system',
@@ -147,13 +147,13 @@ export function TestConversation() {
       setCurrentTest('complete');
       const allPassed = webhookSuccess && messageSuccess;
       setTestStatus(prev => ({ ...prev, allTestsPassed: allPassed }));
-      
+
       if (allPassed) {
         addMessage({
           type: 'system',
           content: '🎉 All tests passed! Your WhatsApp bot is ready to go live.',
         });
-        
+
         // Auto-advance after successful tests
         setTimeout(() => {
           router.push('/onboarding/complete');
@@ -172,10 +172,10 @@ export function TestConversation() {
 
   const sendTestMessage = async () => {
     if (!inputMessage.trim()) return;
-    
+
     const userMessage = inputMessage.trim();
     setInputMessage('');
-    
+
     addMessage({
       type: 'user',
       content: userMessage,
@@ -184,24 +184,24 @@ export function TestConversation() {
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Update message status
-    setMessages(prev => prev.map(msg => 
-      msg.type === 'user' && msg.status === 'sending' 
+    setMessages(prev => prev.map(msg =>
+      msg.type === 'user' && msg.status === 'sending'
         ? { ...msg, status: 'delivered' }
         : msg
     ));
 
     // Simulate bot response
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const responses = [
-      "Thank you for your message! How can I assist you further?",
-      "I received your message. Is there anything specific you need help with?",
-      "Hello! I'm here to help. What would you like to know?",
-      "Thanks for reaching out! What can I do for you today?",
+      'Thank you for your message! How can I assist you further?',
+      'I received your message. Is there anything specific you need help with?',
+      'Hello! I\'m here to help. What would you like to know?',
+      'Thanks for reaching out! What can I do for you today?',
     ];
-    
+
     const randomResponse = responses[Math.floor(Math.random() * responses.length)];
     addMessage({
       type: 'bot',
@@ -222,10 +222,10 @@ export function TestConversation() {
       {/* Test Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className={`border-2 ${
-          testStatus.webhookConnected 
-            ? 'border-green-200 bg-green-50' 
-            : currentTest === 'webhook' 
-            ? 'border-blue-200 bg-blue-50' 
+          testStatus.webhookConnected
+            ? 'border-green-200 bg-green-50'
+            : currentTest === 'webhook'
+            ? 'border-blue-200 bg-blue-50'
             : 'border-gray-200'
         }`}>
           <CardContent className="pt-4">
@@ -248,10 +248,10 @@ export function TestConversation() {
         </Card>
 
         <Card className={`border-2 ${
-          testStatus.messageSent 
-            ? 'border-green-200 bg-green-50' 
-            : currentTest === 'message' 
-            ? 'border-blue-200 bg-blue-50' 
+          testStatus.messageSent
+            ? 'border-green-200 bg-green-50'
+            : currentTest === 'message'
+            ? 'border-blue-200 bg-blue-50'
             : 'border-gray-200'
         }`}>
           <CardContent className="pt-4">
@@ -274,10 +274,10 @@ export function TestConversation() {
         </Card>
 
         <Card className={`border-2 ${
-          testStatus.responseReceived 
-            ? 'border-green-200 bg-green-50' 
-            : currentTest === 'complete' 
-            ? 'border-blue-200 bg-blue-50' 
+          testStatus.responseReceived
+            ? 'border-green-200 bg-green-50'
+            : currentTest === 'complete'
+            ? 'border-blue-200 bg-blue-50'
             : 'border-gray-200'
         }`}>
           <CardContent className="pt-4">
@@ -338,8 +338,8 @@ export function TestConversation() {
                 <div
                   key={message.id}
                   className={`flex ${
-                    message.type === 'user' 
-                      ? 'justify-end' 
+                    message.type === 'user'
+                      ? 'justify-end'
                       : message.type === 'system'
                       ? 'justify-center'
                       : 'justify-start'

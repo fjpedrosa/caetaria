@@ -72,7 +72,9 @@ const eslintConfig = [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
       ],
-      '@typescript-eslint/no-require-imports': 'off'
+      '@typescript-eslint/no-require-imports': 'off',
+      'no-trailing-spaces': ['error'],
+      quotes: ['error', 'single'],
     }
   }
 ];

@@ -8,6 +8,7 @@ import {
   BatteryCharging,
   Bell,
   Bot,
+  Brain,
   Building2,
   Calendar,
   Check,
@@ -34,6 +35,7 @@ import {
   Gift,
   Globe2,
   Hash,
+  Heart,
   HeartHandshake,
   HelpCircle,
   Image,
@@ -66,10 +68,12 @@ import {
   Settings,
   Share2,
   Shield,
+  ShoppingCart,
   SlidersHorizontal,
   Smartphone,
   Sparkles,
   Star,
+  Stethoscope,
   Sun,
   Target,
   Trash2,
@@ -78,11 +82,13 @@ import {
   UserCheck,
   UserPlus,
   Users,
+  UtensilsCrossed,
   Video,
   Volume2,
   Webhook,
   Wifi,
   WifiOff,
+  Wrench,
   X,
   Zap} from 'lucide-react';
 
@@ -91,27 +97,27 @@ export const iconConfig = {
   default: {
     size: 24,
     strokeWidth: 1.5,
-    className: "transition-colors duration-250"
+    className: 'transition-colors duration-250'
   },
   small: {
     size: 16,
     strokeWidth: 1.5,
-    className: "transition-colors duration-250"
+    className: 'transition-colors duration-250'
   },
   medium: {
     size: 20,
     strokeWidth: 1.5,
-    className: "transition-colors duration-250"
+    className: 'transition-colors duration-250'
   },
   large: {
     size: 32,
     strokeWidth: 1.5,
-    className: "transition-colors duration-250"
+    className: 'transition-colors duration-250'
   },
   xlarge: {
     size: 48,
     strokeWidth: 1.5,
-    className: "transition-colors duration-250"
+    className: 'transition-colors duration-250'
   }
 };
 
@@ -208,24 +214,24 @@ export const getIcon = (
 
 // Animation classes for icons
 export const iconAnimations = {
-  pulse: "animate-pulse",
-  spin: "animate-spin",
-  bounce: "animate-bounce",
-  float: "animate-float",
-  glow: "animate-glow",
-  none: ""
+  pulse: 'animate-pulse',
+  spin: 'animate-spin',
+  bounce: 'animate-bounce',
+  float: 'animate-float',
+  glow: 'animate-glow',
+  none: ''
 } as const;
 
 // Icon wrapper styles for different contexts
 export const iconWrapperStyles = {
-  primary: "bg-primary/10 p-3 rounded-lg text-primary hover:bg-primary/20 transition-colors duration-250",
-  secondary: "bg-secondary/10 p-3 rounded-lg text-secondary hover:bg-secondary/20 transition-colors duration-250",
-  success: "bg-success/10 p-3 rounded-lg text-success hover:bg-success/20 transition-colors duration-250",
-  warning: "bg-warning/10 p-3 rounded-lg text-warning hover:bg-warning/20 transition-colors duration-250",
-  error: "bg-destructive/10 p-3 rounded-lg text-destructive hover:bg-destructive/20 transition-colors duration-250",
-  neutral: "bg-muted p-3 rounded-lg text-muted-foreground hover:bg-accent transition-colors duration-250",
-  gradient: "bg-gradient-brand p-3 rounded-lg text-white",
-  outline: "border-2 border-current p-3 rounded-lg hover:bg-current/5 transition-colors duration-250"
+  primary: 'bg-primary/10 p-3 rounded-lg text-primary hover:bg-primary/20 transition-colors duration-250',
+  secondary: 'bg-secondary/10 p-3 rounded-lg text-secondary hover:bg-secondary/20 transition-colors duration-250',
+  success: 'bg-success/10 p-3 rounded-lg text-success hover:bg-success/20 transition-colors duration-250',
+  warning: 'bg-warning/10 p-3 rounded-lg text-warning hover:bg-warning/20 transition-colors duration-250',
+  error: 'bg-destructive/10 p-3 rounded-lg text-destructive hover:bg-destructive/20 transition-colors duration-250',
+  neutral: 'bg-muted p-3 rounded-lg text-muted-foreground hover:bg-accent transition-colors duration-250',
+  gradient: 'bg-gradient-brand p-3 rounded-lg text-white',
+  outline: 'border-2 border-current p-3 rounded-lg hover:bg-current/5 transition-colors duration-250'
 } as const;
 
 // Export all icons for easy access
@@ -239,6 +245,7 @@ export {
   BatteryCharging,
   Bell,
   Bot,
+  Brain,
   Building2,
   Calendar,
   Check,
@@ -265,6 +272,7 @@ export {
   Gift,
   Globe2,
   Hash,
+  Heart,
   HeartHandshake,
   HelpCircle,
   Image,
@@ -296,10 +304,12 @@ export {
   Settings,
   Share2,
   Shield,
+  ShoppingCart,
   SlidersHorizontal,
   Smartphone,
   Sparkles,
   Star,
+  Stethoscope,
   Sun,
   Target,
   Trash2,
@@ -308,10 +318,12 @@ export {
   UserCheck,
   UserPlus,
   Users,
+  UtensilsCrossed,
   Video,
   Volume2,
   Webhook,
   Wifi,
   WifiOff,
+  Wrench,
   X,
   Zap};

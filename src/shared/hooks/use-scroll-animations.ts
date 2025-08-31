@@ -95,14 +95,14 @@ export function useParallaxScroll(speed: number = 0.5) {
   useEffect(() => {
     const handleScroll = () => {
       if (!ref.current) return;
-      
+
       const scrolled = window.scrollY;
       const element = ref.current;
       const rect = element.getBoundingClientRect();
       const elementTop = rect.top + scrolled;
       const elementHeight = rect.height;
       const windowHeight = window.innerHeight;
-      
+
       // Calculate if element is in viewport
       if (scrolled + windowHeight > elementTop && scrolled < elementTop + elementHeight) {
         const yPos = -(scrolled - elementTop) * speed;
@@ -123,7 +123,7 @@ export function useScrollReveal(
   rootMargin: string = '0px'
 ) {
   const refs = useRef<(HTMLElement | null)[]>([]);
-  
+
   const addToRefs = (el: HTMLElement | null) => {
     if (el && !refs.current.includes(el)) {
       refs.current.push(el);

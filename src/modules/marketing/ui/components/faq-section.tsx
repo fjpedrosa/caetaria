@@ -19,7 +19,7 @@ export function FaqSection() {
   const { title, subtitle, items } = MARKETING_COPY.faq;
 
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden">
+    <section className="py-20 bg-background relative overflow-hidden">
       {/* Background Patterns */}
       <div className="absolute inset-0 opacity-5">
         <motion.div
@@ -64,11 +64,11 @@ export function FaqSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
               <HelpCircle className="w-8 h-8 text-white" />
             </div>
           </motion.div>
-          
+
           <motion.h2
             className="text-3xl md:text-4xl font-bold text-foreground mb-4"
             initial={{ opacity: 0, y: 30 }}
@@ -79,7 +79,7 @@ export function FaqSection() {
             {title}
           </motion.h2>
           <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+            className="text-xl text-foreground/70 dark:text-muted-foreground max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -97,13 +97,13 @@ export function FaqSection() {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.5, 
+                transition={{
+                  duration: 0.5,
                   delay: index * 0.1,
-                  ease: "easeOut"
+                  ease: 'easeOut'
                 }}
               >
-                <AccordionItem 
+                <AccordionItem
                   value={`item-${index}`}
                   className="border-0 bg-card/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group"
                 >
@@ -116,16 +116,16 @@ export function FaqSection() {
                         {item.question}
                       </span>
                     </AccordionTrigger>
-                    
+
                     <AccordionContent className="px-6 pb-6">
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.1 }}
-                        className="text-muted-foreground leading-relaxed"
+                        className="text-foreground/80 dark:text-muted-foreground leading-relaxed text-base"
                       >
                         <motion.div
-                          className="border-l-4 border-primary pl-4 bg-accent/30 rounded-r-lg py-3"
+                          className="border-l-4 border-primary pl-4 bg-accent/30 rounded-r-lg py-3 text-foreground/90 dark:text-muted-foreground"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.4, delay: 0.2 }}
@@ -150,7 +150,7 @@ export function FaqSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
           >
             <motion.div
-              className="inline-block bg-gradient-to-r from-primary/10 to-secondary/10 px-6 py-4 rounded-xl"
+              className="inline-block bg-primary/10 px-6 py-4 rounded-xl"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
@@ -158,10 +158,10 @@ export function FaqSection() {
                 Still have questions? We're here to help!
               </p>
               <motion.button
-                className="bg-gradient-to-r from-primary to-secondary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
-                whileHover={{ 
+                className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
+                whileHover={{
                   scale: 1.05,
-                  boxShadow: "0 8px 25px rgba(0,0,0,0.15)"
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
                 }}
                 whileTap={{ scale: 0.95 }}
               >

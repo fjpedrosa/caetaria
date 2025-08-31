@@ -41,7 +41,7 @@ export default async function OnboardingCompletePage() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-blue-600 rounded-full">
               <CheckCircle className="w-10 h-10 text-white" />
             </div>
-            
+
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-gray-900">
                 Congratulations!
@@ -50,7 +50,7 @@ export default async function OnboardingCompletePage() {
                 Your WhatsApp bot is now ready to serve your customers
               </p>
             </div>
-            
+
             <div className="inline-flex items-center px-6 py-3 bg-green-100 text-green-800 rounded-full text-sm font-medium">
               <Sparkles className="w-4 h-4 mr-2" />
               Setup completed successfully

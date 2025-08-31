@@ -3,12 +3,13 @@
  */
 
 import { Observable } from 'rxjs';
-import { ConversationEngine } from '../engines/conversation-engine';
-import { ConversationEvent } from '../../domain/events';
+
 import { Conversation } from '../../domain/entities';
+import { ConversationEvent } from '../../domain/events';
+import { ConversationEngine } from '../engines/conversation-engine';
 
 export interface PlayConversationRequest {
-  conversation: Conversation;
+  conversation?: Conversation;
   autoStart?: boolean;
 }
 
@@ -23,12 +24,19 @@ export class PlayConversationUseCase {
 
   async execute(request: PlayConversationRequest): Promise<PlayConversationResponse> {
     try {
-      // Load conversation into engine
-      this.engine.loadConversation(request.conversation);
+      // Only load conversation if provided and different from current
+      if (request.conversation) {
+        const currentConversation = this.engine.getCurrentConversation();
+        
+        // Only load if it's a different conversation or no conversation is loaded
+        if (!currentConversation || currentConversation.metadata.id !== request.conversation.metadata.id) {
+          this.engine.loadConversation(request.conversation);
+        }
+      }
 
       // Start playback if requested
       let events$: Observable<ConversationEvent>;
-      
+
       if (request.autoStart !== false) {
         events$ = this.engine.play();
       } else {

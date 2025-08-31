@@ -4,9 +4,9 @@
  */
 
 // Domain Layer - Pure business logic
-export type { 
-  OnboardingSession, 
-  OnboardingSessionId, 
+export type {
+  OnboardingSession,
+  OnboardingSessionId,
   OnboardingStatus,
   OnboardingStep} from './domain/entities/onboarding-session';
 export {

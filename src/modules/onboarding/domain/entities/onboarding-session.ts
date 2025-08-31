@@ -8,7 +8,7 @@ import { OnboardingStepData } from '../value-objects/onboarding-step-data';
 
 export type OnboardingSessionId = string & { readonly __brand: unique symbol };
 
-export type OnboardingStep = 
+export type OnboardingStep =
   | 'welcome'
   | 'business'
   | 'integration'
@@ -17,7 +17,7 @@ export type OnboardingStep =
   | 'testing'
   | 'complete';
 
-export type OnboardingStatus = 
+export type OnboardingStatus =
   | 'in-progress'
   | 'paused'
   | 'completed'
@@ -45,7 +45,7 @@ export function createOnboardingSessionId(): OnboardingSessionId {
  */
 export function createOnboardingSession(userEmail: Email): OnboardingSession {
   const now = new Date();
-  
+
   return {
     id: createOnboardingSessionId(),
     userEmail,
@@ -63,13 +63,13 @@ export function createOnboardingSession(userEmail: Email): OnboardingSession {
  * Pure function to advance to next step
  */
 export function advanceOnboardingStep(
-  session: OnboardingSession, 
+  session: OnboardingSession,
   nextStep: OnboardingStep,
   stepData?: Partial<OnboardingStepData>
 ): OnboardingSession {
   const stepOrder: OnboardingStep[] = [
     'welcome',
-    'business', 
+    'business',
     'integration',
     'verification',
     'bot-setup',
@@ -141,7 +141,7 @@ export function resumeOnboarding(session: OnboardingSession): OnboardingSession 
 export function calculateOnboardingProgress(session: OnboardingSession): number {
   const totalSteps = 6; // Excluding 'complete'
   const completedCount = session.completedSteps.length;
-  
+
   return Math.min(Math.round((completedCount / totalSteps) * 100), 100);
 }
 
@@ -172,7 +172,7 @@ export function getStepDisplayName(step: OnboardingStep): string {
     'testing': 'Test Your Bot',
     'complete': 'Complete',
   };
-  
+
   return displayNames[step];
 }
 
@@ -189,7 +189,7 @@ export function getStepNumber(step: OnboardingStep): number {
     'testing',
     'complete'
   ];
-  
+
   return stepOrder.indexOf(step) + 1;
 }
 
@@ -215,7 +215,7 @@ export function getNextOnboardingStep(currentStep: OnboardingStep): OnboardingSt
   const stepOrder: OnboardingStep[] = [
     'welcome',
     'business',
-    'integration', 
+    'integration',
     'verification',
     'bot-setup',
     'testing',
@@ -234,14 +234,14 @@ export function getNextOnboardingStep(currentStep: OnboardingStep): OnboardingSt
  * Pure function to check if step is accessible
  */
 export function isStepAccessible(
-  session: OnboardingSession, 
+  session: OnboardingSession,
   targetStep: OnboardingStep
 ): boolean {
   const stepOrder: OnboardingStep[] = [
     'welcome',
     'business',
     'integration',
-    'verification', 
+    'verification',
     'bot-setup',
     'testing',
     'complete'

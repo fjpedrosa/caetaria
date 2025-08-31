@@ -155,13 +155,13 @@ export async function flatMapResultAsync<T, U, E>(
  */
 export function combineResults<T, E>(results: Result<T, E>[]): Result<T[], E> {
   const values: T[] = [];
-  
+
   for (const result of results) {
     if (isFailure(result)) {
       return result;
     }
     values.push(result.data);
   }
-  
+
   return success(values);
 }

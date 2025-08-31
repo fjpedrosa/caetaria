@@ -5,9 +5,9 @@
 
 import { LandingModuleConfig } from './marketing/marketing-module';
 import { OnboardingModuleConfig } from './onboarding/onboarding-module';
-import { 
-  DEPENDENCY_TOKENS, 
-  DependencyContainer, 
+import {
+  DEPENDENCY_TOKENS,
+  DependencyContainer,
   SimpleDependencyContainer} from './shared/application/interfaces/dependency-container';
 
 /**
@@ -97,8 +97,8 @@ function createMockSupabaseClient() {
         eq: (column: string, value: any) => ({
           single: () => Promise.resolve({ data: null, error: { code: 'PGRST116' } }),
         }),
-        gte: (column: string, value: any) => ({ 
-          lte: (column: string, value: any) => ({ 
+        gte: (column: string, value: any) => ({
+          lte: (column: string, value: any) => ({
             order: (column: string, options: any) => Promise.resolve({ data: [], error: null })
           })
         }),

@@ -3,10 +3,10 @@
  * Module-level dependency registration and configuration
  */
 
-import { 
-  createUseCaseFactory, 
+import {
+  createUseCaseFactory,
   DEPENDENCY_TOKENS,
-  DependencyContainer, 
+  DependencyContainer,
   ModuleConfig} from '../shared/application/interfaces/dependency-container';
 
 /**

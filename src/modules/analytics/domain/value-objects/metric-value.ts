@@ -106,7 +106,7 @@ export class MetricValue {
   }
 
   equals(other: MetricValue): boolean {
-    return this.data.raw === other.data.raw && 
+    return this.data.raw === other.data.raw &&
            this.dataType === other.dataType &&
            this.unit === other.unit;
   }
@@ -141,9 +141,9 @@ export class MetricValue {
   }
 
   static create(
-    value: number, 
-    dataType: MetricDataType, 
-    unit?: string, 
+    value: number,
+    dataType: MetricDataType,
+    unit?: string,
     precision?: number
   ): MetricValue {
     const actualPrecision = precision ?? MetricValue.getDefaultPrecision(dataType);
@@ -183,30 +183,30 @@ export class MetricValue {
   }
 
   private static formatValue(
-    value: number, 
-    dataType: MetricDataType, 
-    unit?: string, 
+    value: number,
+    dataType: MetricDataType,
+    unit?: string,
     precision: number = 2
   ): string {
     switch (dataType) {
       case 'number':
         return unit ? `${value.toFixed(precision)} ${unit}` : value.toFixed(precision);
-        
+
       case 'percentage':
         return `${value.toFixed(precision)}%`;
-        
+
       case 'duration':
         return MetricValue.formatDuration(value);
-        
+
       case 'bytes':
         return MetricValue.formatBytes(value);
-        
+
       case 'count':
         return MetricValue.formatCount(value);
-        
+
       case 'rate':
         return unit ? `${value.toFixed(precision)}/${unit}` : `${value.toFixed(precision)}/s`;
-        
+
       default:
         return value.toString();
     }
@@ -216,24 +216,24 @@ export class MetricValue {
     if (milliseconds < 1000) {
       return `${milliseconds.toFixed(0)}ms`;
     }
-    
+
     if (milliseconds < 60000) {
       return `${(milliseconds / 1000).toFixed(1)}s`;
     }
-    
+
     if (milliseconds < 3600000) {
       return `${(milliseconds / 60000).toFixed(1)}m`;
     }
-    
+
     return `${(milliseconds / 3600000).toFixed(1)}h`;
   }
 
   private static formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
-    
+
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024));
-    
+
     return `${(bytes / Math.pow(1024, i)).toFixed(i === 0 ? 0 : 1)} ${sizes[i]}`;
   }
 
@@ -241,15 +241,15 @@ export class MetricValue {
     if (Math.abs(count) < 1000) {
       return count.toFixed(0);
     }
-    
+
     if (Math.abs(count) < 1000000) {
       return `${(count / 1000).toFixed(1)}K`;
     }
-    
+
     if (Math.abs(count) < 1000000000) {
       return `${(count / 1000000).toFixed(1)}M`;
     }
-    
+
     return `${(count / 1000000000).toFixed(1)}B`;
   }
 

@@ -1,15 +1,15 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { Avatar } from "../atoms/avatar"
-import { Badge } from "../atoms/badge"
-import { Button } from "../atoms/button"
+import { Avatar } from '../atoms/avatar'
+import { Badge } from '../atoms/badge'
+import { Button } from '../atoms/button'
 
 export interface HeaderAction {
   label: string
   onClick: () => void
-  variant?: "default" | "outline" | "ghost"
+  variant?: 'default' | 'outline' | 'ghost'
   icon?: React.ReactNode
 }
 
@@ -34,11 +34,11 @@ export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   user?: HeaderUser
   onUserMenuClick?: () => void
   sticky?: boolean
-  variant?: "default" | "transparent" | "bordered"
+  variant?: 'default' | 'transparent' | 'bordered'
 }
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(
-  ({ 
+  ({
     className,
     logo,
     title,
@@ -47,13 +47,13 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
     user,
     onUserMenuClick,
     sticky = false,
-    variant = "default",
+    variant = 'default',
     children,
     ...props
   }, ref) => {
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-    const handleNavigationClick = (item: HeaderProps["navigation"][0]) => {
+    const handleNavigationClick = (item: HeaderProps['navigation'][0]) => {
       if (item.onClick) {
         item.onClick()
       } else if (item.href) {
@@ -65,10 +65,10 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
       <header
         ref={ref}
         className={cn(
-          "w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-          sticky && "sticky top-0 z-50",
-          variant === "transparent" && "bg-transparent border-transparent",
-          variant === "bordered" && "border-b-2",
+          'w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+          sticky && 'sticky top-0 z-50',
+          variant === 'transparent' && 'bg-transparent border-transparent',
+          variant === 'bordered' && 'border-b-2',
           className
         )}
         {...props}
@@ -82,7 +82,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                   {logo}
                 </div>
               )}
-              
+
               {title && (
                 <h1 className="text-xl font-semibold text-foreground">
                   {title}
@@ -97,10 +97,10 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                   key={index}
                   onClick={() => handleNavigationClick(item)}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-foreground",
-                    item.active 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground"
+                    'text-sm font-medium transition-colors hover:text-foreground',
+                    item.active
+                      ? 'text-foreground border-b-2 border-primary'
+                      : 'text-muted-foreground'
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -118,7 +118,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                 {actions.map((action, index) => (
                   <Button
                     key={index}
-                    variant={action.variant || "outline"}
+                    variant={action.variant || 'outline'}
                     size="sm"
                     onClick={action.onClick}
                     leftIcon={action.icon}
@@ -193,10 +193,10 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                       setMobileMenuOpen(false)
                     }}
                     className={cn(
-                      "text-left px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                      'text-left px-4 py-2 rounded-md text-sm font-medium transition-colors',
                       item.active
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                     )}
                   >
                     <span className="flex items-center justify-between">
@@ -212,7 +212,7 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
                 {actions.map((action, index) => (
                   <Button
                     key={index}
-                    variant={action.variant || "outline"}
+                    variant={action.variant || 'outline'}
                     size="sm"
                     onClick={() => {
                       action.onClick()
@@ -238,6 +238,6 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(
     )
   }
 )
-Header.displayName = "Header"
+Header.displayName = 'Header'
 
 export { Header }

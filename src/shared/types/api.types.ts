@@ -2,16 +2,16 @@
  * API-specific types and interfaces
  */
 
-import type { 
+import type {
   ApiResponse,
   BusinessInfo,
-  ContactInfo, 
-  Email, 
+  ContactInfo,
+  Email,
   PaginationParams,
-  PhoneNumber, 
+  PhoneNumber,
   Timestamp,
-  URL, 
-  UserId} from "./global"
+  URL,
+  UserId} from './global'
 
 // Base API types
 export interface ApiError {
@@ -81,8 +81,8 @@ export interface ApiUser {
   firstName: string
   lastName: string
   avatar?: URL
-  role: "admin" | "user" | "guest"
-  status: "active" | "inactive" | "pending" | "suspended"
+  role: 'admin' | 'user' | 'guest'
+  status: 'active' | 'inactive' | 'pending' | 'suspended'
   createdAt: Timestamp
   updatedAt: Timestamp
   lastLoginAt?: Timestamp
@@ -92,8 +92,8 @@ export interface ApiUser {
 }
 
 export interface UserPreferences {
-  theme: "light" | "dark" | "system"
-  language: "en" | "es" | "fr" | "pt" | "de"
+  theme: 'light' | 'dark' | 'system'
+  language: 'en' | 'es' | 'fr' | 'pt' | 'de'
   timezone: string
   dateFormat: string
   notifications: {
@@ -145,7 +145,7 @@ export interface ApiLead {
   message: string
   subject?: string
   source?: string
-  status: "new" | "contacted" | "qualified" | "converted" | "closed"
+  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed'
   assignedTo?: UserId
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -167,13 +167,13 @@ export interface LeadNote {
 }
 
 export interface UpdateLeadRequest {
-  status?: ApiLead["status"]
+  status?: ApiLead['status']
   assignedTo?: UserId
   notes?: string
 }
 
 export interface LeadListRequest extends PaginationParams {
-  status?: ApiLead["status"]
+  status?: ApiLead['status']
   assignedTo?: UserId
   source?: string
   dateRange?: {
@@ -208,7 +208,7 @@ export interface ApiWhatsAppConfig {
   phoneNumber: PhoneNumber
   businessId: string
   appId: string
-  status: "pending" | "verified" | "active" | "suspended"
+  status: 'pending' | 'verified' | 'active' | 'suspended'
   webhookUrl: URL
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -217,7 +217,7 @@ export interface ApiWhatsAppConfig {
 
 export interface WhatsAppMessageRequest {
   to: PhoneNumber
-  type: "text" | "template" | "image" | "document"
+  type: 'text' | 'template' | 'image' | 'document'
   content: {
     text?: string
     templateName?: string
@@ -232,22 +232,22 @@ export interface ApiWhatsAppMessage {
   configId: string
   from: PhoneNumber
   to: PhoneNumber
-  type: "text" | "image" | "audio" | "video" | "document" | "location"
+  type: 'text' | 'image' | 'audio' | 'video' | 'document' | 'location'
   content: Record<string, unknown>
-  direction: "inbound" | "outbound"
-  status: "sent" | "delivered" | "read" | "failed"
+  direction: 'inbound' | 'outbound'
+  status: 'sent' | 'delivered' | 'read' | 'failed'
   timestamp: Timestamp
   messageId?: string
   error?: string
 }
 
 export interface WhatsAppWebhookPayload {
-  object: "whatsapp_business_account"
+  object: 'whatsapp_business_account'
   entry: Array<{
     id: string
     changes: Array<{
       value: {
-        messaging_product: "whatsapp"
+        messaging_product: 'whatsapp'
         metadata: {
           display_phone_number: string
           phone_number_id: string
@@ -262,12 +262,12 @@ export interface WhatsAppWebhookPayload {
         }>
         statuses?: Array<{
           id: string
-          status: "sent" | "delivered" | "read" | "failed"
+          status: 'sent' | 'delivered' | 'read' | 'failed'
           timestamp: string
           recipient_id: string
         }>
       }
-      field: "messages"
+      field: 'messages'
     }>
   }>
 }
@@ -280,7 +280,7 @@ export interface CreateBusinessRequest extends BusinessInfo {
 export interface ApiBusiness extends BusinessInfo {
   id: string
   ownerId: UserId
-  status: "active" | "inactive" | "pending" | "suspended"
+  status: 'active' | 'inactive' | 'pending' | 'suspended'
   createdAt: Timestamp
   updatedAt: Timestamp
   members?: BusinessMember[]
@@ -289,16 +289,16 @@ export interface ApiBusiness extends BusinessInfo {
 
 export interface BusinessMember {
   userId: UserId
-  role: "owner" | "admin" | "member"
-  status: "active" | "pending" | "inactive"
+  role: 'owner' | 'admin' | 'member'
+  status: 'active' | 'pending' | 'inactive'
   joinedAt: Timestamp
   invitedBy?: UserId
 }
 
 export interface BusinessSubscription {
   id: string
-  plan: "free" | "starter" | "professional" | "enterprise"
-  status: "active" | "canceled" | "past_due" | "unpaid"
+  plan: 'free' | 'starter' | 'professional' | 'enterprise'
+  status: 'active' | 'canceled' | 'past_due' | 'unpaid'
   currentPeriodStart: Timestamp
   currentPeriodEnd: Timestamp
   cancelAtPeriodEnd: boolean
@@ -308,7 +308,7 @@ export interface UpdateBusinessRequest {
   name?: string
   description?: string
   website?: URL
-  address?: BusinessInfo["address"]
+  address?: BusinessInfo['address']
   contactInfo?: ContactInfo
 }
 
@@ -319,7 +319,7 @@ export interface AnalyticsRequest {
     to: string
   }
   metrics: string[]
-  groupBy?: "day" | "week" | "month"
+  groupBy?: 'day' | 'week' | 'month'
   filters?: Record<string, string>
 }
 
@@ -332,7 +332,7 @@ export interface AnalyticsMetricExtended {
     period: string
   }
   unit?: string
-  format?: "number" | "currency" | "percentage"
+  format?: 'number' | 'currency' | 'percentage'
 }
 
 export interface AnalyticsChartData {
@@ -356,7 +356,7 @@ export interface AnalyticsResponse {
 // File Upload API types
 export interface FileUploadRequest {
   file: File
-  type: "avatar" | "document" | "image" | "media"
+  type: 'avatar' | 'document' | 'image' | 'media'
   metadata?: Record<string, unknown>
 }
 
@@ -382,7 +382,7 @@ export interface FileUploadResponse {
 export interface ApiNotification {
   id: string
   userId: UserId
-  type: "info" | "success" | "warning" | "error"
+  type: 'info' | 'success' | 'warning' | 'error'
   title: string
   message: string
   read: boolean
@@ -394,7 +394,7 @@ export interface ApiNotification {
 
 export interface NotificationListRequest extends PaginationParams {
   read?: boolean
-  type?: ApiNotification["type"]
+  type?: ApiNotification['type']
 }
 
 export interface NotificationListResponse {
@@ -410,7 +410,7 @@ export interface MarkNotificationReadRequest {
 // Search API types
 export interface SearchRequest {
   query: string
-  type?: "all" | "users" | "leads" | "messages" | "businesses"
+  type?: 'all' | 'users' | 'leads' | 'messages' | 'businesses'
   filters?: Record<string, unknown>
   limit?: number
 }
@@ -477,7 +477,7 @@ export interface ApiSubscription {
   id: string
   userId: UserId
   planId: string
-  status: "active" | "canceled" | "past_due" | "unpaid" | "trialing"
+  status: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing'
   currentPeriodStart: Timestamp
   currentPeriodEnd: Timestamp
   trialEnd?: Timestamp
@@ -494,7 +494,7 @@ export interface ApiPlan {
   description: string
   price: number
   currency: string
-  interval: "month" | "year"
+  interval: 'month' | 'year'
   features: string[]
   limits: Record<string, number>
   popular?: boolean
@@ -513,9 +513,9 @@ export interface BillingPortalResponse {
 export interface ApiIntegration {
   id: string
   userId: UserId
-  type: "google" | "facebook" | "zapier" | "slack" | "email"
+  type: 'google' | 'facebook' | 'zapier' | 'slack' | 'email'
   name: string
-  status: "active" | "inactive" | "error"
+  status: 'active' | 'inactive' | 'error'
   config: Record<string, unknown>
   lastSyncAt?: Timestamp
   createdAt: Timestamp
@@ -523,7 +523,7 @@ export interface ApiIntegration {
 }
 
 export interface CreateIntegrationRequest {
-  type: ApiIntegration["type"]
+  type: ApiIntegration['type']
   name: string
   config: Record<string, unknown>
 }
@@ -531,5 +531,5 @@ export interface CreateIntegrationRequest {
 export interface UpdateIntegrationRequest {
   name?: string
   config?: Record<string, unknown>
-  status?: ApiIntegration["status"]
+  status?: ApiIntegration['status']
 }

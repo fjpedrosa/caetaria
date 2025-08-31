@@ -17,18 +17,18 @@ interface PricingTableProps {
   maxPlansToShow?: number;
 }
 
-export function PricingTable({ 
-  onPlanSelect, 
-  selectedPlanId, 
-  showComparison = true, 
-  maxPlansToShow 
+export function PricingTable({
+  onPlanSelect,
+  selectedPlanId,
+  showComparison = true,
+  maxPlansToShow
 }: PricingTableProps) {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
-  
-  const { 
-    data: pricingData, 
-    isLoading, 
-    error 
+
+  const {
+    data: pricingData,
+    isLoading,
+    error
   } = useGetPricingPlansQuery({ includeInactive: false });
 
   if (isLoading) {
@@ -49,7 +49,7 @@ export function PricingTable({
     );
   }
 
-  const plansToShow = maxPlansToShow 
+  const plansToShow = maxPlansToShow
     ? pricingData.plans.slice(0, maxPlansToShow)
     : pricingData.plans;
 
@@ -66,7 +66,7 @@ export function PricingTable({
         period: 'month'
       };
     }
-    
+
     // If plan is monthly and we're showing yearly, calculate yearly with discount
     if (plan.billingPeriod === 'monthly' && billingPeriod === 'yearly') {
       return {
@@ -120,33 +120,33 @@ export function PricingTable({
         {plansToShow.map((plan) => {
           const displayPrice = calculateDisplayPrice(plan);
           const isSelected = selectedPlanId === plan.id;
-          
+
           return (
-            <Card 
+            <Card
               key={plan.id}
               className={`relative transition-all duration-200 ${
-                plan.isPopular 
-                  ? 'border-primary shadow-lg scale-105' 
+                plan.isPopular
+                  ? 'border-primary shadow-lg scale-105'
                   : 'hover:shadow-md'
               } ${
                 isSelected ? 'ring-2 ring-primary' : ''
               }`}
             >
               {plan.isPopular && (
-                <Badge 
+                <Badge
                   className="absolute -top-2 left-1/2 transform -translate-x-1/2"
                   variant="default"
                 >
                   Most Popular
                 </Badge>
               )}
-              
+
               <CardHeader className="text-center pb-4">
                 <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   {plan.description}
                 </CardDescription>
-                
+
                 <div className="mt-4">
                   <div className="text-3xl font-bold">
                     {formatPrice(displayPrice.amount, displayPrice.currency)}
@@ -154,7 +154,7 @@ export function PricingTable({
                   <div className="text-sm text-muted-foreground">
                     per {displayPrice.period}
                   </div>
-                  
+
                   {billingPeriod === 'yearly' && plan.billingPeriod === 'monthly' && (
                     <div className="text-sm text-muted-foreground mt-1">
                       <span className="line-through">
@@ -169,9 +169,9 @@ export function PricingTable({
               </CardHeader>
 
               <CardContent className="pt-0">
-                <Button 
-                  className="w-full mb-6" 
-                  variant={plan.isPopular ? "default" : "outline"}
+                <Button
+                  className="w-full mb-6"
+                  variant={plan.isPopular ? 'default' : 'outline'}
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={!plan.isActive}
                 >
@@ -188,8 +188,8 @@ export function PricingTable({
                       )}
                       <div className="flex-1">
                         <span className={`text-sm ${
-                          feature.included 
-                            ? 'text-foreground' 
+                          feature.included
+                            ? 'text-foreground'
                             : 'text-muted-foreground line-through'
                         }`}>
                           {feature.name}

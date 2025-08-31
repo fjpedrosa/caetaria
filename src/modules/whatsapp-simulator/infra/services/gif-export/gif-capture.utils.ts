@@ -4,6 +4,7 @@
  */
 
 import html2canvas from 'html2canvas';
+
 import { CaptureUtils, DeviceFrameConfig } from './types';
 
 export class GifCaptureUtilsImpl implements CaptureUtils {
@@ -37,10 +38,10 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
 
     try {
       const canvas = await html2canvas(element, defaultOptions);
-      
+
       // Post-process canvas for better GIF compatibility
       return this.postProcessCanvas(canvas);
-      
+
     } catch (error) {
       console.error('Frame capture failed:', error);
       throw new Error(`Failed to capture frame: ${error}`);
@@ -94,7 +95,7 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
     if (!ctx) throw new Error('Cannot get framed canvas context');
 
     const { dimensions, style } = config;
-    
+
     // Set canvas dimensions to include frame
     framedCanvas.width = dimensions.width;
     framedCanvas.height = dimensions.height;
@@ -171,14 +172,14 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
       try {
         const batchFrames = await Promise.all(batchPromises);
         frames.push(...batchFrames);
-        
+
         onProgress?.(frames.length, frameCount);
-        
+
         // Small delay to prevent overwhelming the browser
         if (i + batchSize < frameCount) {
           await new Promise(resolve => setTimeout(resolve, 10));
         }
-        
+
       } catch (error) {
         console.warn(`Batch capture failed for frames ${i}-${batchEnd - 1}:`, error);
         // Continue with partial results
@@ -197,7 +198,7 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
+
         if (!ctx) {
           reject(new Error('Cannot get canvas context'));
           return;
@@ -206,10 +207,10 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-        
+
         resolve(canvas);
       };
-      
+
       img.onerror = () => reject(new Error('Failed to load image'));
       img.src = dataURL;
     });
@@ -326,15 +327,15 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
     for (let y = 0; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
         const i = (y * width + x) * 4;
-        
+
         // Process each color channel
         for (let c = 0; c < 3; c++) {
           const oldPixel = data[i + c];
           const newPixel = oldPixel < 128 ? 0 : 255;
           data[i + c] = newPixel;
-          
+
           const quantError = oldPixel - newPixel;
-          
+
           // Distribute error to neighboring pixels
           data[i + 4 + c] += quantError * 7 / 16;
           data[i + width * 4 - 4 + c] += quantError * 3 / 16;
@@ -359,15 +360,15 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
         const i = (y * width + x) * 4;
-        
+
         // Check if this pixel is significantly different from neighbors
-        let neighborSum = [0, 0, 0];
+        const neighborSum = [0, 0, 0];
         let neighborCount = 0;
-        
+
         for (let dy = -1; dy <= 1; dy++) {
           for (let dx = -1; dx <= 1; dx++) {
             if (dx === 0 && dy === 0) continue;
-            
+
             const ni = ((y + dy) * width + (x + dx)) * 4;
             neighborSum[0] += data[ni];
             neighborSum[1] += data[ni + 1];
@@ -375,12 +376,12 @@ export class GifCaptureUtilsImpl implements CaptureUtils {
             neighborCount++;
           }
         }
-        
+
         // If pixel is too different from average, smooth it
         for (let c = 0; c < 3; c++) {
           const avgNeighbor = neighborSum[c] / neighborCount;
           const diff = Math.abs(data[i + c] - avgNeighbor);
-          
+
           if (diff > 100) { // Threshold for artifact detection
             data[i + c] = Math.round(avgNeighbor);
           }

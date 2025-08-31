@@ -32,7 +32,7 @@ export class VerifyPhoneNumberUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!isSuccess(sessionResult) || !sessionResult.data) {
         return failure(new Error('Onboarding session not found'));
       }
@@ -66,7 +66,7 @@ export class VerifyPhoneNumberUseCase {
       const verificationResult = await this.whatsappService.sendVerificationCode(
         phoneVerification.phoneNumber
       );
-      
+
       if (!isSuccess(verificationResult)) {
         return failure(new Error(
           `Failed to send verification code: ${verificationResult.error?.message || 'Unknown error'}`
@@ -104,7 +104,7 @@ export class VerifyPhoneNumberUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!isSuccess(sessionResult) || !sessionResult.data) {
         return failure(new Error('Onboarding session not found'));
       }

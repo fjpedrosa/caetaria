@@ -5,33 +5,32 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import {
-  Download,
-  Settings,
-  Play,
-  Pause,
-  Square,
   AlertCircle,
   CheckCircle,
+  Download,
   Loader2,
+  Mail,
+  Monitor,
+  Pause,
+  Play,
+  Presentation,
+  RefreshCw,
+  Settings,
   Share2,
   Sliders,
   Smartphone,
-  Monitor,
-  Mail,
-  Presentation,
-  X,
-  RefreshCw
-} from 'lucide-react';
+  Square,
+  X} from 'lucide-react';
+
+import { EXPORT_PRESETS,ExportOptions } from '../../infra/services/gif-export/types';
 import {
-  useGifExport,
-  useGifExportPresets,
-  useGifExportEstimation,
+  formatDuration,
   formatFileSize,
-  formatDuration
-} from '../hooks/use-gif-export';
-import { ExportOptions, EXPORT_PRESETS } from '../../infra/services/gif-export/types';
+  useGifExport,
+  useGifExportEstimation,
+  useGifExportPresets} from '../hooks/use-gif-export';
 
 export interface ExportControlsProps {
   /** Target element to export */
@@ -58,7 +57,7 @@ export function ExportControls({
 }: ExportControlsProps) {
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  
+
   const { state, actions } = useGifExport({
     defaultPreset: 'SOCIAL_MEDIA',
     autoOptimize: true,
@@ -66,7 +65,7 @@ export function ExportControls({
   });
 
   const { presets, presetNames } = useGifExportPresets();
-  
+
   const estimation = useGifExportEstimation(targetElement, state.options);
 
   // Handle export lifecycle
@@ -74,11 +73,11 @@ export function ExportControls({
     if (state.status === 'preparing' && onExportStart) {
       onExportStart();
     }
-    
+
     if (state.status === 'complete' && state.result && onExportComplete) {
       onExportComplete(state.result);
     }
-    
+
     if (state.status === 'error' && state.error && onExportError) {
       onExportError(state.error);
     }
@@ -89,7 +88,7 @@ export function ExportControls({
       console.warn('No target element specified for export');
       return;
     }
-    
+
     actions.exportGif(targetElement);
   };
 
@@ -111,7 +110,7 @@ export function ExportControls({
         const response = await fetch(blobUrl);
         const blob = await response.blob();
         const file = new File([blob], 'whatsapp-conversation.gif', { type: 'image/gif' });
-        
+
         await navigator.share({
           title: 'WhatsApp Conversation',
           text: 'Check out this WhatsApp conversation animation',
@@ -132,7 +131,7 @@ export function ExportControls({
       {presetNames.map((presetName) => {
         const preset = presets[presetName];
         const isActive = JSON.stringify(state.options) === JSON.stringify(preset);
-        
+
         return (
           <button
             key={presetName}
@@ -169,7 +168,7 @@ export function ExportControls({
         <Sliders className="w-4 h-4" />
         Advanced Settings
       </h4>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Quality */}
         <div>
@@ -267,7 +266,7 @@ export function ExportControls({
             {Math.round(state.progress)}%
           </span>
         </div>
-        
+
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
@@ -306,7 +305,7 @@ export function ExportControls({
           <CheckCircle className="w-5 h-5" />
           <span className="font-medium">Export Complete!</span>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <div className="text-gray-600">File Size</div>
@@ -326,7 +325,7 @@ export function ExportControls({
             <Download className="w-4 h-4" />
             Download
           </button>
-          
+
           <button
             onClick={handleShare}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -348,7 +347,7 @@ export function ExportControls({
           <AlertCircle className="w-5 h-5" />
           <span className="font-medium">Export Failed</span>
         </div>
-        
+
         <div className="text-sm text-red-600">
           {state.error.message}
         </div>
@@ -374,7 +373,7 @@ export function ExportControls({
               Retry
             </button>
           )}
-          
+
           <button
             onClick={actions.reset}
             className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
@@ -453,7 +452,7 @@ export function ExportControls({
 
       {/* Results */}
       {renderResult()}
-      
+
       {/* Errors */}
       {renderError()}
     </div>

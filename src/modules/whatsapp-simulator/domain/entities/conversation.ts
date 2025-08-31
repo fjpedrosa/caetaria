@@ -4,11 +4,11 @@
 
 import { Message, SenderType } from './message';
 
-export type ConversationStatus = 
-  | 'idle' 
-  | 'playing' 
-  | 'paused' 
-  | 'completed' 
+export type ConversationStatus =
+  | 'idle'
+  | 'playing'
+  | 'paused'
+  | 'completed'
   | 'error';
 
 export interface ConversationMetadata {
@@ -136,7 +136,7 @@ export class Conversation {
     const totalMessages = this._messages.length;
     const elapsedTime = this.calculateElapsedTime();
     const estimatedRemainingTime = this.calculateRemainingTime();
-    
+
     return {
       currentMessageIndex: this._currentIndex,
       totalMessages,
@@ -178,19 +178,19 @@ export class Conversation {
   removeMessage(messageId: string): boolean {
     const initialLength = this._messages.length;
     this._messages = this._messages.filter(msg => msg.id !== messageId);
-    
+
     if (this._messages.length < initialLength) {
       this.metadata.estimatedDuration = this.calculateEstimatedDuration();
       this.metadata.updatedAt = new Date();
-      
+
       // Adjust current index if necessary
       if (this._currentIndex >= this._messages.length) {
         this._currentIndex = Math.max(0, this._messages.length - 1);
       }
-      
+
       return true;
     }
-    
+
     return false;
   }
 
@@ -201,13 +201,13 @@ export class Conversation {
     if (this._status === 'completed') {
       this.reset();
     }
-    
+
     this._status = 'playing';
-    
+
     if (!this._startTime) {
       this._startTime = new Date();
     }
-    
+
     if (this._pauseTime) {
       this._totalPausedTime += Date.now() - this._pauseTime.getTime();
       this._pauseTime = undefined;
@@ -254,11 +254,11 @@ export class Conversation {
       this._currentIndex++;
       return true;
     }
-    
+
     if (this._currentIndex >= this._messages.length - 1) {
       this._status = 'completed';
     }
-    
+
     return false;
   }
 
@@ -317,10 +317,10 @@ export class Conversation {
    */
   private calculateElapsedTime(): number {
     if (!this._startTime) return 0;
-    
+
     const currentTime = this._pauseTime || new Date();
     const rawElapsed = currentTime.getTime() - this._startTime.getTime();
-    
+
     return Math.max(0, rawElapsed - this._totalPausedTime);
   }
 
@@ -332,7 +332,7 @@ export class Conversation {
     const remainingDuration = remainingMessages.reduce((total, message) => {
       return total + message.getTotalAnimationTime();
     }, 0);
-    
+
     return remainingDuration / this._settings.playbackSpeed;
   }
 
@@ -353,7 +353,7 @@ export class Conversation {
     for (let i = 1; i < this._messages.length; i++) {
       const current = this._messages[i];
       const previous = this._messages[i - 1];
-      
+
       if (current.timing.queueAt < previous.timing.queueAt) {
         console.warn(`Message timing inconsistency at index ${i}`);
       }
@@ -368,15 +368,15 @@ export class Conversation {
     messages?: Message[];
     settings?: Partial<ConversationSettings>;
   }): Conversation {
-    const newMetadata = updates?.metadata 
+    const newMetadata = updates?.metadata
       ? { ...this.metadata, ...updates.metadata }
       : this.metadata;
-    
+
     const newMessages = updates?.messages || this._messages;
-    const newSettings = updates?.settings 
+    const newSettings = updates?.settings
       ? { ...this._settings, ...updates.settings }
       : this._settings;
-    
+
     return new Conversation(newMetadata, newMessages, newSettings);
   }
 
@@ -408,18 +408,18 @@ export class Conversation {
       createdAt: new Date(data.metadata.createdAt),
       updatedAt: new Date(data.metadata.updatedAt)
     };
-    
+
     const messages = data.messages.map((msgData: any) => Message.fromJSON(msgData));
-    
+
     const conversation = new Conversation(metadata, messages, data.settings);
     conversation._status = data.status;
     conversation._currentIndex = data.currentIndex;
     conversation._totalPausedTime = data.totalPausedTime || 0;
-    
+
     if (data.startTime) {
       conversation._startTime = new Date(data.startTime);
     }
-    
+
     return conversation;
   }
 }

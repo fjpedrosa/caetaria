@@ -2,46 +2,43 @@
  * ConversationEngine - Core engine for orchestrating WhatsApp conversation playback
  */
 
-import { 
-  BehaviorSubject, 
-  Observable, 
-  Subject, 
-  combineLatest, 
-  merge, 
-  timer, 
-  of, 
+import {
+  BehaviorSubject,
+  combineLatest,
   EMPTY,
-  interval
-} from 'rxjs';
-import { 
-  map, 
-  filter, 
-  switchMap, 
-  takeUntil, 
-  tap, 
-  delay, 
-  share, 
-  distinctUntilChanged,
-  scan,
-  startWith,
+  interval,
+  merge,
+  Observable,
+  of,
+  Subject,
+  timer} from 'rxjs';
+import {
   catchError,
-  retry,
   debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  retry,
+  scan,
+  share,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
   throttleTime
 } from 'rxjs/operators';
 
-import { 
-  Conversation, 
-  Message, 
-  ConversationStatus 
-} from '../../domain/entities';
-import { 
+import {
+  Conversation,
+  ConversationStatus,
+  Message} from '../../domain/entities';
+import {
   ConversationEvent,
   ConversationEventFactory,
-  MessageTypingStartedEvent,
+  ConversationProgressEvent,
   MessageSentEvent,
-  ConversationProgressEvent
-} from '../../domain/events';
+  MessageTypingStartedEvent} from '../../domain/events';
 
 export interface EngineConfig {
   maxRetries: number;
@@ -49,6 +46,8 @@ export interface EngineConfig {
   throttleTime: number;
   enableDebug: boolean;
   enablePerformanceTracking: boolean;
+  optimizeTransitions: boolean;
+  fastModeEnabled: boolean;
 }
 
 export interface PlaybackState {
@@ -72,12 +71,12 @@ export interface PlaybackState {
 
 export class ConversationEngine {
   private readonly config: EngineConfig;
-  
+
   // Core state subjects
   private readonly conversationSubject = new BehaviorSubject<Conversation | null>(null);
   private readonly playbackStateSubject = new BehaviorSubject<PlaybackState>(this.createInitialState());
   private readonly eventSubject = new Subject<ConversationEvent>();
-  
+
   // Control subjects
   private readonly playSubject = new Subject<void>();
   private readonly pauseSubject = new Subject<void>();
@@ -85,39 +84,39 @@ export class ConversationEngine {
   private readonly stopSubject = new Subject<void>();
   private readonly jumpToSubject = new Subject<number>();
   private readonly speedChangeSubject = new Subject<number>();
-  
+
   // Internal timing subjects
   private readonly messageTimerSubject = new Subject<Message>();
   private readonly typingSubject = new Subject<{ message: Message; isTyping: boolean }>();
-  
+
   // Public observables
   public readonly conversation$ = this.conversationSubject.asObservable();
   public readonly playbackState$ = this.playbackStateSubject.asObservable();
   public readonly events$ = this.eventSubject.asObservable();
-  
+
   // Specialized observables
   public readonly messages$ = this.conversation$.pipe(
     map(conv => conv?.messages || []),
     distinctUntilChanged()
   );
-  
+
   public readonly currentMessage$ = this.playbackState$.pipe(
     map(state => state.currentMessage),
     distinctUntilChanged()
   );
-  
+
   public readonly progress$ = this.playbackState$.pipe(
     map(state => state.progress),
-    distinctUntilChanged((prev, curr) => 
+    distinctUntilChanged((prev, curr) =>
       prev.completionPercentage === curr.completionPercentage
     )
   );
-  
+
   public readonly isPlaying$ = this.playbackState$.pipe(
     map(state => state.isPlaying),
     distinctUntilChanged()
   );
-  
+
   public readonly typingStates$ = this.playbackState$.pipe(
     map(state => state.typingStates),
     distinctUntilChanged()
@@ -126,10 +125,12 @@ export class ConversationEngine {
   constructor(config: Partial<EngineConfig> = {}) {
     this.config = {
       maxRetries: 3,
-      debounceTime: 100,
+      debounceTime: config.optimizeTransitions ? 50 : 100, // Reduced for faster transitions
       throttleTime: 16, // ~60fps
       enableDebug: false,
       enablePerformanceTracking: false,
+      optimizeTransitions: true,
+      fastModeEnabled: false,
       ...config
     };
 
@@ -137,7 +138,7 @@ export class ConversationEngine {
     this.initializeTypingIndicators();
     this.initializeProgressTracking();
     this.initializeErrorHandling();
-    
+
     if (this.config.enableDebug) {
       this.initializeDebugMode();
     }
@@ -156,7 +157,7 @@ export class ConversationEngine {
       nextMessage: conversation.nextMessage,
       playbackSpeed: conversation.settings.playbackSpeed
     }));
-    
+
     this.emitEvent(ConversationEventFactory.createDebug(
       conversation.metadata.id,
       'info',
@@ -169,6 +170,11 @@ export class ConversationEngine {
    * Start conversation playback
    */
   play(): Observable<ConversationEvent> {
+    console.log('[ConversationEngine] play() called');
+    const conversation = this.getCurrentConversation();
+    console.log('[ConversationEngine] Current conversation:', conversation?.metadata.id);
+    console.log('[ConversationEngine] Current state:', this.getCurrentState());
+    
     this.playSubject.next();
     return this.events$.pipe(
       filter(event => event.type.startsWith('conversation.') || event.type.startsWith('message.'))
@@ -228,10 +234,10 @@ export class ConversationEngine {
   }
 
   /**
-   * Initialize message playback orchestration
+   * Initialize message playback orchestration - Optimized
    */
   private initializeMessagePlayback(): void {
-    // Main playback control flow
+    // Optimized playback control flow with better debouncing
     const playbackControl$ = merge(
       this.playSubject.pipe(map(() => ({ action: 'play' as const }))),
       this.pauseSubject.pipe(map(() => ({ action: 'pause' as const }))),
@@ -239,6 +245,10 @@ export class ConversationEngine {
       this.jumpToSubject.pipe(map(index => ({ action: 'jump' as const, index })))
     ).pipe(
       debounceTime(this.config.debounceTime),
+      distinctUntilChanged((prev, curr) => 
+        prev.action === curr.action && 
+        ('index' in prev ? prev.index : -1) === ('index' in curr ? curr.index : -1)
+      ),
       share()
     );
 
@@ -246,9 +256,14 @@ export class ConversationEngine {
     playbackControl$.pipe(
       filter(control => control.action === 'play'),
       switchMap(() => {
+        console.log('[ConversationEngine] Play action triggered in playbackControl$');
         const conversation = this.getCurrentConversation();
-        if (!conversation) return EMPTY;
+        if (!conversation) {
+          console.log('[ConversationEngine] No conversation loaded, cannot play');
+          return EMPTY;
+        }
 
+        console.log('[ConversationEngine] Starting playback for conversation:', conversation.metadata.id);
         conversation.play();
         this.updatePlaybackState(state => ({
           ...state,
@@ -266,8 +281,14 @@ export class ConversationEngine {
       }),
       takeUntil(this.stopSubject)
     ).subscribe({
-      next: (event) => this.emitEvent(event),
-      error: (error) => this.handleError(error)
+      next: (event) => {
+        console.log('[ConversationEngine] Emitting event:', event.type);
+        this.emitEvent(event);
+      },
+      error: (error) => {
+        console.error('[ConversationEngine] Playback error:', error);
+        this.handleError(error);
+      }
     });
 
     // Handle pause action
@@ -323,7 +344,7 @@ export class ConversationEngine {
 
       const previousIndex = conversation.currentIndex;
       conversation.jumpTo(control.index!);
-      
+
       this.updatePlaybackState(state => ({
         ...state,
         currentMessageIndex: control.index!,
@@ -346,17 +367,21 @@ export class ConversationEngine {
    * Create reactive stream for message playback
    */
   private createMessagePlaybackStream(conversation: Conversation): Observable<ConversationEvent> {
+    console.log('[ConversationEngine] Creating message playback stream');
     return new Observable<ConversationEvent>(subscriber => {
       const processNextMessage = () => {
         const currentMessage = conversation.currentMessage;
+        console.log('[ConversationEngine] Processing message:', conversation.currentIndex, currentMessage?.content);
+        
         if (!currentMessage) {
           // Conversation completed
+          console.log('[ConversationEngine] No more messages, conversation completed');
           this.updatePlaybackState(state => ({
             ...state,
             isPlaying: false,
             isCompleted: true
           }));
-          
+
           subscriber.next(ConversationEventFactory.createDebug(
             conversation.metadata.id,
             'info',
@@ -379,21 +404,31 @@ export class ConversationEngine {
           { message: currentMessage }
         ));
 
-        // Start typing after delay
-        timer(delayBeforeTyping).subscribe(() => {
+        // Optimized timing with better cleanup and performance
+        const effectiveDelayBeforeTyping = this.config.fastModeEnabled ? 
+          Math.min(delayBeforeTyping, 500) : delayBeforeTyping;
+        const effectiveTypingDuration = this.config.fastModeEnabled ? 
+          Math.min(typingDuration, 800) : typingDuration;
+        
+        console.log(`[ConversationEngine] Starting typing timer with delay: ${effectiveDelayBeforeTyping}ms`);
+        
+        const typingTimer = timer(effectiveDelayBeforeTyping).subscribe(() => {
+          console.log('[ConversationEngine] Typing timer fired, isPlaying:', conversation.isPlaying);
           if (conversation.isPlaying) {
             subscriber.next(ConversationEventFactory.createMessageTypingStarted(
               conversation.metadata.id,
               currentMessage,
               conversation.currentIndex,
-              typingDuration
+              effectiveTypingDuration
             ));
 
             // Send message after typing duration
-            timer(typingDuration).subscribe(() => {
+            console.log(`[ConversationEngine] Starting send timer with duration: ${effectiveTypingDuration}ms`);
+            const sendTimer = timer(effectiveTypingDuration).subscribe(() => {
+              console.log('[ConversationEngine] Send timer fired, isPlaying:', conversation.isPlaying);
               if (conversation.isPlaying) {
                 currentMessage.updateStatus('sent');
-                
+
                 subscriber.next(ConversationEventFactory.createMessageSent(
                   conversation.metadata.id,
                   currentMessage,
@@ -414,8 +449,8 @@ export class ConversationEngine {
                 }));
 
                 if (hasNext && conversation.isPlaying) {
-                  // Continue with next message
-                  setTimeout(processNextMessage, 0);
+                  // Use requestAnimationFrame for smoother transitions
+                  requestAnimationFrame(() => processNextMessage());
                 } else {
                   // Conversation completed
                   this.updatePlaybackState(state => ({
@@ -427,8 +462,14 @@ export class ConversationEngine {
                 }
               }
             });
+            
+            // Store timer for cleanup
+            return () => sendTimer.unsubscribe();
           }
         });
+        
+        // Store timer for cleanup
+        return () => typingTimer.unsubscribe();
       };
 
       // Start processing
@@ -482,12 +523,13 @@ export class ConversationEngine {
   }
 
   /**
-   * Initialize progress tracking
+   * Initialize progress tracking - Optimized
    */
   private initializeProgressTracking(): void {
-    // Emit progress events periodically during playback
+    // Throttled progress events for better performance
     this.isPlaying$.pipe(
-      switchMap(isPlaying => isPlaying ? interval(1000) : EMPTY),
+      switchMap(isPlaying => isPlaying ? interval(this.config.fastModeEnabled ? 500 : 1000) : EMPTY),
+      throttleTime(this.config.throttleTime),
       takeUntil(this.stopSubject)
     ).subscribe(() => {
       const conversation = this.getCurrentConversation();

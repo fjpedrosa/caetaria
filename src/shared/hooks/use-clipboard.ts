@@ -1,4 +1,4 @@
-import { useCallback,useState } from "react"
+import { useCallback,useState } from 'react'
 
 export interface ClipboardState {
   value: string | null
@@ -34,7 +34,7 @@ export function useClipboard(timeout: number = 2000): ClipboardState & {
 
     try {
       await navigator.clipboard.writeText(text)
-      
+
       setState({
         value: text,
         error: null,
@@ -55,18 +55,18 @@ export function useClipboard(timeout: number = 2000): ClipboardState & {
     } catch (error) {
       // Fallback for older browsers
       try {
-        const textArea = document.createElement("textarea")
+        const textArea = document.createElement('textarea')
         textArea.value = text
-        textArea.style.position = "fixed"
-        textArea.style.left = "-999999px"
-        textArea.style.top = "-999999px"
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
         document.body.appendChild(textArea)
         textArea.focus()
         textArea.select()
-        
-        const successful = document.execCommand("copy")
+
+        const successful = document.execCommand('copy')
         textArea.remove()
-        
+
         if (successful) {
           setState({
             value: text,
@@ -85,7 +85,7 @@ export function useClipboard(timeout: number = 2000): ClipboardState & {
             }, timeout)
           }
         } else {
-          throw new Error("Copy command failed")
+          throw new Error('Copy command failed')
         }
       } catch (fallbackError) {
         setState({

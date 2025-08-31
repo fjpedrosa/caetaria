@@ -27,7 +27,7 @@ describe('GIF Export Integration', () => {
 
   beforeEach(() => {
     gifService = new GifExportServiceImpl();
-    
+
     // Create mock element
     mockElement = {
       getBoundingClientRect: jest.fn(() => ({
@@ -57,7 +57,7 @@ describe('GIF Export Integration', () => {
     // Reset mocks
     jest.clearAllMocks();
     mockHtml2Canvas.mockResolvedValue(mockCanvas);
-    
+
     // Setup GIF mock
     mockGifInstance.on.mockImplementation((event: string, callback: Function) => {
       if (event === 'progress') {
@@ -189,7 +189,7 @@ describe('GIF Export Integration', () => {
 
       const expectedFrames = Math.ceil(options.duration * options.frameRate);
       expect(mockGifInstance.addFrame).toHaveBeenCalledTimes(expectedFrames);
-      
+
       // Verify each frame is added with proper options
       for (let i = 0; i < expectedFrames; i++) {
         expect(mockGifInstance.addFrame).toHaveBeenNthCalledWith(
@@ -268,7 +268,7 @@ describe('GIF Export Integration', () => {
       // Should still complete with remaining frames
       const result = await gifService.exportConversation(mockElement, options);
       expect(result).toBeDefined();
-      
+
       // Should have fewer frames due to failure
       expect(mockGifInstance.addFrame).toHaveBeenCalledTimes(9); // 10 - 1 failed
     });
@@ -438,9 +438,9 @@ describe('GIF Export Integration', () => {
       };
 
       const startTime = performance.now();
-      
+
       const result = await gifService.exportConversation(mockElement, options);
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
@@ -450,7 +450,7 @@ describe('GIF Export Integration', () => {
 
     it('should maintain consistent frame intervals', async () => {
       const frameTimestamps: number[] = [];
-      
+
       mockHtml2Canvas.mockImplementation(() => {
         frameTimestamps.push(performance.now());
         return Promise.resolve(mockCanvas);
@@ -481,7 +481,7 @@ describe('GIF Export Integration', () => {
       expect(result.blob).toBeInstanceOf(Blob);
       expect(result.blob.type).toBe('image/gif');
       expect(result.fileSize).toBeGreaterThan(0);
-      
+
       expect(result.metrics).toEqual({
         totalTime: expect.any(Number),
         frameCount: expect.any(Number),
@@ -501,7 +501,7 @@ describe('GIF Export Integration', () => {
 
       // Compression ratio should be > 1 (compressed file is smaller than raw pixels)
       expect(result.metrics.compressionRatio).toBeGreaterThan(1);
-      
+
       // Should be reasonable compression (not too high or too low)
       expect(result.metrics.compressionRatio).toBeLessThan(1000);
     });

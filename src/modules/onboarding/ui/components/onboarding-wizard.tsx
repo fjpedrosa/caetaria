@@ -38,15 +38,15 @@ export function OnboardingWizard() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const stepFromUrl = parseInt(searchParams.get('step') || '1') as OnboardingStep
-  
+
   const [currentStep, setCurrentStep] = useState<OnboardingStep>(stepFromUrl)
   const [completedSteps, setCompletedSteps] = useState<OnboardingStep[]>([])
   const [sessionData, setSessionData] = useState<Partial<OnboardingState['data']>>({})
   const [isComplete, setIsComplete] = useState(false)
-  
+
   const { data: existingSession } = useGetOnboardingSessionQuery()
   const [clearSession] = useClearOnboardingSessionMutation()
-  
+
   const [saveBusinessInfo] = useSaveBusinessInfoMutation()
   const [savePhoneNumber] = useSavePhoneNumberMutation()
   const [saveAutoMessage] = useSaveAutoMessageMutation()
@@ -60,7 +60,7 @@ export function OnboardingWizard() {
         const parsed = JSON.parse(stored)
         setSessionData(parsed.data || {})
         setCompletedSteps(parsed.completedSteps || [])
-        
+
         if (stepFromUrl === 1 && parsed.currentStep > 1) {
           setCurrentStep(parsed.currentStep)
           router.push(`/onboarding?step=${parsed.currentStep}`)
@@ -94,7 +94,7 @@ export function OnboardingWizard() {
         sessionId: existingSession?.metadata?.sessionId || `session_${Date.now()}`
       }
     }
-    
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSession))
     setSessionData(updatedSession.data)
     setCompletedSteps(updatedSession.completedSteps)
@@ -113,26 +113,26 @@ export function OnboardingWizard() {
           saveToLocalStorage({ businessInfo: stepData }, 2)
           setCurrentStep(2)
           break
-          
+
         case 2:
           await savePhoneNumber(stepData)
           saveToLocalStorage({ phoneNumber: stepData }, 3)
           setCurrentStep(3)
           break
-          
+
         case 3:
           await saveAutoMessage(stepData)
           saveToLocalStorage({ autoMessage: stepData }, 4)
           setCurrentStep(4)
           break
-          
+
         case 4:
           const priceVariant = stepData.priceVariant || 'A'
           await savePlanSelection({ ...stepData, priceVariant })
           saveToLocalStorage({ planSelection: stepData }, 5)
           setCurrentStep(5)
           break
-          
+
         case 5:
           await completeRegistration(stepData)
           saveToLocalStorage({ registration: stepData }, 5)
@@ -185,7 +185,7 @@ export function OnboardingWizard() {
               <Sparkles className="absolute top-4 right-1/4 text-purple-500 h-5 w-5 animate-pulse" />
               <PartyPopper className="absolute bottom-0 right-1/3 text-pink-500 h-6 w-6 animate-bounce delay-150" />
             </div>
-            
+
             <div className="space-y-2">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 ¡Bienvenido a la beta!
@@ -194,7 +194,7 @@ export function OnboardingWizard() {
                 Tu cuenta ha sido creada exitosamente
               </p>
             </div>
-            
+
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg space-y-4">
               <h2 className="font-semibold text-lg">Estás en acceso beta exclusivo</h2>
               <ul className="space-y-2 text-left max-w-md mx-auto">
@@ -216,12 +216,12 @@ export function OnboardingWizard() {
                 </li>
               </ul>
             </div>
-            
+
             <div className="space-y-3">
               <p className="text-gray-600">
                 En las próximas 24 horas recibirás un email con los pasos para conectar tu WhatsApp
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button size="lg" onClick={() => router.push('/')}>
                   Ir al inicio
@@ -249,12 +249,12 @@ export function OnboardingWizard() {
             <ArrowLeft className="h-4 w-4" />
             Volver al inicio
           </Button>
-          
+
           <div className="text-sm text-gray-600">
             Paso {currentStep} de {steps.length}
           </div>
         </div>
-        
+
         <Card className="p-8">
           <OnboardingStepper
             currentStep={currentStep}
@@ -262,7 +262,7 @@ export function OnboardingWizard() {
             steps={steps}
             className="mb-8"
           />
-          
+
           <div className="mt-8">
             {currentStep === 1 && (
               <StepBusinessInfo
@@ -272,7 +272,7 @@ export function OnboardingWizard() {
                 isFirstStep
               />
             )}
-            
+
             {currentStep === 2 && (
               <StepPhoneConnect
                 onNext={handleNext}
@@ -280,7 +280,7 @@ export function OnboardingWizard() {
                 defaultValues={sessionData.phoneNumber}
               />
             )}
-            
+
             {currentStep === 3 && (
               <StepAutoMessage
                 onNext={handleNext}
@@ -288,7 +288,7 @@ export function OnboardingWizard() {
                 defaultValues={sessionData.autoMessage}
               />
             )}
-            
+
             {currentStep === 4 && (
               <StepPlanSelection
                 onNext={handleNext}
@@ -296,7 +296,7 @@ export function OnboardingWizard() {
                 defaultValues={sessionData.planSelection}
               />
             )}
-            
+
             {currentStep === 5 && (
               <StepRegistration
                 onNext={handleNext}
@@ -307,7 +307,7 @@ export function OnboardingWizard() {
             )}
           </div>
         </Card>
-        
+
         <div className="text-center text-sm text-gray-500">
           <p>¿Necesitas ayuda? Contáctanos en soporte@whatsbotpro.com</p>
         </div>

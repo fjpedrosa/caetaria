@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Phone Verification Form Component
@@ -57,7 +57,7 @@ export function PhoneVerificationForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(countryCodes[1]); // Default to Nigeria
   const router = useRouter();
-  
+
   const phoneForm = useForm<PhoneData>({
     resolver: zodResolver(phoneSchema),
     defaultValues: {
@@ -65,7 +65,7 @@ export function PhoneVerificationForm() {
       countryCode: 'NG',
     },
   });
-  
+
   const otpForm = useForm<OtpData>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
@@ -75,17 +75,17 @@ export function PhoneVerificationForm() {
 
   const sendVerificationCode = async (data: PhoneData) => {
     setIsLoading(true);
-    
+
     try {
       // TODO: Call API to send verification code
       console.log('Sending verification code to:', data);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       setPhoneNumber(`${selectedCountry.dialCode} ${data.phoneNumber}`);
       setStep('otp');
-      
+
       // Start countdown
       setCountdown(60);
       const timer = setInterval(() => {
@@ -97,7 +97,7 @@ export function PhoneVerificationForm() {
           return prev - 1;
         });
       }, 1000);
-      
+
     } catch (error) {
       console.error('Error sending verification code:', error);
       // TODO: Show error toast
@@ -108,14 +108,14 @@ export function PhoneVerificationForm() {
 
   const verifyCode = async (data: OtpData) => {
     setIsLoading(true);
-    
+
     try {
       // TODO: Call API to verify code
       console.log('Verifying code:', data);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Navigate to next step
       router.push('/onboarding/bot-setup');
     } catch (error) {
@@ -128,7 +128,7 @@ export function PhoneVerificationForm() {
 
   const resendCode = async () => {
     if (countdown > 0) return;
-    
+
     const phoneData = phoneForm.getValues();
     await sendVerificationCode(phoneData);
   };
@@ -309,7 +309,7 @@ export function PhoneVerificationForm() {
                 </>
               )}
             </Button>
-            
+
             <Button
               type="button"
               variant="outline"

@@ -79,18 +79,18 @@ export default function PrivacyPolicyPage() {
               {/* Content */}
               <main className="lg:col-span-3">
                 <div className="bg-white rounded-xl shadow-sm p-8 lg:p-12 prose prose-lg max-w-none">
-                  
+
                   {/* Introduction */}
                   <section id="introduction" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to the WhatsApp Cloud API Platform ("Platform," "Service," "we," "us," or "our"). 
-                      This Privacy Policy explains how The Kroko Company and its affiliates collect, use, disclose, 
+                      Welcome to the WhatsApp Cloud API Platform ("Platform," "Service," "we," "us," or "our").
+                      This Privacy Policy explains how The Kroko Company and its affiliates collect, use, disclose,
                       and safeguard your information when you use our WhatsApp Cloud API Platform and related services.
                     </p>
                     <p className="text-gray-700 leading-relaxed">
-                      We are committed to compliance with applicable data protection laws, including the General Data 
-                      Protection Regulation (GDPR), South Africa's Protection of Personal Information Act (POPIA), 
+                      We are committed to compliance with applicable data protection laws, including the General Data
+                      Protection Regulation (GDPR), South Africa's Protection of Personal Information Act (POPIA),
                       and Nigeria's National Data Protection Regulation (NDPR).
                     </p>
                   </section>
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
                   {/* Information We Collect */}
                   <section id="information-we-collect" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Information We Collect</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Account Information</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
                       <li>Business name, contact information, and billing details</li>
@@ -144,7 +144,7 @@ export default function PrivacyPolicyPage() {
                   <section id="whatsapp-compliance" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">WhatsApp Business API Compliance</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      As a WhatsApp Business Solution Provider, we adhere to WhatsApp's Business Policy and 
+                      As a WhatsApp Business Solution Provider, we adhere to WhatsApp's Business Policy and
                       data handling requirements:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -173,7 +173,7 @@ export default function PrivacyPolicyPage() {
                   <section id="international-transfers" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">International Data Transfers</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Your data may be transferred to and processed in countries outside your region. 
+                      Your data may be transferred to and processed in countries outside your region.
                       We ensure appropriate safeguards are in place, including:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -202,7 +202,7 @@ export default function PrivacyPolicyPage() {
                   <section id="popia-compliance" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">POPIA Compliance (South African Users)</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We comply with South Africa's Protection of Personal Information Act (POPIA). 
+                      We comply with South Africa's Protection of Personal Information Act (POPIA).
                       South African users have rights similar to GDPR, including:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -287,8 +287,8 @@ export default function PrivacyPolicyPage() {
                   <section id="children-privacy" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Children's Privacy</h2>
                     <p className="text-gray-700 leading-relaxed">
-                      Our services are not intended for individuals under 18 years of age. We do not knowingly 
-                      collect personal information from children. If you believe we have inadvertently collected 
+                      Our services are not intended for individuals under 18 years of age. We do not knowingly
+                      collect personal information from children. If you believe we have inadvertently collected
                       information from a child, please contact us immediately.
                     </p>
                   </section>
@@ -297,8 +297,8 @@ export default function PrivacyPolicyPage() {
                   <section id="changes-to-policy" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to This Policy</h2>
                     <p className="text-gray-700 leading-relaxed">
-                      We may update this Privacy Policy periodically. We will notify you of material changes 
-                      through email, platform notifications, or by posting the updated policy on our website. 
+                      We may update this Privacy Policy periodically. We will notify you of material changes
+                      through email, platform notifications, or by posting the updated policy on our website.
                       Your continued use of our services constitutes acceptance of the updated policy.
                     </p>
                   </section>

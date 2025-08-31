@@ -25,17 +25,17 @@ export interface AnalyticsService {
    * Track a custom event
    */
   track(event: AnalyticsEvent): Promise<void>;
-  
+
   /**
    * Track lead conversion
    */
   trackLeadConversion(data: LeadAnalyticsData): Promise<void>;
-  
+
   /**
    * Track page view
    */
   trackPageView(page: string, properties?: Record<string, unknown>): Promise<void>;
-  
+
   /**
    * Identify user for analytics
    */

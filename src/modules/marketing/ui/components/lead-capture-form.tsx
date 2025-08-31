@@ -2,15 +2,15 @@
 
 import { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
-import { 
+import {
   AlertCircle,
   Building,
-  CheckCircle, 
-  Loader2, 
+  CheckCircle,
+  Loader2,
   Mail,
   MessageSquare,
   Phone,
-  Send, 
+  Send,
   Sparkles,
   User,
   Users} from 'lucide-react';
@@ -61,23 +61,23 @@ interface LeadCaptureFormProps {
 }
 
 const FEATURE_OPTIONS = [
-  { id: 'whatsapp-api', label: 'WhatsApp Business API', icon: MessageSquare },
+  { id: 'whatsapp-api', label: 'WhatsApp Automático', icon: MessageSquare },
   { id: 'multi-channel', label: 'Multi-channel Support', icon: Users },
   { id: 'ai-chatbots', label: 'AI-powered Chatbots', icon: Sparkles },
-  { id: 'analytics', label: 'Advanced Analytics', icon: Users },
+  { id: 'analytics', label: 'Reportes de Ventas', icon: Users },
 ];
 
 /**
  * Lead Capture Form Component - Client Component
- * 
+ *
  * Advanced form with validation, RTK Query integration,
  * and multiple layout variants for different use cases.
  */
-export function LeadCaptureForm({ 
+export function LeadCaptureForm({
   source,
-  title = "Get Started with WhatsApp Cloud API",
-  description = "Join thousands of businesses transforming customer communication",
-  className = "",
+  title = 'Empezar con WhatsApp Automático',
+  description = 'Join thousands of businesses transforming customer communication',
+  className = '',
   variant = 'default',
   onSuccess
 }: LeadCaptureFormProps) {
@@ -99,7 +99,7 @@ export function LeadCaptureForm({
 
   const onSubmit = async (data: FormData) => {
     setSubmitStatus('loading');
-    
+
     try {
       // TODO: Replace with RTK Query mutation
       const response = await fetch('/api/leads', {
@@ -120,18 +120,18 @@ export function LeadCaptureForm({
 
       setSubmitStatus('success');
       onSuccess?.(data);
-      
+
       // Reset form after successful submission
       setTimeout(() => {
         form.reset();
         setSelectedFeatures([]);
         setSubmitStatus('idle');
       }, 3000);
-      
+
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitStatus('error');
-      
+
       // Reset error state after 3 seconds
       setTimeout(() => {
         setSubmitStatus('idle');
@@ -140,7 +140,7 @@ export function LeadCaptureForm({
   };
 
   const toggleFeature = (featureId: string) => {
-    setSelectedFeatures(prev => 
+    setSelectedFeatures(prev =>
       prev.includes(featureId)
         ? prev.filter(id => id !== featureId)
         : [...prev, featureId]
@@ -164,7 +164,7 @@ export function LeadCaptureForm({
         </p>
         <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-200">
           <p className="text-xs sm:text-sm text-gray-700">
-            ✨ <strong>Next steps:</strong> Check your email for our welcome guide 
+            ✨ <strong>Next steps:</strong> Check your email for our welcome guide
             and calendar link to schedule your personalized demo.
           </p>
         </div>
@@ -172,8 +172,8 @@ export function LeadCaptureForm({
     );
   }
 
-  const cardClassName = variant === 'inline' 
-    ? `p-4 sm:p-6 bg-white/90 backdrop-blur-sm border border-white/20 ${className}` 
+  const cardClassName = variant === 'inline'
+    ? `p-4 sm:p-6 bg-white/90 backdrop-blur-sm border border-white/20 ${className}`
     : `p-6 sm:p-8 bg-white shadow-xl border-0 ${className}`;
 
   return (
@@ -191,13 +191,13 @@ export function LeadCaptureForm({
             </div>
           )}
         </div>
-        
+
         <h2 className={`font-bold text-gray-900 mb-2 ${
           variant === 'inline' ? 'text-xl' : 'text-2xl lg:text-3xl'
         }`}>
           {title}
         </h2>
-        
+
         <p className={`text-gray-600 ${
           variant === 'inline' ? 'text-sm' : 'text-lg'
         }`}>
@@ -335,7 +335,7 @@ export function LeadCaptureForm({
                 {FEATURE_OPTIONS.map((feature) => {
                   const IconComponent = feature.icon;
                   const isSelected = selectedFeatures.includes(feature.id);
-                  
+
                   return (
                     <button
                       key={feature.id}
@@ -370,7 +370,7 @@ export function LeadCaptureForm({
           <Button
             type="submit"
             disabled={submitStatus === 'loading'}
-            className={`w-full min-h-[52px] py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 touch-manipulation bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 text-white shadow-lg hover:shadow-xl focus:shadow-xl`}
+            className={'w-full min-h-[52px] py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 touch-manipulation bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 text-white shadow-lg hover:shadow-xl focus:shadow-xl'}
           >
             {submitStatus === 'loading' ? (
               <>

@@ -10,7 +10,7 @@ interface PageTransitionsProps {
 
 /**
  * Page Transitions Component
- * 
+ *
  * Provides smooth page transitions with Framer Motion.
  * Includes fade-in, slide effects, and loading animations.
  */
@@ -56,7 +56,7 @@ export function PageTransitions({ children }: PageTransitionsProps) {
 
 /**
  * Loading Overlay Component
- * 
+ *
  * Shows a beautiful loading animation during page transitions.
  */
 export function LoadingOverlay() {
@@ -77,8 +77,8 @@ export function LoadingOverlay() {
             scale: [1, 1.1, 1],
           }}
           transition={{
-            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-            scale: { duration: 1, repeat: Infinity, ease: "easeInOut" },
+            rotate: { duration: 2, repeat: Infinity, ease: 'linear' },
+            scale: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
           }}
         >
           <motion.div
@@ -89,7 +89,7 @@ export function LoadingOverlay() {
             transition={{
               duration: 1.5,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
           />
         </motion.div>
@@ -116,7 +116,7 @@ export function LoadingOverlay() {
               transition={{
                 duration: 1.5,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 delay: index * 0.2,
               }}
             />

@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
     // if (token) {
     //   headers.set('authorization', `Bearer ${token}`)
     // }
-    
+
     headers.set('Content-Type', 'application/json')
     return headers
   },
@@ -23,18 +23,18 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions)
-  
+
   // Handle authentication errors
   if (result.error && result.error.status === 401) {
     // TODO: Implement token refresh logic when auth is available
     console.warn('Authentication failed - implement token refresh')
   }
-  
+
   // Handle server errors with retry logic
   if (result.error && typeof result.error.status === 'number' && result.error.status >= 500) {
     console.error('Server error:', result.error)
   }
-  
+
   return result
 }
 

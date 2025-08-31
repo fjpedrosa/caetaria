@@ -2,24 +2,24 @@
  * Message Entity - Core domain entity representing a WhatsApp message
  */
 
-export type MessageType = 
-  | 'text' 
-  | 'image' 
-  | 'audio' 
-  | 'video' 
-  | 'document' 
-  | 'sticker' 
-  | 'location' 
-  | 'contact' 
+export type MessageType =
+  | 'text'
+  | 'image'
+  | 'audio'
+  | 'video'
+  | 'document'
+  | 'sticker'
+  | 'location'
+  | 'contact'
   | 'interactive'
   | 'template'
   | 'flow';
 
-export type MessageStatus = 
-  | 'sending' 
-  | 'sent' 
-  | 'delivered' 
-  | 'read' 
+export type MessageStatus =
+  | 'sending'
+  | 'sent'
+  | 'delivered'
+  | 'read'
   | 'failed';
 
 export type SenderType = 'user' | 'business';
@@ -127,7 +127,7 @@ export class Message {
    * Check if this message triggers a flow
    */
   isFlowTrigger(): boolean {
-    return this.type === 'flow' || 
+    return this.type === 'flow' ||
            (this.type === 'interactive' && this.content.interactive?.type === 'flow');
   }
 

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Business Info Form Component
@@ -81,7 +81,7 @@ const volumeOptions = [
 export function BusinessInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  
+
   const form = useForm<BusinessFormData>({
     resolver: zodResolver(businessFormSchema),
     defaultValues: {
@@ -97,14 +97,14 @@ export function BusinessInfoForm() {
 
   const onSubmit = async (data: BusinessFormData) => {
     setIsSubmitting(true);
-    
+
     try {
       // TODO: Call API to save business info
       console.log('Business info submitted:', data);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Navigate to next step
       router.push('/onboarding/integration');
     } catch (error) {

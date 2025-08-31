@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate the metric data
     if (!body.name || typeof body.value !== 'number') {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // - Mixpanel
     // - Amplitude
     // - Custom database storage
-    
+
     // Example: Send to external analytics service
     /*
     await fetch('https://analytics-service.com/api/events', {

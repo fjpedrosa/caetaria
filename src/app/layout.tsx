@@ -1,14 +1,19 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 
-import { PerformanceDashboard } from "@/components/performance-dashboard";
-import { PerformanceMonitor } from "@/components/performance-monitor";
-import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { CursorTrail } from '@/components/cursor-trail';
+import { FloatingWhatsAppCTA } from '@/components/floating-whatsapp-cta';
+import { PerformanceDashboard } from '@/components/performance-dashboard';
+import { PerformanceMonitor } from '@/components/performance-monitor';
+import { ServiceWorkerRegister } from '@/components/service-worker-register';
+import { ScrollToTop, SmoothScroll } from '@/components/smooth-scroll';
+import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
+import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
 
 import { Providers } from './providers';
 
-import "./globals.css";
- 
+import './globals.css';
+
 // Optimize font loading
 const inter = Inter({
   subsets: ['latin'],
@@ -19,7 +24,7 @@ const inter = Inter({
 
 const robotoMono = Roboto_Mono({
   subsets: ['latin'],
-  display: 'swap', 
+  display: 'swap',
   variable: '--font-roboto-mono',
   preload: false, // Only preload primary font
 });
@@ -39,56 +44,56 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://caetaria.com'),
   title: {
-    default: "Caetaria | Automatiza WhatsApp para tu negocio",
-    template: "%s | Caetaria"
+    default: 'Caetaria | Automatiza WhatsApp para tu negocio',
+    template: '%s | Caetaria'
   },
-  description: "Aumenta tus ventas 30% automatizando WhatsApp. Caetaria te permite gestionar clientes, automatizar respuestas y cerrar más ventas con WhatsApp Business API. Configuración en 5 minutos.",
+  description: 'Aumenta tus ventas 30% automatizando WhatsApp. Caetaria te permite gestionar clientes, automatizar respuestas y cerrar más ventas con WhatsApp Business API. Configuración en 5 minutos.',
   keywords: [
-    "WhatsApp Business API",
-    "Cloud messaging platform", 
-    "AI chatbots",
-    "Multi-channel support",
-    "Customer communication",
-    "Business messaging",
-    "WhatsApp integration",
-    "Enterprise messaging",
-    "African markets",
-    "Customer support automation"
+    'WhatsApp Business API',
+    'Cloud messaging platform',
+    'AI chatbots',
+    'Multi-channel support',
+    'Customer communication',
+    'Business messaging',
+    'WhatsApp integration',
+    'Enterprise messaging',
+    'African markets',
+    'Customer support automation'
   ],
-  authors: [{ name: "The Kroko Company", url: "https://thekrokocompany.com" }],
-  creator: "The Kroko Company",
-  publisher: "The Kroko Company",
+  authors: [{ name: 'The Kroko Company', url: 'https://thekrokocompany.com' }],
+  creator: 'The Kroko Company',
+  publisher: 'The Kroko Company',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://caetaria.com",
-    title: "Caetaria | Automatiza WhatsApp para tu negocio",
-    description: "Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.",
-    siteName: "Caetaria",
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://caetaria.com',
+    title: 'Caetaria | Automatiza WhatsApp para tu negocio',
+    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.',
+    siteName: 'Caetaria',
     images: [
       {
-        url: "/og-image.jpg",
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: "Caetaria - Dashboard de WhatsApp Business",
-        type: "image/jpeg"
+        alt: 'Caetaria - Dashboard de WhatsApp Business',
+        type: 'image/jpeg'
       }
     ]
   },
   twitter: {
-    card: "summary_large_image",
-    site: "@thekrokocompany",
-    creator: "@thekrokocompany", 
-    title: "Caetaria | Automatiza WhatsApp para tu negocio",
-    description: "Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.",
+    card: 'summary_large_image',
+    site: '@thekrokocompany',
+    creator: '@thekrokocompany',
+    title: 'Caetaria | Automatiza WhatsApp para tu negocio',
+    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.',
     images: [{
-      url: "/og-image.jpg",
-      alt: "Caetaria - Dashboard de WhatsApp Business"
+      url: '/og-image.jpg',
+      alt: 'Caetaria - Dashboard de WhatsApp Business'
     }]
   },
   robots: {
@@ -97,16 +102,16 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
     }
   },
-  category: "technology",
-  classification: "Business Software",
+  category: 'technology',
+  classification: 'Business Software',
   other: {
-    "msapplication-TileColor": "#10b981",
-    "theme-color": "#10b981"
+    'msapplication-TileColor': '#10b981',
+    'theme-color': '#10b981'
   }
 };
 
@@ -116,7 +121,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${robotoMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${robotoMono.variable}`} suppressHydrationWarning>
       <head>
         {/* DNS Prefetch for external domains */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -135,7 +140,24 @@ export default function RootLayout({
       </head>
       <body className={`antialiased font-sans ${inter.className}`}>
         <Providers>
+          {/* Global Effects */}
+          <SmoothScroll />
+          <CursorTrail />
+
+          {/* Navigation */}
+          <ModernNavbar hideOnScroll={false} showProgress={true} variant="default" />
+
+          {/* Main Content */}
           {children}
+
+          {/* Footer */}
+          <LandingFooter />
+
+          {/* Floating Elements */}
+          <FloatingWhatsAppCTA />
+          <ScrollToTop />
+
+          {/* Performance & Development Tools */}
           <PerformanceMonitor />
           <ServiceWorkerRegister />
           {process.env.NODE_ENV === 'development' && (

@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useMemo,useState } from 'react';
-import { 
-  Activity, 
-  BarChart3, 
+import {
+  Activity,
+  BarChart3,
   Calendar,
-  Download, 
-  Eye, 
-  MousePointer, 
+  Download,
+  Eye,
+  MousePointer,
   RefreshCw,
-  TrendingDown, 
-  TrendingUp, 
+  TrendingDown,
+  TrendingUp,
   Users} from 'lucide-react';
 
 import { Badge } from '../../../../components/ui/badge';
@@ -19,10 +19,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Skeleton } from '../../../../components/ui/loading-skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
-import { 
+import {
   useGetEventStatsQuery,
-  useGetMetricsQuery, 
-  useGetMetricTrendQuery 
+  useGetMetricsQuery,
+  useGetMetricTrendQuery
 } from '../../infra/services/analytics-api';
 
 interface MetricsDashboardProps {
@@ -35,11 +35,11 @@ interface MetricsDashboardProps {
   compactMode?: boolean;
 }
 
-export function MetricsDashboard({ 
-  dateRange, 
-  refreshInterval = 30000, 
+export function MetricsDashboard({
+  dateRange,
+  refreshInterval = 30000,
   showRealTime = true,
-  compactMode = false 
+  compactMode = false
 }: MetricsDashboardProps) {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'1h' | '24h' | '7d' | '30d' | 'custom'>('24h');
   const [selectedMetricType, setSelectedMetricType] = useState<'all' | 'performance' | 'user' | 'business'>('all');
@@ -71,11 +71,11 @@ export function MetricsDashboard({
   }, [dateRange, selectedTimeframe]);
 
   // API queries
-  const { 
-    data: metricsData, 
-    isLoading: metricsLoading, 
+  const {
+    data: metricsData,
+    isLoading: metricsLoading,
     error: metricsError,
-    refetch: refetchMetrics 
+    refetch: refetchMetrics
   } = useGetMetricsQuery({
     startDate: calculatedDateRange.startDate,
     endDate: calculatedDateRange.endDate,
@@ -84,10 +84,10 @@ export function MetricsDashboard({
     pollingInterval: showRealTime ? refreshInterval : undefined,
   });
 
-  const { 
-    data: eventStats, 
+  const {
+    data: eventStats,
     isLoading: statsLoading,
-    refetch: refetchStats 
+    refetch: refetchStats
   } = useGetEventStatsQuery({
     startDate: calculatedDateRange.startDate,
     endDate: calculatedDateRange.endDate,
@@ -115,7 +115,7 @@ export function MetricsDashboard({
         dateRange: calculatedDateRange,
         exportedAt: new Date().toISOString(),
       };
-      
+
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -159,7 +159,7 @@ export function MetricsDashboard({
     return metricsData.metrics.filter(metric => {
       const name = metric.name.toLowerCase();
       const tags = metric.tags.map(tag => tag.toLowerCase());
-      
+
       switch (selectedMetricType) {
         case 'performance':
           return name.includes('performance') || name.includes('load') || tags.includes('performance');
@@ -216,7 +216,7 @@ export function MetricsDashboard({
             {calculatedDateRange.startDate.toLocaleDateString()} - {calculatedDateRange.endDate.toLocaleDateString()}
           </p>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           <Select value={selectedTimeframe} onValueChange={(value) => setSelectedTimeframe(value as any)}>
             <SelectTrigger className="w-32">
@@ -242,9 +242,9 @@ export function MetricsDashboard({
             </SelectContent>
           </Select>
 
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleRefresh}
             disabled={isRefreshing}
           >
@@ -252,9 +252,9 @@ export function MetricsDashboard({
             Refresh
           </Button>
 
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleExport}
           >
             <Download className="h-4 w-4 mr-2" />
@@ -312,7 +312,7 @@ export function MetricsDashboard({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {eventStats.uniqueUsers > 0 
+                {eventStats.uniqueUsers > 0
                   ? (eventStats.totalEvents / eventStats.uniqueUsers).toFixed(1)
                   : '0'
                 }
@@ -329,7 +329,7 @@ export function MetricsDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredMetrics.map((metric) => {
           const IconComponent = getMetricIcon(metric.name);
-          
+
           return (
             <Card key={metric.id}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -346,12 +346,12 @@ export function MetricsDashboard({
                   <div className="text-2xl font-bold">
                     {metric.value.data.formatted}
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Badge variant="secondary" className="text-xs">
                       {metric.type}
                     </Badge>
-                    
+
                     {metric.tags.map(tag => (
                       <Badge key={tag} variant="outline" className="text-xs">
                         {tag}
@@ -396,10 +396,10 @@ export function MetricsDashboard({
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">{count}</span>
                       <div className="w-16 bg-muted rounded-full h-2">
-                        <div 
+                        <div
                           className="bg-primary h-2 rounded-full"
-                          style={{ 
-                            width: `${(count / Math.max(...Object.values(eventStats.eventsByType))) * 100}%` 
+                          style={{
+                            width: `${(count / Math.max(...Object.values(eventStats.eventsByType))) * 100}%`
                           }}
                         />
                       </div>

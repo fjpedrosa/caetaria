@@ -6,7 +6,7 @@
 // Re-export all modules
 export * from './analytics';
 export * from './marketing';
-export * from './onboarding'; 
+export * from './onboarding';
 export * from './pricing';
 export * from './shared';
 

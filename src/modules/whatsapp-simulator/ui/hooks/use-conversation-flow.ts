@@ -2,15 +2,16 @@
  * useConversationFlow - Main hook for conversation orchestration
  */
 
-import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, tap, throttleTime } from 'rxjs/operators';
 
 import { ConversationEngine, PlaybackState } from '../../application/engines/conversation-engine';
-import { 
-  PlayConversationUseCase,
-  PauseConversationUseCase,
-  ResetConversationUseCase,
+import {
   JumpToMessageUseCase,
+  PauseConversationUseCase,
+  PlayConversationUseCase,
+  ResetConversationUseCase,
   SetPlaybackSpeedUseCase
 } from '../../application/use-cases';
 import { Conversation, Message } from '../../domain/entities';
@@ -31,24 +32,24 @@ export interface ConversationFlowState {
   isCompleted: boolean;
   hasError: boolean;
   error: Error | null;
-  
+
   // Message state
   currentMessage: Message | null;
   nextMessage: Message | null;
   currentMessageIndex: number;
   messages: Message[];
-  
+
   // Progress state
   progress: {
     completionPercentage: number;
     elapsedTime: number;
     remainingTime: number;
   };
-  
+
   // Visual state
   typingStates: Map<string, boolean>;
   playbackSpeed: number;
-  
+
   // Debug state
   events: ConversationEvent[];
   lastEvent: ConversationEvent | null;
@@ -60,15 +61,15 @@ export interface ConversationFlowActions {
   play: () => Promise<boolean>;
   pause: () => Promise<boolean>;
   reset: () => Promise<boolean>;
-  
+
   // Navigation actions
   jumpTo: (messageIndex: number) => Promise<boolean>;
   nextMessage: () => void;
   previousMessage: () => void;
-  
+
   // Control actions
   setSpeed: (speed: number) => Promise<boolean>;
-  
+
   // Utility actions
   clearEvents: () => void;
   cleanup: () => void;
@@ -93,10 +94,10 @@ export function useConversationFlow(
     jumpTo: JumpToMessageUseCase;
     setSpeed: SetPlaybackSpeedUseCase;
   } | null>(null);
-  
+
   // Subscriptions
   const subscriptionsRef = useRef<Subscription[]>([]);
-  
+
   // State
   const [playbackState, setPlaybackState] = useState<PlaybackState>({
     conversation: null,
@@ -116,18 +117,23 @@ export function useConversationFlow(
     typingStates: new Map(),
     error: undefined
   });
-  
+
   const [events, setEvents] = useState<ConversationEvent[]>([]);
   const [lastEvent, setLastEvent] = useState<ConversationEvent | null>(null);
 
-  // Initialize engine and use cases
+  // Memoized engine configuration
+  const engineConfig = useMemo(() => ({
+    enableDebug: config.enableDebug || false,
+    enablePerformanceTracking: config.enablePerformanceTracking || false,
+    maxRetries: config.maxRetries || 3,
+    optimizeTransitions: true,
+    fastModeEnabled: config.enableDebug === false // Enable fast mode when not debugging
+  }), [config.enableDebug, config.enablePerformanceTracking, config.maxRetries]);
+
+  // Initialize engine and use cases with optimized config
   useEffect(() => {
     if (!engineRef.current) {
-      engineRef.current = new ConversationEngine({
-        enableDebug: config.enableDebug || false,
-        enablePerformanceTracking: config.enablePerformanceTracking || false,
-        maxRetries: config.maxRetries || 3
-      });
+      engineRef.current = new ConversationEngine(engineConfig);
 
       useCasesRef.current = {
         play: new PlayConversationUseCase(engineRef.current),
@@ -137,8 +143,14 @@ export function useConversationFlow(
         setSpeed: new SetPlaybackSpeedUseCase(engineRef.current)
       };
 
-      // Subscribe to playback state changes
-      const playbackStateSubscription = engineRef.current.playbackState$.subscribe(
+      // Subscribe to playback state changes with optimization
+      const playbackStateSubscription = engineRef.current.playbackState$.pipe(
+        distinctUntilChanged((prev, curr) => 
+          prev.isPlaying === curr.isPlaying &&
+          prev.currentMessageIndex === curr.currentMessageIndex &&
+          prev.isCompleted === curr.isCompleted
+        )
+      ).subscribe(
         (newState) => {
           setPlaybackState(prevState => ({
             ...newState,
@@ -147,11 +159,22 @@ export function useConversationFlow(
         }
       );
 
-      // Subscribe to events
-      const eventsSubscription = engineRef.current.events$.subscribe(
+      // Subscribe to events with throttling
+      const eventsSubscription = engineRef.current.events$.pipe(
+        throttleTime(50), // Throttle high-frequency events
+        tap(event => {
+          // Only log important events in production
+          if (config.enableDebug || ['conversation.started', 'conversation.completed', 'message.sent'].includes(event.type)) {
+            console.log('[ConversationFlow] Event:', event.type);
+          }
+        })
+      ).subscribe(
         (event) => {
           setLastEvent(event);
-          setEvents(prev => [...prev.slice(-99), event]); // Keep last 100 events
+          setEvents(prev => {
+            const newEvents = [...prev.slice(-49), event]; // Reduced from 100 to 50 events
+            return newEvents;
+          });
         }
       );
 
@@ -163,18 +186,19 @@ export function useConversationFlow(
         cleanup();
       }
     };
-  }, [config.enableDebug, config.enablePerformanceTracking, config.maxRetries, config.autoCleanup]);
+  }, [engineConfig, config.autoCleanup]); // Removed cleanup dependency to fix initialization order
 
   // Action implementations
   const loadConversation = useCallback(async (conversation: Conversation): Promise<boolean> => {
     try {
       if (!useCasesRef.current) return false;
-      
+
+      // Load conversation without starting playback
       const result = await useCasesRef.current.play.execute({
         conversation,
         autoStart: false
       });
-      
+
       return result.success;
     } catch (error) {
       console.error('Failed to load conversation:', error);
@@ -184,24 +208,25 @@ export function useConversationFlow(
 
   const play = useCallback(async (): Promise<boolean> => {
     try {
-      if (!useCasesRef.current || !playbackState.conversation) return false;
-      
+      if (!useCasesRef.current) return false;
+
+      // Just start playback without reloading the conversation
       const result = await useCasesRef.current.play.execute({
-        conversation: playbackState.conversation,
+        // Don't pass conversation to avoid reloading
         autoStart: true
       });
-      
+
       return result.success;
     } catch (error) {
       console.error('Failed to play conversation:', error);
       return false;
     }
-  }, [playbackState.conversation]);
+  }, []);
 
   const pause = useCallback(async (): Promise<boolean> => {
     try {
       if (!useCasesRef.current) return false;
-      
+
       const result = await useCasesRef.current.pause.execute();
       return result.success;
     } catch (error) {
@@ -213,7 +238,7 @@ export function useConversationFlow(
   const reset = useCallback(async (): Promise<boolean> => {
     try {
       if (!useCasesRef.current) return false;
-      
+
       const result = await useCasesRef.current.reset.execute();
       return result.success;
     } catch (error) {
@@ -225,11 +250,11 @@ export function useConversationFlow(
   const jumpTo = useCallback(async (messageIndex: number): Promise<boolean> => {
     try {
       if (!useCasesRef.current) return false;
-      
+
       const result = await useCasesRef.current.jumpTo.execute({
         messageIndex
       });
-      
+
       return result.success;
     } catch (error) {
       console.error('Failed to jump to message:', error);
@@ -240,11 +265,11 @@ export function useConversationFlow(
   const setSpeed = useCallback(async (speed: number): Promise<boolean> => {
     try {
       if (!useCasesRef.current) return false;
-      
+
       const result = await useCasesRef.current.setSpeed.execute({
         speed
       });
-      
+
       return result.success;
     } catch (error) {
       console.error('Failed to set playback speed:', error);
@@ -272,13 +297,23 @@ export function useConversationFlow(
   }, []);
 
   const cleanup = useCallback((): void => {
-    // Unsubscribe from all subscriptions
-    subscriptionsRef.current.forEach(sub => sub.unsubscribe());
+    // Unsubscribe from all subscriptions with error handling
+    subscriptionsRef.current.forEach(sub => {
+      try {
+        sub.unsubscribe();
+      } catch (error) {
+        console.warn('[ConversationFlow] Error unsubscribing:', error);
+      }
+    });
     subscriptionsRef.current = [];
 
-    // Destroy engine
+    // Destroy engine with proper cleanup
     if (engineRef.current) {
-      engineRef.current.destroy();
+      try {
+        engineRef.current.destroy();
+      } catch (error) {
+        console.warn('[ConversationFlow] Error destroying engine:', error);
+      }
       engineRef.current = null;
     }
 

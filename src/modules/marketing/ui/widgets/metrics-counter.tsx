@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useRef,useState } from 'react';
-import { 
+import {
   Award,
   Clock,
-  Globe, 
-  MessageSquare, 
+  Globe,
+  MessageSquare,
   Shield,
   TrendingUp,
-  Users, 
+  Users,
   Zap} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -104,7 +104,7 @@ const METRICS: Metric[] = [
 
 /**
  * Metrics Counter Widget - Client Component
- * 
+ *
  * Animated counter widget displaying key platform metrics
  * with intersection observer for triggered animations.
  */
@@ -116,7 +116,7 @@ export function MetricsCounter() {
   // Format number with appropriate suffixes
   const formatNumber = (value: number, metric: Metric): string => {
     const { prefix = '', suffix } = metric;
-    
+
     if (value >= 1000000) {
       return `${prefix}${(value / 1000000).toFixed(1)}M${suffix}`;
     } else if (value >= 1000) {
@@ -132,25 +132,25 @@ export function MetricsCounter() {
   const animateCounter = (targetValue: number, metricId: string, duration = 2000) => {
     const startTime = Date.now();
     const startValue = animatedValues[metricId] || 0;
-    
+
     const updateValue = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       // Easing function for smooth animation
       const easeOutCubic = 1 - Math.pow(1 - progress, 3);
       const currentValue = startValue + (targetValue - startValue) * easeOutCubic;
-      
+
       setAnimatedValues(prev => ({
         ...prev,
         [metricId]: currentValue
       }));
-      
+
       if (progress < 1) {
         requestAnimationFrame(updateValue);
       }
     };
-    
+
     requestAnimationFrame(updateValue);
   };
 
@@ -161,7 +161,7 @@ export function MetricsCounter() {
         const [entry] = entries;
         if (entry.isIntersecting && !isVisible) {
           setIsVisible(true);
-          
+
           // Start animations for all metrics with staggered delays
           METRICS.forEach((metric, index) => {
             setTimeout(() => {
@@ -191,16 +191,16 @@ export function MetricsCounter() {
         <Badge className="bg-green-100 text-green-800 hover:bg-green-200 px-4 py-2 mb-6">
           📊 Platform Metrics
         </Badge>
-        
+
         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
           Trusted by Businesses
           <span className="block bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
             Across Africa
           </span>
         </h2>
-        
+
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Our WhatsApp Cloud API platform delivers exceptional performance 
+          Our WhatsApp Cloud API platform delivers exceptional performance
           and reliability at scale. Here's what our customers experience.
         </p>
       </div>
@@ -211,16 +211,16 @@ export function MetricsCounter() {
           const IconComponent = metric.icon;
           const currentValue = animatedValues[metric.id] || 0;
           const displayValue = formatNumber(currentValue, metric);
-          
+
           return (
-            <Card 
-              key={metric.id} 
+            <Card
+              key={metric.id}
               className={`p-6 text-center hover:shadow-lg transition-all duration-300 border-0 bg-white group hover:-translate-y-1 ${
                 isVisible ? 'animate-fade-in-up' : 'opacity-0'
               }`}
-              style={{ 
+              style={{
                 animationDelay: `${index * 100}ms`,
-                animationFillMode: 'forwards' 
+                animationFillMode: 'forwards'
               }}
             >
               {/* Icon */}
@@ -248,7 +248,7 @@ export function MetricsCounter() {
               {/* Progress Bar for Visual Effect */}
               <div className="mt-4">
                 <div className="w-full bg-gray-200 rounded-full h-1">
-                  <div 
+                  <div
                     className={`h-1 rounded-full bg-gradient-to-r transition-all duration-1000 ease-out ${
                       metric.color.includes('blue') ? 'from-blue-400 to-blue-600' :
                       metric.color.includes('green') ? 'from-green-400 to-green-600' :
@@ -260,7 +260,7 @@ export function MetricsCounter() {
                       metric.color.includes('pink') ? 'from-pink-400 to-pink-600' :
                       'from-gray-400 to-gray-600'
                     }`}
-                    style={{ 
+                    style={{
                       width: isVisible ? '100%' : '0%',
                       transitionDelay: `${index * 100}ms`
                     }}
@@ -284,9 +284,9 @@ export function MetricsCounter() {
                 Built for scale and reliability
               </div>
             </div>
-            
+
             <div className="hidden md:block w-px h-12 bg-gray-300" />
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600 mb-1">
                 🚀 Growing Fast
@@ -295,9 +295,9 @@ export function MetricsCounter() {
                 Join thousands of satisfied customers
               </div>
             </div>
-            
+
             <div className="hidden md:block w-px h-12 bg-gray-300" />
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600 mb-1">
                 ✅ Proven Results

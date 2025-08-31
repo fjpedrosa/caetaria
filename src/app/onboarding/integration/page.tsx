@@ -60,7 +60,7 @@ export default async function WhatsAppIntegrationPage() {
               <p>
                 Don't have WhatsApp Business API credentials yet? We can help you get set up.
               </p>
-              <Link 
+              <Link
                 href="#"
                 className="inline-flex items-center text-amber-700 hover:text-amber-900 font-medium"
               >
@@ -98,18 +98,18 @@ export default async function WhatsAppIntegrationPage() {
                 <h4 className="font-medium text-gray-900 mb-1">Facebook Developers Console</h4>
                 <p>Log in to developers.facebook.com and navigate to your WhatsApp app</p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Business Manager</h4>
                 <p>Find your Business Account ID in WhatsApp Manager settings</p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Phone Number ID</h4>
                 <p>Located in the WhatsApp app dashboard under phone numbers</p>
               </div>
-              
-              <Link 
+
+              <Link
                 href="#"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >

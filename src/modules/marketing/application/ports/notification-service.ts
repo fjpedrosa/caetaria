@@ -1,5 +1,5 @@
 /**
- * Notification Service Port  
+ * Notification Service Port
  * Application layer - Interface for sending notifications
  */
 
@@ -34,17 +34,17 @@ export interface NotificationService {
    * Send email notification
    */
   sendEmail(notification: EmailNotification): Promise<void>;
-  
+
   /**
    * Send welcome email to new lead
    */
   sendWelcomeEmail(lead: Lead): Promise<void>;
-  
+
   /**
    * Send lead notification to sales team
    */
   notifySalesTeam(lead: Lead): Promise<void>;
-  
+
   /**
    * Send Slack notification
    */

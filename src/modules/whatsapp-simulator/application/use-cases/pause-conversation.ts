@@ -20,7 +20,7 @@ export class PauseConversationUseCase {
   async execute(request: PauseConversationRequest = {}): Promise<PauseConversationResponse> {
     try {
       const currentState = this.engine.getCurrentState();
-      
+
       // Check if conversation is currently playing
       if (!currentState.isPlaying) {
         return {

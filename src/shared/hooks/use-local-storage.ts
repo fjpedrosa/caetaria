@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef,useState } from "react"
+import { useCallback, useEffect, useRef,useState } from 'react'
 
 type StorageValue<T> = T | null
 type SetStorageValue<T> = T | ((prevValue: StorageValue<T>) => T)
@@ -12,7 +12,7 @@ export function useLocalStorage<T>(
 ): [StorageValue<T>, (value: SetStorageValue<T>) => void, () => void] {
   // Get the value from localStorage or use the initial value
   const [storedValue, setStoredValue] = useState<StorageValue<T>>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return initialValue
     }
 
@@ -31,11 +31,11 @@ export function useLocalStorage<T>(
       try {
         // Allow value to be a function so we have the same API as useState
         const valueToStore = value instanceof Function ? value(storedValue) : value
-        
+
         setStoredValue(valueToStore)
-        
+
         // Save to localStorage
-        if (typeof window !== "undefined") {
+        if (typeof window !== 'undefined') {
           if (valueToStore === null || valueToStore === undefined) {
             window.localStorage.removeItem(key)
           } else {
@@ -53,7 +53,7 @@ export function useLocalStorage<T>(
   const removeValue = useCallback(() => {
     try {
       setStoredValue(null)
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         window.localStorage.removeItem(key)
       }
     } catch (error) {
@@ -73,8 +73,8 @@ export function useLocalStorage<T>(
       }
     }
 
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
   }, [key, storedValue])
 
   return [storedValue, setValue, removeValue]
@@ -89,7 +89,7 @@ export function useTypedLocalStorage<T>(
   validator?: (value: unknown) => value is T
 ): [T, (value: T | ((prevValue: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return initialValue
     }
 
@@ -98,13 +98,13 @@ export function useTypedLocalStorage<T>(
       if (!item) return initialValue
 
       const parsed = JSON.parse(item)
-      
+
       // Use validator if provided, otherwise trust the type
       if (validator && !validator(parsed)) {
         console.warn(`Invalid value in localStorage for key "${key}", using initial value`)
         return initialValue
       }
-      
+
       return parsed
     } catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error)
@@ -116,16 +116,16 @@ export function useTypedLocalStorage<T>(
     (value: T | ((prevValue: T) => T)) => {
       try {
         const valueToStore = value instanceof Function ? value(storedValue) : value
-        
+
         // Validate the value if validator is provided
         if (validator && !validator(valueToStore)) {
           console.error(`Invalid value provided for localStorage key "${key}"`)
           return
         }
-        
+
         setStoredValue(valueToStore)
-        
-        if (typeof window !== "undefined") {
+
+        if (typeof window !== 'undefined') {
           window.localStorage.setItem(key, JSON.stringify(valueToStore))
         }
       } catch (error) {
@@ -138,7 +138,7 @@ export function useTypedLocalStorage<T>(
   const removeValue = useCallback(() => {
     try {
       setStoredValue(initialValue)
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         window.localStorage.removeItem(key)
       }
     } catch (error) {
@@ -275,7 +275,7 @@ export function useExpiringStorage<T>(
   expirationMs: number
 ): [T, (value: T) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return initialValue
     }
 
@@ -284,13 +284,13 @@ export function useExpiringStorage<T>(
       if (!item) return initialValue
 
       const { value, expiry } = JSON.parse(item)
-      
+
       if (Date.now() > expiry) {
         // Item has expired, remove it and return initial value
         window.localStorage.removeItem(key)
         return initialValue
       }
-      
+
       return value
     } catch (error) {
       console.error(`Error reading expiring localStorage key "${key}":`, error)
@@ -302,8 +302,8 @@ export function useExpiringStorage<T>(
     (value: T) => {
       try {
         setStoredValue(value)
-        
-        if (typeof window !== "undefined") {
+
+        if (typeof window !== 'undefined') {
           const expiry = Date.now() + expirationMs
           window.localStorage.setItem(key, JSON.stringify({ value, expiry }))
         }
@@ -317,7 +317,7 @@ export function useExpiringStorage<T>(
   const removeValue = useCallback(() => {
     try {
       setStoredValue(initialValue)
-      if (typeof window !== "undefined") {
+      if (typeof window !== 'undefined') {
         window.localStorage.removeItem(key)
       }
     } catch (error) {
@@ -336,9 +336,9 @@ export function useSharedLocalStorage<T>(
   initialValue: T
 ): [T, (value: T | ((prevValue: T) => T)) => void] {
   const eventKey = `localStorage-${key}`
-  
+
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return initialValue
     }
 
@@ -355,12 +355,12 @@ export function useSharedLocalStorage<T>(
     (value: T | ((prevValue: T) => T)) => {
       try {
         const valueToStore = value instanceof Function ? value(storedValue) : value
-        
+
         setStoredValue(valueToStore)
-        
-        if (typeof window !== "undefined") {
+
+        if (typeof window !== 'undefined') {
           window.localStorage.setItem(key, JSON.stringify(valueToStore))
-          
+
           // Dispatch custom event to sync across components
           const event = new CustomEvent(eventKey, {
             detail: { key, value: valueToStore },
@@ -395,7 +395,7 @@ export function useSharedLocalStorage<T>(
 export function useUserPreferences<T extends Record<string, any>>(
   defaults: T
 ): [T, (key: keyof T, value: T[keyof T]) => void, (preferences: Partial<T>) => void, () => void] {
-  const [preferences, setPreferences, clearPreferences] = useLocalStorage("userPreferences", defaults)
+  const [preferences, setPreferences, clearPreferences] = useLocalStorage('userPreferences', defaults)
 
   const updatePreference = useCallback(
     (key: keyof T, value: T[keyof T]) => {

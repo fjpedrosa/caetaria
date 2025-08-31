@@ -27,7 +27,7 @@ export class TestBotUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!isSuccess(sessionResult) || !sessionResult.data) {
         return failure(new Error('Onboarding session not found'));
       }
@@ -43,11 +43,11 @@ export class TestBotUseCase {
       if (!session.stepData.whatsappConfig) {
         return failure(new Error('WhatsApp configuration required'));
       }
-      
+
       if (!session.stepData.phoneVerification?.isVerified) {
         return failure(new Error('Phone verification required'));
       }
-      
+
       if (!session.stepData.botConfig) {
         return failure(new Error('Bot configuration required'));
       }
@@ -62,7 +62,7 @@ export class TestBotUseCase {
         const webhookResult = await this.whatsappService.testWebhook(
           session.stepData.whatsappConfig.webhookUrl
         );
-        
+
         if (isSuccess(webhookResult) && webhookResult.data) {
           webhookConfigured = true;
         } else {
@@ -80,7 +80,7 @@ export class TestBotUseCase {
           command.testPhoneNumber,
           testMessage
         );
-        
+
         if (isSuccess(messageResult) && messageResult.data.status === 'sent') {
           testMessageSent = true;
           // In a real implementation, we'd wait for delivery confirmation

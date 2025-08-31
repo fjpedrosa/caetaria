@@ -7,7 +7,7 @@ export class PricingModelMapper {
   static toDomainPlan(apiModel: PricingPlanApiModel): PricingPlanEntity {
     const currency = Currency.fromCode(apiModel.price.currency);
     const price = new Price(apiModel.price.amount, currency);
-    
+
     return new PricingPlanEntity({
       id: apiModel.id,
       name: apiModel.name,
@@ -42,7 +42,7 @@ export class PricingModelMapper {
 
   static toDomainDiscount(apiModel: DiscountApiModel): DiscountEntity {
     const currency = apiModel.currency ? Currency.fromCode(apiModel.currency) : undefined;
-    
+
     return new DiscountEntity({
       id: apiModel.id,
       code: apiModel.code,
@@ -90,7 +90,7 @@ export class PricingRepositoryAdapter implements PricingRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.getPricingPlans.initiate({ includeInactive: true })
     );
-    
+
     if (result.error) {
       throw new Error('Failed to fetch pricing plans');
     }
@@ -102,7 +102,7 @@ export class PricingRepositoryAdapter implements PricingRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.getPricingPlan.initiate(id)
     );
-    
+
     if (result.error) {
       return null;
     }
@@ -114,7 +114,7 @@ export class PricingRepositoryAdapter implements PricingRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.getPricingPlans.initiate({ includeInactive: false })
     );
-    
+
     if (result.error) {
       throw new Error('Failed to fetch active pricing plans');
     }
@@ -126,7 +126,7 @@ export class PricingRepositoryAdapter implements PricingRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.getPricingPlans.initiate({ popularOnly: true })
     );
-    
+
     if (result.error) {
       throw new Error('Failed to fetch popular pricing plans');
     }
@@ -154,7 +154,7 @@ export class DiscountRepositoryAdapter implements DiscountRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.validateDiscount.initiate({ discountCode: code, planId: '' })
     );
-    
+
     if (result.error || !result.data.isValid || !result.data.discount) {
       return null;
     }
@@ -166,7 +166,7 @@ export class DiscountRepositoryAdapter implements DiscountRepository {
     const result = await this.store.dispatch(
       pricingApi.endpoints.getActiveDiscounts.initiate()
     );
-    
+
     if (result.error) {
       throw new Error('Failed to fetch active discounts');
     }

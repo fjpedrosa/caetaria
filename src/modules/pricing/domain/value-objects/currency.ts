@@ -30,12 +30,12 @@ export class Currency {
 
   format(amount: number): string {
     const formattedAmount = amount.toFixed(this.decimals);
-    
+
     // Handle different symbol placement based on currency
     if (this.code === 'EUR') {
       return `${formattedAmount}${this.symbol}`;
     }
-    
+
     return `${this.symbol}${formattedAmount}`;
   }
 
@@ -54,7 +54,7 @@ export class Currency {
   static fromCode(code: string): Currency {
     const upperCode = code.toUpperCase() as keyof typeof Currency.SUPPORTED_CURRENCIES;
     const currencyData = Currency.SUPPORTED_CURRENCIES[upperCode];
-    
+
     if (!currencyData) {
       throw new Error(`Unsupported currency code: ${code}`);
     }
@@ -75,10 +75,10 @@ export class Currency {
 
   static getAfricanCurrencies(): Currency[] {
     const africanCodes: (keyof typeof Currency.SUPPORTED_CURRENCIES)[] = [
-      'ZAR', 'NGN', 'KES', 'GHS', 'EGP', 'MAD', 'TND', 'UGX', 
+      'ZAR', 'NGN', 'KES', 'GHS', 'EGP', 'MAD', 'TND', 'UGX',
       'TZS', 'ETB', 'ZMW', 'BWP', 'MUR', 'XOF', 'XAF'
     ];
-    
+
     return africanCodes.map(code => Currency.fromCode(code));
   }
 

@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useMemo } from 'react';
+
 import { Message, MessageType, SenderType } from '../../domain/entities';
 
 export interface TimingConfig {
@@ -73,40 +74,40 @@ export function useMessageTiming(config: Partial<TimingConfig> = {}): TimingUtil
   const calculateMessageTiming = useCallback(
     (message: Message, previousMessage?: Message): CalculatedTiming => {
       const { content, type, sender } = message;
-      
+
       // Base calculations
       const textLength = getTextLength(content, type);
       const baseTypingTime = (textLength / fullConfig.baseTypingSpeed) * 1000;
-      
+
       // Apply multipliers
       const typeMultiplier = fullConfig.messageTypeMultipliers[type] || 1;
       const senderMultiplier = fullConfig.senderMultipliers[sender] || 1;
-      
+
       // Calculate typing duration with variations
       let typingDuration = baseTypingTime * typeMultiplier * senderMultiplier;
-      
+
       // Add realistic variation
       const variation = 1 + (Math.random() - 0.5) * fullConfig.delayVariation;
       typingDuration *= variation;
-      
+
       // Ensure minimum typing duration for non-text messages
       if (type !== 'text') {
         typingDuration = Math.max(typingDuration, 1500);
       }
-      
+
       // Calculate delay before typing
       let delayBeforeTyping = calculateDelayBetweenMessages(message, previousMessage);
-      
+
       // Apply speed and constraints
       delayBeforeTyping = Math.max(
         fullConfig.minDelay,
         Math.min(fullConfig.maxDelay, delayBeforeTyping)
       );
-      
+
       const deliveryDelay = fullConfig.deliveryDelay;
       const readDelay = fullConfig.readReceiptDelay;
       const totalDuration = delayBeforeTyping + typingDuration + deliveryDelay + readDelay;
-      
+
       return {
         delayBeforeTyping,
         typingDuration: Math.round(typingDuration),
@@ -121,14 +122,14 @@ export function useMessageTiming(config: Partial<TimingConfig> = {}): TimingUtil
   const calculateConversationDuration = useCallback(
     (messages: Message[]): number => {
       let totalDuration = 0;
-      
+
       for (let i = 0; i < messages.length; i++) {
         const message = messages[i];
         const previousMessage = i > 0 ? messages[i - 1] : undefined;
         const timing = calculateMessageTiming(message, previousMessage);
         totalDuration += timing.totalDuration;
       }
-      
+
       return totalDuration;
     },
     [calculateMessageTiming]
@@ -137,7 +138,7 @@ export function useMessageTiming(config: Partial<TimingConfig> = {}): TimingUtil
   const adjustTimingForSpeed = useCallback(
     (timing: CalculatedTiming, speed: number): CalculatedTiming => {
       if (speed <= 0) speed = 1;
-      
+
       return {
         delayBeforeTyping: Math.round(timing.delayBeforeTyping / speed),
         typingDuration: Math.round(timing.typingDuration / speed),
@@ -159,7 +160,7 @@ export function useMessageTiming(config: Partial<TimingConfig> = {}): TimingUtil
         type: messageType,
         sender
       } as Message;
-      
+
       return calculateMessageTiming(mockMessage);
     },
     [calculateMessageTiming]
@@ -271,27 +272,27 @@ function calculateDelayBetweenMessages(
   previousMessage?: Message
 ): number {
   if (!previousMessage) return 1000; // First message delay
-  
+
   // Base delay
   let delay = 2000;
-  
+
   // Sender switching adds delay
   if (currentMessage.sender !== previousMessage.sender) {
     delay += 1500; // Time to process and respond
   }
-  
+
   // Message type affects response time
   if (previousMessage.type !== 'text') {
     delay += 1000; // Media messages take longer to process
   }
-  
+
   // Question messages typically get faster responses
   if (previousMessage.content.text?.includes('?')) {
     delay *= 0.7;
   }
-  
+
   // Add some random variation
   delay *= (0.8 + Math.random() * 0.4); // ±20% variation
-  
+
   return Math.round(delay);
 }

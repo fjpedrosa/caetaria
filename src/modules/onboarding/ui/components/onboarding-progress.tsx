@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Onboarding Progress Component
@@ -64,11 +64,11 @@ const steps: Step[] = [
 ];
 
 function getStepStatus(stepId: string, currentPath: string): 'complete' | 'current' | 'upcoming' {
-  const currentStep = steps.find(step => currentPath === step.href || 
+  const currentStep = steps.find(step => currentPath === step.href ||
     (currentPath.startsWith(step.href) && step.href !== '/onboarding'));
   const currentIndex = currentStep ? steps.indexOf(currentStep) : -1;
   const stepIndex = steps.findIndex(step => step.id === stepId);
-  
+
   if (stepIndex < currentIndex) return 'complete';
   if (stepIndex === currentIndex) return 'current';
   return 'upcoming';
@@ -76,7 +76,7 @@ function getStepStatus(stepId: string, currentPath: string): 'complete' | 'curre
 
 export function OnboardingProgress() {
   const pathname = usePathname();
-  
+
   // Don't show progress on welcome or complete pages
   if (pathname === '/onboarding' || pathname === '/onboarding/complete') {
     return null;
@@ -88,7 +88,7 @@ export function OnboardingProgress() {
         {steps.slice(1, -1).map((step, stepIdx) => {
           const status = getStepStatus(step.id, pathname);
           const isClickable = status === 'complete' || status === 'current';
-          
+
           return (
             <li key={step.name} className="flex items-center flex-1">
               <div className="flex items-center">
@@ -97,12 +97,12 @@ export function OnboardingProgress() {
                     <div className="flex items-center">
                       <div
                         className={cn(
-                          "flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200",
+                          'flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2 transition-all duration-200',
                           status === 'complete'
-                            ? "bg-green-600 border-green-600 text-white group-hover:bg-green-700 group-hover:border-green-700"
+                            ? 'bg-green-600 border-green-600 text-white group-hover:bg-green-700 group-hover:border-green-700'
                             : status === 'current'
-                            ? "bg-blue-600 border-blue-600 text-white"
-                            : "border-gray-300 text-gray-500"
+                            ? 'bg-blue-600 border-blue-600 text-white'
+                            : 'border-gray-300 text-gray-500'
                         )}
                       >
                         {status === 'complete' ? (
@@ -114,20 +114,20 @@ export function OnboardingProgress() {
                       <div className="ml-3 min-w-0 hidden sm:block">
                         <p
                           className={cn(
-                            "text-sm font-medium transition-colors duration-200",
+                            'text-sm font-medium transition-colors duration-200',
                             status === 'complete' || status === 'current'
-                              ? "text-gray-900 group-hover:text-blue-600"
-                              : "text-gray-500"
+                              ? 'text-gray-900 group-hover:text-blue-600'
+                              : 'text-gray-500'
                           )}
                         >
                           {step.name}
                         </p>
                         <p
                           className={cn(
-                            "text-xs transition-colors duration-200",
+                            'text-xs transition-colors duration-200',
                             status === 'complete' || status === 'current'
-                              ? "text-gray-600 group-hover:text-blue-500"
-                              : "text-gray-400"
+                              ? 'text-gray-600 group-hover:text-blue-500'
+                              : 'text-gray-400'
                           )}
                         >
                           {step.description}
@@ -139,8 +139,8 @@ export function OnboardingProgress() {
                   <div className="flex items-center">
                     <div
                       className={cn(
-                        "flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2",
-                        "border-gray-300 text-gray-500"
+                        'flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2',
+                        'border-gray-300 text-gray-500'
                       )}
                     >
                       <span className="text-sm font-medium">{stepIdx + 1}</span>
@@ -156,14 +156,14 @@ export function OnboardingProgress() {
                   </div>
                 )}
               </div>
-              
+
               {stepIdx !== steps.slice(1, -1).length - 1 && (
                 <div
                   className={cn(
-                    "flex-1 h-0.5 ml-6 mr-6 transition-colors duration-200",
+                    'flex-1 h-0.5 ml-6 mr-6 transition-colors duration-200',
                     getStepStatus(steps[stepIdx + 2]?.id, pathname) !== 'upcoming'
-                      ? "bg-green-200"
-                      : "bg-gray-200"
+                      ? 'bg-green-200'
+                      : 'bg-gray-200'
                   )}
                   aria-hidden="true"
                 />
@@ -172,7 +172,7 @@ export function OnboardingProgress() {
           );
         })}
       </ol>
-      
+
       {/* Mobile Progress Bar */}
       <div className="mt-6 sm:hidden">
         <div className="bg-gray-200 rounded-full h-2">

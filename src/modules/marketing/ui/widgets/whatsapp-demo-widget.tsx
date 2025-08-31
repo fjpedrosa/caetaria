@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect,useState } from 'react';
-import { 
-  Bot, 
-  Check, 
+import {
+  Bot,
+  Check,
   CheckCheck,
-  MessageSquare, 
+  MessageSquare,
   Pause,
   Play,
   RotateCcw,
-  Send, 
+  Send,
   User} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +59,7 @@ const DEMO_CONVERSATION = [
 
 /**
  * WhatsApp Demo Widget - Client Component
- * 
+ *
  * Interactive demo showing WhatsApp conversation flow
  * with realistic typing indicators and message animations.
  */
@@ -100,7 +100,7 @@ export function WhatsAppDemoWidget() {
     }
 
     const demoMessage = DEMO_CONVERSATION[index];
-    
+
     // Show typing indicator
     setIsTyping(true);
     setTypingUser(demoMessage.type);
@@ -122,12 +122,12 @@ export function WhatsAppDemoWidget() {
       // Update message status after a delay
       setTimeout(() => {
         if (demoMessage.type === 'bot') {
-          setMessages(prev => prev.map(msg => 
+          setMessages(prev => prev.map(msg =>
             msg.id === newMessage.id ? { ...msg, status: 'delivered' } : msg
           ));
-          
+
           setTimeout(() => {
-            setMessages(prev => prev.map(msg => 
+            setMessages(prev => prev.map(msg =>
               msg.id === newMessage.id ? { ...msg, status: 'read' } : msg
             ));
           }, 500);
@@ -137,7 +137,7 @@ export function WhatsAppDemoWidget() {
       // Play next message
       const nextIndex = index + 1;
       setCurrentMessageIndex(nextIndex);
-      
+
       if (nextIndex < DEMO_CONVERSATION.length) {
         setTimeout(() => {
           playNextMessage(nextIndex);
@@ -149,16 +149,16 @@ export function WhatsAppDemoWidget() {
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: false 
+      hour12: false
     });
   };
 
   const renderMessageStatus = (message: Message) => {
     if (message.type === 'user') return null;
-    
+
     switch (message.status) {
       case 'sent':
         return <Check className="w-3 h-3 text-gray-400" />;
@@ -178,16 +178,16 @@ export function WhatsAppDemoWidget() {
         <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 mb-6">
           📱 Interactive Demo
         </Badge>
-        
+
         <h2 className="text-4xl lg:text-5xl font-bold mb-6">
           See WhatsApp Cloud API
           <span className="block bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
             in Action
           </span>
         </h2>
-        
+
         <p className="text-xl text-green-100 max-w-2xl mx-auto mb-8">
-          Experience how our AI-powered platform handles real customer conversations 
+          Experience how our AI-powered platform handles real customer conversations
           with intelligent routing and instant responses.
         </p>
       </div>
@@ -199,7 +199,7 @@ export function WhatsAppDemoWidget() {
           <div className="relative bg-black rounded-[3rem] p-3 shadow-2xl mx-auto" style={{ width: '320px', height: '640px' }}>
             {/* iPhone Notch */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10"></div>
-            
+
             {/* iPhone Screen */}
             <div className="bg-white rounded-[2.5rem] w-full h-full overflow-hidden relative">
               <Card className="bg-white rounded-[2.5rem] overflow-hidden shadow-none border-0 w-full h-full">
@@ -243,9 +243,9 @@ export function WhatsAppDemoWidget() {
                         <Bot className="w-3 h-3 text-white" />
                       )}
                     </div>
-                    
+
                     <p className="text-sm leading-relaxed">{message.content}</p>
-                    
+
                     <div className={`flex items-center justify-end mt-2 space-x-1 text-xs ${
                       message.type === 'user' ? 'text-green-100' : 'text-gray-500'
                     }`}>
@@ -301,7 +301,7 @@ export function WhatsAppDemoWidget() {
           {/* Demo Controls */}
           <Card className="p-8 bg-white/10 backdrop-blur-sm border border-white/20">
             <h3 className="text-2xl font-bold text-white mb-4">Demo Controls</h3>
-            
+
             <div className="flex space-x-4 mb-6">
               <Button
                 onClick={startDemo}
@@ -311,7 +311,7 @@ export function WhatsAppDemoWidget() {
                 <Play className="w-4 h-4" />
                 <span>{isPlaying ? 'Playing...' : 'Start Demo'}</span>
               </Button>
-              
+
               <Button
                 onClick={resetDemo}
                 variant="outline"
@@ -338,7 +338,7 @@ export function WhatsAppDemoWidget() {
           {/* Key Features */}
           <Card className="p-8 bg-white/10 backdrop-blur-sm border border-white/20">
             <h3 className="text-2xl font-bold text-white mb-6">What You're Seeing</h3>
-            
+
             <div className="space-y-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">

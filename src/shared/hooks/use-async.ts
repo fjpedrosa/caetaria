@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef,useState } from "react"
+import { useCallback, useEffect, useRef,useState } from 'react'
 
 export interface AsyncState<T, E = Error> {
   data: T | null
@@ -99,7 +99,7 @@ export function useAsyncWithCache<T, E = Error>(
   invalidateCache: () => void
 } {
   const cacheRef = useRef<Map<string, { data: T; timestamp: number }>>(new Map())
-  
+
   const [state, setState] = useState<AsyncState<T, E>>({
     data: null,
     error: null,
@@ -116,7 +116,7 @@ export function useAsyncWithCache<T, E = Error>(
     // Check cache first
     const cached = cacheRef.current.get(key)
     const now = Date.now()
-    
+
     if (cached && (now - cached.timestamp) < cacheTimeMs) {
       setState({
         data: cached.data,
@@ -138,10 +138,10 @@ export function useAsyncWithCache<T, E = Error>(
 
     try {
       const data = await executeRef.current()
-      
+
       // Cache the result
       cacheRef.current.set(key, { data, timestamp: now })
-      
+
       setState({
         data,
         error: null,

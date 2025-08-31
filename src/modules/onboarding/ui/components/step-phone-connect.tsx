@@ -28,7 +28,7 @@ export function StepPhoneConnect({ onNext, onPrev, defaultValues }: StepProps) {
   const [selectedCountry, setSelectedCountry] = useState(
     countryCodes.find(c => c.code === defaultValues?.countryCode) || countryCodes[0]
   )
-  
+
   const {
     register,
     handleSubmit,
@@ -45,7 +45,7 @@ export function StepPhoneConnect({ onNext, onPrev, defaultValues }: StepProps) {
 
   const formatPhoneNumber = (value: string) => {
     const cleaned = value.replace(/\D/g, '')
-    
+
     if (selectedCountry.code === '+34') {
       const match = cleaned.match(/^(\d{3})(\d{3})(\d{3})$/)
       if (match) {
@@ -57,12 +57,12 @@ export function StepPhoneConnect({ onNext, onPrev, defaultValues }: StepProps) {
         return `${match[1]} ${match[2]} ${match[3]}`
       }
     }
-    
+
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
     if (match) {
       return `${match[1]} ${match[2]} ${match[3]}`
     }
-    
+
     return value
   }
 
@@ -139,7 +139,7 @@ export function StepPhoneConnect({ onNext, onPrev, defaultValues }: StepProps) {
           {errors.phoneNumber && (
             <p className="text-sm text-red-500">{errors.phoneNumber.message}</p>
           )}
-          
+
           <div className="bg-blue-50 p-3 rounded-md flex items-start gap-2">
             <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5" />
             <div className="text-sm text-blue-800">
@@ -169,7 +169,7 @@ export function StepPhoneConnect({ onNext, onPrev, defaultValues }: StepProps) {
               </p>
             </div>
           </div>
-          
+
           {isWhatsAppBusiness && (
             <div className="ml-7 p-3 bg-green-50 rounded-md flex items-start gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />

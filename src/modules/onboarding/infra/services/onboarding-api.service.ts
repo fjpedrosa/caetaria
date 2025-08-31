@@ -1,12 +1,12 @@
 import { baseApi } from '../../../../store/api/base-api'
-import type { 
-  OnboardingSession, 
-  OnboardingStatus, 
+import type {
+  OnboardingSession,
+  OnboardingStatus,
   OnboardingStep} from '../../domain/entities/onboarding-session'
-import type { 
-  BusinessInfo, 
-  BusinessType, 
-  Industry 
+import type {
+  BusinessInfo,
+  BusinessType,
+  Industry
 } from '../../domain/value-objects/business-info'
 
 // DTOs for API requests/responses
@@ -102,9 +102,9 @@ export const onboardingApiService = baseApi.injectEndpoints({
       ],
     }),
 
-    getUserOnboardingSessions: builder.query<OnboardingSessionResponse[], { 
-      userEmail: string 
-      status?: OnboardingStatus 
+    getUserOnboardingSessions: builder.query<OnboardingSessionResponse[], {
+      userEmail: string
+      status?: OnboardingStatus
     }>({
       query: ({ userEmail, status }) => {
         const params = new URLSearchParams({ userEmail })
@@ -178,8 +178,8 @@ export const onboardingApiService = baseApi.injectEndpoints({
       ],
     }),
 
-    testBotConfiguration: builder.mutation<{ 
-      success: boolean 
+    testBotConfiguration: builder.mutation<{
+      success: boolean
       testResults: {
         webhookConnectivity: boolean
         whatsappApiAccess: boolean
@@ -193,10 +193,10 @@ export const onboardingApiService = baseApi.injectEndpoints({
       }),
     }),
 
-    completeOnboarding: builder.mutation<{ 
-      success: boolean 
-      botId: string 
-      dashboardUrl: string 
+    completeOnboarding: builder.mutation<{
+      success: boolean
+      botId: string
+      dashboardUrl: string
     }, string>({
       query: (sessionId) => ({
         url: `/onboarding/sessions/${sessionId}/complete`,
@@ -243,10 +243,10 @@ export const onboardingApiService = baseApi.injectEndpoints({
     }),
 
     // Helper endpoints
-    validateWhatsAppToken: builder.mutation<{ 
-      valid: boolean 
-      phoneNumberId?: string 
-      displayPhoneNumber?: string 
+    validateWhatsAppToken: builder.mutation<{
+      valid: boolean
+      phoneNumberId?: string
+      displayPhoneNumber?: string
     }, {
       token: string
       phoneNumber: string
@@ -258,9 +258,9 @@ export const onboardingApiService = baseApi.injectEndpoints({
       }),
     }),
 
-    generateWebhookToken: builder.mutation<{ 
-      verifyToken: string 
-      webhookUrl: string 
+    generateWebhookToken: builder.mutation<{
+      verifyToken: string
+      webhookUrl: string
     }, string>({
       query: (sessionId) => ({
         url: `/onboarding/sessions/${sessionId}/generate-webhook`,

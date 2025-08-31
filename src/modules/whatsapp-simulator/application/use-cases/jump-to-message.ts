@@ -22,7 +22,7 @@ export class JumpToMessageUseCase {
   async execute(request: JumpToMessageRequest): Promise<JumpToMessageResponse> {
     try {
       const currentState = this.engine.getCurrentState();
-      
+
       // Check if there's a conversation loaded
       if (!currentState.conversation) {
         return {

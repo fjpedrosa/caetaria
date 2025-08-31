@@ -105,9 +105,9 @@ export function ServiceWorkerRegister() {
         </button>
       </div>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto-remove after 10 seconds
     setTimeout(() => {
       if (notification.parentElement) {

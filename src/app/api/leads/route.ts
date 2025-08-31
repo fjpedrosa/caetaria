@@ -20,10 +20,10 @@ const leadSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate the request body
     const validatedData = leadSchema.parse(body);
-    
+
     // TODO: In a real app, save to database via repository pattern
     // For now, just log the lead data
     console.log('New lead captured:', {
@@ -32,10 +32,10 @@ export async function POST(request: NextRequest) {
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
       userAgent: request.headers.get('user-agent') || 'unknown'
     });
-    
+
     // Simulate processing delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Return success response
     return NextResponse.json(
       {
@@ -45,10 +45,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-    
+
   } catch (error) {
     console.error('Lead capture error:', error);
-    
+
     if (error instanceof ZodError) {
       return NextResponse.json(
         {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     return NextResponse.json(
       {
         success: false,

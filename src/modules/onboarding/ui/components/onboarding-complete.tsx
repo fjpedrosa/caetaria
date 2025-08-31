@@ -12,13 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const completionData = {
   businessInfo: {
     completed: true,
-    companyName: "Sample Business",
-    industry: "Technology",
+    companyName: 'Sample Business',
+    industry: 'Technology',
     employeeCount: 25,
   },
   whatsappIntegration: {
     completed: true,
-    phoneNumber: "+1 (555) 123-4567",
+    phoneNumber: '+1 (555) 123-4567',
     isTestMode: true,
   },
   phoneVerification: {
@@ -27,8 +27,8 @@ const completionData = {
   },
   botConfiguration: {
     completed: true,
-    botName: "CustomerBot",
-    language: "English",
+    botName: 'CustomerBot',
+    language: 'English',
     businessHoursEnabled: true,
   },
   testing: {
@@ -42,51 +42,51 @@ const completionData = {
 const completionStats = [
   {
     icon: Users,
-    label: "Business Profile",
-    value: "Configured",
+    label: 'Business Profile',
+    value: 'Configured',
     description: `${completionData.businessInfo.companyName} • ${completionData.businessInfo.employeeCount} employees`,
-    status: "complete" as const,
+    status: 'complete' as const,
   },
   {
     icon: MessageSquare,
-    label: "WhatsApp API",
-    value: "Connected",
+    label: 'WhatsApp API',
+    value: 'Connected',
     description: `${completionData.whatsappIntegration.phoneNumber} • ${completionData.whatsappIntegration.isTestMode ? 'Test Mode' : 'Live Mode'}`,
-    status: "complete" as const,
+    status: 'complete' as const,
   },
   {
     icon: Shield,
-    label: "Phone Verification",
-    value: "Verified",
+    label: 'Phone Verification',
+    value: 'Verified',
     description: `Verified ${formatRelativeTime(completionData.phoneVerification.verifiedAt)}`,
-    status: "complete" as const,
+    status: 'complete' as const,
   },
   {
     icon: Bot,
-    label: "Bot Setup",
-    value: "Ready",
+    label: 'Bot Setup',
+    value: 'Ready',
     description: `${completionData.botConfiguration.botName} • ${completionData.botConfiguration.language}`,
-    status: "complete" as const,
+    status: 'complete' as const,
   },
   {
     icon: CheckCircle,
-    label: "Testing",
+    label: 'Testing',
     value: `${completionData.testing.testsPassed}/${completionData.testing.totalTests}`,
     description: `All tests passed • ${formatRelativeTime(completionData.testing.lastTestAt)}`,
-    status: "complete" as const,
+    status: 'complete' as const,
   },
 ];
 
 function formatRelativeTime(date: Date): string {
   const now = new Date();
   const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-  
+
   if (diffInMinutes < 1) return 'just now';
   if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60);
   if (diffInHours < 24) return `${diffInHours}h ago`;
-  
+
   const diffInDays = Math.floor(diffInHours / 24);
   return `${diffInDays}d ago`;
 }
@@ -110,7 +110,7 @@ export function OnboardingComplete() {
                 <div key={index} className="flex items-start space-x-3 p-4 border rounded-lg bg-gray-50">
                   <div className="flex-shrink-0">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      stat.status === 'complete' 
+                      stat.status === 'complete'
                         ? 'bg-green-100 text-green-600'
                         : 'bg-gray-100 text-gray-600'
                     }`}>
@@ -122,7 +122,7 @@ export function OnboardingComplete() {
                       <h3 className="text-sm font-medium text-gray-900">
                         {stat.label}
                       </h3>
-                      <Badge 
+                      <Badge
                         variant={stat.status === 'complete' ? 'default' : 'secondary'}
                         className={stat.status === 'complete' ? 'bg-green-100 text-green-800' : ''}
                       >
@@ -161,7 +161,7 @@ export function OnboardingComplete() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start space-x-3">
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <span className="text-xs font-medium text-blue-700">2</span>
@@ -173,7 +173,7 @@ export function OnboardingComplete() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-start space-x-3">
               <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                 <span className="text-xs font-medium text-blue-700">3</span>
@@ -198,7 +198,7 @@ export function OnboardingComplete() {
             <p className="text-xs text-gray-500">Completed</p>
           </CardContent>
         </Card>
-        
+
         <Card className="text-center">
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-blue-600">1</div>
@@ -206,7 +206,7 @@ export function OnboardingComplete() {
             <p className="text-xs text-gray-500">Verified</p>
           </CardContent>
         </Card>
-        
+
         <Card className="text-center">
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-purple-600">2</div>
@@ -214,7 +214,7 @@ export function OnboardingComplete() {
             <p className="text-xs text-gray-500">Configured</p>
           </CardContent>
         </Card>
-        
+
         <Card className="text-center">
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-orange-600">100%</div>

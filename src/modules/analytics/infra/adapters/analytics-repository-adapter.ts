@@ -1,17 +1,17 @@
-import { 
-  AnalyticsRepository, 
+import {
+  AnalyticsRepository,
   EventFilters,
-  MetricFilters, 
-  MetricsRepository, 
+  MetricFilters,
+  MetricsRepository,
   ReportingRepository} from '../../application/ports/analytics-repository';
 import { EventEntity } from '../../domain/entities/event';
 import { MetricEntity } from '../../domain/entities/metric';
 import { EventType } from '../../domain/value-objects/event-type';
 import { MetricValue } from '../../domain/value-objects/metric-value';
-import { 
-  analyticsApi, 
-  EventApiModel, 
-  GenerateReportApiResponse, 
+import {
+  analyticsApi,
+  EventApiModel,
+  GenerateReportApiResponse,
   MetricApiModel} from '../services/analytics-api';
 
 // Mappers for converting between domain entities and API models
@@ -160,7 +160,7 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
   async getUniqueUsers(filters: Omit<EventFilters, 'userId'>): Promise<string[]> {
     const events = await this.getEvents(filters);
     const userIds = new Set<string>();
-    
+
     events.forEach(event => {
       if (event.userId) {
         userIds.add(event.userId);
@@ -173,7 +173,7 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
   async getUniqueSessions(filters: EventFilters): Promise<string[]> {
     const events = await this.getEvents(filters);
     const sessionIds = new Set<string>();
-    
+
     events.forEach(event => {
       if (event.sessionId) {
         sessionIds.add(event.sessionId);

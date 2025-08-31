@@ -4,17 +4,17 @@
  * Application metadata
  */
 export const APP = {
-  name: "WhatsApp Cloud Landing",
-  description: "A comprehensive landing page for WhatsApp Cloud API integration",
-  version: "1.0.0",
-  url: "https://your-domain.com",
+  name: 'WhatsApp Cloud Landing',
+  description: 'A comprehensive landing page for WhatsApp Cloud API integration',
+  version: '1.0.0',
+  url: 'https://your-domain.com',
 } as const
 
 /**
  * API configuration
  */
 export const API = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
   timeout: 30000, // 30 seconds
   retryAttempts: 3,
   retryDelay: 1000, // 1 second
@@ -24,9 +24,9 @@ export const API = {
  * Authentication constants
  */
 export const AUTH = {
-  tokenKey: "auth_token",
-  refreshTokenKey: "refresh_token",
-  userKey: "user_data",
+  tokenKey: 'auth_token',
+  refreshTokenKey: 'refresh_token',
+  userKey: 'user_data',
   sessionTimeout: 24 * 60 * 60 * 1000, // 24 hours
 } as const
 
@@ -34,31 +34,31 @@ export const AUTH = {
  * Local storage keys
  */
 export const STORAGE_KEYS = {
-  theme: "app_theme",
-  language: "app_language",
-  onboardingCompleted: "onboarding_completed",
-  preferences: "user_preferences",
-  recentSearches: "recent_searches",
+  theme: 'app_theme',
+  language: 'app_language',
+  onboardingCompleted: 'onboarding_completed',
+  preferences: 'user_preferences',
+  recentSearches: 'recent_searches',
 } as const
 
 /**
  * Theme configuration
  */
 export const THEMES = {
-  light: "light",
-  dark: "dark",
-  system: "system",
+  light: 'light',
+  dark: 'dark',
+  system: 'system',
 } as const
 
 /**
  * Supported languages
  */
 export const LANGUAGES = {
-  en: "English",
-  es: "Español",
-  fr: "Français",
-  pt: "Português",
-  de: "Deutsch",
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  pt: 'Português',
+  de: 'Deutsch',
 } as const
 
 /**
@@ -82,25 +82,25 @@ export const HTTP_STATUS = {
  * Common error messages
  */
 export const ERROR_MESSAGES = {
-  NETWORK_ERROR: "Network error. Please check your connection and try again.",
-  UNAUTHORIZED: "You are not authorized to perform this action.",
-  NOT_FOUND: "The requested resource was not found.",
-  VALIDATION_ERROR: "Please check your input and try again.",
-  SERVER_ERROR: "An unexpected error occurred. Please try again later.",
-  TIMEOUT_ERROR: "Request timed out. Please try again.",
-  UNKNOWN_ERROR: "An unknown error occurred.",
+  NETWORK_ERROR: 'Network error. Please check your connection and try again.',
+  UNAUTHORIZED: 'You are not authorized to perform this action.',
+  NOT_FOUND: 'The requested resource was not found.',
+  VALIDATION_ERROR: 'Please check your input and try again.',
+  SERVER_ERROR: 'An unexpected error occurred. Please try again later.',
+  TIMEOUT_ERROR: 'Request timed out. Please try again.',
+  UNKNOWN_ERROR: 'An unknown error occurred.',
 } as const
 
 /**
  * Success messages
  */
 export const SUCCESS_MESSAGES = {
-  SAVED: "Changes saved successfully!",
-  CREATED: "Created successfully!",
-  UPDATED: "Updated successfully!",
-  DELETED: "Deleted successfully!",
-  COPIED: "Copied to clipboard!",
-  EMAIL_SENT: "Email sent successfully!",
+  SAVED: 'Changes saved successfully!',
+  CREATED: 'Created successfully!',
+  UPDATED: 'Updated successfully!',
+  DELETED: 'Deleted successfully!',
+  COPIED: 'Copied to clipboard!',
+  EMAIL_SENT: 'Email sent successfully!',
 } as const
 
 /**
@@ -121,8 +121,8 @@ export const VALIDATION_PATTERNS = {
  */
 export const FILE_UPLOAD = {
   maxSize: 10 * 1024 * 1024, // 10MB
-  allowedImageTypes: ["image/jpeg", "image/png", "image/gif", "image/webp"],
-  allowedDocumentTypes: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+  allowedImageTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+  allowedDocumentTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   maxFiles: 5,
 } as const
 
@@ -150,31 +150,31 @@ export const ANIMATION = {
  * Breakpoints for responsive design
  */
 export const BREAKPOINTS = {
-  xs: "480px",
-  sm: "640px",
-  md: "768px",
-  lg: "1024px",
-  xl: "1280px",
-  "2xl": "1536px",
+  xs: '480px',
+  sm: '640px',
+  md: '768px',
+  lg: '1024px',
+  xl: '1280px',
+  '2xl': '1536px',
 } as const
 
 /**
  * WhatsApp specific constants
  */
 export const WHATSAPP = {
-  apiVersion: "v17.0",
+  apiVersion: 'v17.0',
   maxMessageLength: 4096,
   maxMediaSize: 16 * 1024 * 1024, // 16MB
   supportedMessageTypes: [
-    "text",
-    "image", 
-    "audio",
-    "video",
-    "document",
-    "location",
-    "contacts",
-    "template",
-    "interactive",
+    'text',
+    'image',
+    'audio',
+    'video',
+    'document',
+    'location',
+    'contacts',
+    'template',
+    'interactive',
   ],
   webhookVerifyToken: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN,
 } as const
@@ -183,22 +183,22 @@ export const WHATSAPP = {
  * Social media links
  */
 export const SOCIAL_LINKS = {
-  twitter: "https://twitter.com/yourcompany",
-  facebook: "https://facebook.com/yourcompany",
-  linkedin: "https://linkedin.com/company/yourcompany",
-  instagram: "https://instagram.com/yourcompany",
-  github: "https://github.com/yourcompany",
+  twitter: 'https://twitter.com/yourcompany',
+  facebook: 'https://facebook.com/yourcompany',
+  linkedin: 'https://linkedin.com/company/yourcompany',
+  instagram: 'https://instagram.com/yourcompany',
+  github: 'https://github.com/yourcompany',
 } as const
 
 /**
  * Contact information
  */
 export const CONTACT = {
-  email: "contact@yourcompany.com",
-  phone: "+1-234-567-8900",
-  address: "123 Business Street, City, State 12345",
-  supportEmail: "support@yourcompany.com",
-  salesEmail: "sales@yourcompany.com",
+  email: 'contact@yourcompany.com',
+  phone: '+1-234-567-8900',
+  address: '123 Business Street, City, State 12345',
+  supportEmail: 'support@yourcompany.com',
+  salesEmail: 'sales@yourcompany.com',
 } as const
 
 /**
@@ -210,7 +210,7 @@ export const FEATURES = {
   multiLanguage: false,
   notifications: true,
   offlineMode: false,
-  betaFeatures: process.env.NODE_ENV === "development",
+  betaFeatures: process.env.NODE_ENV === 'development',
 } as const
 
 /**
@@ -235,11 +235,11 @@ export const RATE_LIMITS = {
  * Default values
  */
 export const DEFAULTS = {
-  locale: "en-US",
-  timezone: "UTC",
-  currency: "USD",
-  dateFormat: "MM/dd/yyyy",
-  timeFormat: "12h",
+  locale: 'en-US',
+  timezone: 'UTC',
+  currency: 'USD',
+  dateFormat: 'MM/dd/yyyy',
+  timeFormat: '12h',
   pageSize: 20,
 } as const
 
@@ -247,9 +247,9 @@ export const DEFAULTS = {
  * External service URLs
  */
 export const EXTERNAL_URLS = {
-  whatsappDocs: "https://developers.facebook.com/docs/whatsapp",
-  privacyPolicy: "/privacy",
-  termsOfService: "/terms",
-  support: "/support",
-  documentation: "/docs",
+  whatsappDocs: 'https://developers.facebook.com/docs/whatsapp',
+  privacyPolicy: '/privacy',
+  termsOfService: '/terms',
+  support: '/support',
+  documentation: '/docs',
 } as const

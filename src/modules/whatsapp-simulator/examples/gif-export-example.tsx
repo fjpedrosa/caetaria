@@ -6,16 +6,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  ConversationSimulator, 
+
+import {
+  ConversationSimulator,
   ExportControls,
   useGifExport,
-  useGifExportPresets 
+  useGifExportPresets
 } from '../index';
 import { conversationFactory } from '../infra/factories/conversation-factory';
 
 export function GifExportExample() {
-  const [conversation] = useState(() => 
+  const [conversation] = useState(() =>
     conversationFactory.createSampleConversation({
       businessName: 'Demo Restaurant',
       businessPhoneNumber: '+1234567890',
@@ -26,7 +27,7 @@ export function GifExportExample() {
 
   const [showExportDemo, setShowExportDemo] = useState(false);
   const [exportResult, setExportResult] = useState<any>(null);
-  
+
   const handleGifExportComplete = (result: any) => {
     console.log('GIF export completed:', result);
     setExportResult(result);
@@ -60,14 +61,14 @@ export function GifExportExample() {
             Automatically adjusts quality and performance for mobile devices
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="font-semibold text-lg mb-2">⚡ High Performance</h3>
           <p className="text-gray-600">
             Uses Web Workers and canvas optimization for smooth exports
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="font-semibold text-lg mb-2">🎯 Smart Presets</h3>
           <p className="text-gray-600">
@@ -103,7 +104,7 @@ export function GifExportExample() {
           <h3 className="font-semibold text-lg text-green-800 mb-4">
             🎉 Export Successful!
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <div className="text-sm text-green-600">File Size</div>
@@ -152,7 +153,7 @@ export function GifExportExample() {
       {/* Integration Guide */}
       <div className="bg-gray-50 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">Integration Guide</h2>
-        
+
         <div className="space-y-4">
           <div>
             <h3 className="font-medium mb-2">1. Basic Usage</h3>
@@ -205,7 +206,7 @@ const optimizedOptions = mobileOptimizationUtils.optimizeForMobile(
       {/* Technical Specs */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Technical Specifications</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="font-medium mb-3">Export Options</h3>
@@ -217,7 +218,7 @@ const optimizedOptions = mobileOptimizationUtils.optimizeForMobile(
               <li>• Output Format: GIF with optimization</li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="font-medium mb-3">Performance Features</h3>
             <ul className="space-y-2 text-sm text-gray-600">
@@ -248,7 +249,7 @@ export function HookUsageExample() {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-4">Hook Usage Example</h3>
-      
+
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2">Available Presets</label>

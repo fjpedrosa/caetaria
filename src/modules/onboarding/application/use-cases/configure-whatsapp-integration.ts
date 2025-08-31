@@ -32,7 +32,7 @@ export class ConfigureWhatsAppIntegrationUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!isSuccess(sessionResult) || !sessionResult.data) {
         return failure(new Error('Onboarding session not found'));
       }
@@ -81,7 +81,7 @@ export class ConfigureWhatsAppIntegrationUseCase {
         whatsappConfig,
         command.webhookUrl
       );
-      
+
       if (!isSuccess(webhookResult)) {
         return failure(new Error(
           `Failed to configure webhook: ${webhookResult.error?.message || 'Unknown error'}`

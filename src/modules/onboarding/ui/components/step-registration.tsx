@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { 
+import {
   AlertCircle,
   Chrome,
-  Eye, 
+  Eye,
   EyeOff,
-  Lock, 
-  Mail, 
+  Lock,
+  Mail,
   ShieldCheck,
   User} from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -27,7 +27,7 @@ export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [authMethod, setAuthMethod] = useState<'email' | 'google'>('email')
-  
+
   const {
     register,
     handleSubmit,
@@ -50,9 +50,9 @@ export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
 
   const handleGoogleAuth = async () => {
     setAuthMethod('google')
-    
+
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     await onNext({
       authMethod: 'google',
       googleToken: 'fake_google_token_123'
@@ -68,14 +68,14 @@ export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
 
   const passwordStrength = () => {
     if (!password) return { level: 0, text: '', color: '' }
-    
+
     let strength = 0
     if (password.length >= 8) strength++
     if (/[a-z]/.test(password)) strength++
     if (/[A-Z]/.test(password)) strength++
     if (/[0-9]/.test(password)) strength++
     if (/[^a-zA-Z0-9]/.test(password)) strength++
-    
+
     const levels = [
       { level: 0, text: '', color: '' },
       { level: 1, text: 'Muy débil', color: 'bg-red-500' },
@@ -84,7 +84,7 @@ export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
       { level: 4, text: 'Fuerte', color: 'bg-green-500' },
       { level: 5, text: 'Muy fuerte', color: 'bg-green-600' }
     ]
-    
+
     return levels[strength]
   }
 
@@ -166,7 +166,7 @@ export function StepRegistration({ onNext, onPrev, defaultValues }: StepProps) {
             {errors.password && (
               <p className="text-sm text-red-500">{errors.password.message}</p>
             )}
-            
+
             {password && (
               <div className="space-y-2">
                 <div className="flex gap-1">

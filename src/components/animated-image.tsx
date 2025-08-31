@@ -16,7 +16,7 @@ interface AnimatedImageProps {
 
 /**
  * Animated Image Component
- * 
+ *
  * Provides lazy loading with fade-in animation, blur-to-sharp transition,
  * and smooth hover effects.
  */
@@ -32,9 +32,9 @@ export function AnimatedImage({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { 
-    once: true, 
-    margin: "200px 0px" // Start loading 200px before entering viewport
+  const inView = useInView(ref, {
+    once: true,
+    margin: '200px 0px' // Start loading 200px before entering viewport
   });
 
   const handleLoad = () => {
@@ -53,13 +53,13 @@ export function AnimatedImage({
       style={{ width, height }}
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       whileHover={{ scale: 1.02 }}
     >
       {/* Placeholder/Loading state */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200"
-        animate={{ 
+        animate={{
           opacity: isLoaded ? 0 : 1,
         }}
         transition={{ duration: 0.3 }}
@@ -68,7 +68,7 @@ export function AnimatedImage({
           <motion.div
             className="w-8 h-8 border-3 border-yellow-400 border-t-transparent rounded-full"
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
         </div>
       </motion.div>
@@ -81,21 +81,21 @@ export function AnimatedImage({
           className="w-full h-full object-cover"
           onLoad={handleLoad}
           onError={handleError}
-          initial={{ 
+          initial={{
             opacity: 0,
-            filter: "blur(10px)",
-            scale: 1.1 
+            filter: 'blur(10px)',
+            scale: 1.1
           }}
-          animate={{ 
+          animate={{
             opacity: isLoaded ? 1 : 0,
-            filter: isLoaded ? "blur(0px)" : "blur(10px)",
+            filter: isLoaded ? 'blur(0px)' : 'blur(10px)',
             scale: isLoaded ? 1 : 1.1
           }}
-          transition={{ 
+          transition={{
             duration: 0.6,
-            ease: "easeOut"
+            ease: 'easeOut'
           }}
-          loading={priority ? "eager" : "lazy"}
+          loading={priority ? 'eager' : 'lazy'}
         />
       )}
 
@@ -127,7 +127,7 @@ export function AnimatedImage({
         transition={{
           duration: 1.5,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut'
         }}
         style={{
           background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
@@ -139,7 +139,7 @@ export function AnimatedImage({
 
 /**
  * Image Gallery Component
- * 
+ *
  * A grid of animated images with staggered loading animation.
  */
 interface ImageGalleryProps {
@@ -152,10 +152,10 @@ interface ImageGalleryProps {
   gap?: string;
 }
 
-export function ImageGallery({ 
-  images, 
-  columns = 3, 
-  gap = 'gap-4' 
+export function ImageGallery({
+  images,
+  columns = 3,
+  gap = 'gap-4'
 }: ImageGalleryProps) {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-${columns} ${gap}`}>
@@ -168,7 +168,7 @@ export function ImageGallery({
           transition={{
             duration: 0.6,
             delay: index * 0.1,
-            ease: "easeOut"
+            ease: 'easeOut'
           }}
         >
           <AnimatedImage

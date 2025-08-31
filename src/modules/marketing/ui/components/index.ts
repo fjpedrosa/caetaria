@@ -8,6 +8,7 @@ export { LandingFooter } from './landing-footer';
 export { LeadCaptureForm } from './lead-capture-form';
 export { LeadForm } from './lead-form';
 export { ModernNavbar } from './modern-navbar';
+export { MotionNavbarV2 } from './motion-navbar-v2';
 export { NavbarDemo } from './navbar-demo';
 export { PricingCards } from './pricing-cards';
 export { PricingTeaser } from './pricing-teaser';

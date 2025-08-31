@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 export interface FooterLink {
   label: string
@@ -23,18 +23,18 @@ export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
     icon: React.ReactNode
   }>
   bottomText?: string
-  variant?: "default" | "minimal" | "centered"
+  variant?: 'default' | 'minimal' | 'centered'
 }
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
-  ({ 
+  ({
     className,
     logo,
     description,
     sections = [],
     socialLinks = [],
     bottomText,
-    variant = "default",
+    variant = 'default',
     children,
     ...props
   }, ref) => {
@@ -42,16 +42,16 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
       if (link.onClick) {
         link.onClick()
       } else if (link.href) {
-        window.open(link.href, "_blank", "noopener noreferrer")
+        window.open(link.href, '_blank', 'noopener noreferrer')
       }
     }
 
-    if (variant === "minimal") {
+    if (variant === 'minimal') {
       return (
         <footer
           ref={ref}
           className={cn(
-            "border-t bg-background py-8",
+            'border-t bg-background py-8',
             className
           )}
           {...props}
@@ -66,7 +66,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                   </p>
                 )}
               </div>
-              
+
               {socialLinks.length > 0 && (
                 <div className="flex items-center gap-4">
                   {socialLinks.map((social, index) => (
@@ -90,12 +90,12 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
       )
     }
 
-    if (variant === "centered") {
+    if (variant === 'centered') {
       return (
         <footer
           ref={ref}
           className={cn(
-            "border-t bg-background py-12",
+            'border-t bg-background py-12',
             className
           )}
           {...props}
@@ -107,7 +107,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                   {logo}
                 </div>
               )}
-              
+
               {description && (
                 <p className="mb-8 text-muted-foreground max-w-md mx-auto">
                   {description}
@@ -172,7 +172,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
       <footer
         ref={ref}
         className={cn(
-          "border-t bg-background py-12 lg:py-16",
+          'border-t bg-background py-12 lg:py-16',
           className
         )}
         {...props}
@@ -186,7 +186,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                   {logo}
                 </div>
               )}
-              
+
               {description && (
                 <p className="text-muted-foreground text-sm mb-6 max-w-md">
                   {description}
@@ -251,6 +251,6 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
     )
   }
 )
-Footer.displayName = "Footer"
+Footer.displayName = 'Footer'
 
 export { Footer }

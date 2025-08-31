@@ -4,6 +4,7 @@
  */
 
 import { firstValueFrom, take } from 'rxjs';
+
 import { ConversationEngine } from '../../../application/engines/conversation-engine';
 import { PlayConversationUseCase } from '../../../application/use-cases/play-conversation';
 import { Conversation, Message } from '../../../domain/entities';
@@ -94,7 +95,7 @@ describe('PlayConversationUseCase', () => {
         pipe: jest.fn().mockReturnThis(),
         subscribe: jest.fn(),
       } as any;
-      
+
       mockEngine.play.mockReturnValue(mockEvents$);
 
       const request = { conversation: testConversation };
@@ -110,7 +111,7 @@ describe('PlayConversationUseCase', () => {
         pipe: jest.fn().mockReturnThis(),
         subscribe: jest.fn(),
       } as any;
-      
+
       mockEngine.play.mockReturnValue(mockEvents$);
 
       const request = { conversation: testConversation };
@@ -125,12 +126,12 @@ describe('PlayConversationUseCase', () => {
         pipe: jest.fn().mockReturnThis(),
         subscribe: jest.fn(),
       } as any;
-      
+
       mockEngine.events$ = mockEvents$;
 
-      const request = { 
-        conversation: testConversation, 
-        autoStart: false 
+      const request = {
+        conversation: testConversation,
+        autoStart: false
       };
       const result = await useCase.execute(request);
 
@@ -143,12 +144,12 @@ describe('PlayConversationUseCase', () => {
         pipe: jest.fn().mockReturnThis(),
         subscribe: jest.fn(),
       } as any;
-      
+
       mockEngine.play.mockReturnValue(mockEvents$);
 
-      const request = { 
-        conversation: testConversation, 
-        autoStart: true 
+      const request = {
+        conversation: testConversation,
+        autoStart: true
       };
       const result = await useCase.execute(request);
 
@@ -326,7 +327,7 @@ describe('PlayConversationUseCase', () => {
         subscribe: jest.fn(),
         [Symbol.observable]: () => mockEvents$,
       } as any;
-      
+
       mockEngine.play.mockReturnValue(mockEvents$);
 
       const request = { conversation: testConversation };
@@ -343,12 +344,12 @@ describe('PlayConversationUseCase', () => {
         subscribe: jest.fn(),
         [Symbol.observable]: () => mockEvents$,
       } as any;
-      
+
       mockEngine.events$ = mockEvents$;
 
-      const request = { 
-        conversation: testConversation, 
-        autoStart: false 
+      const request = {
+        conversation: testConversation,
+        autoStart: false
       };
       const result = await useCase.execute(request);
 
@@ -362,7 +363,7 @@ describe('PlayConversationUseCase', () => {
       mockEngine.play.mockReturnValue(mockEvents$);
 
       const startTime = performance.now();
-      
+
       const request = { conversation: testConversation };
       const result = await useCase.execute(request);
 
@@ -375,7 +376,7 @@ describe('PlayConversationUseCase', () => {
 
     it('should handle large conversations efficiently', async () => {
       // Create conversation with many messages
-      const largeMessages = Array.from({ length: 100 }, (_, i) => 
+      const largeMessages = Array.from({ length: 100 }, (_, i) =>
         new Message({
           id: `msg-${i}`,
           type: 'text',
@@ -398,7 +399,7 @@ describe('PlayConversationUseCase', () => {
       mockEngine.play.mockReturnValue(mockEvents$);
 
       const startTime = performance.now();
-      
+
       const request = { conversation: largeConversation };
       const result = await useCase.execute(request);
 
@@ -438,9 +439,9 @@ describe('PlayConversationUseCase', () => {
       for (const falsyValue of falsyValues) {
         mockEngine.play.mockClear();
 
-        const request = { 
-          conversation: testConversation, 
-          autoStart: falsyValue as any 
+        const request = {
+          conversation: testConversation,
+          autoStart: falsyValue as any
         };
         await useCase.execute(request);
 

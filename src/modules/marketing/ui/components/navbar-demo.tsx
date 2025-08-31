@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 
@@ -6,7 +6,7 @@ import { ModernNavbar } from './modern-navbar';
 
 /**
  * Componente de demostración del ModernNavbar
- * 
+ *
  * Este componente muestra todas las funcionalidades del navbar:
  * - Logo con animación hover
  * - Mega-menús interactivos con productos y soluciones
@@ -16,14 +16,14 @@ import { ModernNavbar } from './modern-navbar';
  * - Versión móvil responsiva
  * - Animaciones con Framer Motion
  * - Efectos de scroll (sticky y blur)
- * 
+ *
  * Características técnicas:
  * - Usa shadcn/ui components (NavigationMenu, Sheet, Button)
  * - Framer Motion para animaciones fluidas
  * - Responsive design con mobile-first approach
  * - Accesibilidad completa (ARIA, keyboard navigation)
  * - Colores de marca (amarillo primary, azul secondary)
- * 
+ *
  * Instrucciones de prueba:
  * 1. Hacer hover sobre el logo para ver la animación
  * 2. Navegar por los mega-menús "Productos" y "Soluciones"
@@ -36,7 +36,7 @@ export function NavbarDemo() {
   return (
     <div className="min-h-screen bg-background">
       <ModernNavbar />
-      
+
       {/* Contenido de demostración para mostrar el scroll */}
       <main className="pt-16">
         <section className="h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">

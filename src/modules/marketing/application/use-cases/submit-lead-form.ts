@@ -47,7 +47,7 @@ export class SubmitLeadFormUseCase {
       // 1. Validate and create value objects
       const email = createEmail(input.email);
       let phoneNumber: PhoneNumber | undefined;
-      
+
       if (input.phoneNumber?.trim()) {
         phoneNumber = createPhoneNumber(input.phoneNumber);
       }

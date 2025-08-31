@@ -3,11 +3,11 @@
 import { useEffect,useState } from 'react';
 import type { Variants } from 'framer-motion';
 
-import { 
+import {
   animationBatcher,
-  detectDevice, 
-  getOptimalAnimationConfig, 
-  shouldReduceMotion 
+  detectDevice,
+  getOptimalAnimationConfig,
+  shouldReduceMotion
 } from '@/lib/animation-utils';
 
 import { useMediaQuery } from './use-media-query';
@@ -29,14 +29,14 @@ export function useAnimationConfig() {
     ...config,
     isMobile,
     prefersReducedMotion,
-    
+
     // Check if animation should be enabled based on priority
     shouldAnimate: (priority: 'low' | 'medium' | 'high' = 'medium') => {
       if (config.shouldUseMinimalAnimations && priority === 'low') return false;
       if (config.shouldUseLightAnimations && priority === 'low') return false;
       return true;
     },
-    
+
     // Get batched animation that respects performance limits
     getBatchedAnimation: (animationName: string, animation: Variants, fallback?: Variants) => {
       if (!animationBatcher.canAnimate(animationName)) {
@@ -44,24 +44,24 @@ export function useAnimationConfig() {
       }
       return animation;
     },
-    
+
     // Get particle count for effects based on device capability
     getParticleCount: (baseCount: number = 10) => {
       if (config.shouldUseMinimalAnimations) return 0;
       if (config.shouldUseLightAnimations) return Math.min(baseCount * 0.3, 3);
       return Math.min(baseCount, config.maxConcurrentAnimations);
     },
-    
+
     // Get optimized viewport config for intersection observer
     getViewportConfig: () => ({
       once: true,
       margin: isMobile ? '0px 0px -20px 0px' : '0px 0px -50px 0px',
       amount: isMobile ? 0.1 : 0.3
     }),
-    
+
     // Check if heavy animations should be used
     canUseHeavyAnimations: () => !config.shouldUseMinimalAnimations && !config.shouldUseLightAnimations,
-    
+
     // Get animation duration multiplier based on device
     getDurationMultiplier: () => {
       if (config.shouldUseMinimalAnimations) return 0.3;
@@ -76,7 +76,7 @@ export function useAnimationConfig() {
  */
 export function useAnimationLifecycle(animationName: string) {
   const [isAnimating, setIsAnimating] = useState(false);
-  
+
   const startAnimation = () => {
     const canStart = animationBatcher.startAnimation(animationName);
     if (canStart) {
@@ -85,12 +85,12 @@ export function useAnimationLifecycle(animationName: string) {
     }
     return false;
   };
-  
+
   const endAnimation = () => {
     animationBatcher.endAnimation(animationName);
     setIsAnimating(false);
   };
-  
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -99,7 +99,7 @@ export function useAnimationLifecycle(animationName: string) {
       }
     };
   }, [animationName, isAnimating]);
-  
+
   return {
     isAnimating,
     startAnimation,
@@ -114,27 +114,27 @@ export function useAnimationLifecycle(animationName: string) {
  */
 export function useScrollAnimation() {
   const { shouldAnimate, getViewportConfig, getDurationMultiplier } = useAnimationConfig();
-  
+
   return {
     // Get optimized fade in animation
     getFadeInAnimation: () => {
       if (!shouldAnimate('medium')) {
         return { animate: { opacity: 1 } };
       }
-      
+
       return {
         initial: { opacity: 0, y: 20 },
-        animate: { 
-          opacity: 1, 
+        animate: {
+          opacity: 1,
           y: 0,
-          transition: { 
+          transition: {
             duration: 0.6 * getDurationMultiplier(),
             ease: [0.215, 0.610, 0.355, 1.000]
           }
         }
       };
     },
-    
+
     // Get optimized stagger animation
     getStaggerAnimation: (itemCount: number = 5) => {
       if (!shouldAnimate('low')) {
@@ -143,9 +143,9 @@ export function useScrollAnimation() {
           item: { animate: { opacity: 1 } }
         };
       }
-      
+
       const staggerDelay = shouldAnimate('high') ? 0.1 : 0.05;
-      
+
       return {
         container: {
           animate: {
@@ -157,17 +157,17 @@ export function useScrollAnimation() {
         },
         item: {
           initial: { opacity: 0, y: 20 },
-          animate: { 
-            opacity: 1, 
+          animate: {
+            opacity: 1,
             y: 0,
-            transition: { 
+            transition: {
               duration: 0.4 * getDurationMultiplier()
             }
           }
         }
       };
     },
-    
+
     viewportConfig: getViewportConfig()
   };
 }

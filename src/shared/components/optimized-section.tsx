@@ -123,8 +123,8 @@ export function OptimizedImage({
         className={className}
         decoding="async"
         style={{
-          backgroundImage: placeholder === 'blur' && blurDataURL 
-            ? `url(${blurDataURL})` 
+          backgroundImage: placeholder === 'blur' && blurDataURL
+            ? `url(${blurDataURL})`
             : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
@@ -226,20 +226,20 @@ export function SEOMeta({
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="author" content={author} />
-      
+
       {/* Open Graph */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       <meta property="og:type" content="website" />
-      
+
       {/* Twitter */}
       <meta name="twitter:card" content={twitterCard} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
-      
+
       {/* Performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="dns-prefetch" href="https://fonts.googleapis.com" />

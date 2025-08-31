@@ -1,6 +1,6 @@
 /**
  * Main export for Redux state management
- * 
+ *
  * This is the single entry point for all state-related imports.
  * Import from '@/shared/state' instead of individual files.
  */
@@ -37,12 +37,12 @@ export * from './slices'
 
 /**
  * QUICK START GUIDE:
- * 
+ *
  * 1. Setup Provider in your app:
  * ```tsx
  * // app/layout.tsx
  * import { ReduxProvider } from '@/shared/state'
- * 
+ *
  * export default function RootLayout({ children }) {
  *   return (
  *     <html>
@@ -55,16 +55,16 @@ export * from './slices'
  *   )
  * }
  * ```
- * 
+ *
  * 2. Use in components:
  * ```tsx
  * 'use client'
  * import { useAppSelector, useAppDispatch, selectTheme, setTheme } from '@/shared/state'
- * 
+ *
  * export function ThemeToggle() {
  *   const theme = useAppSelector(selectTheme)
  *   const dispatch = useAppDispatch()
- *   
+ *
  *   return (
  *     <button onClick={() => dispatch(setTheme(theme === 'dark' ? 'light' : 'dark'))}>
  *       Current theme: {theme}
@@ -72,17 +72,17 @@ export * from './slices'
  *   )
  * }
  * ```
- * 
+ *
  * 3. Use RTK Query for API calls:
  * ```tsx
  * import { useGetUsersQuery } from '@/modules/users/api'
- * 
+ *
  * export function UserList() {
  *   const { data: users, isLoading, error } = useGetUsersQuery()
- *   
+ *
  *   if (isLoading) return <div>Loading...</div>
  *   if (error) return <div>Error loading users</div>
- *   
+ *
  *   return (
  *     <ul>
  *       {users?.map(user => (
@@ -92,7 +92,7 @@ export * from './slices'
  *   )
  * }
  * ```
- * 
+ *
  * REMEMBER:
  * - Use RTK Query for server state (not Redux slices)
  * - Use Redux slices for complex client state

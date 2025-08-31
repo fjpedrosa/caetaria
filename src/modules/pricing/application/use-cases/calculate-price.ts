@@ -83,8 +83,8 @@ export class CalculatePriceUseCase {
         priceBreakdown: {
           basePrice,
           discountApplied: !discountAmount.equals(Price.zero(originalPrice.currency)),
-          discountPercentage: appliedDiscount && appliedDiscount.type === 'percentage' 
-            ? appliedDiscount.value 
+          discountPercentage: appliedDiscount && appliedDiscount.type === 'percentage'
+            ? appliedDiscount.value
             : undefined,
           savingsAmount,
         },

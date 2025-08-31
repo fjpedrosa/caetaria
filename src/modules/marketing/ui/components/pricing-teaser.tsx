@@ -20,11 +20,11 @@ export function PricingTeaser() {
           <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 mb-6">
             {badge}
           </Badge>
-          
+
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {title}
           </h2>
-          
+
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             {subtitle}
           </p>
@@ -32,11 +32,11 @@ export function PricingTeaser() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
-            <Card 
+            <Card
               key={index}
               className={`relative p-8 ${
-                plan.popular 
-                  ? 'ring-2 ring-green-500 shadow-2xl' 
+                plan.popular
+                  ? 'ring-2 ring-green-500 shadow-2xl'
                   : 'shadow-lg hover:shadow-xl transition-shadow'
               }`}
             >
@@ -49,7 +49,7 @@ export function PricingTeaser() {
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
                 <CardDescription>{plan.description}</CardDescription>
-                
+
                 <div className="mt-6">
                   <span className="text-5xl font-bold">{plan.currency}{plan.price}</span>
                   <span className="text-gray-600 ml-2">/{plan.period}</span>
@@ -67,10 +67,10 @@ export function PricingTeaser() {
                 </ul>
 
                 <Link href="/onboarding" className="block">
-                  <Button 
+                  <Button
                     className={`w-full ${
-                      plan.popular 
-                        ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700' 
+                      plan.popular
+                        ? 'bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700'
                         : ''
                     }`}
                     variant={plan.popular ? 'default' : 'outline'}

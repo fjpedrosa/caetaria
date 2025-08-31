@@ -2,10 +2,10 @@
 
 /**
  * Redux Provider Component
- * 
+ *
  * This is a CLIENT COMPONENT that provides Redux store to the app.
  * It handles store creation, hydration, and SSR/SSG compatibility.
- * 
+ *
  * IMPORTANT: This must be a client component because Redux uses React Context,
  * which is not available in Server Components.
  */
@@ -27,17 +27,17 @@ interface ReduxProviderProps {
 
 /**
  * Redux Provider with SSR/SSG support
- * 
+ *
  * Features:
  * - Per-request store creation on server
  * - Singleton store on client
  * - Automatic hydration from localStorage
  * - Safe for React 18 concurrent features
- * 
+ *
  * Usage in app/layout.tsx:
  * ```tsx
  * import { ReduxProvider } from '@/shared/state/provider'
- * 
+ *
  * export default function RootLayout({ children }) {
  *   return (
  *     <html>
@@ -58,7 +58,7 @@ export function ReduxProvider({ children, initialState }: ReduxProviderProps) {
   // Create store only once
   if (!storeRef.current) {
     storeRef.current = createStore()
-    
+
     // Apply initial state if provided (for SSR/SSG)
     if (initialState && typeof window !== 'undefined') {
       storeRef.current.dispatch({
@@ -88,7 +88,7 @@ export function ReduxProvider({ children, initialState }: ReduxProviderProps) {
 
 /**
  * Alternative Provider with Suspense boundary
- * 
+ *
  * Use this if you want to show loading state while store initializes.
  * Useful for large initial states or slow hydration.
  */
@@ -97,7 +97,7 @@ export function ReduxProviderWithSuspense({ children, initialState }: ReduxProvi
 
   if (!storeRef.current) {
     storeRef.current = createStore()
-    
+
     if (initialState) {
       storeRef.current.dispatch({
         type: '__HYDRATE__',
@@ -115,10 +115,10 @@ export function ReduxProviderWithSuspense({ children, initialState }: ReduxProvi
 
 /**
  * Hook to ensure Redux is properly initialized
- * 
+ *
  * Use this in components that absolutely require Redux to be ready.
  * Most components don't need this as Provider handles initialization.
- * 
+ *
  * @example
  * ```tsx
  * function MyComponent() {
@@ -137,28 +137,28 @@ export function useEnsureReduxReady() {
 
 /**
  * ARCHITECTURE NOTES:
- * 
+ *
  * Why Client Component?
  * - Redux uses React Context which requires client-side JavaScript
  * - Server Components can't use Context or state
  * - This component must be 'use client'
- * 
+ *
  * SSR/SSG Compatibility:
  * - Server creates a new store for each request
  * - Client reuses the same store instance
  * - Hydration happens automatically on client mount
- * 
+ *
  * Performance Considerations:
  * - Store creation is fast (< 1ms)
  * - Hydration from localStorage is async and non-blocking
  * - RTK Query handles its own caching and persistence
- * 
+ *
  * Common Mistakes to Avoid:
  * ❌ Don't import store directly in components
  * ❌ Don't create multiple Providers
  * ❌ Don't use Context for server state (use RTK Query)
  * ❌ Don't persist sensitive data in localStorage
- * 
+ *
  * Best Practices:
  * ✅ Use this Provider at the root level only
  * ✅ Use RTK Query for all server state

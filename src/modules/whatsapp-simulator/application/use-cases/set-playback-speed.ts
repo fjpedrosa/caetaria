@@ -23,7 +23,7 @@ export class SetPlaybackSpeedUseCase {
     try {
       const currentState = this.engine.getCurrentState();
       const previousSpeed = currentState.playbackSpeed;
-      
+
       // Validate speed range
       if (request.speed < 0.1 || request.speed > 5.0) {
         return {

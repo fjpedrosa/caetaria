@@ -8,16 +8,16 @@ import { PhoneNumber } from '../value-objects/phone-number';
 
 export type LeadId = string & { readonly __brand: unique symbol };
 
-export type LeadSource = 
+export type LeadSource =
   | 'website-form'
-  | 'demo-request' 
+  | 'demo-request'
   | 'newsletter-signup'
   | 'pricing-inquiry'
   | 'contact-form';
 
-export type LeadStatus = 
+export type LeadStatus =
   | 'new'
-  | 'contacted' 
+  | 'contacted'
   | 'qualified'
   | 'converted'
   | 'lost';
@@ -55,7 +55,7 @@ export function createLead(params: {
   notes?: string;
 }): Lead {
   const now = new Date();
-  
+
   return {
     id: createLeadId(),
     email: params.email,
@@ -89,7 +89,7 @@ export function updateLeadStatus(lead: Lead, newStatus: LeadStatus): Lead {
 export function addLeadNotes(lead: Lead, additionalNotes: string): Lead {
   const existingNotes = lead.notes || '';
   const separator = existingNotes ? '\n---\n' : '';
-  
+
   return {
     ...lead,
     notes: existingNotes + separator + additionalNotes.trim(),
@@ -103,10 +103,10 @@ export function addLeadNotes(lead: Lead, additionalNotes: string): Lead {
 export function getLeadFullName(lead: Lead): string {
   const firstName = lead.firstName || '';
   const lastName = lead.lastName || '';
-  
+
   if (!firstName && !lastName) {
     return lead.email.split('@')[0]; // Fallback to email username
   }
-  
+
   return [firstName, lastName].filter(Boolean).join(' ').trim();
 }
