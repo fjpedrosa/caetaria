@@ -3,10 +3,10 @@
  * Module-level dependency registration and configuration
  */
 
-import { 
-  createUseCaseFactory, 
+import {
+  createUseCaseFactory,
   DEPENDENCY_TOKENS,
-  DependencyContainer, 
+  DependencyContainer,
   ModuleConfig} from '../shared/application/interfaces/dependency-container';
 
 import { AnalyticsService } from './application/ports/analytics-service';
@@ -59,7 +59,7 @@ export class LandingModuleConfig implements ModuleConfig {
       container.register(DEPENDENCY_TOKENS.ANALYTICS_SERVICE, new MockAnalyticsService());
     } else if (this.environment === 'development') {
       container.register(
-        DEPENDENCY_TOKENS.ANALYTICS_SERVICE, 
+        DEPENDENCY_TOKENS.ANALYTICS_SERVICE,
         new MockAnalyticsService()
       );
     } else {
@@ -77,12 +77,12 @@ export class LandingModuleConfig implements ModuleConfig {
   private registerNotificationService(container: DependencyContainer): void {
     container.registerFactory(DEPENDENCY_TOKENS.NOTIFICATION_SERVICE, (container) => {
       const emailClient = container.resolve(DEPENDENCY_TOKENS.EMAIL_CLIENT);
-      const slackClient = container.has(DEPENDENCY_TOKENS.SLACK_CLIENT) 
+      const slackClient = container.has(DEPENDENCY_TOKENS.SLACK_CLIENT)
         ? container.resolve(DEPENDENCY_TOKENS.SLACK_CLIENT)
         : undefined;
-      
+
       const config = container.resolve(DEPENDENCY_TOKENS.CONFIG) as any;
-      
+
       return new EmailNotificationService(
         emailClient as any,
         {
@@ -101,10 +101,10 @@ export class LandingModuleConfig implements ModuleConfig {
  * Provides type-safe factories for creating use cases
  */
 export const LandingUseCaseFactories = {
-  submitLeadForm: createUseCaseFactory<SubmitLeadFormUseCase>((container) => 
+  submitLeadForm: createUseCaseFactory<SubmitLeadFormUseCase>((container) =>
     container.resolve(DEPENDENCY_TOKENS.SUBMIT_LEAD_FORM_USE_CASE)
   ),
-  
+
   getLandingAnalytics: createUseCaseFactory<GetLandingAnalyticsUseCase>((container) =>
     container.resolve(DEPENDENCY_TOKENS.GET_LANDING_ANALYTICS_USE_CASE)
   ),

@@ -3,16 +3,16 @@
  * React hook for managing GIF export state and operations
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import {
-  ExportOptions,
-  GifExportResult,
-  GifExportError,
-  GifGenerationProgress,
-  EXPORT_PRESETS
-} from '../../infra/services/gif-export/types';
+import { useCallback, useEffect,useRef, useState } from 'react';
+
 import { gifExportService } from '../../infra/services/gif-export/gif-export.service';
 import { gifOptimizationUtils } from '../../infra/services/gif-export/gif-optimization.utils';
+import {
+  EXPORT_PRESETS,
+  ExportOptions,
+  GifExportError,
+  GifExportResult,
+  GifGenerationProgress} from '../../infra/services/gif-export/types';
 
 export interface UseGifExportOptions {
   /** Default export preset */
@@ -237,9 +237,9 @@ export function useGifExport(hookOptions: UseGifExportOptions = {}): {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-    
+
     gifExportService.cancelExport();
-    
+
     setState(prev => ({
       ...prev,
       status: 'idle',
@@ -368,11 +368,11 @@ export function useGifExportEstimation(element: HTMLElement | null, options: Exp
       const rect = element.getBoundingClientRect();
       const pixelCount = rect.width * rect.height * (options.scale || 1) ** 2;
       const frameCount = options.duration * options.frameRate;
-      
+
       // Rough file size estimation
       const avgBytesPerPixel = options.quality * 0.5;
       const estimatedFileSize = pixelCount * avgBytesPerPixel * frameCount;
-      
+
       // Memory usage estimation (uncompressed frames in memory)
       const memoryUsage = pixelCount * 4 * Math.min(frameCount, 10); // Assume max 10 frames in memory
 
@@ -395,11 +395,11 @@ export function useGifExportEstimation(element: HTMLElement | null, options: Exp
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B';
-  
+
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
@@ -410,13 +410,13 @@ export function formatDuration(seconds: number): string {
   if (seconds < 60) {
     return `${seconds}s`;
   }
-  
+
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  
+
   if (remainingSeconds === 0) {
     return `${minutes}m`;
   }
-  
+
   return `${minutes}m ${remainingSeconds}s`;
 }

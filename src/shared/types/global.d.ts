@@ -16,10 +16,10 @@ export type Timestamp = number & { readonly __brand: unique symbol }
 
 // Common object patterns
 export type ID<T extends string = string> = T
-export type Status = "active" | "inactive" | "pending" | "archived"
-export type Priority = "low" | "medium" | "high" | "urgent"
-export type Theme = "light" | "dark" | "system"
-export type Language = "en" | "es" | "fr" | "pt" | "de"
+export type Status = 'active' | 'inactive' | 'pending' | 'archived'
+export type Priority = 'low' | 'medium' | 'high' | 'urgent'
+export type Theme = 'light' | 'dark' | 'system'
+export type Language = 'en' | 'es' | 'fr' | 'pt' | 'de'
 
 // Generic API response structure
 export interface ApiResponse<T = unknown> {
@@ -44,7 +44,7 @@ export interface PaginationParams {
   page?: number
   pageSize?: number
   sortBy?: string
-  sortOrder?: "asc" | "desc"
+  sortOrder?: 'asc' | 'desc'
 }
 
 export interface PaginationMeta {
@@ -78,7 +78,7 @@ export interface ValidationResult {
 export interface FileUpload {
   file: File
   progress: number
-  status: "idle" | "uploading" | "success" | "error"
+  status: 'idle' | 'uploading' | 'success' | 'error'
   error?: string
   url?: string
 }
@@ -99,7 +99,7 @@ export interface User {
   firstName: string
   lastName: string
   avatar?: URL
-  role: "admin" | "user" | "guest"
+  role: 'admin' | 'user' | 'guest'
   status: Status
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -131,12 +131,12 @@ export interface ComponentProps {
   className?: string
   children?: React.ReactNode
   id?: string
-  "data-testid"?: string
+  'data-testid'?: string
 }
 
 export interface VariantProps<T extends Record<string, any>> {
   variant?: keyof T
-  size?: "xs" | "sm" | "default" | "lg" | "xl"
+  size?: 'xs' | 'sm' | 'default' | 'lg' | 'xl'
 }
 
 // Event handling types
@@ -165,7 +165,7 @@ export interface SearchParams {
   filters?: Record<string, unknown>
   sort?: {
     field: string
-    direction: "asc" | "desc"
+    direction: 'asc' | 'desc'
   }
 }
 
@@ -198,7 +198,7 @@ export interface TableColumn<T = any> {
   sortable?: boolean
   render?: (value: any, record: T, index: number) => React.ReactNode
   width?: string | number
-  align?: "left" | "center" | "right"
+  align?: 'left' | 'center' | 'right'
 }
 
 export interface TableActionConfig<T = any> {
@@ -207,7 +207,7 @@ export interface TableActionConfig<T = any> {
   icon?: React.ComponentType<{ className?: string }>
   onClick: (record: T) => void
   disabled?: (record: T) => boolean
-  variant?: "default" | "destructive"
+  variant?: 'default' | 'destructive'
 }
 
 // Modal and dialog types
@@ -216,14 +216,14 @@ export interface ModalProps {
   onClose: () => void
   title?: string
   children: React.ReactNode
-  size?: "sm" | "md" | "lg" | "xl" | "full"
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   closable?: boolean
 }
 
 // Notification types
 export interface Notification {
   id: string
-  type: "success" | "error" | "warning" | "info"
+  type: 'success' | 'error' | 'warning' | 'info'
   title: string
   message?: string
   duration?: number
@@ -256,7 +256,7 @@ export interface AnalyticsMetric {
 export interface AppConfig {
   name: string
   version: string
-  environment: "development" | "staging" | "production"
+  environment: 'development' | 'staging' | 'production'
   apiUrl: string
   features: Record<string, boolean>
   analytics?: {
@@ -316,7 +316,7 @@ export interface BusinessInfo extends ContactInfo {
   name: string
   description?: string
   industry?: string
-  size?: "1-10" | "11-50" | "51-200" | "201-1000" | "1000+"
+  size?: '1-10' | '11-50' | '51-200' | '201-1000' | '1000+'
   logo?: URL
 }
 
@@ -325,10 +325,10 @@ export interface WhatsAppMessage {
   id: string
   from: PhoneNumber
   to: PhoneNumber
-  type: "text" | "image" | "audio" | "video" | "document" | "location"
+  type: 'text' | 'image' | 'audio' | 'video' | 'document' | 'location'
   content: unknown
   timestamp: Timestamp
-  status: "sent" | "delivered" | "read" | "failed"
+  status: 'sent' | 'delivered' | 'read' | 'failed'
 }
 
 export interface WhatsAppContact {
@@ -340,7 +340,7 @@ export interface WhatsAppContact {
 
 // Device and browser detection
 export interface DeviceInfo {
-  type: "desktop" | "tablet" | "mobile"
+  type: 'desktop' | 'tablet' | 'mobile'
   os: string
   browser: string
   userAgent: string
@@ -381,7 +381,7 @@ export type AsyncFunction<TArgs extends any[] = [], TReturn = void> = (
 export type EventCallback<TData = unknown> = (data: TData) => void
 
 // React specific augmentations
-declare module "react" {
+declare module 'react' {
   interface CSSProperties {
     [key: `--${string}`]: string | number
   }
@@ -391,7 +391,7 @@ declare module "react" {
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      NODE_ENV: "development" | "production" | "test"
+      NODE_ENV: 'development' | 'production' | 'test'
       NEXT_PUBLIC_APP_URL: string
       NEXT_PUBLIC_API_URL: string
       WHATSAPP_ACCESS_TOKEN?: string

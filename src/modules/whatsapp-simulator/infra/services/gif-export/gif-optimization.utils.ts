@@ -3,7 +3,7 @@
  * Compression and optimization utilities for GIF export
  */
 
-import { OptimizationUtils, ExportOptions, Frame } from './types';
+import { ExportOptions, Frame,OptimizationUtils } from './types';
 
 export class GifOptimizationUtilsImpl implements OptimizationUtils {
   /**
@@ -19,7 +19,7 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
   ): ExportOptions {
     const rect = element.getBoundingClientRect();
     const area = rect.width * rect.height;
-    
+
     // Base settings
     let quality = constraints.targetQuality || 0.7;
     let frameRate = 15;
@@ -63,7 +63,7 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
       const estimatedFrames = duration * frameRate;
       const estimatedSizePerFrame = (area * scale * scale * quality) / 1000; // rough estimate
       const estimatedTotalSize = estimatedFrames * estimatedSizePerFrame;
-      
+
       if (estimatedTotalSize > constraints.maxFileSize) {
         const reductionFactor = constraints.maxFileSize / estimatedTotalSize;
         quality *= Math.sqrt(reductionFactor);
@@ -136,13 +136,13 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
 
     // Find duplicate or nearly identical frames
     const duplicateFrames = this.findDuplicateFrames(frames);
-    
+
     // Analyze motion between frames
     const motionAnalysis = this.analyzeMotion(frames);
-    
+
     // Calculate optimal frame rate based on motion
     const optimalFrameRate = this.calculateOptimalFrameRate(motionAnalysis);
-    
+
     // Recommend quality based on content complexity
     const recommendedQuality = this.calculateRecommendedQuality(frames);
 
@@ -164,7 +164,7 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
 
     // Collect all unique colors across frames
     const colorMap = new Map<string, number>();
-    
+
     frames.forEach(frame => {
       const colors = this.extractColors(frame.canvas);
       colors.forEach(color => {
@@ -195,13 +195,13 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
     if (frames.length <= 1) return frames;
 
     const optimizedFrames: Frame[] = [frames[0]]; // Always keep first frame
-    
+
     for (let i = 1; i < frames.length; i++) {
       const similarity = this.calculateFrameSimilarity(
         frames[i - 1].canvas,
         frames[i].canvas
       );
-      
+
       if (similarity < threshold) {
         optimizedFrames.push(frames[i]);
       } else {
@@ -222,24 +222,24 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
 
     const avgCanvas = frames[0].canvas;
     const pixelCount = avgCanvas.width * avgCanvas.height;
-    
+
     // Base size calculation
     let baseSize = pixelCount * 0.5; // Rough estimate for GIF compression
-    
+
     // Adjust for quality
     baseSize *= options.quality;
-    
+
     // Adjust for number of frames
     baseSize *= frames.length;
-    
+
     // Adjust for compression level
     if (options.format?.compression) {
       baseSize *= (100 - options.format.compression) / 100;
     }
-    
+
     // Add GIF headers and metadata (rough estimate)
     const overhead = 1024 + (frames.length * 50);
-    
+
     return Math.round(baseSize + overhead);
   }
 
@@ -252,30 +252,30 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
     currentOptions: ExportOptions
   ): ExportOptions {
     const estimatedSize = this.estimateFileSize(frames, currentOptions);
-    
+
     if (estimatedSize <= targetFileSize) {
       return currentOptions; // No adjustment needed
     }
-    
+
     const reductionRatio = targetFileSize / estimatedSize;
     const adjustedOptions = { ...currentOptions };
-    
+
     // Reduce quality first
     adjustedOptions.quality *= Math.sqrt(reductionRatio);
     adjustedOptions.quality = Math.max(0.1, adjustedOptions.quality);
-    
+
     // If still too large, reduce frame rate
     if (reductionRatio < 0.5) {
       adjustedOptions.frameRate *= reductionRatio;
       adjustedOptions.frameRate = Math.max(5, Math.round(adjustedOptions.frameRate));
     }
-    
+
     // If still too large, reduce scale
     if (reductionRatio < 0.25) {
       adjustedOptions.scale *= Math.sqrt(reductionRatio);
       adjustedOptions.scale = Math.max(0.5, adjustedOptions.scale);
     }
-    
+
     return adjustedOptions;
   }
 
@@ -296,38 +296,38 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
   private applyGifCompression(data: Uint8Array, level: number): Uint8Array {
     // This is a simplified compression - in a real implementation,
     // you might use a proper GIF compression library
-    
+
     if (level === 0) return data;
-    
+
     // Simple byte-level compression (placeholder)
     const compressed = new Uint8Array(data.length);
     let writeIndex = 0;
-    
+
     for (let i = 0; i < data.length; i++) {
       // Skip some bytes based on compression level (very basic)
       if (Math.random() * 100 > level) {
         compressed[writeIndex++] = data[i];
       }
     }
-    
+
     return compressed.slice(0, writeIndex);
   }
 
   private findDuplicateFrames(frames: Frame[]): number[] {
     const duplicates: number[] = [];
     const threshold = 0.98; // Similarity threshold for considering frames as duplicates
-    
+
     for (let i = 1; i < frames.length; i++) {
       const similarity = this.calculateFrameSimilarity(
         frames[i - 1].canvas,
         frames[i].canvas
       );
-      
+
       if (similarity > threshold) {
         duplicates.push(i);
       }
     }
-    
+
     return duplicates;
   }
 
@@ -335,25 +335,25 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
     if (canvas1.width !== canvas2.width || canvas1.height !== canvas2.height) {
       return 0;
     }
-    
+
     const ctx1 = canvas1.getContext('2d');
     const ctx2 = canvas2.getContext('2d');
-    
+
     if (!ctx1 || !ctx2) return 0;
-    
+
     const data1 = ctx1.getImageData(0, 0, canvas1.width, canvas1.height).data;
     const data2 = ctx2.getImageData(0, 0, canvas2.width, canvas2.height).data;
-    
+
     let differences = 0;
     const sampleSize = Math.min(data1.length, 10000); // Sample for performance
     const step = Math.floor(data1.length / sampleSize);
-    
+
     for (let i = 0; i < data1.length; i += step) {
       if (Math.abs(data1[i] - data2[i]) > 10) { // Threshold for pixel difference
         differences++;
       }
     }
-    
+
     return 1 - (differences / (sampleSize / 4)); // Normalize to 0-1
   }
 
@@ -361,77 +361,77 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
     if (frames.length < 2) {
       return { averageMotion: 0, motionVariance: 0 };
     }
-    
+
     const motionScores: number[] = [];
-    
+
     for (let i = 1; i < frames.length; i++) {
       const motion = 1 - this.calculateFrameSimilarity(frames[i - 1].canvas, frames[i].canvas);
       motionScores.push(motion);
     }
-    
+
     const averageMotion = motionScores.reduce((a, b) => a + b, 0) / motionScores.length;
     const variance = motionScores.reduce((sum, score) => sum + Math.pow(score - averageMotion, 2), 0) / motionScores.length;
-    
+
     return { averageMotion, motionVariance: variance };
   }
 
   private calculateOptimalFrameRate(motionAnalysis: { averageMotion: number; motionVariance: number }): number {
     const { averageMotion, motionVariance } = motionAnalysis;
-    
+
     // High motion = higher frame rate needed
     let frameRate = 10 + (averageMotion * 20);
-    
+
     // High variance = need consistent frame rate
     if (motionVariance > 0.1) {
       frameRate = Math.min(frameRate + 5, 30);
     }
-    
+
     return Math.max(5, Math.min(30, Math.round(frameRate)));
   }
 
   private calculateRecommendedQuality(frames: Frame[]): number {
     if (frames.length === 0) return 0.7;
-    
+
     // Analyze first frame for complexity
     const canvas = frames[0].canvas;
     const complexity = this.calculateImageComplexity(canvas);
-    
+
     // Higher complexity = higher quality needed for good results
     let quality = 0.4 + (complexity * 0.5);
-    
+
     // Adjust based on frame count
     if (frames.length > 100) {
       quality = Math.min(quality, 0.6); // Reduce quality for long animations
     }
-    
+
     return Math.max(0.1, Math.min(1.0, quality));
   }
 
   private calculateImageComplexity(canvas: HTMLCanvasElement): number {
     const ctx = canvas.getContext('2d');
     if (!ctx) return 0.5;
-    
+
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    
+
     // Calculate edge density as a measure of complexity
     let edgeCount = 0;
     const threshold = 30;
-    
+
     for (let y = 1; y < canvas.height - 1; y++) {
       for (let x = 1; x < canvas.width - 1; x++) {
         const i = (y * canvas.width + x) * 4;
-        
+
         const intensity = (data[i] + data[i + 1] + data[i + 2]) / 3;
         const rightIntensity = (data[i + 4] + data[i + 5] + data[i + 6]) / 3;
         const bottomIntensity = (data[i + canvas.width * 4] + data[i + canvas.width * 4 + 1] + data[i + canvas.width * 4 + 2]) / 3;
-        
+
         if (Math.abs(intensity - rightIntensity) > threshold || Math.abs(intensity - bottomIntensity) > threshold) {
           edgeCount++;
         }
       }
     }
-    
+
     // Normalize edge density
     const totalPixels = canvas.width * canvas.height;
     return Math.min(1.0, edgeCount / (totalPixels * 0.1));
@@ -440,51 +440,51 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
   private extractColors(canvas: HTMLCanvasElement): string[] {
     const ctx = canvas.getContext('2d');
     if (!ctx) return [];
-    
+
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
     const colors = new Set<string>();
-    
+
     // Sample colors (not every pixel for performance)
     const step = Math.max(1, Math.floor(data.length / 10000));
-    
+
     for (let i = 0; i < data.length; i += step * 4) {
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
       const a = data[i + 3];
-      
+
       if (a > 0) { // Skip fully transparent pixels
         colors.add(`rgba(${r},${g},${b},${a})`);
       }
     }
-    
+
     return Array.from(colors);
   }
 
   private applyColorPalette(canvas: HTMLCanvasElement, palette: string[]): HTMLCanvasElement {
     const ctx = canvas.getContext('2d');
     if (!ctx) return canvas;
-    
+
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    
+
     // Parse palette colors
     const paletteRGB = palette.map(color => {
       const match = color.match(/rgba?\((\d+),(\d+),(\d+)(?:,(\d+))?\)/);
       return match ? [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])] : [0, 0, 0];
     });
-    
+
     // Map each pixel to closest palette color
     for (let i = 0; i < data.length; i += 4) {
       const pixel = [data[i], data[i + 1], data[i + 2]];
       const closestColor = this.findClosestColor(pixel, paletteRGB);
-      
+
       data[i] = closestColor[0];
       data[i + 1] = closestColor[1];
       data[i + 2] = closestColor[2];
     }
-    
+
     ctx.putImageData(imageData, 0, 0);
     return canvas;
   }
@@ -492,20 +492,20 @@ export class GifOptimizationUtilsImpl implements OptimizationUtils {
   private findClosestColor(pixel: number[], palette: number[][]): number[] {
     let minDistance = Infinity;
     let closestColor = palette[0];
-    
+
     for (const color of palette) {
       const distance = Math.sqrt(
         Math.pow(pixel[0] - color[0], 2) +
         Math.pow(pixel[1] - color[1], 2) +
         Math.pow(pixel[2] - color[2], 2)
       );
-      
+
       if (distance < minDistance) {
         minDistance = distance;
         closestColor = color;
       }
     }
-    
+
     return closestColor;
   }
 }

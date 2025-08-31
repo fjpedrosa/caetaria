@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { 
+import {
   Check,
-  Code, 
-  Copy, 
+  Code,
+  Copy,
   FileText,
   Image,
   MessageSquare,
   Paperclip,
-  Play, 
+  Play,
   Terminal,
   Zap} from 'lucide-react';
 
@@ -165,7 +165,7 @@ const API_EXAMPLES: ApiExample[] = [
 
 /**
  * API Playground Widget - Client Component
- * 
+ *
  * Interactive API explorer with live code examples,
  * customizable parameters, and response previews.
  */
@@ -191,7 +191,7 @@ export function ApiPlaygroundWidget() {
 
   const executeExample = async () => {
     setIsExecuting(true);
-    
+
     // Simulate API call delay
     setTimeout(() => {
       setExecutionResult(selectedExample.response);
@@ -224,19 +224,19 @@ export function ApiPlaygroundWidget() {
       {/* Section Header */}
       <div className="text-center mb-12">
         <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 px-4 py-2 mb-6">
-          ⚡ API Playground
+          ⚡ Prueba en Vivo
         </Badge>
-        
+
         <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-          Test Our API
+          Prueba WhatsApp
           <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-            in Real-Time
+            Automático Ahora
           </span>
         </h2>
-        
+
         <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-          Explore our WhatsApp Cloud API with interactive examples. 
-          Test endpoints, customize parameters, and see live responses.
+          Ve cómo funciona nuestro WhatsApp automático.
+          Prueba enviar mensajes y recibir respuestas en tiempo real.
         </p>
       </div>
 
@@ -246,9 +246,9 @@ export function ApiPlaygroundWidget() {
           <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700">
             <h3 className="text-xl font-bold text-white mb-4 flex items-center">
               <Code className="w-5 h-5 mr-2 text-yellow-400" />
-              API Examples
+              Ejemplos en Vivo
             </h3>
-            
+
             <div className="space-y-3">
               {API_EXAMPLES.map((example) => {
                 const IconComponent = getExampleIcon(example.id);
@@ -278,13 +278,13 @@ export function ApiPlaygroundWidget() {
                 );
               })}
             </div>
-            
+
             {/* Quick Customization */}
             <div className="mt-6 pt-6 border-t border-gray-700">
-              <h4 className="font-semibold text-white mb-4">Quick Customization</h4>
+              <h4 className="font-semibold text-white mb-4">Personaliza tu Prueba</h4>
               <div className="space-y-4">
                 <div>
-                  <Label className="text-gray-300 text-sm mb-2 block">Phone Number</Label>
+                  <Label className="text-gray-300 text-sm mb-2 block">Número de WhatsApp</Label>
                   <Input
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
@@ -292,10 +292,10 @@ export function ApiPlaygroundWidget() {
                     placeholder="+1234567890"
                   />
                 </div>
-                
+
                 {selectedExample.id === 'send-text' && (
                   <div>
-                    <Label className="text-gray-300 text-sm mb-2 block">Message</Label>
+                    <Label className="text-gray-300 text-sm mb-2 block">Mensaje</Label>
                     <Input
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -322,7 +322,7 @@ export function ApiPlaygroundWidget() {
                   {selectedExample.method}
                 </div>
               </div>
-              
+
               <Button
                 onClick={executeExample}
                 disabled={isExecuting}
@@ -346,18 +346,18 @@ export function ApiPlaygroundWidget() {
 
             {/* Endpoint */}
             <div className="mb-6">
-              <Label className="text-gray-300 text-sm mb-2 block">Endpoint</Label>
+              <Label className="text-gray-300 text-sm mb-2 block">Conexión WhatsApp</Label>
               <div className="flex items-center space-x-2">
                 <div className="bg-gray-700 px-3 py-2 rounded-l-lg font-mono text-sm text-white border border-gray-600">
-                  https://api.whatsappcloud.com
+                  Tu WhatsApp conectado
                 </div>
                 <div className="bg-gray-900 px-3 py-2 rounded-r-lg font-mono text-sm text-yellow-400 border border-gray-600 border-l-0 flex-1">
-                  {selectedExample.endpoint}
+                  Listo para enviar
                 </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => handleCopy(`https://api.whatsappcloud.com${selectedExample.endpoint}`, 'endpoint')}
+                  onClick={() => handleCopy('Tu WhatsApp está listo para enviar mensajes automáticos', 'endpoint')}
                   className="border-gray-600 text-gray-300 hover:bg-gray-700"
                 >
                   {copiedStates['endpoint'] ? (
@@ -373,13 +373,13 @@ export function ApiPlaygroundWidget() {
             <Tabs defaultValue="request" className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-gray-700">
                 <TabsTrigger value="request" className="text-gray-300 data-[state=active]:bg-gray-600 data-[state=active]:text-white">
-                  Request
+                  Mensaje que Envías
                 </TabsTrigger>
                 <TabsTrigger value="response" className="text-gray-300 data-[state=active]:bg-gray-600 data-[state=active]:text-white">
-                  Response
+                  Respuesta Automática
                 </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="request" className="mt-4">
                 <div className="relative">
                   <pre className="bg-gray-900 p-4 rounded-lg text-sm text-gray-100 overflow-x-auto border border-gray-600">
@@ -399,7 +399,7 @@ export function ApiPlaygroundWidget() {
                   </Button>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="response" className="mt-4">
                 <div className="relative">
                   {executionResult ? (
@@ -408,10 +408,10 @@ export function ApiPlaygroundWidget() {
                     </pre>
                   ) : (
                     <div className="bg-gray-900 p-4 rounded-lg text-sm text-gray-500 border border-gray-600 text-center">
-                      Click "Try It" to see the response
+                      Haz clic en "Probarlo" para ver la respuesta automática
                     </div>
                   )}
-                  
+
                   {executionResult && (
                     <Button
                       size="sm"
@@ -433,14 +433,14 @@ export function ApiPlaygroundWidget() {
             {/* Documentation Link */}
             <div className="mt-6 pt-6 border-t border-gray-700 text-center">
               <p className="text-gray-400 mb-4">
-                Need more examples or detailed documentation?
+                ¿Quieres ver más ejemplos de cómo funciona?
               </p>
               <Button
                 variant="outline"
                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                View Full API Docs
+                Ver Más Ejemplos
               </Button>
             </div>
           </Card>

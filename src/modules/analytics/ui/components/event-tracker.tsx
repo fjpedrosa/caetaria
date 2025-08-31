@@ -232,12 +232,12 @@ export function useFormTracking(formName: string) {
 }
 
 // Component for tracking scroll depth
-export function ScrollDepthTracker({ 
+export function ScrollDepthTracker({
   thresholds = [25, 50, 75, 100],
-  enabled = true 
-}: { 
-  thresholds?: number[]; 
-  enabled?: boolean; 
+  enabled = true
+}: {
+  thresholds?: number[];
+  enabled?: boolean;
 }) {
   const { trackCustom } = useEventTracker();
   const trackedThresholds = React.useRef(new Set<number>());
@@ -270,12 +270,12 @@ export function ScrollDepthTracker({
 }
 
 // Component for tracking time on page
-export function TimeOnPageTracker({ 
+export function TimeOnPageTracker({
   intervals = [30, 60, 120, 300], // seconds
-  enabled = true 
-}: { 
-  intervals?: number[]; 
-  enabled?: boolean; 
+  enabled = true
+}: {
+  intervals?: number[];
+  enabled?: boolean;
 }) {
   const { trackCustom } = useEventTracker();
   const startTime = React.useRef(Date.now());
@@ -286,7 +286,7 @@ export function TimeOnPageTracker({
 
     const checkTimeIntervals = () => {
       const timeSpent = Math.floor((Date.now() - startTime.current) / 1000);
-      
+
       intervals.forEach(interval => {
         if (timeSpent >= interval && !trackedIntervals.current.has(interval)) {
           trackedIntervals.current.add(interval);

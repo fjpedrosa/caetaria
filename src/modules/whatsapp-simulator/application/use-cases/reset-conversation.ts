@@ -20,7 +20,7 @@ export class ResetConversationUseCase {
   async execute(request: ResetConversationRequest = {}): Promise<ResetConversationResponse> {
     try {
       const currentState = this.engine.getCurrentState();
-      
+
       // Check if there's a conversation loaded
       if (!currentState.conversation) {
         return {

@@ -2,7 +2,7 @@
  * Conversation Events - Event types and payloads for the conversation engine
  */
 
-import { Message, Conversation, ConversationStatus, ConversationProgress } from '../entities';
+import { Conversation, ConversationProgress,ConversationStatus, Message } from '../entities';
 
 export interface BaseEvent {
   id: string;
@@ -251,25 +251,25 @@ export type EventFilter = (event: ConversationEvent) => boolean;
 export const EventFilters = {
   conversationEvents: (event: ConversationEvent): boolean =>
     event.type.startsWith('conversation.'),
-  
+
   messageEvents: (event: ConversationEvent): boolean =>
     event.type.startsWith('message.'),
-  
+
   flowEvents: (event: ConversationEvent): boolean =>
     event.type.startsWith('flow.'),
-  
+
   errorEvents: (event: ConversationEvent): boolean =>
     event.type.includes('error') || event.type.includes('failed'),
-  
+
   debugEvents: (event: ConversationEvent): boolean =>
     event.type.startsWith('debug.') || event.type.startsWith('performance.'),
-  
+
   byConversationId: (conversationId: string) => (event: ConversationEvent): boolean =>
     event.conversationId === conversationId,
-  
+
   byEventType: (eventType: string) => (event: ConversationEvent): boolean =>
     event.type === eventType,
-  
+
   byTimeRange: (startTime: Date, endTime: Date) => (event: ConversationEvent): boolean =>
     event.timestamp >= startTime && event.timestamp <= endTime
 };

@@ -2,12 +2,12 @@
  * ConversationFactory - Factory for creating sample conversations
  */
 
-import { 
-  Conversation, 
-  ConversationMetadata, 
-  Message, 
-  MessageType, 
-  SenderType 
+import {
+  Conversation,
+  ConversationMetadata,
+  Message,
+  MessageType,
+  SenderType
 } from '../../domain/entities';
 
 export interface MessageTemplate {
@@ -53,7 +53,7 @@ export class ConversationFactory {
     });
 
     const conversation = new Conversation(metadata, messages, template.settings);
-    
+
     return conversation;
   }
 
@@ -63,10 +63,10 @@ export class ConversationFactory {
   private static createMessage(template: MessageTemplate, index: number): Message {
     const messageId = `msg_${this.messageIdCounter++}`;
     const now = new Date();
-    
+
     // Calculate queue time based on index
     const queueAt = new Date(now.getTime() + (index * 2000));
-    
+
     return new Message({
       id: messageId,
       type: template.type,
@@ -492,7 +492,7 @@ export class ConversationFactory {
 
     // Generate messages based on messageCount
     const messages: MessageTemplate[] = [];
-    
+
     for (let i = 0; i < messageCount; i++) {
       if (i % 2 === 0) {
         // User messages
@@ -576,7 +576,62 @@ export class ConversationFactory {
   }
 }
 
+// Direct imports for scenario creation functions
+import { createRestaurantReservationConversation } from '../../scenarios/restaurant-reservation-scenario';
+import { createLoyaltyProgramConversation } from '../../scenarios/loyalty-program-scenario';
+import { createMedicalAppointmentsConversation } from '../../scenarios/medical-appointments-scenario';
+import { createRestaurantOrdersConversation } from '../../scenarios/restaurant-orders-scenario';
+
+/**
+ * Dynamic scenario mapping factory
+ * Maps scenario IDs to their conversation creation functions
+ */
+export class ScenarioConversationFactory {
+  private static scenarioFactories: Record<string, () => Conversation> = {
+    'restaurant-reservation': createRestaurantReservationConversation,
+    'loyalty-program': createLoyaltyProgramConversation,
+    'medical-appointments': createMedicalAppointmentsConversation,
+    'restaurant-orders': createRestaurantOrdersConversation,
+  };
+
+  /**
+   * Create conversation for a given scenario ID
+   */
+  static createConversationForScenario(scenarioId: string): Conversation {
+    const factory = this.scenarioFactories[scenarioId];
+    
+    if (!factory) {
+      console.warn(`[ScenarioConversationFactory] No factory found for scenario: ${scenarioId}, falling back to restaurant-reservation`);
+      return this.scenarioFactories['restaurant-reservation']() || ConversationFactory.createBookingConversation();
+    }
+
+    try {
+      console.log(`[ScenarioConversationFactory] Creating conversation for scenario: ${scenarioId}`);
+      return factory();
+    } catch (error) {
+      console.error(`[ScenarioConversationFactory] Error creating conversation for scenario ${scenarioId}:`, error);
+      // Fallback to restaurant reservation or default booking conversation
+      return this.scenarioFactories['restaurant-reservation']() || ConversationFactory.createBookingConversation();
+    }
+  }
+
+  /**
+   * Get all available scenario IDs
+   */
+  static getAvailableScenarios(): string[] {
+    return Object.keys(this.scenarioFactories);
+  }
+
+  /**
+   * Check if a scenario is available
+   */
+  static hasScenario(scenarioId: string): boolean {
+    return scenarioId in this.scenarioFactories;
+  }
+}
+
 /**
  * Singleton instance for easy importing
  */
 export const conversationFactory = ConversationFactory;
+export const scenarioFactory = ScenarioConversationFactory;

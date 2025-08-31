@@ -6,6 +6,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* WCAG 2.1 AA Accessibility Styles */
+/* @import '../styles/accessibility.css'; // Temporarily disabled */
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -80,21 +83,17 @@
     animation-delay: 4s;
   }
 
-  /* Gradient backgrounds */
-  .bg-gradient-primary {
-    background: var(--gradient-primary);
+  /* REMOVED: All gradient backgrounds - Using solid colors only */
+  .bg-primary {
+    background: var(--primary);
   }
 
-  .bg-gradient-secondary {
-    background: var(--gradient-secondary);
+  .bg-secondary {
+    background: var(--secondary);
   }
 
-  .bg-gradient-brand {
-    background: var(--gradient-brand);
-  }
-
-  .bg-gradient-warm {
-    background: var(--gradient-warm);
+  .bg-whatsapp {
+    background: var(--whatsapp);
   }
 
   /* Hover effects */
@@ -152,60 +151,60 @@
     -webkit-line-clamp: 3;
   }
   
-  /* Bright Yellow button variants */
+  /* Corporate Yellow button variants */
   .btn-primary {
-    background: oklch(0.82 0.14 85);
-    color: oklch(0.15 0.02 250);
+    background: oklch(0.87 0.15 95);
+    color: oklch(0.15 0.05 60);
     font-weight: 600;
-    border: 1px solid oklch(0.78 0.16 82);
+    border: 1px solid oklch(0.87 0.15 95);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
   
   .btn-primary:hover {
-    background: oklch(0.78 0.16 82);
+    background: oklch(0.83 0.17 93);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px oklch(0.82 0.14 85 / 0.3);
+    box-shadow: 0 10px 25px oklch(0.87 0.15 95 / 0.3);
   }
   
   .btn-secondary {
     background: transparent;
-    color: oklch(0.82 0.14 85);
+    color: oklch(0.87 0.15 95);
     font-weight: 600;
-    border: 2px solid oklch(0.82 0.14 85);
+    border: 2px solid oklch(0.87 0.15 95);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
   
   .btn-secondary:hover {
-    background: oklch(0.82 0.14 85 / 0.1);
-    border-color: oklch(0.78 0.16 82);
+    background: oklch(0.87 0.15 95 / 0.1);
+    border-color: oklch(0.83 0.17 93);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px oklch(0.82 0.14 85 / 0.2);
+    box-shadow: 0 4px 12px oklch(0.87 0.15 95 / 0.2);
   }
   
   /* Dark mode button variants */
   .dark .btn-primary {
-    background: oklch(0.75 0.16 85);
-    color: oklch(0.12 0.02 250);
-    border-color: oklch(0.72 0.18 82);
+    background: oklch(0.85 0.16 93);
+    color: oklch(0.12 0.02 60);
+    border-color: oklch(0.85 0.16 93);
   }
   
   .dark .btn-primary:hover {
-    background: oklch(0.72 0.18 82);
-    box-shadow: 0 10px 25px oklch(0.75 0.16 85 / 0.4);
+    background: oklch(0.88 0.18 95);
+    box-shadow: 0 10px 25px oklch(0.85 0.16 93 / 0.4);
   }
   
   .dark .btn-secondary {
     background: transparent;
-    color: oklch(0.75 0.16 85);
-    border-color: oklch(0.75 0.16 85);
+    color: oklch(0.85 0.16 93);
+    border-color: oklch(0.85 0.16 93);
   }
   
   .dark .btn-secondary:hover {
-    background: oklch(0.75 0.16 85 / 0.1);
-    border-color: oklch(0.72 0.18 82);
-    box-shadow: 0 4px 12px oklch(0.75 0.16 85 / 0.3);
+    background: oklch(0.85 0.16 93 / 0.1);
+    border-color: oklch(0.88 0.18 95);
+    box-shadow: 0 4px 12px oklch(0.85 0.16 93 / 0.3);
   }
 }
 
@@ -360,6 +359,22 @@
   }
 }
 
+/* WhatsApp Simulator specific animations */
+@keyframes typing-dot {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.2s infinite ease-in-out;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -418,62 +433,57 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0.05 250);
   
-  /* Brand colors - Bright Yellow (#fccf47) */
-  --primary: oklch(0.82 0.14 85); /* Bright yellow similar to #fccf47 */
-  --primary-hover: oklch(0.78 0.16 82); /* Slightly darker hover state */
-  --primary-foreground: oklch(0.15 0.02 250);
+  /* Corporate Yellow Primary - Brand Color */
+  --primary: oklch(0.87 0.15 95); /* Corporate Yellow #F59E0B */
+  --primary-hover: oklch(0.83 0.17 93); /* Darker yellow hover */
+  --primary-foreground: oklch(0.15 0.05 60); /* Dark foreground for better contrast */
   
-  /* Brand colors - Subtle Blue Secondary */
-  --secondary: oklch(0.60 0.20 240); /* Muted blue for accents */
-  --secondary-hover: oklch(0.58 0.22 238); /* Subtle hover state */
-  --secondary-foreground: oklch(0.99 0.005 90);
+  /* WhatsApp Green - Only for WhatsApp-related elements */
+  --whatsapp: oklch(0.75 0.20 150); /* WhatsApp Green #25D366 */
+  --whatsapp-hover: oklch(0.70 0.22 148);
+  --whatsapp-foreground: oklch(0.98 0.01 90);
   
-  /* Neutral colors */
-  --muted: oklch(0.96 0.01 85);
+  /* Clean Neutral System */
+  --secondary: oklch(0.96 0.005 250); /* Light gray */
+  --secondary-hover: oklch(0.94 0.008 250);
+  --secondary-foreground: oklch(0.145 0.05 250);
+  
+  /* Neutral colors - Clean grays */
+  --muted: oklch(0.96 0.005 250);
   --muted-foreground: oklch(0.556 0.02 250);
-  --accent: oklch(0.96 0.015 90);
+  --accent: oklch(0.96 0.008 250);
   --accent-foreground: oklch(0.2 0.05 250);
   
-  /* State colors */
-  --success: oklch(0.6 0.15 150); /* WhatsApp green */
-  --success-foreground: oklch(0.99 0.005 90);
-  --warning: oklch(0.75 0.18 60); /* Orange warning */
-  --warning-foreground: oklch(0.2 0.05 250);
-  --info: oklch(0.65 0.18 220); /* Info blue */
-  --info-foreground: oklch(0.99 0.005 90);
-  --destructive: oklch(0.6 0.22 25); /* Red error */
-  --destructive-foreground: oklch(0.99 0.005 90);
+  /* Functional State colors - No decorative gradients */
+  --success: oklch(0.68 0.17 150); /* Clean green */
+  --success-foreground: oklch(0.98 0.005 90);
+  --warning: oklch(0.75 0.15 65); /* Clean amber */
+  --warning-foreground: oklch(0.15 0.02 250);
+  --info: oklch(0.65 0.18 248); /* Clean blue */
+  --info-foreground: oklch(0.98 0.005 90);
+  --destructive: oklch(0.62 0.22 25); /* Clean red */
+  --destructive-foreground: oklch(0.98 0.005 90);
   
-  /* UI elements */
-  --border: oklch(0.9 0.01 85);
-  --input: oklch(0.96 0.01 85);
-  --ring: oklch(0.87 0.15 95); /* Primary ring */
+  /* UI elements - Subtle and professional */
+  --border: oklch(0.92 0.005 250);
+  --input: oklch(0.96 0.005 250);
+  --ring: oklch(0.87 0.15 95); /* Primary yellow ring */
   
-  /* Gradients - PostHog-inspired (less gradients, more solid) */
-  --gradient-primary: linear-gradient(135deg, oklch(0.75 0.25 85), oklch(0.72 0.27 82));
-  --gradient-secondary: linear-gradient(135deg, oklch(0.60 0.20 240), oklch(0.58 0.22 238));
-  --gradient-brand: linear-gradient(135deg, oklch(0.75 0.25 85), oklch(0.70 0.23 80));
-  --gradient-warm: linear-gradient(135deg, oklch(0.75 0.25 85), oklch(0.72 0.22 75));
-  
-  /* New accent colors */
-  --accent-lime: oklch(0.82 0.20 120); /* Electric lime */
-  --accent-purple: oklch(0.72 0.25 280); /* Electric purple */
-  
-  /* Chart colors with brand alignment */
+  /* Chart colors - Professional palette */
   --chart-1: oklch(0.87 0.15 95); /* Primary yellow */
-  --chart-2: oklch(0.55 0.25 255); /* Secondary blue */
-  --chart-3: oklch(0.6 0.15 150); /* Success green */
-  --chart-4: oklch(0.75 0.18 60); /* Warning orange */
-  --chart-5: oklch(0.7 0.12 300); /* Purple accent */
+  --chart-2: oklch(0.75 0.20 150); /* WhatsApp green */
+  --chart-3: oklch(0.68 0.17 150); /* Success green */
+  --chart-4: oklch(0.75 0.15 65); /* Warning amber */
+  --chart-5: oklch(0.65 0.15 300); /* Purple accent */
   
   /* Sidebar */
   --sidebar: oklch(0.99 0.005 90);
   --sidebar-foreground: oklch(0.145 0.05 250);
   --sidebar-primary: oklch(0.87 0.15 95);
-  --sidebar-primary-foreground: oklch(0.2 0.05 250);
-  --sidebar-accent: oklch(0.96 0.015 90);
+  --sidebar-primary-foreground: oklch(0.15 0.05 60);
+  --sidebar-accent: oklch(0.96 0.008 250);
   --sidebar-accent-foreground: oklch(0.2 0.05 250);
-  --sidebar-border: oklch(0.9 0.01 85);
+  --sidebar-border: oklch(0.92 0.005 250);
   --sidebar-ring: oklch(0.87 0.15 95);
 }
 
@@ -486,63 +496,58 @@
   --popover: oklch(0.18 0.02 250);
   --popover-foreground: oklch(0.95 0.01 90);
   
-  /* Brand colors - Bright Yellow (dark mode) */
-  --primary: oklch(0.75 0.16 85); /* Bright yellow for dark mode */
-  --primary-hover: oklch(0.72 0.18 82);
-  --primary-foreground: oklch(0.12 0.02 250);
+  /* Corporate Yellow Primary - Adjusted for dark mode */
+  --primary: oklch(0.85 0.16 93); /* Slightly muted yellow for dark mode */
+  --primary-hover: oklch(0.88 0.18 95); /* Brighter on hover */
+  --primary-foreground: oklch(0.12 0.02 60); /* Dark foreground for better contrast */
   
-  /* Brand colors - Subtle Blue Secondary (dark mode) */
-  --secondary: oklch(0.65 0.18 240); /* Muted blue for dark mode */
-  --secondary-hover: oklch(0.68 0.20 238);
+  /* WhatsApp Green - Dark mode adjusted */
+  --whatsapp: oklch(0.78 0.18 150); /* Brighter green for dark mode */
+  --whatsapp-hover: oklch(0.82 0.16 148);
+  --whatsapp-foreground: oklch(0.12 0.02 250);
+  
+  /* Clean Neutral System - Dark mode */
+  --secondary: oklch(0.22 0.02 250); /* Dark gray */
+  --secondary-hover: oklch(0.26 0.02 250);
   --secondary-foreground: oklch(0.95 0.01 90);
   
-  /* Neutral colors */
+  /* Neutral colors - Dark mode grays */
   --muted: oklch(0.25 0.02 250);
   --muted-foreground: oklch(0.65 0.02 250);
   --accent: oklch(0.25 0.025 260);
   --accent-foreground: oklch(0.95 0.01 90);
   
-  /* State colors (adjusted for dark mode) */
-  --success: oklch(0.65 0.14 150);
-  --success-foreground: oklch(0.95 0.01 90);
-  --warning: oklch(0.8 0.16 60);
-  --warning-foreground: oklch(0.15 0.02 250);
-  --info: oklch(0.7 0.16 220);
-  --info-foreground: oklch(0.95 0.01 90);
-  --destructive: oklch(0.65 0.2 25);
+  /* Functional State colors - Dark mode adjusted */
+  --success: oklch(0.72 0.15 150); /* Brighter green for visibility */
+  --success-foreground: oklch(0.12 0.02 250);
+  --warning: oklch(0.78 0.14 65); /* Brighter amber */
+  --warning-foreground: oklch(0.12 0.02 250);
+  --info: oklch(0.70 0.16 248); /* Brighter blue */
+  --info-foreground: oklch(0.12 0.02 250);
+  --destructive: oklch(0.68 0.20 25); /* Brighter red */
   --destructive-foreground: oklch(0.95 0.01 90);
   
-  /* UI elements */
+  /* UI elements - Dark mode */
   --border: oklch(0.3 0.02 250);
   --input: oklch(0.22 0.02 250);
-  --ring: oklch(0.75 0.14 95);
+  --ring: oklch(0.85 0.16 93); /* Primary yellow ring */
   
-  /* Gradients for dark mode - PostHog-inspired */
-  --gradient-primary: linear-gradient(135deg, oklch(0.78 0.23 85), oklch(0.75 0.25 82));
-  --gradient-secondary: linear-gradient(135deg, oklch(0.65 0.18 240), oklch(0.68 0.20 238));
-  --gradient-brand: linear-gradient(135deg, oklch(0.78 0.23 85), oklch(0.73 0.21 80));
-  --gradient-warm: linear-gradient(135deg, oklch(0.78 0.23 85), oklch(0.75 0.20 75));
-  
-  /* New accent colors for dark mode */
-  --accent-lime: oklch(0.85 0.18 120); /* Electric lime */
-  --accent-purple: oklch(0.75 0.23 280); /* Electric purple */
-  
-  /* Chart colors with brand alignment */
-  --chart-1: oklch(0.75 0.14 95);
-  --chart-2: oklch(0.65 0.20 255);
-  --chart-3: oklch(0.65 0.14 150);
-  --chart-4: oklch(0.8 0.16 60);
-  --chart-5: oklch(0.75 0.12 300);
+  /* Chart colors - Dark mode professional palette */
+  --chart-1: oklch(0.85 0.16 93); /* Primary yellow */
+  --chart-2: oklch(0.78 0.18 150); /* WhatsApp green */
+  --chart-3: oklch(0.72 0.15 150); /* Success green */
+  --chart-4: oklch(0.78 0.14 65); /* Warning amber */
+  --chart-5: oklch(0.70 0.15 300); /* Purple accent */
   
   /* Sidebar */
   --sidebar: oklch(0.18 0.02 250);
   --sidebar-foreground: oklch(0.95 0.01 90);
-  --sidebar-primary: oklch(0.75 0.14 95);
-  --sidebar-primary-foreground: oklch(0.15 0.02 250);
+  --sidebar-primary: oklch(0.85 0.16 93);
+  --sidebar-primary-foreground: oklch(0.12 0.02 60);
   --sidebar-accent: oklch(0.25 0.025 260);
   --sidebar-accent-foreground: oklch(0.95 0.01 90);
   --sidebar-border: oklch(0.3 0.02 250);
-  --sidebar-ring: oklch(0.75 0.14 95);
+  --sidebar-ring: oklch(0.85 0.16 93);
 }
 
 @layer base {
@@ -561,42 +566,34 @@
     overscroll-behavior-y: none; /* Prevents bounce scrolling */
   }
   
-  /* Custom scrollbar */
+  /* Custom scrollbar - NO GRADIENTS */
   ::-webkit-scrollbar {
     width: 6px;
   }
   
   ::-webkit-scrollbar-track {
-    background: oklch(0.96 0.01 85);
+    background: oklch(0.96 0.005 250);
   }
   
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-      to bottom,
-      oklch(0.87 0.15 95),
-      oklch(0.55 0.25 255)
-    );
+    background: oklch(0.87 0.15 95); /* Primary yellow - solid color */
     border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(
-      to bottom,
-      oklch(0.84 0.16 92),
-      oklch(0.60 0.23 252)
-    );
+    background: oklch(0.83 0.17 93); /* Primary yellow hover - solid color */
   }
   
-  /* Focus rings */
+  /* Focus rings - Corporate yellow */
   :focus-visible {
     outline: 2px solid oklch(0.87 0.15 95);
     outline-offset: 2px;
   }
   
-  /* Smooth selection */
+  /* Smooth selection - Corporate yellow */
   ::selection {
     background-color: oklch(0.87 0.15 95 / 0.3);
-    color: oklch(0.2 0.05 250);
+    color: oklch(0.12 0.02 60);
   }
   
   /* Disable outline on click but keep for keyboard navigation */

@@ -1,5 +1,5 @@
-import { type ClassValue,clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue,clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 /**
  * Merge Tailwind classes with proper precedence
@@ -17,7 +17,7 @@ export function formatNumber(
     locale?: string
   }
 ) {
-  const { locale = "en-US", ...formatOptions } = options || {}
+  const { locale = 'en-US', ...formatOptions } = options || {}
   return new Intl.NumberFormat(locale, formatOptions).format(value)
 }
 
@@ -26,11 +26,11 @@ export function formatNumber(
  */
 export function formatCurrency(
   value: number,
-  currency: string = "USD",
-  locale: string = "en-US"
+  currency: string = 'USD',
+  locale: string = 'en-US'
 ) {
   return new Intl.NumberFormat(locale, {
-    style: "currency",
+    style: 'currency',
     currency,
   }).format(value)
 }
@@ -44,7 +44,7 @@ export function formatDate(
     locale?: string
   }
 ) {
-  const { locale = "en-US", ...formatOptions } = options || {}
+  const { locale = 'en-US', ...formatOptions } = options || {}
   const dateObj = date instanceof Date ? date : new Date(date)
   return new Intl.DateTimeFormat(locale, formatOptions).format(dateObj)
 }
@@ -54,45 +54,45 @@ export function formatDate(
  */
 export function formatRelativeTime(
   date: Date | string | number,
-  locale: string = "en-US"
+  locale: string = 'en-US'
 ) {
   const now = new Date()
   const past = date instanceof Date ? date : new Date(date)
   const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000)
 
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
 
   if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, "second")
+    return rtf.format(-diffInSeconds, 'second')
   }
-  
+
   const diffInMinutes = Math.floor(diffInSeconds / 60)
   if (diffInMinutes < 60) {
-    return rtf.format(-diffInMinutes, "minute")
+    return rtf.format(-diffInMinutes, 'minute')
   }
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60)
   if (diffInHours < 24) {
-    return rtf.format(-diffInHours, "hour")
+    return rtf.format(-diffInHours, 'hour')
   }
-  
+
   const diffInDays = Math.floor(diffInHours / 24)
   if (diffInDays < 7) {
-    return rtf.format(-diffInDays, "day")
+    return rtf.format(-diffInDays, 'day')
   }
-  
+
   const diffInWeeks = Math.floor(diffInDays / 7)
   if (diffInWeeks < 4) {
-    return rtf.format(-diffInWeeks, "week")
+    return rtf.format(-diffInWeeks, 'week')
   }
-  
+
   const diffInMonths = Math.floor(diffInDays / 30)
   if (diffInMonths < 12) {
-    return rtf.format(-diffInMonths, "month")
+    return rtf.format(-diffInMonths, 'month')
   }
-  
+
   const diffInYears = Math.floor(diffInDays / 365)
-  return rtf.format(-diffInYears, "year")
+  return rtf.format(-diffInYears, 'year')
 }
 
 /**
@@ -100,7 +100,7 @@ export function formatRelativeTime(
  */
 export function truncateText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text
-  return text.slice(0, maxLength).trim() + "..."
+  return text.slice(0, maxLength).trim() + '...'
 }
 
 /**
@@ -108,9 +108,9 @@ export function truncateText(text: string, maxLength: number) {
  */
 export function getInitials(name: string) {
   return name
-    .split(" ")
+    .split(' ')
     .map(part => part.charAt(0))
-    .join("")
+    .join('')
     .substring(0, 2)
     .toUpperCase()
 }
@@ -138,14 +138,14 @@ export function debounce<T extends (...args: any[]) => void>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null
-  
+
   return (...args: Parameters<T>) => {
     if (timeoutId) {
       clearTimeout(timeoutId)
     }
-    
+
     timeoutId = setTimeout(() => {
-      func.apply(null, args)
+      func(...args)
     }, delay)
   }
 }
@@ -158,13 +158,13 @@ export function throttle<T extends (...args: any[]) => void>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let lastCall = 0
-  
+
   return (...args: Parameters<T>) => {
     const now = Date.now()
-    
+
     if (now - lastCall >= delay) {
       lastCall = now
-      func.apply(null, args)
+      func(...args)
     }
   }
 }
@@ -179,20 +179,20 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       return true
     } else {
       // Fallback for older browsers
-      const textArea = document.createElement("textarea")
+      const textArea = document.createElement('textarea')
       textArea.value = text
-      textArea.style.position = "fixed"
-      textArea.style.left = "-999999px"
-      textArea.style.top = "-999999px"
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-999999px'
+      textArea.style.top = '-999999px'
       document.body.appendChild(textArea)
       textArea.focus()
       textArea.select()
-      const result = document.execCommand("copy")
+      const result = document.execCommand('copy')
       textArea.remove()
       return result
     }
   } catch (error) {
-    console.error("Failed to copy text:", error)
+    console.error('Failed to copy text:', error)
     return false
   }
 }
@@ -202,9 +202,9 @@ export async function copyToClipboard(text: string): Promise<boolean> {
  */
 export function isEmpty(value: any): boolean {
   if (value === null || value === undefined) return true
-  if (typeof value === "string") return value.trim().length === 0
+  if (typeof value === 'string') return value.trim().length === 0
   if (Array.isArray(value)) return value.length === 0
-  if (typeof value === "object") return Object.keys(value).length === 0
+  if (typeof value === 'object') return Object.keys(value).length === 0
   return false
 }
 
@@ -212,10 +212,10 @@ export function isEmpty(value: any): boolean {
  * Deep clone an object
  */
 export function deepClone<T>(obj: T): T {
-  if (obj === null || typeof obj !== "object") return obj
+  if (obj === null || typeof obj !== 'object') return obj
   if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T
   if (obj instanceof Array) return obj.map(item => deepClone(item)) as unknown as T
-  if (typeof obj === "object") {
+  if (typeof obj === 'object') {
     const copy = {} as T
     Object.keys(obj).forEach(key => {
       (copy as any)[key] = deepClone((obj as any)[key])
@@ -238,16 +238,16 @@ export function capitalize(str: string): string {
 export function titleCase(str: string): string {
   return str
     .toLowerCase()
-    .split(" ")
+    .split(' ')
     .map(word => capitalize(word))
-    .join(" ")
+    .join(' ')
 }
 
 /**
  * Convert camelCase to kebab-case
  */
 export function camelToKebab(str: string): string {
-  return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
+  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
 /**
@@ -280,32 +280,32 @@ export function isValidUrl(url: string): boolean {
 /**
  * Get contrast color (black or white) for a given background color
  */
-export function getContrastColor(hexColor: string): "black" | "white" {
+export function getContrastColor(hexColor: string): 'black' | 'white' {
   // Remove # if present
-  const color = hexColor.replace("#", "")
-  
+  const color = hexColor.replace('#', '')
+
   // Convert to RGB
   const r = parseInt(color.substr(0, 2), 16)
   const g = parseInt(color.substr(2, 2), 16)
   const b = parseInt(color.substr(4, 2), 16)
-  
+
   // Calculate luminance
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  
-  return luminance > 0.5 ? "black" : "white"
+
+  return luminance > 0.5 ? 'black' : 'white'
 }
 
 /**
  * Format file size in human readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 Bytes"
-  
+  if (bytes === 0) return '0 Bytes'
+
   const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
 /**
@@ -315,7 +315,7 @@ export function createSlug(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 }

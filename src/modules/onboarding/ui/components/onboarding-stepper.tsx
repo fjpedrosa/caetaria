@@ -34,13 +34,13 @@ export function OnboardingStepper({
             }}
           />
         </div>
-        
+
         <ol className="relative z-10 flex justify-between">
           {steps.map((step) => {
             const isCompleted = completedSteps.includes(step.number)
             const isCurrent = currentStep === step.number
             const isPending = !isCompleted && !isCurrent
-            
+
             return (
               <li key={step.number} className="flex flex-col items-center">
                 <div
@@ -59,7 +59,7 @@ export function OnboardingStepper({
                     <span className="text-sm font-semibold">{step.number}</span>
                   )}
                 </div>
-                
+
                 <div className="mt-3 text-center">
                   <p
                     className={cn(

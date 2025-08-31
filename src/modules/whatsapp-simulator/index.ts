@@ -11,10 +11,10 @@ export * from './application/engines/conversation-engine';
 export * from './application/use-cases';
 
 // UI Layer
-export * from './ui/hooks';
 export * from './ui/components/conversation-simulator';
-export * from './ui/components/whatsapp-simulator';
 export * from './ui/components/export-controls';
+export * from './ui/components/whatsapp-simulator';
+export * from './ui/hooks';
 
 // Infrastructure
 export * from './infra/factories/conversation-factory';

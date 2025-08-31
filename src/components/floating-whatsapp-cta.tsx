@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 /**
  * Floating WhatsApp CTA Component
- * 
+ *
  * A floating action button that appears after scroll with pulse animation,
  * tooltip, and ripple effect when clicked.
  */
@@ -71,7 +71,7 @@ export function FloatingWhatsAppCTA() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0, y: 100 }}
           transition={{
-            type: "spring",
+            type: 'spring',
             stiffness: 300,
             damping: 30,
             duration: 0.6
@@ -96,7 +96,7 @@ export function FloatingWhatsAppCTA() {
                   >
                     <X className="w-3 h-3" />
                   </motion.button>
-                  
+
                   <div className="flex items-start space-x-3">
                     <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                       <MessageCircle className="w-4 h-4 text-white" />
@@ -138,7 +138,7 @@ export function FloatingWhatsAppCTA() {
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
             />
             <motion.div
@@ -150,7 +150,7 @@ export function FloatingWhatsAppCTA() {
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 delay: 0.3,
               }}
             />
@@ -160,7 +160,7 @@ export function FloatingWhatsAppCTA() {
               className="relative"
               onClick={handleClick}
               whileHover={{
-                boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
               }}
               transition={{ duration: 0.2 }}
             >
@@ -175,7 +175,7 @@ export function FloatingWhatsAppCTA() {
                   whileHover={{ scale: 1.5, opacity: 1 }}
                   transition={{ duration: 0.4 }}
                 />
-                
+
                 {/* WhatsApp icon */}
                 <motion.div
                   className="relative z-10"

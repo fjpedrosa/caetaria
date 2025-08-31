@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Bot Configuration Form Component
@@ -97,7 +97,7 @@ export function BotConfigurationForm() {
   const [showBusinessHours, setShowBusinessHours] = useState(false);
   const router = useRouter();
   const supportedLanguages = getSupportedLanguages();
-  
+
   const form = useForm<BotConfigData>({
     resolver: zodResolver(botConfigSchema),
     defaultValues: {
@@ -133,14 +133,14 @@ export function BotConfigurationForm() {
 
   const onSubmit = async (data: BotConfigData) => {
     setIsSubmitting(true);
-    
+
     try {
       // TODO: Call API to save bot configuration
       console.log('Bot configuration submitted:', data);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Navigate to next step
       router.push('/onboarding/testing');
     } catch (error) {
@@ -157,14 +157,14 @@ export function BotConfigurationForm() {
       form.setError('name', { message: 'Please enter a bot name first' });
       return;
     }
-    
+
     const messages = [
       `Hello! Welcome to ${botName}. How can I help you today?`,
       `Hi there! I'm ${botName}, your virtual assistant. What can I do for you?`,
       `Welcome! I'm ${botName}. I'm here to help with your questions and needs.`,
       `Greetings! This is ${botName}. How may I assist you today?`,
     ];
-    
+
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     form.setValue('welcomeMessage', randomMessage);
   };
@@ -365,7 +365,7 @@ export function BotConfigurationForm() {
                           />
                           <span className="text-sm font-medium">{day.label}</span>
                         </div>
-                        
+
                         {isEnabled && (
                           <div className="flex items-center space-x-2">
                             <select

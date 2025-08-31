@@ -6,8 +6,9 @@
 
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+
 import { Icon } from '@/components/ui/icon';
 import {
   Brain,
@@ -19,17 +20,17 @@ import {
   Video,
 } from '@/lib/icons';
 
-import { useConversationFlow } from '../hooks/use-conversation-flow';
-import { useTypingIndicatorWithEvents } from '../hooks/use-typing-indicator';
-import { useFlowExecutionWithEvents } from '../hooks/use-flow-execution';
 import { Conversation, Message } from '../../domain/entities';
 import {
-  restaurantReservationScenario,
   createRestaurantReservationConversation,
-  WhatsAppSimulatorProps,
   EducationalBadge,
-  FlowStep
-} from '../../scenarios/restaurant-reservation-scenario';
+  FlowStep,
+  restaurantReservationScenario,
+  WhatsAppSimulatorProps} from '../../scenarios/restaurant-reservation-scenario';
+import { ConversationFactory } from '../../infra/factories/conversation-factory';
+import { useConversationFlow } from '../hooks/use-conversation-flow';
+import { useFlowExecutionWithEvents } from '../hooks/use-flow-execution';
+import { useTypingIndicatorWithEvents } from '../hooks/use-typing-indicator';
 
 interface ReservationData {
   guests: number;
@@ -42,7 +43,7 @@ type FlowStepId = 'guests' | 'date' | 'time' | 'confirmation';
 /**
  * Enhanced WhatsApp Simulator with iPhone UI and educational badges
  */
-export function WhatsAppSimulator({
+export const WhatsAppSimulator = React.memo<WhatsAppSimulatorProps>(function WhatsAppSimulator({
   scenario = restaurantReservationScenario,
   device = 'iphone14',
   autoPlay = false,
@@ -52,29 +53,36 @@ export function WhatsAppSimulator({
   onBadgeShow,
   onFlowStep,
   className = ''
-}: WhatsAppSimulatorProps) {
-  // Main conversation flow
-  const conversationFlow = useConversationFlow({
+}) {
+  // Memoized conversation flow config to prevent re-initialization
+  const flowConfig = useMemo(() => ({
     enableDebug: false,
     autoCleanup: true
-  });
+  }), []);
+  
+  const conversationFlow = useConversationFlow(flowConfig);
+
+  // Memoized configs to prevent re-initialization
+  const typingConfig = useMemo(() => ({
+    showTypingIndicator: true,
+    animationDuration: 1200
+  }), []);
+  
+  const executionConfig = useMemo(() => ({
+    enableMockExecution: true,
+    autoCompleteFlows: true
+  }), []);
 
   // Typing indicator integration
   const typingIndicator = useTypingIndicatorWithEvents(
     conversationFlow.events$,
-    {
-      showTypingIndicator: true,
-      animationDuration: 1200
-    }
+    typingConfig
   );
 
   // Flow execution integration
   const flowExecution = useFlowExecutionWithEvents(
     conversationFlow.events$,
-    {
-      enableMockExecution: true,
-      autoCompleteFlows: true
-    }
+    executionConfig
   );
 
   // Component state
@@ -89,67 +97,118 @@ export function WhatsAppSimulator({
     time: ''
   });
 
-  // Initialize conversation
-  useEffect(() => {
-    const initializeConversation = async () => {
-      const conv = createRestaurantReservationConversation();
-      setConversation(conv);
-      
-      const success = await conversationFlow.actions.loadConversation(conv);
-      if (success) {
-        setIsInitialized(true);
-        
-        // Auto-play if enabled
-        if (autoPlay) {
-          setTimeout(() => {
-            conversationFlow.actions.play();
-          }, 1000);
-        }
+  // Memoized scenario template creation to prevent unnecessary re-computation
+  const conversationTemplate = useMemo(() => {
+    if (!scenario) return null;
+    
+    return {
+      metadata: {
+        title: scenario?.metadata?.title || 'WhatsApp Demo',
+        description: scenario?.metadata?.description || 'WhatsApp Business Demo',
+        tags: scenario?.metadata?.tags || ['demo'],
+        businessName: scenario?.metadata?.businessName || 'Demo Business',
+        businessPhoneNumber: scenario?.metadata?.businessPhoneNumber || '+1234567890',
+        userPhoneNumber: scenario?.metadata?.userPhoneNumber || '+1987654321',
+        language: scenario?.metadata?.language || 'es',
+        category: scenario?.metadata?.category || 'demo'
+      },
+      messages: scenario?.messages?.map(msg => ({
+        sender: msg.sender,
+        type: 'text' as const,
+        content: { text: msg.text },
+        delayBeforeTyping: msg.timestamp,
+        typingDuration: scenario?.timing?.typingDuration || 1200
+      })) || [],
+      settings: {
+        playbackSpeed: 1.0,
+        autoAdvance: true,
+        showTypingIndicators: true,
+        showReadReceipts: true
       }
     };
-
-    initializeConversation();
   }, [scenario]);
-
-  // Handle educational badges
-  useEffect(() => {
-    if (!enableEducationalBadges || !conversationFlow.events$) return;
-
-    const subscription = conversationFlow.events$.subscribe(event => {
-      if (event.type === 'message.sent') {
-        const messageIndex = conversationFlow.state.currentMessageIndex;
-        const badge = scenario.educationalBadges.find(
-          b => b.triggerAtMessageIndex === messageIndex
-        );
-        
-        if (badge) {
-          setTimeout(() => {
-            setActiveBadge(badge);
-            onBadgeShow?.(badge);
-            
-            // Hide badge after duration
-            setTimeout(() => {
-              setActiveBadge(null);
-            }, badge.displayDuration);
-          }, 500);
-        }
-        
-        // Trigger flow if this message has flowTrigger
-        const currentMessage = scenario.messages[messageIndex];
-        if (currentMessage?.flowTrigger) {
-          setTimeout(() => {
-            setShowFlow(true);
-            startFlowSequence();
-          }, 1500);
-        }
+  
+  // Optimized conversation initialization with cleanup
+  const initializeConversation = useCallback(async () => {
+    const scenarioId = scenario?.metadata?.id || 'restaurant-reservation';
+    
+    console.log(`[WhatsAppSimulator] Initializing with scenario: ${scenarioId}`);
+    
+    // Clean up previous state
+    setActiveBadge(null);
+    setShowFlow(false);
+    setFlowStep('guests');
+    setReservationData({ guests: 0, date: '', time: '' });
+    setIsInitialized(false);
+    
+    // Create conversation based on memoized template
+    let conv: Conversation;
+    
+    try {
+      if (conversationTemplate) {
+        conv = ConversationFactory.createFromTemplate(conversationTemplate);
+      } else {
+        throw new Error('No conversation template available');
       }
+    } catch (error) {
+      console.error(`[WhatsAppSimulator] Error creating conversation for scenario ${scenarioId}:`, error);
+      conv = createRestaurantReservationConversation();
+    }
+    
+    setConversation(conv);
+
+    const success = await conversationFlow.actions.loadConversation(conv);
+    if (success) {
+      setIsInitialized(true);
+
+      // Auto-play if enabled - optimized delay
+      if (autoPlay) {
+        // Use requestAnimationFrame for better performance
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            console.log(`[WhatsAppSimulator] Starting autoPlay for scenario: ${scenarioId}...`);
+            conversationFlow.actions.play();
+          }, 100); // Reduced from 500ms to 100ms
+        });
+      }
+    }
+  }, [scenario, autoPlay, conversationFlow.actions, conversationTemplate]);
+
+  // Initialize conversation with proper cleanup
+  useEffect(() => {
+    let isMounted = true;
+    
+    const initialize = async () => {
+      if (isMounted) {
+        await initializeConversation();
+      }
+    };
+    
+    initialize();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [initializeConversation]);
+
+  // Memoized badge handling with proper cleanup
+  const handleBadgeDisplay = useCallback((badge: EducationalBadge) => {
+    // Use requestAnimationFrame for smoother animations
+    requestAnimationFrame(() => {
+      setActiveBadge(badge);
+      onBadgeShow?.(badge);
+
+      // Hide badge after duration with cleanup
+      const timeoutId = setTimeout(() => {
+        setActiveBadge(null);
+      }, badge.displayDuration);
+      
+      // Store timeout for potential cleanup
+      return () => clearTimeout(timeoutId);
     });
-
-    return () => subscription.unsubscribe();
-  }, [conversationFlow.events$, enableEducationalBadges, scenario]);
-
-  // Flow sequence controller
-  const startFlowSequence = () => {
+  }, [onBadgeShow]);
+  
+  const startFlowSequence = useCallback(() => {
     const sequence = [
       { step: 'guests' as FlowStepId, delay: 1500 },
       { step: 'date' as FlowStepId, delay: 4000 },
@@ -157,11 +216,13 @@ export function WhatsAppSimulator({
       { step: 'confirmation' as FlowStepId, delay: 9000 },
     ];
 
+    const timeouts: NodeJS.Timeout[] = [];
+    
     sequence.forEach(({ step, delay }) => {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setFlowStep(step);
         onFlowStep?.(scenario.flowSteps.find(s => s.id === step)!);
-        
+
         if (step === 'guests') {
           setReservationData(prev => ({ ...prev, guests: 6 }));
         } else if (step === 'date') {
@@ -172,13 +233,54 @@ export function WhatsAppSimulator({
           setReservationData(prev => ({ ...prev, time: '19:00' }));
         }
       }, delay);
+      
+      timeouts.push(timeoutId);
     });
 
     // Close flow after confirmation
-    setTimeout(() => {
+    const closeTimeout = setTimeout(() => {
       setShowFlow(false);
     }, 10500);
-  };
+    timeouts.push(closeTimeout);
+    
+    // Return cleanup function
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout));
+    };
+  }, [scenario.flowSteps, onFlowStep]);
+
+  // Handle educational badges with optimized subscription
+  useEffect(() => {
+    if (!enableEducationalBadges || !conversationFlow.events$) return;
+
+    const subscription = conversationFlow.events$.subscribe(event => {
+      if (event.type === 'message.sent') {
+        const messageIndex = conversationFlow.state.currentMessageIndex;
+        const badge = scenario.educationalBadges.find(
+          b => b.triggerAtMessageIndex === messageIndex
+        );
+
+        if (badge) {
+          // Reduced delay for snappier response
+          setTimeout(() => {
+            handleBadgeDisplay(badge);
+          }, 200); // Reduced from 500ms
+        }
+
+        // Trigger flow if this message has flowTrigger
+        const currentMessage = scenario.messages[messageIndex];
+        if (currentMessage?.flowTrigger) {
+          setTimeout(() => {
+            setShowFlow(true);
+            const cleanup = startFlowSequence();
+            // Store cleanup function if needed
+          }, 800); // Reduced from 1500ms
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [conversationFlow.events$, enableEducationalBadges, scenario, handleBadgeDisplay, startFlowSequence]);
 
   // Handle conversation complete
   useEffect(() => {
@@ -187,7 +289,7 @@ export function WhatsAppSimulator({
     const subscription = conversationFlow.events$.subscribe(event => {
       if (event.type === 'conversation.completed') {
         onComplete?.();
-        
+
         // Auto-restart after delay
         setTimeout(() => {
           conversationFlow.actions.reset();
@@ -195,7 +297,7 @@ export function WhatsAppSimulator({
           setShowFlow(false);
           setFlowStep('guests');
           setReservationData({ guests: 0, date: '', time: '' });
-          
+
           if (autoPlay) {
             setTimeout(() => {
               conversationFlow.actions.play();
@@ -304,6 +406,7 @@ export function WhatsAppSimulator({
                   {/* Chat Messages */}
                   <div className="flex-1 bg-[#e5ddd5] bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22whatsapp-bg%22%20patternUnits%3D%22userSpaceOnUse%22%20width%3D%2260%22%20height%3D%2260%22%3E%3Cpath%20d%3D%22M0%2030h60v30H0z%22%20fill%3D%22%23e5ddd5%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M0%200h60v30H0z%22%20fill%3D%22%23d9d0c7%22%20opacity%3D%22.8%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23whatsapp-bg)%22%2F%3E%3C%2Fsvg%3E')] p-4 space-y-3 overflow-hidden">
                     {/* Render messages */}
+                    {console.log('[WhatsAppSimulator] Rendering messages:', conversationFlow.state.messages.length, 'currentIndex:', conversationFlow.state.currentMessageIndex)}
                     {conversationFlow.state.messages.map((message, index) => {
                       const isVisible = index <= conversationFlow.state.currentMessageIndex;
                       if (!isVisible) return null;
@@ -459,7 +562,7 @@ export function WhatsAppSimulator({
       </div>
     </motion.div>
   );
-}
+});
 
 /**
  * Dynamic Badge Display Component

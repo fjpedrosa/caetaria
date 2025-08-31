@@ -3,12 +3,12 @@
  * Extracted from the existing hardcoded hero-mobile-demo-v2.tsx
  */
 
+import { Conversation } from '../domain/entities';
 import {
   ConversationFactory,
   ConversationTemplate,
   MessageTemplate
 } from '../infra/factories/conversation-factory';
-import { Conversation } from '../domain/entities';
 
 /**
  * Educational badge configuration
@@ -51,7 +51,7 @@ export const restaurantReservationScenario = {
     language: 'es',
     category: 'hospitality'
   },
-  
+
   // Educational badges configuration
   educationalBadges: [
     {
@@ -88,7 +88,7 @@ export const restaurantReservationScenario = {
       displayDuration: 3000
     }
   ] as EducationalBadge[],
-  
+
   // WhatsApp Flow configuration
   flowSteps: [
     {
@@ -135,7 +135,7 @@ export const restaurantReservationScenario = {
       stepDelay: 9000
     }
   ] as FlowStep[],
-  
+
   // Animation timing configuration
   timing: {
     // Exact timing from the original component
@@ -159,7 +159,7 @@ export const restaurantReservationScenario = {
     ],
     restartDelay: 30000
   },
-  
+
   // Message sequence - simplified to match MessageTemplate interface
   messages: [
     {
@@ -223,7 +223,7 @@ export function createRestaurantReservationConversation(): Conversation {
       showReadReceipts: true
     }
   };
-  
+
   return ConversationFactory.createFromTemplate(template);
 }
 

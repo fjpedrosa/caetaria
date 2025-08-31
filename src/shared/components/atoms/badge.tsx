@@ -1,41 +1,41 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground border-border",
+          'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
+        outline: 'text-foreground border-border',
         success:
-          "border-transparent bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100",
+          'border-transparent bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100',
         warning:
-          "border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-100",
+          'border-transparent bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-100',
         info:
-          "border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-100",
+          'border-transparent bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-100',
         purple:
-          "border-transparent bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-100",
+          'border-transparent bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-100',
         pink:
-          "border-transparent bg-pink-100 text-pink-800 hover:bg-pink-200 dark:bg-pink-900 dark:text-pink-100",
+          'border-transparent bg-pink-100 text-pink-800 hover:bg-pink-200 dark:bg-pink-900 dark:text-pink-100',
       },
       size: {
-        xs: "px-1.5 py-0.5 text-xs rounded-sm",
-        sm: "px-2 py-0.5 text-xs",
-        default: "px-2.5 py-0.5 text-xs",
-        lg: "px-3 py-1 text-sm",
+        xs: 'px-1.5 py-0.5 text-xs rounded-sm',
+        sm: 'px-2 py-0.5 text-xs',
+        default: 'px-2.5 py-0.5 text-xs',
+        lg: 'px-3 py-1 text-sm',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
   }
 )
@@ -50,21 +50,21 @@ export interface BadgeProps
 }
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    leftIcon, 
-    rightIcon, 
+  ({
+    className,
+    variant,
+    size,
+    leftIcon,
+    rightIcon,
     removable = false,
     onRemove,
     children,
-    ...props 
+    ...props
   }, ref) => {
     return (
-      <div 
-        className={cn(badgeVariants({ variant, size }), className)} 
-        ref={ref} 
+      <div
+        className={cn(badgeVariants({ variant, size }), className)}
+        ref={ref}
         {...props}
       >
         {leftIcon && (
@@ -103,6 +103,6 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
     )
   }
 )
-Badge.displayName = "Badge"
+Badge.displayName = 'Badge'
 
 export { Badge, badgeVariants }

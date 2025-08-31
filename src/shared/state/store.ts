@@ -1,9 +1,9 @@
 /**
  * Redux Store Configuration
- * 
+ *
  * IMPORTANT: This is the main store configuration. For SSR/SSG support,
  * use createStore() from create-store.ts instead of directly importing this.
- * 
+ *
  * Architecture decisions:
  * - RTK Query for all server state (no Context for this)
  * - Redux for complex client state that needs persistence
@@ -20,7 +20,7 @@ import { uiSlice } from './slices/ui-slice'
 
 /**
  * Root reducer combining all slices and RTK Query reducers
- * 
+ *
  * Add new slices here. Remember:
  * - Use RTK Query for server state (users, posts, etc.)
  * - Use Redux slices for complex UI state (forms, wizards, etc.)
@@ -29,10 +29,10 @@ import { uiSlice } from './slices/ui-slice'
 const rootReducer = {
   // RTK Query reducers - automatically generated
   [baseApi.reducerPath]: baseApi.reducer,
-  
+
   // UI state slice - for global UI state
   ui: uiSlice.reducer,
-  
+
   // Add more slices here as needed
   // Examples:
   // - auth: authSlice.reducer (if not using NextAuth)
@@ -42,7 +42,7 @@ const rootReducer = {
 
 /**
  * Create middleware array with all custom and default middleware
- * 
+ *
  * Middleware order matters:
  * 1. RTK Query middleware (for caching, invalidation, polling)
  * 2. Persistence middleware (for localStorage sync)
@@ -64,7 +64,7 @@ const createMiddleware = (getDefaultMiddleware: any) =>
 
 /**
  * Store configuration with all features enabled
- * 
+ *
  * Features:
  * - Redux DevTools (development only)
  * - RTK Query with caching and invalidation
@@ -94,31 +94,31 @@ export type AppDispatch = AppStore['dispatch']
 
 /**
  * WHEN TO USE WHAT:
- * 
+ *
  * RTK Query (preferred for server state):
  * - API calls and data fetching
  * - Caching server responses
  * - Optimistic updates
  * - Polling and real-time updates
  * - Request deduplication
- * 
+ *
  * Redux Slices (for complex client state):
  * - Multi-step forms that need persistence
  * - Shopping carts
  * - User preferences
  * - Complex UI state (modals, sidebars, etc.)
- * 
+ *
  * React Context (use sparingly):
  * - Theme (if not persisted)
  * - Portal targets
  * - Very localized state
- * 
+ *
  * Local State (useState):
  * - Form inputs (if not persisted)
  * - UI toggles
  * - Animation states
  * - Component-specific state
- * 
+ *
  * DON'T use Context for:
  * - Server state (use RTK Query)
  * - Global app state (use Redux)

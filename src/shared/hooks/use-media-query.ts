@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react"
+import { useEffect,useState } from 'react'
 
 /**
  * Hook for media query matching
@@ -7,12 +7,12 @@ export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false)
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return
     }
 
     const mediaQuery = window.matchMedia(query)
-    
+
     // Set initial state
     setMatches(mediaQuery.matches)
 
@@ -22,11 +22,11 @@ export function useMediaQuery(query: string): boolean {
     }
 
     // Add event listener
-    mediaQuery.addEventListener("change", handleChange)
+    mediaQuery.addEventListener('change', handleChange)
 
     // Cleanup
     return () => {
-      mediaQuery.removeEventListener("change", handleChange)
+      mediaQuery.removeEventListener('change', handleChange)
     }
   }, [query])
 
@@ -37,10 +37,10 @@ export function useMediaQuery(query: string): boolean {
  * Hook for responsive breakpoint detection
  */
 export function useBreakpoint(breakpoint: string | number): boolean {
-  const query = typeof breakpoint === "number" 
+  const query = typeof breakpoint === 'number'
     ? `(min-width: ${breakpoint}px)`
     : `(min-width: ${breakpoint})`
-  
+
   return useMediaQuery(query)
 }
 
@@ -48,36 +48,36 @@ export function useBreakpoint(breakpoint: string | number): boolean {
  * Hook for common responsive breakpoints
  */
 export function useResponsive() {
-  const isXs = useMediaQuery("(max-width: 479px)")
-  const isSm = useMediaQuery("(min-width: 480px) and (max-width: 639px)")
-  const isMd = useMediaQuery("(min-width: 640px) and (max-width: 767px)")
-  const isLg = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
-  const isXl = useMediaQuery("(min-width: 1024px) and (max-width: 1279px)")
-  const is2Xl = useMediaQuery("(min-width: 1280px)")
-  
-  const isSmAndUp = useMediaQuery("(min-width: 480px)")
-  const isMdAndUp = useMediaQuery("(min-width: 640px)")
-  const isLgAndUp = useMediaQuery("(min-width: 768px)")
-  const isXlAndUp = useMediaQuery("(min-width: 1024px)")
-  const is2XlAndUp = useMediaQuery("(min-width: 1280px)")
-  
-  const isSmAndDown = useMediaQuery("(max-width: 639px)")
-  const isMdAndDown = useMediaQuery("(max-width: 767px)")
-  const isLgAndDown = useMediaQuery("(max-width: 1023px)")
-  const isXlAndDown = useMediaQuery("(max-width: 1279px)")
+  const isXs = useMediaQuery('(max-width: 479px)')
+  const isSm = useMediaQuery('(min-width: 480px) and (max-width: 639px)')
+  const isMd = useMediaQuery('(min-width: 640px) and (max-width: 767px)')
+  const isLg = useMediaQuery('(min-width: 768px) and (max-width: 1023px)')
+  const isXl = useMediaQuery('(min-width: 1024px) and (max-width: 1279px)')
+  const is2Xl = useMediaQuery('(min-width: 1280px)')
+
+  const isSmAndUp = useMediaQuery('(min-width: 480px)')
+  const isMdAndUp = useMediaQuery('(min-width: 640px)')
+  const isLgAndUp = useMediaQuery('(min-width: 768px)')
+  const isXlAndUp = useMediaQuery('(min-width: 1024px)')
+  const is2XlAndUp = useMediaQuery('(min-width: 1280px)')
+
+  const isSmAndDown = useMediaQuery('(max-width: 639px)')
+  const isMdAndDown = useMediaQuery('(max-width: 767px)')
+  const isLgAndDown = useMediaQuery('(max-width: 1023px)')
+  const isXlAndDown = useMediaQuery('(max-width: 1279px)')
 
   // Current breakpoint
-  const currentBreakpoint = isXs 
-    ? "xs" 
-    : isSm 
-    ? "sm" 
-    : isMd 
-    ? "md" 
-    : isLg 
-    ? "lg" 
-    : isXl 
-    ? "xl" 
-    : "2xl"
+  const currentBreakpoint = isXs
+    ? 'xs'
+    : isSm
+    ? 'sm'
+    : isMd
+    ? 'md'
+    : isLg
+    ? 'lg'
+    : isXl
+    ? 'xl'
+    : '2xl'
 
   return {
     // Exact breakpoints
@@ -87,23 +87,23 @@ export function useResponsive() {
     isLg,
     isXl,
     is2Xl,
-    
+
     // Up breakpoints (min-width)
     isSmAndUp,
     isMdAndUp,
     isLgAndUp,
     isXlAndUp,
     is2XlAndUp,
-    
+
     // Down breakpoints (max-width)
     isSmAndDown,
     isMdAndDown,
     isLgAndDown,
     isXlAndDown,
-    
+
     // Current breakpoint name
     currentBreakpoint,
-    
+
     // Utility properties
     isMobile: isSmAndDown,
     isTablet: isMdAndUp && isLgAndDown,
@@ -115,21 +115,21 @@ export function useResponsive() {
  * Hook for device type detection
  */
 export function useDeviceType() {
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
-  const isDesktop = useMediaQuery("(min-width: 1024px)")
-  
+  const isMobile = useMediaQuery('(max-width: 767px)')
+  const isTablet = useMediaQuery('(min-width: 768px) and (max-width: 1023px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+
   // Touch device detection
   const [isTouchDevice, setIsTouchDevice] = useState(false)
-  
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    if (typeof window !== 'undefined') {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
     }
   }, [])
-  
-  const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop"
-  
+
+  const deviceType = isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop'
+
   return {
     isMobile,
     isTablet,
@@ -143,13 +143,13 @@ export function useDeviceType() {
  * Hook for orientation detection
  */
 export function useOrientation() {
-  const isPortrait = useMediaQuery("(orientation: portrait)")
-  const isLandscape = useMediaQuery("(orientation: landscape)")
-  
+  const isPortrait = useMediaQuery('(orientation: portrait)')
+  const isLandscape = useMediaQuery('(orientation: landscape)')
+
   return {
     isPortrait,
     isLandscape,
-    orientation: isPortrait ? "portrait" : "landscape",
+    orientation: isPortrait ? 'portrait' : 'landscape',
   }
 }
 
@@ -157,13 +157,13 @@ export function useOrientation() {
  * Hook for dark mode detection
  */
 export function usePrefersColorScheme() {
-  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
-  const prefersLight = useMediaQuery("(prefers-color-scheme: light)")
-  
+  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
+  const prefersLight = useMediaQuery('(prefers-color-scheme: light)')
+
   return {
     prefersDark,
     prefersLight,
-    colorScheme: prefersDark ? "dark" : "light",
+    colorScheme: prefersDark ? 'dark' : 'light',
   }
 }
 
@@ -171,8 +171,8 @@ export function usePrefersColorScheme() {
  * Hook for reduced motion detection
  */
 export function usePrefersReducedMotion() {
-  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")
-  
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+
   return prefersReducedMotion
 }
 
@@ -180,9 +180,9 @@ export function usePrefersReducedMotion() {
  * Hook for high contrast detection
  */
 export function usePrefersContrast() {
-  const prefersHighContrast = useMediaQuery("(prefers-contrast: high)")
-  const prefersLowContrast = useMediaQuery("(prefers-contrast: low)")
-  
+  const prefersHighContrast = useMediaQuery('(prefers-contrast: high)')
+  const prefersLowContrast = useMediaQuery('(prefers-contrast: low)')
+
   return {
     prefersHighContrast,
     prefersLowContrast,
@@ -200,7 +200,7 @@ export function useViewport() {
   })
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return
     }
 
@@ -215,13 +215,13 @@ export function useViewport() {
     updateViewport()
 
     // Listen for resize events
-    window.addEventListener("resize", updateViewport)
-    window.addEventListener("orientationchange", updateViewport)
+    window.addEventListener('resize', updateViewport)
+    window.addEventListener('orientationchange', updateViewport)
 
     // Cleanup
     return () => {
-      window.removeEventListener("resize", updateViewport)
-      window.removeEventListener("orientationchange", updateViewport)
+      window.removeEventListener('resize', updateViewport)
+      window.removeEventListener('orientationchange', updateViewport)
     }
   }, [])
 
@@ -238,7 +238,7 @@ export function useContainerQuery(
   const [matches, setMatches] = useState(false)
 
   useEffect(() => {
-    if (!containerRef.current || typeof window === "undefined") {
+    if (!containerRef.current || typeof window === 'undefined') {
       return
     }
 
@@ -246,19 +246,19 @@ export function useContainerQuery(
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect
-        
+
         // Simple width-based queries for now
-        if (query.includes("min-width")) {
-          const minWidth = parseInt(query.match(/min-width:\s*(\d+)px/)?.[1] || "0")
+        if (query.includes('min-width')) {
+          const minWidth = parseInt(query.match(/min-width:\s*(\d+)px/)?.[1] || '0')
           setMatches(width >= minWidth)
-        } else if (query.includes("max-width")) {
-          const maxWidth = parseInt(query.match(/max-width:\s*(\d+)px/)?.[1] || "0")
+        } else if (query.includes('max-width')) {
+          const maxWidth = parseInt(query.match(/max-width:\s*(\d+)px/)?.[1] || '0')
           setMatches(width <= maxWidth)
-        } else if (query.includes("min-height")) {
-          const minHeight = parseInt(query.match(/min-height:\s*(\d+)px/)?.[1] || "0")
+        } else if (query.includes('min-height')) {
+          const minHeight = parseInt(query.match(/min-height:\s*(\d+)px/)?.[1] || '0')
           setMatches(height >= minHeight)
-        } else if (query.includes("max-height")) {
-          const maxHeight = parseInt(query.match(/max-height:\s*(\d+)px/)?.[1] || "0")
+        } else if (query.includes('max-height')) {
+          const maxHeight = parseInt(query.match(/max-height:\s*(\d+)px/)?.[1] || '0')
           setMatches(height <= maxHeight)
         }
       }
@@ -278,13 +278,13 @@ export function useContainerQuery(
  * Hook for hover capability detection
  */
 export function useHoverCapability() {
-  const canHover = useMediaQuery("(hover: hover)")
-  const cannotHover = useMediaQuery("(hover: none)")
-  
+  const canHover = useMediaQuery('(hover: hover)')
+  const cannotHover = useMediaQuery('(hover: none)')
+
   return {
     canHover,
     cannotHover,
-    hoverCapability: canHover ? "hover" : "none",
+    hoverCapability: canHover ? 'hover' : 'none',
   }
 }
 
@@ -292,16 +292,16 @@ export function useHoverCapability() {
  * Hook for pointer type detection
  */
 export function usePointerType() {
-  const hasCoarsePointer = useMediaQuery("(pointer: coarse)")
-  const hasFinePointer = useMediaQuery("(pointer: fine)")
-  const hasNoPointer = useMediaQuery("(pointer: none)")
-  
-  const pointerType = hasCoarsePointer 
-    ? "coarse" 
-    : hasFinePointer 
-    ? "fine" 
-    : "none"
-  
+  const hasCoarsePointer = useMediaQuery('(pointer: coarse)')
+  const hasFinePointer = useMediaQuery('(pointer: fine)')
+  const hasNoPointer = useMediaQuery('(pointer: none)')
+
+  const pointerType = hasCoarsePointer
+    ? 'coarse'
+    : hasFinePointer
+    ? 'fine'
+    : 'none'
+
   return {
     hasCoarsePointer,
     hasFinePointer,
@@ -319,7 +319,7 @@ export function useMediaQueries(queries: Record<string, string>) {
   const [matches, setMatches] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return
     }
 
@@ -341,14 +341,14 @@ export function useMediaQueries(queries: Record<string, string>) {
     const initialMatches: Record<string, boolean> = {}
     Object.entries(mediaQueries).forEach(([key, mq]) => {
       initialMatches[key] = mq.matches
-      mq.addEventListener("change", listeners[key])
+      mq.addEventListener('change', listeners[key])
     })
     setMatches(initialMatches)
 
     // Cleanup
     return () => {
       Object.entries(mediaQueries).forEach(([key, mq]) => {
-        mq.removeEventListener("change", listeners[key])
+        mq.removeEventListener('change', listeners[key])
       })
     }
   }, [queries])

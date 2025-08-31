@@ -30,7 +30,7 @@ export class CompleteOnboardingUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         command.sessionId as OnboardingSessionId
       );
-      
+
       if (!sessionResult.success || !sessionResult.data) {
         return failure(new NotFoundError('OnboardingSession', command.sessionId));
       }
@@ -43,7 +43,7 @@ export class CompleteOnboardingUseCase {
       }
 
       // Mark session as completed
-      const completedSession = session.status === 'completed' 
+      const completedSession = session.status === 'completed'
         ? session
         : advanceOnboardingStep(session, 'complete');
 
@@ -55,19 +55,19 @@ export class CompleteOnboardingUseCase {
 
       // Generate next steps based on configuration
       const nextSteps: string[] = [];
-      
+
       if (session.stepData.botConfig) {
         nextSteps.push('Customize your bot responses and commands');
       }
-      
+
       if (session.stepData.whatsappConfig) {
         nextSteps.push('Set up message templates for common responses');
       }
-      
+
       if (session.stepData.businessInfo) {
         nextSteps.push('Configure business hours and availability');
       }
-      
+
       nextSteps.push('Invite team members to manage conversations');
       nextSteps.push('Set up analytics and reporting preferences');
       nextSteps.push('Create automated workflows and triggers');
@@ -95,49 +95,49 @@ export class CompleteOnboardingUseCase {
       const sessionResult = await this.onboardingRepository.findById(
         sessionId as OnboardingSessionId
       );
-      
+
       if (!sessionResult.success || !sessionResult.data) {
         return failure(new NotFoundError('OnboardingSession', sessionId));
       }
 
       const session = sessionResult.data;
       const isComplete = isOnboardingComplete(session.stepData);
-      
+
       // Calculate completion percentage and missing steps
       const missingSteps: string[] = [];
       let completedSteps = 0;
       const totalSteps = 5;
-      
+
       if (!session.stepData.businessInfo) {
         missingSteps.push('Business Information');
       } else {
         completedSteps++;
       }
-      
+
       if (!session.stepData.whatsappConfig) {
         missingSteps.push('WhatsApp Integration');
       } else {
         completedSteps++;
       }
-      
+
       if (!session.stepData.phoneVerification?.isVerified) {
         missingSteps.push('Phone Verification');
       } else {
         completedSteps++;
       }
-      
+
       if (!session.stepData.botConfig) {
         missingSteps.push('Bot Configuration');
       } else {
         completedSteps++;
       }
-      
+
       if (!session.stepData.testingResults?.testMessageSent || !session.stepData.testingResults?.webhookConfigured) {
         missingSteps.push('Bot Testing');
       } else {
         completedSteps++;
       }
-      
+
       const completionPercentage = Math.round((completedSteps / totalSteps) * 100);
 
       return success({

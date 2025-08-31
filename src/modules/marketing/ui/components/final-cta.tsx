@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 
 /**
- * Final CTA Component - Server Component  
+ * Final CTA Component - Server Component
  * Final call to action section
  */
 export function FinalCta() {
@@ -19,18 +19,18 @@ export function FinalCta() {
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             {title}
           </h2>
-          
+
           <p className="text-xl md:text-2xl text-white/90 mb-4">
             {subtitle}
           </p>
-          
+
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
             {description}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link href="/onboarding">
-              <Button 
+              <Button
                 size="lg"
                 className="bg-white text-secondary hover:bg-white/90 px-8 py-6 text-lg font-semibold group"
               >
@@ -38,9 +38,9 @@ export function FinalCta() {
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            
+
             <Link href="#demo">
-              <Button 
+              <Button
                 size="lg"
                 variant="outline"
                 className="border-2 border-white text-white hover:bg-white hover:text-secondary px-8 py-6 text-lg font-semibold"

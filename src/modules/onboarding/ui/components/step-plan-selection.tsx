@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect,useState } from 'react'
-import { 
+import {
   BarChart3,
-  Check, 
-  CreditCard, 
+  Check,
+  CreditCard,
   MessageSquare,
   Shield,
   Sparkles,
-  Star, 
+  Star,
   TrendingUp,
   Users,
   Zap} from 'lucide-react'
@@ -106,7 +106,7 @@ const addOns = [
 export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) {
   const { variant, pricing } = usePriceVariant()
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>(defaultValues?.addOns || [])
-  
+
   const {
     register,
     handleSubmit,
@@ -129,21 +129,21 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
     if (planId === 'enterprise') {
       return { displayPrice: 'Contacto', originalPrice: undefined, hasDiscount: false }
     }
-    
+
     const planPricing = pricing[planId as keyof PricingPlan]
     const multiplier = billingCycle === 'yearly' ? 10 : 1
-    
+
     const basePrice = parseInt(planPricing.price.replace('€', ''))
-    const displayPrice = billingCycle === 'yearly' 
+    const displayPrice = billingCycle === 'yearly'
       ? `${basePrice * multiplier}€/año`
       : `${planPricing.price}/mes`
-    
+
     if (planPricing.originalPrice) {
       const originalBase = parseInt(planPricing.originalPrice.replace('€', ''))
       const originalPrice = billingCycle === 'yearly'
         ? `${originalBase * multiplier}€`
         : planPricing.originalPrice
-      
+
       return {
         displayPrice,
         originalPrice,
@@ -151,7 +151,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
         discount: planPricing.discount
       }
     }
-    
+
     return { displayPrice, originalPrice: undefined, hasDiscount: false }
   }
 
@@ -159,7 +159,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
     const newAddOns = selectedAddOns.includes(addOnId)
       ? selectedAddOns.filter(id => id !== addOnId)
       : [...selectedAddOns, addOnId]
-    
+
     setSelectedAddOns(newAddOns)
     setValue('addOns', newAddOns)
   }
@@ -183,7 +183,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
         <p className="text-gray-600">
           Comienza con 14 días gratis. Sin tarjeta de crédito.
         </p>
-        
+
         {variant !== 'A' && (
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-full text-sm font-medium">
             <Sparkles className="h-3 w-3" />
@@ -229,14 +229,14 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
           {plans.map((plan) => {
             const isSelected = selectedPlan === plan.id
             const priceInfo = getPlanPrice(plan.id)
-            
+
             return (
               <Card
                 key={plan.id}
                 className={cn(
                   'relative p-6 cursor-pointer transition-all',
-                  isSelected 
-                    ? 'ring-2 ring-indigo-500 shadow-lg scale-[1.02]' 
+                  isSelected
+                    ? 'ring-2 ring-indigo-500 shadow-lg scale-[1.02]'
                     : 'hover:shadow-md',
                   plan.popular && 'border-indigo-500'
                 )}
@@ -248,7 +248,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
                     Más popular
                   </Badge>
                 )}
-                
+
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
@@ -264,7 +264,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="py-3 border-y">
                     <div className="flex items-baseline gap-2">
                       {priceInfo.originalPrice && (
@@ -285,7 +285,7 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
                       </p>
                     )}
                   </div>
-                  
+
                   <ul className="space-y-2">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-sm">
@@ -338,8 +338,8 @@ export function StepPlanSelection({ onNext, onPrev, defaultValues }: StepProps) 
           <div className="flex items-center justify-between mb-2">
             <span className="font-semibold">Total estimado:</span>
             <span className="text-xl font-bold text-indigo-600">
-              {selectedPlan === 'enterprise' 
-                ? 'Contactar' 
+              {selectedPlan === 'enterprise'
+                ? 'Contactar'
                 : getPlanPrice(selectedPlan as 'starter' | 'pro').displayPrice}
             </span>
           </div>

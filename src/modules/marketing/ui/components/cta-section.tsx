@@ -1,7 +1,7 @@
-import { 
-  ArrowRight, 
-  CheckCircle, 
-  Clock, 
+import {
+  ArrowRight,
+  CheckCircle,
+  Clock,
   MessageSquare,
   Sparkles,
   Users} from 'lucide-react';
@@ -14,15 +14,15 @@ import { LeadCaptureForm } from './lead-capture-form';
 
 /**
  * CTA Section Component - Server Component
- * 
+ *
  * Strategic call-to-action section with lead capture form
  * and compelling conversion elements.
  */
 export async function CtaSection() {
   const { badge, title, titleHighlight, description, benefits, urgency, socialProof, form, floatingBadges, stats, alternativeCta } = MARKETING_COPY.ctaSection;
-  
+
   return (
-    <section className="py-20 bg-gradient-brand relative overflow-hidden">
+    <section className="py-20 bg-primary/5 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full" />
@@ -43,7 +43,7 @@ export async function CtaSection() {
             {/* Main Heading */}
             <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               {title}
-              <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="block text-primary">
                 {titleHighlight}
               </span>
             </h2>
@@ -99,8 +99,8 @@ export async function CtaSection() {
             {/* Form Container with Glow Effect */}
             <div className="relative">
               {/* Glow Background */}
-              <div className="absolute -inset-4 bg-gradient-brand rounded-3xl blur-xl opacity-30 animate-pulse" />
-              
+              <div className="absolute -inset-4 bg-primary/20 rounded-3xl blur-xl opacity-30 animate-pulse" />
+
               {/* Form */}
               <div className="relative">
                 <LeadCaptureForm

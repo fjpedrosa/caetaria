@@ -25,10 +25,10 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Call optional error handler
     this.props.onError?.(error, errorInfo);
-    
+
     // Send error to monitoring service in production
     if (process.env.NODE_ENV === 'production') {
       this.reportError(error, errorInfo);
@@ -79,15 +79,15 @@ class ErrorBoundary extends Component<Props, State> {
                   />
                 </svg>
               </div>
-              
+
               <h1 className="text-2xl font-bold text-gray-900 mb-4">
                 Something went wrong
               </h1>
-              
+
               <p className="text-gray-600 mb-6">
                 We apologize for the inconvenience. Our team has been notified and is working to fix this issue.
               </p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={() => window.location.reload()}
@@ -95,7 +95,7 @@ class ErrorBoundary extends Component<Props, State> {
                 >
                   Reload Page
                 </button>
-                
+
                 <button
                   onClick={() => window.location.href = '/'}
                   className="w-full bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
@@ -103,7 +103,7 @@ class ErrorBoundary extends Component<Props, State> {
                   Go Home
                 </button>
               </div>
-              
+
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-6 text-left">
                   <summary className="cursor-pointer text-sm text-gray-500 mb-2">

@@ -26,7 +26,7 @@ export function LoadingState({
 }: LoadingStateProps) {
   const sizeClasses = {
     sm: 'w-4 h-4',
-    md: 'w-6 h-6', 
+    md: 'w-6 h-6',
     lg: 'w-8 h-8',
     xl: 'w-12 h-12'
   };
@@ -34,12 +34,12 @@ export function LoadingState({
   const containerSizeClasses = {
     sm: 'gap-2 text-sm',
     md: 'gap-3 text-base',
-    lg: 'gap-4 text-lg', 
+    lg: 'gap-4 text-lg',
     xl: 'gap-5 text-xl'
   };
 
   const LoadingSpinner = () => (
-    <Loader2 
+    <Loader2
       className={cn('animate-spin text-emerald-600', sizeClasses[size])}
       aria-hidden="true"
     />
@@ -67,7 +67,7 @@ export function LoadingState({
   );
 
   const LoadingPulse = () => (
-    <div 
+    <div
       className={cn(
         'rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 animate-pulse',
         sizeClasses[size]
@@ -83,11 +83,11 @@ export function LoadingState({
         'border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin',
         sizeClasses[size]
       )} />
-      
+
       {/* Inner icons that fade in/out */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative">
-          <MessageSquare 
+          <MessageSquare
             className={cn(
               'absolute inset-0 text-emerald-600 opacity-0 animate-ping',
               size === 'sm' && 'w-2 h-2',
@@ -97,7 +97,7 @@ export function LoadingState({
             )}
             style={{ animationDelay: '0s' }}
           />
-          <Bot 
+          <Bot
             className={cn(
               'absolute inset-0 text-emerald-700 opacity-0 animate-ping',
               size === 'sm' && 'w-2 h-2',
@@ -107,7 +107,7 @@ export function LoadingState({
             )}
             style={{ animationDelay: '0.5s' }}
           />
-          <Sparkles 
+          <Sparkles
             className={cn(
               'absolute inset-0 text-emerald-500 opacity-0 animate-ping',
               size === 'sm' && 'w-2 h-2',
@@ -137,7 +137,7 @@ export function LoadingState({
   };
 
   const content = (
-    <div 
+    <div
       className={cn(
         'flex items-center justify-center',
         containerSizeClasses[size],
@@ -180,23 +180,23 @@ export function PageLoadingState({ text = 'Loading your experience...' }: { text
         <div className="mb-8">
           <LoadingState size="xl" variant="branded" className="justify-center" />
         </div>
-        
+
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           WhatsApp Cloud API
         </h2>
-        
+
         <p className="text-gray-600 text-lg mb-6">
           {text}
         </p>
-        
+
         {/* Progress indicator */}
         <div className="w-full bg-gray-200 rounded-full h-1.5 mb-4">
-          <div 
+          <div
             className="bg-gradient-to-r from-emerald-500 to-teal-500 h-1.5 rounded-full animate-pulse"
             style={{ width: '60%' }}
           />
         </div>
-        
+
         <p className="text-sm text-gray-500">
           Preparing your messaging platform...
         </p>
@@ -211,9 +211,9 @@ export function PageLoadingState({ text = 'Loading your experience...' }: { text
  */
 export function ButtonLoadingState({ size = 'sm' }: { size?: 'sm' | 'md' }) {
   return (
-    <LoadingState 
-      size={size} 
-      variant="spinner" 
+    <LoadingState
+      size={size}
+      variant="spinner"
       className="justify-center"
     />
   );

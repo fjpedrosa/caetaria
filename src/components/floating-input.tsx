@@ -16,22 +16,22 @@ interface FloatingInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
 
 /**
  * Floating Input Component
- * 
+ *
  * Advanced input field with floating label animation,
  * validation states, icons, and smooth transitions.
  */
 export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ 
-    label, 
-    icon, 
-    error, 
-    success, 
-    helperText, 
-    className, 
+  ({
+    label,
+    icon,
+    error,
+    success,
+    helperText,
+    className,
     disabled,
     type = 'text',
     value,
-    ...props 
+    ...props
   }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasValue, setHasValue] = useState(!!value);
@@ -70,8 +70,8 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
               // Icon spacing
               icon ? 'pl-11' : 'pl-4',
               // Border colors
-              hasError 
-                ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+              hasError
+                ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                 : hasSuccess
                 ? 'border-green-300 focus:border-green-500 focus:ring-2 focus:ring-green-200'
                 : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200',
@@ -89,7 +89,7 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
             className={cn(
               'absolute left-4 text-gray-500 pointer-events-none transition-all duration-300',
               icon && 'left-11',
-              isFloated 
+              isFloated
                 ? 'top-2 text-xs font-medium'
                 : 'top-4 text-sm',
               hasError && 'text-red-500',
@@ -101,11 +101,11 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
               scale: isFloated ? 0.85 : 1,
               color: hasError ? '#ef4444' : hasSuccess ? '#059669' : isFocused ? '#2563eb' : '#6b7280'
             }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             {label}
             {props.required && (
-              <motion.span 
+              <motion.span
                 className="text-red-500 ml-1"
                 animate={{ scale: isFloated ? 1 : 0.9 }}
                 transition={{ duration: 0.2 }}
@@ -140,7 +140,7 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
                 initial={{ opacity: 0, scale: 0, rotate: -90 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, scale: 0, rotate: 90 }}
-                transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+                transition={{ duration: 0.3, type: 'spring', stiffness: 200 }}
                 className="absolute right-3 top-4"
               >
                 {hasError ? (
@@ -156,16 +156,16 @@ export const FloatingInput = forwardRef<HTMLInputElement, FloatingInputProps>(
           <motion.div
             className={cn(
               'absolute inset-0 rounded-lg pointer-events-none',
-              hasError 
-                ? 'bg-red-100' 
-                : hasSuccess 
-                ? 'bg-green-100' 
+              hasError
+                ? 'bg-red-100'
+                : hasSuccess
+                ? 'bg-green-100'
                 : 'bg-blue-100'
             )}
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ 
-              opacity: isFocused ? 0.1 : 0, 
-              scale: isFocused ? 1 : 0.8 
+            animate={{
+              opacity: isFocused ? 0.1 : 0,
+              scale: isFocused ? 1 : 0.8
             }}
             transition={{ duration: 0.2 }}
           />
@@ -205,7 +205,7 @@ FloatingInput.displayName = 'FloatingInput';
 
 /**
  * Floating Textarea Component
- * 
+ *
  * Extended textarea with floating label functionality.
  */
 interface FloatingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'placeholder'> {
@@ -216,16 +216,16 @@ interface FloatingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTe
 }
 
 export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
-  ({ 
-    label, 
-    error, 
-    success, 
-    helperText, 
-    className, 
+  ({
+    label,
+    error,
+    success,
+    helperText,
+    className,
     disabled,
     value,
     rows = 4,
-    ...props 
+    ...props
   }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasValue, setHasValue] = useState(!!value);
@@ -262,8 +262,8 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
             className={cn(
               'peer w-full px-4 pb-2 pt-6 text-sm bg-white border rounded-lg transition-all duration-300 outline-none focus:outline-none resize-none',
               // Border colors
-              hasError 
-                ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+              hasError
+                ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200'
                 : hasSuccess
                 ? 'border-green-300 focus:border-green-500 focus:ring-2 focus:ring-green-200'
                 : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200',
@@ -278,7 +278,7 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
           <motion.label
             className={cn(
               'absolute left-4 text-gray-500 pointer-events-none transition-all duration-300',
-              isFloated 
+              isFloated
                 ? 'top-2 text-xs font-medium'
                 : 'top-4 text-sm',
               hasError && 'text-red-500',
@@ -289,7 +289,7 @@ export const FloatingTextarea = forwardRef<HTMLTextAreaElement, FloatingTextarea
               y: isFloated ? -8 : 0,
               scale: isFloated ? 0.85 : 1,
             }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             {label}
             {props.required && (

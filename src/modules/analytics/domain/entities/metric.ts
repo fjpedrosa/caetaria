@@ -110,7 +110,7 @@ export class MetricEntity {
   }
 
   matchesDimensions(dimensions: Partial<MetricDimensions>): boolean {
-    return Object.entries(dimensions).every(([key, value]) => 
+    return Object.entries(dimensions).every(([key, value]) =>
       this.metric.dimensions[key] === value
     );
   }

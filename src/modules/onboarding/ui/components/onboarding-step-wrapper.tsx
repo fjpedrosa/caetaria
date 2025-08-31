@@ -47,7 +47,7 @@ export function OnboardingStepWrapper({
               </Button>
             </Link>
           )}
-          
+
           <div className="text-center flex-1">
             <h1 className="text-3xl font-bold text-gray-900">
               {title}
@@ -56,7 +56,7 @@ export function OnboardingStepWrapper({
               {description}
             </p>
           </div>
-          
+
           {showBackButton && routes?.prev && (
             <div className="w-16 flex-shrink-0" />
           )}

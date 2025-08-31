@@ -20,7 +20,7 @@ export function Testimonials() {
   // Auto-play carousel
   useEffect(() => {
     if (!isAutoplay) return;
-    
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % Math.ceil(items.length / 3));
     }, 4000);
@@ -51,11 +51,11 @@ export function Testimonials() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-background relative overflow-hidden">
+    <section className="py-20 bg-background relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20"
+          className="absolute inset-0 bg-primary/5"
           animate={{
             backgroundPosition: ['0% 0%', '100% 100%'],
           }}
@@ -143,7 +143,7 @@ export function Testimonials() {
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="grid grid-cols-1 md:grid-cols-3 gap-8"
               >
                 {getVisibleTestimonials().map((testimonial, index) => (
@@ -151,12 +151,12 @@ export function Testimonials() {
                     key={`${currentIndex}-${index}`}
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      duration: 0.6, 
+                    transition={{
+                      duration: 0.6,
                       delay: index * 0.1,
-                      ease: "easeOut"
+                      ease: 'easeOut'
                     }}
-                    whileHover={{ 
+                    whileHover={{
                       y: -8,
                       transition: { duration: 0.3 }
                     }}
@@ -164,10 +164,10 @@ export function Testimonials() {
                     <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                       {/* Card Background Effect */}
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-blue-600/10 opacity-0 group-hover:opacity-100"
+                        className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100"
                         transition={{ duration: 0.3 }}
                       />
-                      
+
                       <CardHeader className="relative">
                         {/* Rating Stars with Sequential Animation */}
                         <div className="flex mb-4">
@@ -176,10 +176,10 @@ export function Testimonials() {
                               key={i}
                               initial={{ opacity: 0, scale: 0, rotate: -180 }}
                               animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                              transition={{ 
-                                duration: 0.5, 
+                              transition={{
+                                duration: 0.5,
                                 delay: (index * 0.1) + (i * 0.1) + 0.8,
-                                type: "spring",
+                                type: 'spring',
                                 stiffness: 200
                               }}
                             >
@@ -187,7 +187,7 @@ export function Testimonials() {
                             </motion.div>
                           ))}
                         </div>
-                        
+
                         {/* Quote with Fade-in */}
                         <motion.div
                           initial={{ opacity: 0 }}
@@ -215,23 +215,23 @@ export function Testimonials() {
                           </CardDescription>
                         </motion.div>
                       </CardHeader>
-                      
+
                       <CardContent className="relative">
                         <div className="flex items-center gap-3">
                           {/* Avatar with Entrance Animation */}
                           <motion.div
-                            className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold relative overflow-hidden"
+                            className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold relative overflow-hidden"
                             initial={{ opacity: 0, scale: 0 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ 
-                              duration: 0.5, 
+                            transition={{
+                              duration: 0.5,
                               delay: (index * 0.1) + 0.4,
-                              type: "spring",
+                              type: 'spring',
                               stiffness: 200
                             }}
-                            whileHover={{ 
+                            whileHover={{
                               scale: 1.1,
-                              boxShadow: "0 8px 25px rgba(0,0,0,0.15)"
+                              boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
                             }}
                           >
                             <motion.div
@@ -244,7 +244,7 @@ export function Testimonials() {
                               {testimonial.name.split(' ').map(n => n[0]).join('')}
                             </span>
                           </motion.div>
-                          
+
                           {/* Author Info */}
                           <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -259,7 +259,7 @@ export function Testimonials() {
 
                       {/* Parallax Effect on Scroll */}
                       <motion.div
-                        className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-400/10 to-blue-600/10 rounded-full blur-xl"
+                        className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-full blur-xl"
                         animate={{
                           y: [0, -10, 0],
                           scale: [1, 1.1, 1],
@@ -284,8 +284,8 @@ export function Testimonials() {
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? 'bg-yellow-400 scale-125' 
+                  index === currentIndex
+                    ? 'bg-yellow-400 scale-125'
                     : 'bg-gray-300 hover:bg-gray-400'
                 }`}
                 whileHover={{ scale: 1.2 }}

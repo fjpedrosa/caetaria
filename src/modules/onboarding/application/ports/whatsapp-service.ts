@@ -33,17 +33,17 @@ export interface WhatsAppService {
    * Validate WhatsApp configuration
    */
   validateConfiguration(config: WhatsAppIntegrationConfig): Promise<Result<WhatsAppValidationResult, Error>>;
-  
+
   /**
    * Send verification code to phone number
    */
   sendVerificationCode(phoneNumber: string): Promise<Result<PhoneVerificationResult, Error>>;
-  
+
   /**
    * Verify phone number with code
    */
   verifyPhoneNumber(phoneNumber: string, code: string): Promise<Result<boolean, Error>>;
-  
+
   /**
    * Send test message
    */
@@ -52,7 +52,7 @@ export interface WhatsAppService {
     phoneNumber: string,
     message: string
   ): Promise<Result<SendMessageResult, Error>>;
-  
+
   /**
    * Configure webhook
    */
@@ -60,12 +60,12 @@ export interface WhatsAppService {
     config: WhatsAppIntegrationConfig,
     webhookUrl: string
   ): Promise<Result<boolean, Error>>;
-  
+
   /**
    * Test webhook connectivity
    */
   testWebhook(webhookUrl: string): Promise<Result<boolean, Error>>;
-  
+
   /**
    * Get business profile
    */

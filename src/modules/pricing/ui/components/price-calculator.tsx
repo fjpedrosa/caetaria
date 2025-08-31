@@ -11,10 +11,10 @@ import { Label } from '../../../../components/ui/label';
 import { Skeleton } from '../../../../components/ui/loading-skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { Separator } from '../../../../components/ui/separator';
-import { 
+import {
   useCalculatePriceMutation,
-  useGetPricingPlansQuery, 
-  useLazyValidateDiscountQuery 
+  useGetPricingPlansQuery,
+  useLazyValidateDiscountQuery
 } from '../../infra/services/pricing-api';
 
 interface PriceCalculatorProps {
@@ -24,11 +24,11 @@ interface PriceCalculatorProps {
   showDiscount?: boolean;
 }
 
-export function PriceCalculator({ 
-  onPriceCalculated, 
-  defaultPlanId, 
-  showQuantity = true, 
-  showDiscount = true 
+export function PriceCalculator({
+  onPriceCalculated,
+  defaultPlanId,
+  showQuantity = true,
+  showDiscount = true
 }: PriceCalculatorProps) {
   const [selectedPlanId, setSelectedPlanId] = useState<string>(defaultPlanId || '');
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -40,18 +40,18 @@ export function PriceCalculator({
     discount?: any;
   } | null>(null);
 
-  const { data: pricingData, isLoading: plansLoading } = useGetPricingPlansQuery({ 
-    includeInactive: false 
+  const { data: pricingData, isLoading: plansLoading } = useGetPricingPlansQuery({
+    includeInactive: false
   });
 
-  const [calculatePrice, { 
-    data: calculation, 
-    isLoading: calculating, 
-    error: calculationError 
+  const [calculatePrice, {
+    data: calculation,
+    isLoading: calculating,
+    error: calculationError
   }] = useCalculatePriceMutation();
 
-  const [validateDiscount, { 
-    isLoading: validatingDiscount 
+  const [validateDiscount, {
+    isLoading: validatingDiscount
   }] = useLazyValidateDiscountQuery();
 
   // Set default plan if available
@@ -253,7 +253,7 @@ export function PriceCalculator({
                   <AlertCircle className="h-3 w-3" />
                 )}
                 <span>
-                  {discountValidation.message || 
+                  {discountValidation.message ||
                     (discountValidation.isValid ? 'Valid discount code' : 'Invalid discount code')
                   }
                 </span>
@@ -268,13 +268,13 @@ export function PriceCalculator({
             <Separator />
             <div className="space-y-3">
               <h4 className="font-medium">Price Breakdown</h4>
-              
+
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Base Price</span>
                   <span>{formatPrice(calculation.priceBreakdown.basePrice)}</span>
                 </div>
-                
+
                 {showQuantity && quantity > 1 && (
                   <div className="flex justify-between">
                     <span>Quantity ({quantity})</span>

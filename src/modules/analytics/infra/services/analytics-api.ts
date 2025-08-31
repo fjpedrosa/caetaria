@@ -351,7 +351,7 @@ export const {
   useGetEventQuery,
   useDeleteEventMutation,
   useGetEventStatsQuery,
-  
+
   // Metrics
   useSaveMetricMutation,
   useSaveMetricsMutation,
@@ -360,7 +360,7 @@ export const {
   useDeleteMetricMutation,
   useGetMetricTrendQuery,
   useAggregateMetricsQuery,
-  
+
   // Reporting
   useGenerateReportMutation,
   useGetReportsQuery,

@@ -31,11 +31,11 @@ export interface AnalyticsRepository {
   getEventById(id: string): Promise<EventEntity | null>;
   getEventCount(filters: Omit<EventFilters, 'limit' | 'offset'>): Promise<number>;
   deleteEvent(id: string): Promise<void>;
-  
+
   // Batch event operations
   saveEvents(events: EventEntity[]): Promise<EventEntity[]>;
   deleteEvents(filters: EventFilters): Promise<number>;
-  
+
   // Event aggregations
   getUniqueUsers(filters: Omit<EventFilters, 'userId'>): Promise<string[]>;
   getUniqueSessions(filters: EventFilters): Promise<string[]>;
@@ -48,18 +48,18 @@ export interface MetricsRepository {
   getMetrics(filters: MetricFilters): Promise<MetricEntity[]>;
   getMetricById(id: string): Promise<MetricEntity | null>;
   deleteMetric(id: string): Promise<void>;
-  
+
   // Batch metric operations
   saveMetrics(metrics: MetricEntity[]): Promise<MetricEntity[]>;
   deleteMetrics(filters: MetricFilters): Promise<number>;
-  
+
   // Metric aggregations
   aggregateMetrics(
     names: string[],
     aggregationType: 'sum' | 'average' | 'min' | 'max' | 'count',
     filters: MetricFilters
   ): Promise<MetricEntity[]>;
-  
+
   getMetricTrend(
     name: string,
     granularity: TimeGranularity,

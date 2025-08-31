@@ -9,7 +9,7 @@
 export abstract class ApplicationError extends Error {
   abstract readonly code: string;
   abstract readonly category: 'validation' | 'business' | 'technical' | 'external';
-  
+
   constructor(
     message: string,
     public readonly context?: Record<string, unknown>
@@ -193,11 +193,11 @@ export function getErrorCode(error: unknown): string {
   if (isApplicationError(error)) {
     return error.code;
   }
-  
+
   if (error instanceof Error) {
     return 'UNKNOWN_ERROR';
   }
-  
+
   return 'UNEXPECTED_ERROR';
 }
 
@@ -208,11 +208,11 @@ export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
   }
-  
+
   if (typeof error === 'string') {
     return error;
   }
-  
+
   return 'An unexpected error occurred';
 }
 
@@ -233,7 +233,7 @@ export function createErrorResponse(error: unknown): {
       context: error.context,
     };
   }
-  
+
   return {
     code: getErrorCode(error),
     message: getErrorMessage(error),

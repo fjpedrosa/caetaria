@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * WhatsApp Integration Form Component
@@ -53,7 +53,7 @@ export function WhatsAppIntegrationForm() {
   const [showAccessToken, setShowAccessToken] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const router = useRouter();
-  
+
   const form = useForm<WhatsAppIntegrationData>({
     resolver: zodResolver(whatsappIntegrationSchema),
     defaultValues: {
@@ -69,14 +69,14 @@ export function WhatsAppIntegrationForm() {
 
   const onSubmit = async (data: WhatsAppIntegrationData) => {
     setIsSubmitting(true);
-    
+
     try {
       // TODO: Call API to save and validate WhatsApp config
       console.log('WhatsApp integration submitted:', data);
-      
+
       // Simulate API call with validation
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Navigate to next step
       router.push('/onboarding/verification');
     } catch (error) {
@@ -90,7 +90,7 @@ export function WhatsAppIntegrationForm() {
   const testConnection = async () => {
     const formData = form.getValues();
     const validationResult = whatsappIntegrationSchema.safeParse(formData);
-    
+
     if (!validationResult.success) {
       setTestResult({ success: false, message: 'Please fill all fields correctly before testing' });
       return;
@@ -98,16 +98,16 @@ export function WhatsAppIntegrationForm() {
 
     setIsTesting(true);
     setTestResult(null);
-    
+
     try {
       // TODO: Call API to test connection
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Simulate test result
       const success = Math.random() > 0.3; // 70% success rate for demo
       setTestResult({
         success,
-        message: success 
+        message: success
           ? 'Connection successful! Your WhatsApp API configuration is valid.'
           : 'Connection failed. Please check your credentials and try again.',
       });
@@ -305,8 +305,8 @@ export function WhatsAppIntegrationForm() {
           {/* Test Results */}
           {testResult && (
             <div className={`p-4 rounded-lg border ${
-              testResult.success 
-                ? 'border-green-200 bg-green-50 text-green-800' 
+              testResult.success
+                ? 'border-green-200 bg-green-50 text-green-800'
                 : 'border-red-200 bg-red-50 text-red-800'
             }`}>
               <p className="text-sm font-medium">
@@ -336,7 +336,7 @@ export function WhatsAppIntegrationForm() {
                 </>
               )}
             </Button>
-            
+
             <Button
               type="submit"
               disabled={isSubmitting || isTesting}

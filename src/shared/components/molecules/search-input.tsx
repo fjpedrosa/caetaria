@@ -1,12 +1,12 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { Button } from "../atoms/button"
-import { Input, type InputProps } from "../atoms/input"
-import { Spinner } from "../atoms/spinner"
+import { Button } from '../atoms/button'
+import { Input, type InputProps } from '../atoms/input'
+import { Spinner } from '../atoms/spinner'
 
-export interface SearchInputProps extends Omit<InputProps, "leftIcon" | "rightIcon" | "type"> {
+export interface SearchInputProps extends Omit<InputProps, 'leftIcon' | 'rightIcon' | 'type'> {
   onSearch?: (query: string) => void
   onClear?: () => void
   loading?: boolean
@@ -17,7 +17,7 @@ export interface SearchInputProps extends Omit<InputProps, "leftIcon" | "rightIc
 }
 
 const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ 
+  ({
     className,
     onSearch,
     onClear,
@@ -30,9 +30,9 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     defaultValue,
     onChange,
     onKeyDown,
-    ...props 
+    ...props
   }, ref) => {
-    const [internalValue, setInternalValue] = React.useState(defaultValue || "")
+    const [internalValue, setInternalValue] = React.useState(defaultValue || '')
     const [showSuggestions, setShowSuggestions] = React.useState(false)
     const [activeSuggestion, setActiveSuggestion] = React.useState(-1)
     const searchTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
@@ -74,17 +74,17 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (suggestions.length > 0 && showSuggestions) {
         switch (e.key) {
-          case "ArrowDown":
+          case 'ArrowDown':
             e.preventDefault()
-            setActiveSuggestion(prev => 
+            setActiveSuggestion(prev =>
               prev < suggestions.length - 1 ? prev + 1 : prev
             )
             break
-          case "ArrowUp":
+          case 'ArrowUp':
             e.preventDefault()
             setActiveSuggestion(prev => prev > 0 ? prev - 1 : -1)
             break
-          case "Enter":
+          case 'Enter':
             e.preventDefault()
             if (activeSuggestion >= 0) {
               handleSuggestionSelect(suggestions[activeSuggestion])
@@ -93,7 +93,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
               setShowSuggestions(false)
             }
             break
-          case "Escape":
+          case 'Escape':
             setShowSuggestions(false)
             setActiveSuggestion(-1)
             inputRef.current?.blur()
@@ -115,7 +115,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
 
     const handleClear = () => {
       if (value === undefined) {
-        setInternalValue("")
+        setInternalValue('')
       }
       setShowSuggestions(false)
       setActiveSuggestion(-1)
@@ -204,9 +204,9 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
                 key={index}
                 onClick={() => handleSuggestionSelect(suggestion)}
                 className={cn(
-                  "w-full text-left px-3 py-2 text-sm rounded-sm transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                  index === activeSuggestion && "bg-accent text-accent-foreground"
+                  'w-full text-left px-3 py-2 text-sm rounded-sm transition-colors',
+                  'hover:bg-accent hover:text-accent-foreground',
+                  index === activeSuggestion && 'bg-accent text-accent-foreground'
                 )}
               >
                 {suggestion}
@@ -218,6 +218,6 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     )
   }
 )
-SearchInput.displayName = "SearchInput"
+SearchInput.displayName = 'SearchInput'
 
 export { SearchInput }

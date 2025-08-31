@@ -1,10 +1,10 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { Input, type InputProps } from "../atoms/input"
+import { Input, type InputProps } from '../atoms/input'
 
-export interface FormFieldProps extends Omit<InputProps, "id" | "error"> {
+export interface FormFieldProps extends Omit<InputProps, 'id' | 'error'> {
   label?: string
   description?: string
   error?: string
@@ -15,16 +15,16 @@ export interface FormFieldProps extends Omit<InputProps, "id" | "error"> {
 }
 
 const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
-  ({ 
-    label, 
-    description, 
-    error, 
+  ({
+    label,
+    description,
+    error,
     required = false,
     className,
     id,
     name,
     renderInput,
-    ...inputProps 
+    ...inputProps
   }, ref) => {
     // Generate unique ID if not provided
     const fieldId = id || React.useId()
@@ -32,12 +32,12 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     const errorId = error ? `${fieldId}-error` : undefined
 
     const inputElement = renderInput ? (
-      renderInput({ 
-        ...inputProps, 
-        id: fieldId, 
+      renderInput({
+        ...inputProps,
+        id: fieldId,
         error: !!error,
-        "aria-describedby": cn(descriptionId, errorId).trim() || undefined,
-        "aria-invalid": !!error
+        'aria-describedby': cn(descriptionId, errorId).trim() || undefined,
+        'aria-invalid': !!error
       })
     ) : (
       <Input
@@ -52,9 +52,9 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     )
 
     return (
-      <div className={cn("space-y-2", className)}>
+      <div className={cn('space-y-2', className)}>
         {label && (
-          <label 
+          <label
             htmlFor={fieldId}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
@@ -66,20 +66,20 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
             )}
           </label>
         )}
-        
+
         {inputElement}
-        
+
         {description && !error && (
-          <p 
+          <p
             id={descriptionId}
             className="text-sm text-muted-foreground"
           >
             {description}
           </p>
         )}
-        
+
         {error && (
-          <p 
+          <p
             id={errorId}
             className="text-sm text-destructive"
             role="alert"
@@ -91,6 +91,6 @@ const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     )
   }
 )
-FormField.displayName = "FormField"
+FormField.displayName = 'FormField'
 
 export { FormField }

@@ -20,19 +20,19 @@ export class GetMetricsUseCase {
   async execute(request: GetMetricsRequest = {}): Promise<Result<GetMetricsResponse, Error>> {
     try {
       const { sortBy, sortOrder, ...filters } = request;
-      
+
       // Get metrics from repository
       const metrics = await this.metricsRepository.getMetrics(filters);
-      
+
       // Sort metrics if requested
       const sortedMetrics = this.sortMetrics(metrics, sortBy, sortOrder);
-      
+
       // Calculate aggregations for numeric metrics
       const aggregations = this.calculateAggregations(sortedMetrics);
-      
+
       // Determine if there are more results
       const hasMore = filters.limit ? sortedMetrics.length >= filters.limit : false;
-      
+
       return success({
         metrics: sortedMetrics,
         totalCount: sortedMetrics.length,
@@ -45,13 +45,13 @@ export class GetMetricsUseCase {
   }
 
   private sortMetrics(
-    metrics: MetricEntity[], 
-    sortBy?: string, 
+    metrics: MetricEntity[],
+    sortBy?: string,
     sortOrder: 'asc' | 'desc' = 'desc'
   ): MetricEntity[] {
     if (!sortBy) {
-      return metrics.sort((a, b) => 
-        sortOrder === 'asc' 
+      return metrics.sort((a, b) =>
+        sortOrder === 'asc'
           ? a.timestamp.getTime() - b.timestamp.getTime()
           : b.timestamp.getTime() - a.timestamp.getTime()
       );
@@ -83,7 +83,7 @@ export class GetMetricsUseCase {
       return {};
     }
 
-    const numericMetrics = metrics.filter(m => 
+    const numericMetrics = metrics.filter(m =>
       m.value.isNumber() || m.value.isCount() || m.value.isDuration()
     );
 
@@ -169,7 +169,7 @@ export class GetMetricTrendUseCase {
 
   private getDefaultStartDate(endDate: Date, granularity: TimeGranularity): Date {
     const start = new Date(endDate);
-    
+
     switch (granularity) {
       case 'minute':
         start.setHours(start.getHours() - 1); // Last hour
@@ -187,7 +187,7 @@ export class GetMetricTrendUseCase {
         start.setMonth(start.getMonth() - 12); // Last 12 months
         break;
     }
-    
+
     return start;
   }
 
@@ -198,7 +198,7 @@ export class GetMetricTrendUseCase {
 
     const values = metrics.map(m => m.value.raw);
     const changes = [];
-    
+
     for (let i = 1; i < values.length; i++) {
       const change = ((values[i] - values[i - 1]) / values[i - 1]) * 100;
       changes.push(change);
@@ -224,11 +224,11 @@ export class GetMetricTrendUseCase {
 
   private calculateVolatility(changes: number[]): number {
     if (changes.length === 0) return 0;
-    
+
     const mean = changes.reduce((acc, val) => acc + val, 0) / changes.length;
     const squaredDiffs = changes.map(val => Math.pow(val - mean, 2));
     const variance = squaredDiffs.reduce((acc, val) => acc + val, 0) / changes.length;
-    
+
     return Math.sqrt(variance);
   }
 

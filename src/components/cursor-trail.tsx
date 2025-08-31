@@ -11,7 +11,7 @@ interface TrailDot {
 
 /**
  * Cursor Trail Component
- * 
+ *
  * Creates a trailing effect behind the cursor with animated dots
  * that follow the mouse movement with staggered timing.
  */
@@ -21,13 +21,13 @@ export function CursorTrail() {
   const [isTabVisible, setIsTabVisible] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [hasMouseMoved, setHasMouseMoved] = useState(false);
-  
+
   // Handle tab visibility changes for performance
   useEffect(() => {
     const handleVisibilityChange = () => {
       setIsTabVisible(!document.hidden);
     };
-    
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
@@ -37,13 +37,13 @@ export function CursorTrail() {
     const initDelay = setTimeout(() => {
       setIsReady(true);
     }, 500); // Wait 500ms before activating trail
-    
+
     return () => clearTimeout(initDelay);
   }, []);
 
   useEffect(() => {
     if (!isReady || !hasMouseMoved) return;
-    
+
     let animationFrameId: number;
     let trailId = 0;
     let lastUpdateTime = 0;
@@ -55,12 +55,12 @@ export function CursorTrail() {
         animationFrameId = requestAnimationFrame(updateTrail);
         return;
       }
-      
+
       lastUpdateTime = currentTime;
-      
+
       setTrail(currentTrail => {
         const newTrail = [...currentTrail];
-        
+
         // Only add dot if we have valid mouse position and mouse has actually moved
         if (mousePosition.x > 0 && mousePosition.y > 0 && hasMouseMoved) {
           newTrail.push({
@@ -89,7 +89,7 @@ export function CursorTrail() {
       }
     };
   }, [mousePosition, isTabVisible, isReady, hasMouseMoved]);
-  
+
   // Separate effect for mouse tracking
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
@@ -102,7 +102,7 @@ export function CursorTrail() {
     // Only add listeners on desktop and when user prefers motion and tab is visible
     const isMobile = window.innerWidth <= 768;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
+
     if (!isMobile && !prefersReducedMotion && isTabVisible && isReady) {
       document.addEventListener('mousemove', updateMousePosition);
     }
@@ -114,15 +114,15 @@ export function CursorTrail() {
 
   // Don't render on mobile devices
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -145,15 +145,15 @@ export function CursorTrail() {
             )`,
           }}
           initial={{ opacity: 1, scale: 1 }}
-          animate={{ 
-            opacity: 0, 
+          animate={{
+            opacity: 0,
             scale: 0.4,
             x: (Math.random() - 0.5) * 3, // More predictable, less chaotic movement
             y: (Math.random() - 0.5) * 3, // More predictable, less chaotic movement
           }}
-          transition={{ 
+          transition={{
             duration: 2, // Even slower for ultra-smooth effect
-            ease: "easeOut",
+            ease: 'easeOut',
             delay: index * 0.15 // Slightly more stagger
           }}
         />

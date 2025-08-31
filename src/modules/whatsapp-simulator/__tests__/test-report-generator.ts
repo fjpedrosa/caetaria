@@ -4,7 +4,7 @@
  */
 
 import { spawn } from 'child_process';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { existsSync,mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 interface TestResult {
@@ -75,7 +75,7 @@ class TestReportGenerator {
         console.log(`📊 Running ${suite.name} tests...`);
         const result = await this.runTestSuite(suite.name, suite.pattern);
         report.suites.push(result);
-        
+
         report.totalTests += result.tests;
         report.totalPassed += result.passed;
         report.totalFailed += result.failed;
@@ -105,7 +105,7 @@ class TestReportGenerator {
   private async runTestSuite(suiteName: string, pattern: string): Promise<TestResult> {
     return new Promise((resolve) => {
       const startTime = Date.now();
-      
+
       // Mock test results for demo purposes
       // In a real implementation, this would run Jest with the specific pattern
       const mockResult: TestResult = {
@@ -133,7 +133,7 @@ class TestReportGenerator {
 
   private calculateOverallCoverage(suites: TestResult[]): TestReport['overallCoverage'] {
     const totalSuites = suites.length;
-    
+
     return {
       lines: suites.reduce((sum, suite) => sum + suite.coverage.lines, 0) / totalSuites,
       functions: suites.reduce((sum, suite) => sum + suite.coverage.functions, 0) / totalSuites,
@@ -217,8 +217,8 @@ class TestReportGenerator {
     };
 
     // Test success score (0-100)
-    const testSuccessScore = report.totalTests > 0 
-      ? (report.totalPassed / report.totalTests) * 100 
+    const testSuccessScore = report.totalTests > 0
+      ? (report.totalPassed / report.totalTests) * 100
       : 0;
 
     // Coverage score (average of all coverage types)
@@ -236,7 +236,7 @@ class TestReportGenerator {
     // Completeness score (based on number of test suites)
     const completenessScore = Math.min(100, (report.suites.length / 6) * 100); // 6 expected suites
 
-    const qualityScore = 
+    const qualityScore =
       testSuccessScore * weights.testSuccess +
       coverageScore * weights.coverage +
       performanceScore * weights.performance +
@@ -267,7 +267,7 @@ class TestReportGenerator {
 
   private generateHTMLReport(report: TestReport): string {
     const qualityColor = report.qualityScore >= 90 ? 'green' : report.qualityScore >= 70 ? 'orange' : 'red';
-    
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -416,7 +416,7 @@ if (require.main === module) {
       console.log(`Total Tests: ${report.totalTests}`);
       console.log(`Success Rate: ${((report.totalPassed/report.totalTests)*100).toFixed(1)}%`);
       console.log(`Coverage: ${report.overallCoverage.lines.toFixed(1)}%`);
-      
+
       if (report.totalFailed > 0) {
         console.log(`\n⚠️  ${report.totalFailed} tests failed`);
         process.exit(1);

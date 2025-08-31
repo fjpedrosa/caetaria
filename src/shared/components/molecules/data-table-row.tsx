@@ -1,22 +1,22 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { Avatar } from "../atoms/avatar"
-import { Badge } from "../atoms/badge"
-import { Button } from "../atoms/button"
+import { Avatar } from '../atoms/avatar'
+import { Badge } from '../atoms/badge'
+import { Button } from '../atoms/button'
 
 export interface TableAction {
   label: string
   onClick: () => void
-  variant?: "default" | "destructive" | "outline" | "ghost"
+  variant?: 'default' | 'destructive' | 'outline' | 'ghost'
   icon?: React.ReactNode
   disabled?: boolean
 }
 
 export interface TableCell {
   key: string
-  type?: "text" | "badge" | "avatar" | "actions" | "custom"
+  type?: 'text' | 'badge' | 'avatar' | 'actions' | 'custom'
   value?: any
   render?: () => React.ReactNode
   className?: string
@@ -32,7 +32,7 @@ export interface DataTableRowProps extends Omit<React.HTMLAttributes<HTMLTableRo
 }
 
 const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
-  ({ 
+  ({
     className,
     cells,
     actions = [],
@@ -43,31 +43,31 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
     ...props
   }, ref) => {
     const renderCell = (cell: TableCell) => {
-      const { type = "text", value, render, className: cellClassName } = cell
+      const { type = 'text', value, render, className: cellClassName } = cell
 
       if (render) {
         return (
-          <td className={cn("px-4 py-3", cellClassName)} key={cell.key}>
+          <td className={cn('px-4 py-3', cellClassName)} key={cell.key}>
             {render()}
           </td>
         )
       }
 
       switch (type) {
-        case "badge":
+        case 'badge':
           return (
-            <td className={cn("px-4 py-3", cellClassName)} key={cell.key}>
+            <td className={cn('px-4 py-3', cellClassName)} key={cell.key}>
               {value && (
-                <Badge variant={value.variant || "default"} size={value.size || "sm"}>
+                <Badge variant={value.variant || 'default'} size={value.size || 'sm'}>
                   {value.label || value}
                 </Badge>
               )}
             </td>
           )
 
-        case "avatar":
+        case 'avatar':
           return (
-            <td className={cn("px-4 py-3", cellClassName)} key={cell.key}>
+            <td className={cn('px-4 py-3', cellClassName)} key={cell.key}>
               {value && (
                 <div className="flex items-center gap-3">
                   <Avatar
@@ -89,14 +89,14 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
             </td>
           )
 
-        case "actions":
+        case 'actions':
           return (
-            <td className={cn("px-4 py-3", cellClassName)} key={cell.key}>
+            <td className={cn('px-4 py-3', cellClassName)} key={cell.key}>
               <div className="flex items-center gap-2">
                 {actions.map((action, index) => (
                   <Button
                     key={index}
-                    variant={action.variant || "ghost"}
+                    variant={action.variant || 'ghost'}
                     size="sm"
                     onClick={action.onClick}
                     disabled={action.disabled}
@@ -109,11 +109,11 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
             </td>
           )
 
-        case "text":
+        case 'text':
         default:
           return (
-            <td className={cn("px-4 py-3", cellClassName)} key={cell.key}>
-              {typeof value === "object" && value !== null ? (
+            <td className={cn('px-4 py-3', cellClassName)} key={cell.key}>
+              {typeof value === 'object' && value !== null ? (
                 <div>
                   <div className="font-medium">{value.primary}</div>
                   {value.secondary && (
@@ -132,9 +132,9 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
       <tr
         ref={ref}
         className={cn(
-          "border-b transition-colors",
-          hover && "hover:bg-muted/50",
-          selected && "bg-muted",
+          'border-b transition-colors',
+          hover && 'hover:bg-muted/50',
+          selected && 'bg-muted',
           className
         )}
         {...props}
@@ -149,16 +149,16 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
             />
           </td>
         )}
-        
+
         {cells.map(renderCell)}
-        
-        {actions.length > 0 && !cells.some(cell => cell.type === "actions") && (
+
+        {actions.length > 0 && !cells.some(cell => cell.type === 'actions') && (
           <td className="px-4 py-3">
             <div className="flex items-center gap-2">
               {actions.map((action, index) => (
                 <Button
                   key={index}
-                  variant={action.variant || "ghost"}
+                  variant={action.variant || 'ghost'}
                   size="sm"
                   onClick={action.onClick}
                   disabled={action.disabled}
@@ -174,6 +174,6 @@ const DataTableRow = React.forwardRef<HTMLTableRowElement, DataTableRowProps>(
     )
   }
 )
-DataTableRow.displayName = "DataTableRow"
+DataTableRow.displayName = 'DataTableRow'
 
 export { DataTableRow }

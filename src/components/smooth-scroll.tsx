@@ -6,7 +6,7 @@ import { ArrowUp } from 'lucide-react';
 
 /**
  * Smooth Scroll Component
- * 
+ *
  * Enables smooth scrolling behavior globally and adds
  * enhanced scroll-to-anchor functionality.
  */
@@ -18,15 +18,15 @@ export function SmoothScroll() {
     // Enhanced anchor link handling
     const handleAnchorClick = (e: Event) => {
       const target = e.target as HTMLAnchorElement;
-      
+
       if (target.tagName === 'A' && target.hash) {
         e.preventDefault();
-        
+
         const targetElement = document.querySelector(target.hash);
         if (targetElement) {
           const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
           const headerHeight = 80; // Account for fixed header
-          
+
           window.scrollTo({
             top: offsetTop - headerHeight,
             behavior: 'smooth'
@@ -49,7 +49,7 @@ export function SmoothScroll() {
 
 /**
  * Scroll to Top Button
- * 
+ *
  * A floating button that appears when scrolling down
  * and smoothly scrolls back to the top when clicked.
  */

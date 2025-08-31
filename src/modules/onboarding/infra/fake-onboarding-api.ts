@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import type { 
+import type {
   AutoMessageFormData,
-  BusinessInfoFormData, 
-  PhoneNumberFormData, 
+  BusinessInfoFormData,
+  PhoneNumberFormData,
   PlanSelectionFormData,
   RegistrationFormData
 } from '../domain/schemas'
@@ -37,10 +37,10 @@ export const fakeOnboardingApi = createApi({
     >({
       queryFn: async (data) => {
         await delay(800)
-        
+
         const stored = loadFromStorage() || {}
         const sessionId = stored.metadata?.sessionId || generateSessionId()
-        
+
         const updated: Partial<OnboardingState> = {
           ...stored,
           currentStep: 2,
@@ -56,16 +56,16 @@ export const fakeOnboardingApi = createApi({
             startedAt: stored.metadata?.startedAt || new Date().toISOString()
           }
         }
-        
+
         saveToStorage(updated)
-        
+
         console.log('[FakeAPI] Business info saved:', data)
-        
-        return { 
-          data: { 
-            success: true, 
-            sessionId 
-          } 
+
+        return {
+          data: {
+            success: true,
+            sessionId
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']
@@ -77,9 +77,9 @@ export const fakeOnboardingApi = createApi({
     >({
       queryFn: async (data) => {
         await delay(1000)
-        
+
         const stored = loadFromStorage() || {}
-        
+
         const updated: Partial<OnboardingState> = {
           ...stored,
           currentStep: 3,
@@ -97,16 +97,16 @@ export const fakeOnboardingApi = createApi({
             lastUpdatedAt: new Date().toISOString()
           }
         }
-        
+
         saveToStorage(updated)
-        
+
         console.log('[FakeAPI] Phone number saved:', data)
-        
-        return { 
-          data: { 
-            success: true, 
-            verified: Math.random() > 0.2 
-          } 
+
+        return {
+          data: {
+            success: true,
+            verified: Math.random() > 0.2
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']
@@ -118,9 +118,9 @@ export const fakeOnboardingApi = createApi({
     >({
       queryFn: async (data) => {
         await delay(600)
-        
+
         const stored = loadFromStorage() || {}
-        
+
         const updated: Partial<OnboardingState> = {
           ...stored,
           currentStep: 4,
@@ -134,16 +134,16 @@ export const fakeOnboardingApi = createApi({
             lastUpdatedAt: new Date().toISOString()
           }
         }
-        
+
         saveToStorage(updated)
-        
+
         console.log('[FakeAPI] Auto message saved:', data)
-        
-        return { 
-          data: { 
-            success: true, 
-            messageId: `msg_${Date.now()}` 
-          } 
+
+        return {
+          data: {
+            success: true,
+            messageId: `msg_${Date.now()}`
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']
@@ -155,9 +155,9 @@ export const fakeOnboardingApi = createApi({
     >({
       queryFn: async (data) => {
         await delay(800)
-        
+
         const stored = loadFromStorage() || {}
-        
+
         const updated: Partial<OnboardingState> = {
           ...stored,
           currentStep: 5,
@@ -176,16 +176,16 @@ export const fakeOnboardingApi = createApi({
             lastUpdatedAt: new Date().toISOString()
           }
         }
-        
+
         saveToStorage(updated)
-        
+
         console.log('[FakeAPI] Plan selection saved:', data)
-        
-        return { 
-          data: { 
+
+        return {
+          data: {
             success: true,
             checkoutUrl: '#checkout'
-          } 
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']
@@ -197,16 +197,16 @@ export const fakeOnboardingApi = createApi({
     >({
       queryFn: async (data) => {
         await delay(1500)
-        
+
         const stored = loadFromStorage() || {}
-        
+
         const updated: Partial<OnboardingState> = {
           ...stored,
           currentStep: 5,
           completedSteps: [...(stored.completedSteps || []), 5],
           data: {
             ...stored.data,
-            registration: 'googleToken' in data 
+            registration: 'googleToken' in data
               ? { email: 'user@gmail.com', authMethod: 'google' }
               : { email: data.email, authMethod: 'email' }
           },
@@ -215,17 +215,17 @@ export const fakeOnboardingApi = createApi({
             lastUpdatedAt: new Date().toISOString()
           }
         }
-        
+
         saveToStorage(updated)
-        
+
         console.log('[FakeAPI] Registration completed:', data)
-        
-        return { 
-          data: { 
+
+        return {
+          data: {
             success: true,
             userId: `user_${Date.now()}`,
             betaAccess: true
-          } 
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']
@@ -235,15 +235,15 @@ export const fakeOnboardingApi = createApi({
       queryFn: async () => {
         await delay(200)
         const stored = loadFromStorage()
-        
+
         if (!stored) {
-          return { 
-            data: null 
+          return {
+            data: null
           }
         }
-        
-        return { 
-          data: stored as OnboardingState 
+
+        return {
+          data: stored as OnboardingState
         }
       },
       providesTags: ['OnboardingSession']
@@ -252,17 +252,17 @@ export const fakeOnboardingApi = createApi({
     clearOnboardingSession: builder.mutation<{ success: boolean }, void>({
       queryFn: async () => {
         await delay(200)
-        
+
         if (typeof window !== 'undefined') {
           localStorage.removeItem(STORAGE_KEY)
         }
-        
+
         console.log('[FakeAPI] Onboarding session cleared')
-        
-        return { 
-          data: { 
-            success: true 
-          } 
+
+        return {
+          data: {
+            success: true
+          }
         }
       },
       invalidatesTags: ['OnboardingSession']

@@ -60,22 +60,22 @@ export default async function BotTestingPage() {
                   <div className="w-4 h-4 border-2 border-green-600 rounded flex-shrink-0"></div>
                   <span>Webhook connectivity test</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-green-600 rounded flex-shrink-0"></div>
                   <span>Send test message</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-green-600 rounded flex-shrink-0"></div>
                   <span>Verify message delivery</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-green-600 rounded flex-shrink-0"></div>
                   <span>Test welcome message</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-green-600 rounded flex-shrink-0"></div>
                   <span>Test bot commands</span>
@@ -95,17 +95,17 @@ export default async function BotTestingPage() {
                   <h4 className="font-medium mb-1">Webhook Configuration</h4>
                   <p className="text-blue-700">Verifying your server can receive WhatsApp messages</p>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-1">Message Sending</h4>
                   <p className="text-blue-700">Testing outbound message delivery to your phone</p>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-1">Bot Responses</h4>
                   <p className="text-blue-700">Ensuring automated replies work as configured</p>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-1">Command Recognition</h4>
                   <p className="text-blue-700">Testing default commands like 'help' and 'contact'</p>

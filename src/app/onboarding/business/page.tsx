@@ -81,7 +81,7 @@ export default async function BusinessInfoPage() {
                   <p className="text-gray-600">Connect your WhatsApp Business API credentials</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-xs font-medium text-gray-700">3</span>

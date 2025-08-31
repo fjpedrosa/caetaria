@@ -1,4 +1,4 @@
-import { useEffect, useRef,useState } from "react"
+import { useEffect, useRef,useState } from 'react'
 
 /**
  * Hook that debounces a value
@@ -73,7 +73,7 @@ export function useDebouncedSearch<T>(
   delay: number = 300,
   minQueryLength: number = 2
 ) {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState('')
   const [results, setResults] = useState<T[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -97,14 +97,14 @@ export function useDebouncedSearch<T>(
         setIsSearching(false)
       })
       .catch((err) => {
-        setError(err.message || "Search failed")
+        setError(err.message || 'Search failed')
         setResults([])
         setIsSearching(false)
       })
   }, [debouncedQuery, minQueryLength, searchFunction])
 
   const clearSearch = () => {
-    setQuery("")
+    setQuery('')
     setResults([])
     setError(null)
     setIsSearching(false)
@@ -182,7 +182,7 @@ export function useMultiDebounce<T extends Record<string, any>>(
  * Hook for debouncing form input changes
  */
 export function useDebouncedFormInput(
-  initialValue: string = "",
+  initialValue: string = '',
   delay: number = 300,
   onValidation?: (value: string) => string | null
 ) {

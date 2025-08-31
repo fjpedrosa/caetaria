@@ -3,14 +3,13 @@
  * Tests for core domain entity business logic and validation
  */
 
-import { 
-  Message, 
-  MessageType, 
-  MessageStatus, 
-  SenderType, 
-  MessageContent, 
-  MessageTiming 
-} from '../../../domain/entities/message';
+import {
+  Message,
+  MessageContent,
+  MessageStatus,
+  MessageTiming,
+  MessageType,
+  SenderType} from '../../../domain/entities/message';
 
 describe('Message Entity', () => {
   const createTestMessage = (overrides: Partial<{
@@ -119,7 +118,7 @@ describe('Message Entity', () => {
 
   describe('Flow Detection', () => {
     it('should identify flow type messages as flow triggers', () => {
-      const flowMessage = createTestMessage({ 
+      const flowMessage = createTestMessage({
         type: 'flow',
         content: {
           flow: {
@@ -185,11 +184,11 @@ describe('Message Entity', () => {
       },
       {
         type: 'image',
-        content: { 
-          media: { 
-            url: 'image.jpg', 
-            caption: 'Beautiful sunset' 
-          } 
+        content: {
+          media: {
+            url: 'image.jpg',
+            caption: 'Beautiful sunset'
+          }
         },
         expected: 'Beautiful sunset',
       },
@@ -205,11 +204,11 @@ describe('Message Entity', () => {
       },
       {
         type: 'video',
-        content: { 
-          media: { 
-            url: 'video.mp4', 
-            caption: 'Tutorial video' 
-          } 
+        content: {
+          media: {
+            url: 'video.mp4',
+            caption: 'Tutorial video'
+          }
         },
         expected: 'Tutorial video',
       },
@@ -220,11 +219,11 @@ describe('Message Entity', () => {
       },
       {
         type: 'document',
-        content: { 
-          media: { 
-            url: 'doc.pdf', 
-            filename: 'report.pdf' 
-          } 
+        content: {
+          media: {
+            url: 'doc.pdf',
+            filename: 'report.pdf'
+          }
         },
         expected: '📄 report.pdf',
       },

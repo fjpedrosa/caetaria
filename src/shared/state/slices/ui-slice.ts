@@ -1,11 +1,11 @@
 /**
  * UI Slice - Global UI State Management
- * 
+ *
  * This slice manages global UI state that needs to be:
  * - Shared across multiple components
  * - Persisted across sessions (optional)
  * - Complex enough to warrant Redux over useState
- * 
+ *
  * DON'T put here:
  * - Server state (use RTK Query)
  * - Form state (use react-hook-form)
@@ -18,7 +18,7 @@ import type { RootState } from '../store'
 
 /**
  * UI State Interface
- * 
+ *
  * Includes common UI patterns that need global state:
  * - Sidebar open/closed
  * - Active modals
@@ -33,7 +33,7 @@ interface UIState {
     isPinned: boolean
     width: number
   }
-  
+
   // Modal management
   modals: {
     [key: string]: {
@@ -41,7 +41,7 @@ interface UIState {
       data?: any
     }
   }
-  
+
   // Toast notifications
   toasts: Array<{
     id: string
@@ -51,23 +51,23 @@ interface UIState {
     duration?: number
     createdAt: number
   }>
-  
+
   // Theme
   theme: 'light' | 'dark' | 'system'
-  
+
   // Layout preferences
   layout: {
     density: 'compact' | 'normal' | 'comfortable'
     showAnimations: boolean
     reducedMotion: boolean
   }
-  
+
   // Global loading states
   globalLoading: {
     isLoading: boolean
     message?: string
   }
-  
+
   // Feature flags (client-side)
   features: {
     [key: string]: boolean
@@ -76,7 +76,7 @@ interface UIState {
 
 /**
  * Initial state with sensible defaults
- * 
+ *
  * These can be overridden by hydration from localStorage
  */
 const initialState: UIState = {
@@ -102,7 +102,7 @@ const initialState: UIState = {
 
 /**
  * UI Slice Definition
- * 
+ *
  * Contains all reducers for UI state management
  */
 export const uiSlice = createSlice({
@@ -113,7 +113,7 @@ export const uiSlice = createSlice({
     hydrate: (state, action: PayloadAction<Partial<UIState>>) => {
       // Only hydrate specific fields that should persist
       const persistedFields: (keyof UIState)[] = ['theme', 'sidebar', 'layout']
-      
+
       persistedFields.forEach(field => {
         if (action.payload[field]) {
           (state as any)[field] = action.payload[field]
@@ -162,7 +162,7 @@ export const uiSlice = createSlice({
         duration: action.payload.duration || 5000,
       }
       state.toasts.push(toast)
-      
+
       // Limit to 5 toasts maximum
       if (state.toasts.length > 5) {
         state.toasts.shift()
@@ -178,12 +178,12 @@ export const uiSlice = createSlice({
     // Theme actions
     setTheme: (state, action: PayloadAction<UIState['theme']>) => {
       state.theme = action.payload
-      
+
       // Apply theme to document (side effect - consider middleware)
       if (typeof window !== 'undefined') {
         const root = document.documentElement
         root.classList.remove('light', 'dark')
-        
+
         if (action.payload === 'system') {
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
           root.classList.add(prefersDark ? 'dark' : 'light')
@@ -257,20 +257,20 @@ export default uiSlice.reducer
 
 /**
  * USAGE EXAMPLES:
- * 
+ *
  * In a component:
  * ```tsx
  * import { useAppDispatch, useAppSelector } from '@/shared/state/hooks'
  * import { toggleSidebar, selectIsSidebarOpen, addToast } from '@/shared/state/slices/ui-slice'
- * 
+ *
  * function MyComponent() {
  *   const dispatch = useAppDispatch()
  *   const isSidebarOpen = useAppSelector(selectIsSidebarOpen)
- *   
+ *
  *   const handleToggle = () => {
  *     dispatch(toggleSidebar())
  *   }
- *   
+ *
  *   const showSuccess = () => {
  *     dispatch(addToast({
  *       type: 'success',
@@ -278,11 +278,11 @@ export default uiSlice.reducer
  *       description: 'Your changes have been saved.',
  *     }))
  *   }
- *   
+ *
  *   return (...)
  * }
  * ```
- * 
+ *
  * PERSISTENCE NOTE:
  * Only theme, sidebar, and layout preferences are persisted to localStorage.
  * Toasts, modals, and loading states are transient by design.

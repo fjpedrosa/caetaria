@@ -16,8 +16,8 @@ interface IconProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Icon = React.forwardRef<HTMLDivElement, IconProps>(
-  ({ 
-    icon: IconComponent, 
+  ({
+    icon: IconComponent,
     size = 'default',
     animation = 'none',
     wrapper = false,
@@ -26,11 +26,11 @@ export const Icon = React.forwardRef<HTMLDivElement, IconProps>(
     strokeWidth,
     className,
     'aria-label': ariaLabel,
-    ...props 
+    ...props
   }, ref) => {
     const config = iconConfig[size];
     const animationClass = iconAnimations[animation];
-    
+
     const iconElement = (
       <IconComponent
         size={config.size}
@@ -76,11 +76,11 @@ interface FeatureIconProps extends Omit<IconProps, 'wrapper'> {
 }
 
 export const FeatureIcon = React.forwardRef<HTMLDivElement, FeatureIconProps>(
-  ({ 
+  ({
     variant = 'primary',
     glowing = false,
     className,
-    ...props 
+    ...props
   }, ref) => {
     return (
       <Icon
@@ -106,19 +106,19 @@ interface AnimatedIconProps extends Omit<IconProps, 'animation'> {
 }
 
 export const AnimatedIcon = React.forwardRef<HTMLDivElement, AnimatedIconProps>(
-  ({ 
+  ({
     hover = false,
     animationType = 'pulse',
     className,
     iconClassName,
-    ...props 
+    ...props
   }, ref) => {
     const [isHovered, setIsHovered] = React.useState(false);
 
     return (
       <div
         ref={ref}
-        className={cn("inline-flex", className)}
+        className={cn('inline-flex', className)}
         onMouseEnter={() => hover && setIsHovered(true)}
         onMouseLeave={() => hover && setIsHovered(false)}
       >
@@ -144,14 +144,14 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ 
+  ({
     icon: IconComponent,
     size = 'default',
     variant = 'ghost',
     animation = 'none',
     className,
     'aria-label': ariaLabel,
-    ...props 
+    ...props
   }, ref) => {
     const variantStyles = {
       primary: 'bg-primary text-primary-foreground hover:bg-primary-hover',
@@ -164,9 +164,9 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-lg p-2 transition-colors duration-250",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          "disabled:pointer-events-none disabled:opacity-50",
+          'inline-flex items-center justify-center rounded-lg p-2 transition-colors duration-250',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'disabled:pointer-events-none disabled:opacity-50',
           variantStyles[variant],
           className
         )}
@@ -194,12 +194,12 @@ interface IconWithTextProps extends Omit<IconProps, 'wrapper'> {
 }
 
 export const IconWithText = React.forwardRef<HTMLDivElement, IconWithTextProps>(
-  ({ 
+  ({
     text,
     position = 'left',
     gap = 'md',
     className,
-    ...props 
+    ...props
   }, ref) => {
     const gapStyles = {
       sm: 'gap-1',
@@ -211,7 +211,7 @@ export const IconWithText = React.forwardRef<HTMLDivElement, IconWithTextProps>(
       <div
         ref={ref}
         className={cn(
-          "inline-flex items-center",
+          'inline-flex items-center',
           gapStyles[gap],
           position === 'right' && 'flex-row-reverse',
           className

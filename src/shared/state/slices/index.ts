@@ -1,6 +1,6 @@
 /**
  * Barrel export for all Redux slices
- * 
+ *
  * Import slices from here instead of directly from files.
  * This provides a clean API and makes refactoring easier.
  */

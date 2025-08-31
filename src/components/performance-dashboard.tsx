@@ -86,12 +86,12 @@ export function PerformanceDashboard() {
           ×
         </button>
       </div>
-      
+
       <div className="space-y-2">
         {Object.entries(metricDefinitions).map(([key, def]) => {
           const metric = metrics[key as keyof PerformanceMetrics];
           const hasValue = metric && typeof metric.value === 'number';
-          
+
           return (
             <div key={key} className="flex items-center justify-between py-1">
               <span className="text-sm text-gray-600 truncate mr-2" title={def.name}>
@@ -99,8 +99,8 @@ export function PerformanceDashboard() {
               </span>
               {hasValue ? (
                 <span className={`text-xs px-2 py-1 rounded-full ${getRatingColor(metric.rating)}`}>
-                  {key === 'cls' 
-                    ? formatMetric(metric.value, '') 
+                  {key === 'cls'
+                    ? formatMetric(metric.value, '')
                     : formatMetric(metric.value)
                   }
                 </span>
@@ -111,7 +111,7 @@ export function PerformanceDashboard() {
           );
         })}
       </div>
-      
+
       <div className="mt-3 pt-3 border-t border-gray-200">
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span>Last updated: {new Date().toLocaleTimeString()}</span>
@@ -123,7 +123,7 @@ export function PerformanceDashboard() {
           </button>
         </div>
       </div>
-      
+
       <div className="mt-2 text-xs text-gray-400">
         <div className="flex gap-3">
           <span className="flex items-center gap-1">

@@ -4,12 +4,14 @@
 
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef,useState } from 'react';
 import { Download, Settings } from 'lucide-react';
-import { useConversationFlow } from '../hooks/use-conversation-flow';
-import { useTypingIndicatorWithEvents } from '../hooks/use-typing-indicator';
-import { useFlowExecutionWithEvents } from '../hooks/use-flow-execution';
+
 import { Conversation, Message } from '../../domain/entities';
+import { useConversationFlow } from '../hooks/use-conversation-flow';
+import { useFlowExecutionWithEvents } from '../hooks/use-flow-execution';
+import { useTypingIndicatorWithEvents } from '../hooks/use-typing-indicator';
+
 import { ExportControls } from './export-controls';
 
 export interface ConversationSimulatorProps {
@@ -68,7 +70,7 @@ export function ConversationSimulator({
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [showExportControls, setShowExportControls] = useState(false);
-  
+
   // Refs for GIF export
   const conversationRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -118,7 +120,7 @@ export function ConversationSimulator({
       >
         {conversationFlow.state.isPlaying ? 'Playing...' : 'Play'}
       </button>
-      
+
       <button
         onClick={() => conversationFlow.actions.pause()}
         disabled={!conversationFlow.state.isPlaying}
@@ -126,7 +128,7 @@ export function ConversationSimulator({
       >
         Pause
       </button>
-      
+
       <button
         onClick={() => conversationFlow.actions.reset()}
         disabled={!isInitialized}
@@ -134,7 +136,7 @@ export function ConversationSimulator({
       >
         Reset
       </button>
-      
+
       <div className="flex items-center gap-2 ml-4">
         <label className="text-sm">Speed:</label>
         <select
@@ -190,7 +192,7 @@ export function ConversationSimulator({
     const isVisible = index <= conversationFlow.state.currentMessageIndex;
     const isCurrentMessage = index === conversationFlow.state.currentMessageIndex;
     const isTyping = typingIndicator.actions.isUserTyping(message.sender);
-    
+
     if (!isVisible) return null;
 
     return (
@@ -209,7 +211,7 @@ export function ConversationSimulator({
           `}
         >
           <div className="text-sm">{message.getDisplayText()}</div>
-          
+
           {/* Message status indicators */}
           <div className="flex justify-end items-center mt-1 text-xs opacity-75">
             {message.status === 'sent' && '✓'}

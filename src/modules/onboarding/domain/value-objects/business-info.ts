@@ -3,7 +3,7 @@
  * Domain layer - Pure business rules for business information validation
  */
 
-export type BusinessType = 
+export type BusinessType =
   | 'startup'
   | 'sme'
   | 'enterprise'
@@ -11,9 +11,9 @@ export type BusinessType =
   | 'non-profit'
   | 'other';
 
-export type Industry = 
+export type Industry =
   | 'e-commerce'
-  | 'healthcare' 
+  | 'healthcare'
   | 'education'
   | 'finance'
   | 'real-estate'
@@ -58,11 +58,11 @@ export function createBusinessInfo(params: {
   if (!trimmedName) {
     throw new BusinessInfoValidationError('Company name is required');
   }
-  
+
   if (trimmedName.length < 2) {
     throw new BusinessInfoValidationError('Company name must be at least 2 characters');
   }
-  
+
   if (trimmedName.length > 100) {
     throw new BusinessInfoValidationError('Company name must be less than 100 characters');
   }
@@ -71,7 +71,7 @@ export function createBusinessInfo(params: {
   if (params.employeeCount < 1) {
     throw new BusinessInfoValidationError('Employee count must be at least 1');
   }
-  
+
   if (params.employeeCount > 1000000) {
     throw new BusinessInfoValidationError('Employee count seems too high');
   }
@@ -117,15 +117,15 @@ export function getBusinessSizeCategory(employeeCount: number): 'micro' | 'small
  */
 export function getRecommendedPlan(businessInfo: BusinessInfo): 'starter' | 'growth' | 'enterprise' {
   const sizeCategory = getBusinessSizeCategory(businessInfo.employeeCount);
-  
+
   if (sizeCategory === 'micro' && businessInfo.expectedVolume === 'low') {
     return 'starter';
   }
-  
+
   if (sizeCategory === 'large' || businessInfo.expectedVolume === 'high') {
     return 'enterprise';
   }
-  
+
   return 'growth';
 }
 
@@ -135,11 +135,11 @@ export function getRecommendedPlan(businessInfo: BusinessInfo): 'starter' | 'gro
 export function formatWebsiteUrl(website: string): string {
   const trimmed = website.trim();
   if (!trimmed) return '';
-  
+
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return trimmed;
   }
-  
+
   return `https://${trimmed}`;
 }
 
@@ -155,7 +155,7 @@ export function getBusinessTypeDisplayName(businessType: BusinessType): string {
     'non-profit': 'Non-Profit Organization',
     'other': 'Other',
   };
-  
+
   return displayNames[businessType];
 }
 
@@ -176,6 +176,6 @@ export function getIndustryDisplayName(industry: Industry): string {
     'retail': 'Retail & Consumer Goods',
     'other': 'Other',
   };
-  
+
   return displayNames[industry];
 }

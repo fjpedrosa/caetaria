@@ -32,7 +32,7 @@ export class GetPricingPlansUseCase {
         // Convert to same billing period for comparison
         const aYearlyPrice = a.calculateYearlyPrice();
         const bYearlyPrice = b.calculateYearlyPrice();
-        
+
         return aYearlyPrice.amount - bYearlyPrice.amount;
       });
 

@@ -22,7 +22,7 @@ interface TestimonialCarouselProps {
 
 /**
  * Testimonial Carousel Component - Client Component
- * 
+ *
  * Interactive carousel showcasing customer testimonials
  * with auto-play and manual navigation controls.
  */
@@ -35,7 +35,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) =>
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000); // Change every 5 seconds
@@ -81,17 +81,17 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 px-4 py-2 mb-6">
             💬 Customer Stories
           </Badge>
-          
+
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Loved by Businesses
             <span className="block bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               Across Africa
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            See how companies are transforming their customer communication 
-            and growing their businesses with our WhatsApp Cloud API platform.
+            See how companies are transforming their customer communication
+            y haciendo crecer sus negocios con WhatsApp automático.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
                 <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
                   {testimonials[currentIndex].name.split(' ').map(n => n[0]).join('')}
                 </div>
-                
+
                 {/* Name & Company */}
                 <div className="text-center">
                   <div className="font-bold text-gray-900 text-lg">
@@ -165,8 +165,8 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === currentIndex 
-                  ? 'bg-green-600 w-8' 
+                index === currentIndex
+                  ? 'bg-green-600 w-8'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
@@ -177,7 +177,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
         {/* Additional Testimonials Preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           {testimonials.slice(0, 3).map((testimonial, index) => (
-            <Card 
+            <Card
               key={testimonial.id}
               className={`p-6 bg-white hover:shadow-lg transition-all duration-200 cursor-pointer ${
                 index === currentIndex ? 'ring-2 ring-green-500' : ''
@@ -219,7 +219,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
               Join 10,000+ Happy Customers
             </h3>
             <p className="text-gray-600 mb-6 max-w-md">
-              Start your free trial today and see why businesses choose our WhatsApp Cloud API platform.
+              Empieza tu prueba gratis hoy y descubre por qué los negocios eligen nuestro WhatsApp automático.
             </p>
             <Button className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 font-semibold">
               Start Your Success Story

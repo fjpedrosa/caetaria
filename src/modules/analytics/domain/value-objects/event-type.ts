@@ -4,7 +4,7 @@ export class EventType {
     PAGE_VIEW: 'page_view',
     PAGE_LOAD: 'page_load',
     ROUTE_CHANGE: 'route_change',
-    
+
     // User interaction events
     CLICK: 'click',
     FORM_SUBMIT: 'form_submit',
@@ -12,7 +12,7 @@ export class EventType {
     SCROLL: 'scroll',
     SEARCH: 'search',
     DOWNLOAD: 'download',
-    
+
     // Business conversion events
     LEAD_GENERATED: 'lead_generated',
     SIGNUP_STARTED: 'signup_started',
@@ -21,7 +21,7 @@ export class EventType {
     PURCHASE: 'purchase',
     SUBSCRIPTION_CREATED: 'subscription_created',
     SUBSCRIPTION_CANCELLED: 'subscription_cancelled',
-    
+
     // Product-specific events
     BOT_CREATED: 'bot_created',
     BOT_CONFIGURED: 'bot_configured',
@@ -30,25 +30,25 @@ export class EventType {
     MESSAGE_RECEIVED: 'message_received',
     WEBHOOK_CONFIGURED: 'webhook_configured',
     INTEGRATION_CONNECTED: 'integration_connected',
-    
+
     // Performance and technical events
     PERFORMANCE_METRIC: 'performance_metric',
     ERROR_OCCURRED: 'error_occurred',
     API_REQUEST: 'api_request',
     API_ERROR: 'api_error',
-    
+
     // Marketing and campaign events
     CAMPAIGN_VIEW: 'campaign_view',
     AD_CLICK: 'ad_click',
     EMAIL_OPENED: 'email_opened',
     EMAIL_CLICKED: 'email_clicked',
-    
+
     // System and admin events
     USER_LOGIN: 'user_login',
     USER_LOGOUT: 'user_logout',
     ADMIN_ACTION: 'admin_action',
     SYSTEM_EVENT: 'system_event',
-    
+
     // Custom events
     CUSTOM: 'custom',
   } as const;
@@ -92,7 +92,7 @@ export class EventType {
   }
 
   isValid(): boolean {
-    return Object.values(EventType.EVENT_CATEGORIES).includes(this.value as any) || 
+    return Object.values(EventType.EVENT_CATEGORIES).includes(this.value as any) ||
            this.value.startsWith('custom_');
   }
 
@@ -149,14 +149,14 @@ export class EventType {
   static readonly PAGE_VIEW = new EventType(EventType.EVENT_CATEGORIES.PAGE_VIEW);
   static readonly PAGE_LOAD = new EventType(EventType.EVENT_CATEGORIES.PAGE_LOAD);
   static readonly ROUTE_CHANGE = new EventType(EventType.EVENT_CATEGORIES.ROUTE_CHANGE);
-  
+
   static readonly CLICK = new EventType(EventType.EVENT_CATEGORIES.CLICK);
   static readonly FORM_SUBMIT = new EventType(EventType.EVENT_CATEGORIES.FORM_SUBMIT);
   static readonly FORM_FIELD_FOCUS = new EventType(EventType.EVENT_CATEGORIES.FORM_FIELD_FOCUS);
   static readonly SCROLL = new EventType(EventType.EVENT_CATEGORIES.SCROLL);
   static readonly SEARCH = new EventType(EventType.EVENT_CATEGORIES.SEARCH);
   static readonly DOWNLOAD = new EventType(EventType.EVENT_CATEGORIES.DOWNLOAD);
-  
+
   static readonly LEAD_GENERATED = new EventType(EventType.EVENT_CATEGORIES.LEAD_GENERATED);
   static readonly SIGNUP_STARTED = new EventType(EventType.EVENT_CATEGORIES.SIGNUP_STARTED);
   static readonly SIGNUP_COMPLETED = new EventType(EventType.EVENT_CATEGORIES.SIGNUP_COMPLETED);
@@ -164,7 +164,7 @@ export class EventType {
   static readonly PURCHASE = new EventType(EventType.EVENT_CATEGORIES.PURCHASE);
   static readonly SUBSCRIPTION_CREATED = new EventType(EventType.EVENT_CATEGORIES.SUBSCRIPTION_CREATED);
   static readonly SUBSCRIPTION_CANCELLED = new EventType(EventType.EVENT_CATEGORIES.SUBSCRIPTION_CANCELLED);
-  
+
   static readonly BOT_CREATED = new EventType(EventType.EVENT_CATEGORIES.BOT_CREATED);
   static readonly BOT_CONFIGURED = new EventType(EventType.EVENT_CATEGORIES.BOT_CONFIGURED);
   static readonly BOT_ACTIVATED = new EventType(EventType.EVENT_CATEGORIES.BOT_ACTIVATED);
@@ -172,22 +172,22 @@ export class EventType {
   static readonly MESSAGE_RECEIVED = new EventType(EventType.EVENT_CATEGORIES.MESSAGE_RECEIVED);
   static readonly WEBHOOK_CONFIGURED = new EventType(EventType.EVENT_CATEGORIES.WEBHOOK_CONFIGURED);
   static readonly INTEGRATION_CONNECTED = new EventType(EventType.EVENT_CATEGORIES.INTEGRATION_CONNECTED);
-  
+
   static readonly PERFORMANCE_METRIC = new EventType(EventType.EVENT_CATEGORIES.PERFORMANCE_METRIC);
   static readonly ERROR_OCCURRED = new EventType(EventType.EVENT_CATEGORIES.ERROR_OCCURRED);
   static readonly API_REQUEST = new EventType(EventType.EVENT_CATEGORIES.API_REQUEST);
   static readonly API_ERROR = new EventType(EventType.EVENT_CATEGORIES.API_ERROR);
-  
+
   static readonly CAMPAIGN_VIEW = new EventType(EventType.EVENT_CATEGORIES.CAMPAIGN_VIEW);
   static readonly AD_CLICK = new EventType(EventType.EVENT_CATEGORIES.AD_CLICK);
   static readonly EMAIL_OPENED = new EventType(EventType.EVENT_CATEGORIES.EMAIL_OPENED);
   static readonly EMAIL_CLICKED = new EventType(EventType.EVENT_CATEGORIES.EMAIL_CLICKED);
-  
+
   static readonly USER_LOGIN = new EventType(EventType.EVENT_CATEGORIES.USER_LOGIN);
   static readonly USER_LOGOUT = new EventType(EventType.EVENT_CATEGORIES.USER_LOGOUT);
   static readonly ADMIN_ACTION = new EventType(EventType.EVENT_CATEGORIES.ADMIN_ACTION);
   static readonly SYSTEM_EVENT = new EventType(EventType.EVENT_CATEGORIES.SYSTEM_EVENT);
-  
+
   static readonly CUSTOM = new EventType(EventType.EVENT_CATEGORIES.CUSTOM);
 
   static createCustom(name: string): EventType {

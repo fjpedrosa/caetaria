@@ -75,7 +75,7 @@ export class EmailNotificationService implements NotificationService {
 
   async notifySalesTeam(lead: Lead): Promise<void> {
     const fullName = getLeadFullName(lead);
-    
+
     // Send email notification to sales team
     const salesEmailHtml = this.generateSalesNotificationHtml(lead, fullName);
     const salesEmailText = this.generateSalesNotificationText(lead, fullName);
@@ -91,7 +91,7 @@ export class EmailNotificationService implements NotificationService {
     if (this.slackClient && this.config.salesTeamChannel) {
       await this.sendSlackNotification({
         channel: this.config.salesTeamChannel,
-        message: `🎯 New lead generated!`,
+        message: '🎯 New lead generated!',
         attachments: [{
           title: `${fullName} - ${lead.source}`,
           color: 'good',

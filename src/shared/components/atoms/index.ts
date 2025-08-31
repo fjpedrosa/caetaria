@@ -1,5 +1,5 @@
-export { Avatar, type AvatarProps,avatarVariants } from "./avatar"
-export { Badge, type BadgeProps,badgeVariants } from "./badge"
-export { Button, type ButtonProps,buttonVariants } from "./button"
-export { Input, type InputProps,inputVariants } from "./input"
-export { Spinner, type SpinnerProps,spinnerVariants } from "./spinner"
+export { Avatar, type AvatarProps,avatarVariants } from './avatar'
+export { Badge, type BadgeProps,badgeVariants } from './badge'
+export { Button, type ButtonProps,buttonVariants } from './button'
+export { Input, type InputProps,inputVariants } from './input'
+export { Spinner, type SpinnerProps,spinnerVariants } from './spinner'

@@ -81,17 +81,17 @@ export default function TermsOfServicePage() {
               {/* Content */}
               <main className="lg:col-span-3">
                 <div className="bg-white rounded-xl shadow-sm p-8 lg:p-12 prose prose-lg max-w-none">
-                  
+
                   {/* Introduction */}
                   <section id="introduction" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction and Acceptance</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to the WhatsApp Cloud API Platform operated by The Kroko Company ("Company," "we," "us," or "our"). 
-                      These Terms of Service ("Terms") govern your access to and use of our platform, including our website, 
+                      Welcome to the WhatsApp Cloud API Platform operated by The Kroko Company ("Company," "we," "us," or "our").
+                      These Terms of Service ("Terms") govern your access to and use of our platform, including our website,
                       APIs, and related services (collectively, the "Service").
                     </p>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      By accessing or using our Service, you agree to be bound by these Terms and our Privacy Policy. 
+                      By accessing or using our Service, you agree to be bound by these Terms and our Privacy Policy.
                       If you disagree with any part of these terms, you may not access the Service.
                     </p>
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
                       <li>Customer support and technical assistance</li>
                     </ul>
                     <p className="text-gray-700 leading-relaxed">
-                      The Service is provided "as is" and may be modified, updated, or discontinued at our discretion 
+                      The Service is provided "as is" and may be modified, updated, or discontinued at our discretion
                       with appropriate notice to users.
                     </p>
                   </section>
@@ -159,7 +159,7 @@ export default function TermsOfServicePage() {
                   {/* API Usage Terms */}
                   <section id="api-usage-terms" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">API Usage Terms</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Rate Limits and Quotas</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
                       <li>API usage is subject to rate limits based on your subscription plan</li>
@@ -191,10 +191,10 @@ export default function TermsOfServicePage() {
                       <li>Follow WhatsApp's messaging guidelines and content policies</li>
                       <li>Implement proper customer support and dispute resolution</li>
                     </ul>
-                    
+
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
                       <p className="text-blue-800">
-                        <strong>Notice:</strong> Violations of WhatsApp's policies may result in account suspension 
+                        <strong>Notice:</strong> Violations of WhatsApp's policies may result in account suspension
                         or termination by WhatsApp, which is beyond our control.
                       </p>
                     </div>
@@ -203,7 +203,7 @@ export default function TermsOfServicePage() {
                   {/* Pricing and Billing */}
                   <section id="pricing-billing" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Pricing and Billing Terms</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Subscription Plans</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
                       <li>Subscription fees are billed monthly or annually in advance</li>
@@ -247,7 +247,7 @@ export default function TermsOfServicePage() {
                   {/* Service Availability */}
                   <section id="service-availability" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Service Availability and SLA</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Uptime Commitment</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
                       <li>We strive for 99.9% uptime for our core API services</li>
@@ -268,10 +268,10 @@ export default function TermsOfServicePage() {
                   {/* Intellectual Property */}
                   <section id="intellectual-property" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Intellectual Property Rights</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Our Rights</h3>
                     <p className="text-gray-700 mb-4">
-                      All rights, title, and interest in our platform, including software, documentation, 
+                      All rights, title, and interest in our platform, including software, documentation,
                       and related materials, remain our exclusive property.
                     </p>
 
@@ -318,7 +318,7 @@ export default function TermsOfServicePage() {
                   {/* Termination */}
                   <section id="termination" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Termination</h2>
-                    
+
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">Termination by You</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
                       <li>You may cancel your account at any time through your dashboard</li>
@@ -344,12 +344,12 @@ export default function TermsOfServicePage() {
                     <div className="bg-red-50 border border-red-200 rounded-lg p-6">
                       <p className="text-red-800 font-medium mb-4">IMPORTANT LEGAL NOTICE</p>
                       <p className="text-red-800 leading-relaxed mb-4">
-                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE KROKO COMPANY SHALL NOT BE LIABLE FOR ANY 
-                        INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT 
+                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE KROKO COMPANY SHALL NOT BE LIABLE FOR ANY
+                        INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT
                         LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.
                       </p>
                       <p className="text-red-800 leading-relaxed">
-                        OUR TOTAL LIABILITY FOR ANY CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR THE 
+                        OUR TOTAL LIABILITY FOR ANY CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR THE
                         SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM.
                       </p>
                     </div>
@@ -359,8 +359,8 @@ export default function TermsOfServicePage() {
                   <section id="indemnification" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Indemnification</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      You agree to indemnify, defend, and hold harmless The Kroko Company and its officers, 
-                      directors, employees, and agents from and against any claims, liabilities, damages, 
+                      You agree to indemnify, defend, and hold harmless The Kroko Company and its officers,
+                      directors, employees, and agents from and against any claims, liabilities, damages,
                       losses, and expenses arising out of or in any way connected with:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -376,8 +376,8 @@ export default function TermsOfServicePage() {
                   <section id="governing-law" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Governing Law and Jurisdiction</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      These Terms are governed by and construed in accordance with the laws of [Jurisdiction], 
-                      without regard to conflict of law principles. Any disputes arising from these Terms or 
+                      These Terms are governed by and construed in accordance with the laws of [Jurisdiction],
+                      without regard to conflict of law principles. Any disputes arising from these Terms or
                       your use of the Service shall be resolved through:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -391,7 +391,7 @@ export default function TermsOfServicePage() {
                   <section id="changes-to-terms" className="mb-12">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to Terms</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We reserve the right to modify these Terms at any time. We will notify you of material 
+                      We reserve the right to modify these Terms at any time. We will notify you of material
                       changes through:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
@@ -401,7 +401,7 @@ export default function TermsOfServicePage() {
                       <li>30-day advance notice for significant changes</li>
                     </ul>
                     <p className="text-gray-700 leading-relaxed">
-                      Your continued use of the Service after changes become effective constitutes acceptance 
+                      Your continued use of the Service after changes become effective constitutes acceptance
                       of the updated Terms.
                     </p>
                   </section>

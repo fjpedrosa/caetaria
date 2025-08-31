@@ -31,14 +31,14 @@ export interface LeadFormProps {
 }
 
 const DEFAULT_FEATURES = [
-  'WhatsApp Business API Integration',
-  'Multi-channel Bot Platform',
-  'AI-powered Customer Support',
-  'Analytics & Reporting',
-  'CRM Integration',
-  'Message Templates',
-  'Broadcast Messaging',
-  'Webhook Management',
+  'WhatsApp Automático',
+  'Soporte Múltiples Canales',
+  'Atención con IA',
+  'Reportes de Ventas',
+  'Conectar con tu Sistema',
+  'Plantillas de Mensajes',
+  'Mensajes Masivos',
+  'Conexiones Automáticas',
 ];
 
 /**
@@ -51,8 +51,8 @@ export function LeadForm({
   isLoading = false,
   className = '',
   featuresOptions = DEFAULT_FEATURES,
-  title = 'Get Started with WhatsApp Cloud API',
-  description = 'Join thousands of businesses already using our platform',
+  title = 'Empezar con WhatsApp Automático',
+  description = 'Únete a miles de negocios que ya lo usan',
 }: LeadFormProps) {
   const [formData, setFormData] = useState<LeadFormData>({
     email: '',
@@ -129,9 +129,9 @@ export function LeadForm({
     }));
   };
 
-  const inputClassName = "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors";
-  const errorClassName = "text-red-500 text-sm mt-1";
-  const labelClassName = "block text-sm font-medium text-gray-700 mb-2";
+  const inputClassName = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors';
+  const errorClassName = 'text-red-500 text-sm mt-1';
+  const labelClassName = 'block text-sm font-medium text-gray-700 mb-2';
 
   return (
     <div className={`bg-white rounded-xl shadow-xl p-8 ${className}`}>

@@ -17,26 +17,26 @@ export class PhoneNumberValidationError extends Error {
  */
 export function createPhoneNumber(value: string): PhoneNumber {
   const cleanedValue = value.replace(/\s+/g, '').replace(/[^\d+]/g, '');
-  
+
   if (!cleanedValue) {
     throw new PhoneNumberValidationError('Phone number cannot be empty');
   }
-  
+
   // Must start with + and have country code
   if (!cleanedValue.startsWith('+')) {
     throw new PhoneNumberValidationError('Phone number must include country code with +');
   }
-  
+
   // Validate length (minimum 7, maximum 15 digits after +)
   const digitsOnly = cleanedValue.substring(1);
   if (digitsOnly.length < 7 || digitsOnly.length > 15) {
     throw new PhoneNumberValidationError('Invalid phone number length');
   }
-  
+
   if (!/^\d+$/.test(digitsOnly)) {
     throw new PhoneNumberValidationError('Phone number contains invalid characters');
   }
-  
+
   return cleanedValue as PhoneNumber;
 }
 
@@ -51,12 +51,12 @@ export function formatPhoneNumber(phoneNumber: PhoneNumber): string {
     const areaCode = digits.substring(digits.length - 10, digits.length - 7);
     const firstPart = digits.substring(digits.length - 7, digits.length - 4);
     const lastPart = digits.substring(digits.length - 4);
-    
+
     if (countryCode) {
       return `+${countryCode} ${areaCode} ${firstPart}-${lastPart}`;
     }
     return `+${areaCode} ${firstPart}-${lastPart}`;
   }
-  
+
   return phoneNumber;
 }

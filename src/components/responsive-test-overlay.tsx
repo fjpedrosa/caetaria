@@ -109,7 +109,7 @@ export function ResponsiveTestOverlay() {
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-gray-600">Current Size</span>
-            <Badge 
+            <Badge
               className={cn(
                 'text-xs',
                 getBreakpointColor(getCurrentBreakpoint())
@@ -135,14 +135,14 @@ export function ResponsiveTestOverlay() {
                   onClick={() => {
                     // Simulate viewport size by opening dev tools console
                     console.log(`🔍 Testing ${viewport.name}: ${viewport.width}×${viewport.height}px`);
-                    console.log(`💡 Tip: Use browser dev tools to simulate this viewport size`);
+                    console.log('💡 Tip: Use browser dev tools to simulate this viewport size');
                     setCurrentViewport(viewport);
                   }}
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "h-auto p-2 flex flex-col items-center gap-1",
-                    currentViewport?.name === viewport.name && "bg-gray-100"
+                    'h-auto p-2 flex flex-col items-center gap-1',
+                    currentViewport?.name === viewport.name && 'bg-gray-100'
                   )}
                 >
                   <Icon className="w-4 h-4" />

@@ -15,7 +15,7 @@ export function usePriceVariant(): { variant: PriceVariant; pricing: PricingPlan
     // Leer cookie en cliente
     const match = document.cookie.match(/price_var=([^;]+)/);
     const variant = match?.[1] as PriceVariant;
-    
+
     if (variant && isValidVariant(variant)) {
       return {
         variant,
@@ -23,7 +23,7 @@ export function usePriceVariant(): { variant: PriceVariant; pricing: PricingPlan
       };
     }
   }
-  
+
   return {
     variant: 'A',
     pricing: PRICING_MAP['A']
@@ -49,7 +49,7 @@ export function formatPriceWithDiscount(plan: PricingPlan['starter'] | PricingPl
 export function getPricingMetadata(variant: PriceVariant, planType: 'starter' | 'pro') {
   const pricing = PRICING_MAP[variant];
   const plan = pricing[planType];
-  
+
   return {
     variant,
     plan_type: planType,

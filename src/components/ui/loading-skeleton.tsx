@@ -17,7 +17,7 @@ export function Skeleton({ className, variant = 'default', ...props }: SkeletonP
     pulse: 'animate-pulse-gentle bg-gradient-to-r from-brand-yellow-100 to-brand-blue-100',
     wave: 'bg-gray-200 animate-wave'
   };
-  
+
   return (
     <div
       className={cn('rounded-lg', variants[variant], className)}
@@ -28,7 +28,7 @@ export function Skeleton({ className, variant = 'default', ...props }: SkeletonP
 
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <motion.div 
+    <motion.div
       className={cn('rounded-xl border bg-white p-6 shadow-sm', className)}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ export function CardSkeleton({ className }: { className?: string }) {
 
 export function HeroSkeleton() {
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-gradient-to-br from-brand-yellow-50 to-brand-blue-50 flex items-center justify-center relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -52,18 +52,18 @@ export function HeroSkeleton() {
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-30">
-        <motion.div 
+        <motion.div
           className="absolute top-20 left-20 w-72 h-72 bg-brand-yellow-200 rounded-full mix-blend-multiply filter blur-xl"
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 4, repeat: Infinity }}
         />
-        <motion.div 
+        <motion.div
           className="absolute top-40 right-20 w-72 h-72 bg-brand-blue-200 rounded-full mix-blend-multiply filter blur-xl"
           animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 5, repeat: Infinity, delay: 1 }}
         />
       </div>
-      
+
       <div className="container mx-auto px-4 text-center relative z-10">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -79,7 +79,7 @@ export function HeroSkeleton() {
         >
           <Skeleton variant="shimmer" className="h-6 w-2/3 mx-auto mb-8" />
         </motion.div>
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -148,14 +148,14 @@ export function FeedbackState({ type, title, message, onRetry, className }: Feed
           transition={{ delay: 0.2, duration: 0.4, type: 'spring', stiffness: 200 }}
         >
           <div className={cn('w-16 h-16 rounded-full flex items-center justify-center bg-white shadow-lg', config.iconColor)}>
-            <Icon 
+            <Icon
               className={cn('w-8 h-8', {
                 'animate-spin': type === 'loading'
-              })} 
+              })}
             />
           </div>
         </motion.div>
-        
+
         <motion.h3
           className={cn('text-xl font-bold mb-2', config.titleColor)}
           initial={{ opacity: 0, y: 10 }}
@@ -164,7 +164,7 @@ export function FeedbackState({ type, title, message, onRetry, className }: Feed
         >
           {title}
         </motion.h3>
-        
+
         {message && (
           <motion.p
             className={cn('mb-6', config.messageColor)}
@@ -175,7 +175,7 @@ export function FeedbackState({ type, title, message, onRetry, className }: Feed
             {message}
           </motion.p>
         )}
-        
+
         {type === 'error' && onRetry && (
           <motion.button
             onClick={onRetry}

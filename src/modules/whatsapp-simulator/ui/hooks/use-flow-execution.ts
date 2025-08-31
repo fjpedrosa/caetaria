@@ -2,8 +2,9 @@
  * useFlowExecution - Manage WhatsApp Flow interactions
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect,useRef, useState } from 'react';
 import { Observable } from 'rxjs';
+
 import { Message } from '../../domain/entities';
 import { ConversationEvent } from '../../domain/events';
 
@@ -98,17 +99,17 @@ const DEFAULT_MOCK_RESPONSES: Record<string, Record<string, any>> = {
 export function useFlowExecution(
   config: Partial<FlowExecutionConfig> = {}
 ): FlowExecutionReturn {
-  const fullConfig = { 
-    ...DEFAULT_CONFIG, 
+  const fullConfig = {
+    ...DEFAULT_CONFIG,
     mockFlowResponses: { ...DEFAULT_MOCK_RESPONSES, ...config.mockFlowResponses },
-    ...config 
+    ...config
   };
-  
+
   const [activeFlows, setActiveFlows] = useState<Map<string, FlowState>>(new Map());
   const [flowHistory, setFlowHistory] = useState<FlowState[]>([]);
   const [lastCompletedFlow, setLastCompletedFlow] = useState<FlowState | null>(null);
   const [lastError, setLastError] = useState<Error | null>(null);
-  
+
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const mockResponsesRef = useRef(fullConfig.mockFlowResponses);
 
@@ -124,11 +125,11 @@ export function useFlowExecution(
           throw new Error('Message is not a flow trigger');
         }
 
-        const flowId = message.content.flow?.flowId || 
-                      message.content.interactive?.action?.flow_id || 
+        const flowId = message.content.flow?.flowId ||
+                      message.content.interactive?.action?.flow_id ||
                       'unknown_flow';
-        
-        const flowToken = message.content.flow?.flowToken || 
+
+        const flowToken = message.content.flow?.flowToken ||
                          message.content.interactive?.action?.flow_token ||
                          generateFlowToken();
 

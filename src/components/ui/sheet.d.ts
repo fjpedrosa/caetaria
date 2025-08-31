@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export interface SheetProps {
   open?: boolean;
@@ -12,7 +12,7 @@ export interface SheetTriggerProps {
 }
 
 export interface SheetContentProps {
-  side?: "top" | "bottom" | "left" | "right";
+  side?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
   children?: React.ReactNode;
 }

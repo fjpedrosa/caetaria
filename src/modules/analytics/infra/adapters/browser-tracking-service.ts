@@ -42,7 +42,7 @@ export class BrowserTrackingService implements TrackingService {
     // Detect browser context
     if (typeof window !== 'undefined') {
       this.context = this.detectBrowserContext();
-      
+
       if (this.config.enableLocalStorage) {
         this.loadStoredSession();
         this.loadTrackingPreferences();
@@ -75,7 +75,7 @@ export class BrowserTrackingService implements TrackingService {
   private detectDeviceType(userAgent: string): 'desktop' | 'mobile' | 'tablet' {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
     const isTablet = /iPad|Android(?=.*\\bMobile\\b)/i.test(userAgent);
-    
+
     if (isTablet) return 'tablet';
     if (isMobile) return 'mobile';
     return 'desktop';
@@ -355,7 +355,7 @@ export class BrowserTrackingService implements TrackingService {
   async clear(): Promise<void> {
     this.eventQueue = [];
     this.currentSession = undefined;
-    
+
     if (this.config.enableLocalStorage) {
       localStorage.removeItem('analytics_session');
       localStorage.removeItem('analytics_tracking_enabled');
@@ -374,7 +374,7 @@ export class BrowserTrackingService implements TrackingService {
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
     }
-    
+
     // Flush remaining events
     this.flush();
   }

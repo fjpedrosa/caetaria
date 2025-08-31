@@ -4,8 +4,8 @@ import { useEffect,useRef, useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
 import Image from 'next/image';
 
-import { 
-  createOptimizedImageProps, 
+import {
+  createOptimizedImageProps,
   generateBlurDataURL,
   IMAGE_QUALITY,
   OptimizedImageProps} from '@/lib/image-optimization';
@@ -18,30 +18,30 @@ interface ResponsiveImageProps extends OptimizedImageProps {
   mobileWidth?: number;
   mobileHeight?: number;
   mobileQuality?: number;
-  
+
   // Lazy loading options
   lazy?: boolean;
   threshold?: number;
   rootMargin?: string;
-  
+
   // Animation options
   animateIn?: boolean;
   animationDelay?: number;
-  
+
   // Error handling
   fallbackSrc?: string;
   onError?: () => void;
   onLoad?: () => void;
-  
+
   // Performance options
   priority?: boolean;
   preload?: boolean;
-  
+
   // Styling
   containerClassName?: string;
   imageClassName?: string;
   overlayClassName?: string;
-  
+
   // Accessibility
   ariaLabel?: string;
   role?: string;
@@ -49,7 +49,7 @@ interface ResponsiveImageProps extends OptimizedImageProps {
 
 /**
  * Responsive Image Component with Mobile Optimization
- * 
+ *
  * Features:
  * - Lazy loading with intersection observer
  * - Device-aware quality and sizing
@@ -91,31 +91,31 @@ export function ResponsiveImage({
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src);
   const imageRef = useRef<HTMLDivElement>(null);
-  
+
   const { isMobile, shouldAnimate, getDurationMultiplier } = useAnimationConfig();
   const isInView = useIntersection(imageRef, { threshold, rootMargin });
-  
+
   // Determine optimal dimensions and quality for mobile
   const optimizedWidth = isMobile && mobileWidth ? mobileWidth : width;
   const optimizedHeight = isMobile && mobileHeight ? mobileHeight : height;
-  const optimizedQuality = isMobile && mobileQuality 
-    ? mobileQuality 
-    : isMobile 
+  const optimizedQuality = isMobile && mobileQuality
+    ? mobileQuality
+    : isMobile
       ? Math.max(quality - 15, 60) // Reduce quality on mobile
       : quality;
-  
+
   // Generate blur placeholder if not provided
   const placeholderDataURL = blurDataURL || generateBlurDataURL(
-    Math.min(optimizedWidth || 400, 8), 
+    Math.min(optimizedWidth || 400, 8),
     Math.min(optimizedHeight || 300, 6)
   );
-  
+
   // Handle image loading
   const handleLoad = () => {
     setIsLoaded(true);
     onLoad?.();
   };
-  
+
   // Handle image error with fallback
   const handleError = () => {
     if (fallbackSrc && currentSrc !== fallbackSrc) {
@@ -125,7 +125,7 @@ export function ResponsiveImage({
     }
     onError?.();
   };
-  
+
   // Preload image if requested
   useEffect(() => {
     if (preload || priority) {
@@ -133,28 +133,28 @@ export function ResponsiveImage({
       img.src = currentSrc;
     }
   }, [currentSrc, preload, priority]);
-  
+
   // Don't render if lazy loading and not in view (unless priority)
   const shouldLoad = !lazy || isInView || priority;
-  
+
   // Animation configuration
   const fadeInAnimation = shouldAnimate('low') && animateIn ? {
     initial: { opacity: 0, scale: 0.95 },
-    animate: { 
-      opacity: isLoaded ? 1 : 0, 
+    animate: {
+      opacity: isLoaded ? 1 : 0,
       scale: isLoaded ? 1 : 0.95,
-      transition: { 
+      transition: {
         duration: 0.4 * getDurationMultiplier(),
         delay: animationDelay,
         ease: [0.215, 0.610, 0.355, 1.000]
       }
     }
   } : {};
-  
+
   // Error fallback component
   if (hasError) {
     return (
-      <div 
+      <div
         ref={imageRef}
         className={cn(
           'flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg',
@@ -170,7 +170,7 @@ export function ResponsiveImage({
       </div>
     );
   }
-  
+
   return (
     <div
       ref={imageRef}
@@ -186,14 +186,14 @@ export function ResponsiveImage({
               overlayClassName
             )}
             initial={{ opacity: 1 }}
-            exit={{ 
+            exit={{
               opacity: 0,
               transition: { duration: 0.3 }
             }}
           />
         )}
       </AnimatePresence>
-      
+
       {/* Actual image */}
       {shouldLoad && (
         <motion.div
@@ -223,10 +223,10 @@ export function ResponsiveImage({
           />
         </motion.div>
       )}
-      
+
       {/* Lazy loading placeholder */}
       {!shouldLoad && (
-        <div 
+        <div
           className={cn(
             'absolute inset-0 bg-gray-100 flex items-center justify-center',
             overlayClassName
@@ -246,7 +246,7 @@ export function ResponsiveImage({
 // Hero image with mobile optimization
 export function HeroImage(props: Omit<ResponsiveImageProps, 'lazy' | 'priority'>) {
   const optimizedProps = createOptimizedImageProps(props.src, props.alt, 'hero');
-  
+
   return (
     <ResponsiveImage
       {...optimizedProps}
@@ -263,7 +263,7 @@ export function HeroImage(props: Omit<ResponsiveImageProps, 'lazy' | 'priority'>
 // Card image with lazy loading
 export function CardImage(props: Omit<ResponsiveImageProps, 'lazy'>) {
   const optimizedProps = createOptimizedImageProps(props.src, props.alt, 'card');
-  
+
   return (
     <ResponsiveImage
       {...optimizedProps}
@@ -279,7 +279,7 @@ export function CardImage(props: Omit<ResponsiveImageProps, 'lazy'>) {
 // Avatar image (no lazy loading needed for small images)
 export function AvatarImage(props: Omit<ResponsiveImageProps, 'lazy' | 'animateIn'>) {
   const optimizedProps = createOptimizedImageProps(props.src, props.alt, 'avatar');
-  
+
   return (
     <ResponsiveImage
       {...optimizedProps}
@@ -294,7 +294,7 @@ export function AvatarImage(props: Omit<ResponsiveImageProps, 'lazy' | 'animateI
 // Content image with medium optimization
 export function ContentImage(props: ResponsiveImageProps) {
   const optimizedProps = createOptimizedImageProps(props.src, props.alt, 'content');
-  
+
   return (
     <ResponsiveImage
       {...optimizedProps}

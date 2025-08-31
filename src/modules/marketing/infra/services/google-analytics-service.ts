@@ -36,7 +36,7 @@ export class GoogleAnalyticsService implements AnalyticsService {
         custom_map: {
           user_id: event.userId,
         },
-        timestamp_micros: event.timestamp 
+        timestamp_micros: event.timestamp
           ? Math.floor(event.timestamp.getTime() * 1000)
           : Math.floor(Date.now() * 1000),
       });

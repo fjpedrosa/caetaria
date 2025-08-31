@@ -71,39 +71,39 @@ export function validateStepDataCompleteness(
   data: OnboardingStepData
 ): { isValid: boolean; missingFields: string[] } {
   const missingFields: string[] = [];
-  
+
   switch (step) {
     case 'business-info':
       if (!data.businessInfo) {
         missingFields.push('businessInfo');
       }
       break;
-      
+
     case 'integration-config':
       if (!data.whatsappConfig) {
         missingFields.push('whatsappConfig');
       }
       break;
-      
+
     case 'phone-verification':
       if (!data.phoneVerification?.isVerified) {
         missingFields.push('phoneVerification');
       }
       break;
-      
+
     case 'bot-setup':
       if (!data.botConfig) {
         missingFields.push('botConfig');
       }
       break;
-      
+
     case 'testing':
       if (!data.testingResults?.testMessageSent || !data.testingResults?.webhookConfigured) {
         missingFields.push('testingResults');
       }
       break;
   }
-  
+
   return {
     isValid: missingFields.length === 0,
     missingFields,
@@ -130,7 +130,7 @@ export function isOnboardingComplete(data: OnboardingStepData): boolean {
 export function getOnboardingCompletionPercentage(data: OnboardingStepData): number {
   let completedSteps = 0;
   const totalSteps = 5;
-  
+
   if (data.businessInfo) completedSteps++;
   if (data.whatsappConfig) completedSteps++;
   if (data.phoneVerification?.isVerified) completedSteps++;
@@ -138,6 +138,6 @@ export function getOnboardingCompletionPercentage(data: OnboardingStepData): num
   if (data.testingResults?.testMessageSent && data.testingResults?.webhookConfigured) {
     completedSteps++;
   }
-  
+
   return Math.round((completedSteps / totalSteps) * 100);
 }

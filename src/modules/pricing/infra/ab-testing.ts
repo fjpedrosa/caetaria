@@ -12,19 +12,19 @@ export async function getPriceVariant(): Promise<PriceVariant> {
   // Intentar obtener desde headers (establecido por middleware)
   const headersList = await headers();
   const headerVariant = headersList.get('x-price-variant');
-  
+
   if (headerVariant && isValidVariant(headerVariant)) {
     return headerVariant;
   }
-  
+
   // Fallback a cookie
   const cookieStore = await cookies();
   const cookieVariant = cookieStore.get('price_var')?.value;
-  
+
   if (cookieVariant && isValidVariant(cookieVariant)) {
     return cookieVariant;
   }
-  
+
   // Default
   return 'A';
 }

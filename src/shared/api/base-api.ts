@@ -1,9 +1,9 @@
 /**
  * RTK Query Base API Configuration
- * 
+ *
  * This is the foundation for ALL API calls in the application.
  * Use RTK Query instead of Context for server state management.
- * 
+ *
  * Benefits over Context + fetch:
  * - Automatic caching and cache invalidation
  * - Request deduplication (no duplicate requests)
@@ -18,7 +18,7 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 
 /**
  * Custom base query with authentication and error handling
- * 
+ *
  * Features:
  * - Automatic token injection
  * - Error transformation
@@ -27,11 +27,11 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
  */
 const customBaseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_URL || '/api',
-  
+
   // Prepare headers for every request
   prepareHeaders: (headers, { getState, endpoint }) => {
     // Get token from state or localStorage
-    const token = typeof window !== 'undefined' 
+    const token = typeof window !== 'undefined'
       ? localStorage.getItem('auth_token')
       : null
 
@@ -70,12 +70,12 @@ const customBaseQuery = fetchBaseQuery({
 
 /**
  * Base query with automatic retry logic
- * 
+ *
  * Retries failed requests with exponential backoff:
  * - 1st retry: 1 second
- * - 2nd retry: 2 seconds  
+ * - 2nd retry: 2 seconds
  * - 3rd retry: 4 seconds
- * 
+ *
  * Only retries on network errors or 5xx status codes
  */
 const baseQueryWithRetry = retry(customBaseQuery, {
@@ -89,7 +89,7 @@ const baseQueryWithRetry = retry(customBaseQuery, {
 
 /**
  * Enhanced base query with error handling
- * 
+ *
  * Centralizes error handling and provides consistent error format
  */
 const enhancedBaseQuery: BaseQueryFn<
@@ -106,7 +106,7 @@ const enhancedBaseQuery: BaseQueryFn<
       localStorage.removeItem('auth_token')
       // Dispatch logout action if needed
       // api.dispatch(logout())
-      
+
       // Redirect to login (customize as needed)
       // window.location.href = '/login'
     }
@@ -118,7 +118,7 @@ const enhancedBaseQuery: BaseQueryFn<
     return {
       error: {
         status: error.status || 'FETCH_ERROR',
-        data: error.data || { 
+        data: error.data || {
           message: 'An unexpected error occurred',
           code: 'UNKNOWN_ERROR'
         },
@@ -131,10 +131,10 @@ const enhancedBaseQuery: BaseQueryFn<
 
 /**
  * Main API slice configuration
- * 
+ *
  * This is the base for all API endpoints in the application.
  * Each module can inject its own endpoints into this API.
- * 
+ *
  * Cache configuration:
  * - Default: 60 seconds (1 minute)
  * - Can be overridden per endpoint
@@ -143,12 +143,12 @@ const enhancedBaseQuery: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: enhancedBaseQuery,
-  
+
   // Global cache configuration
   keepUnusedDataFor: 60, // Keep cached data for 60 seconds after last subscriber unsubscribes
   refetchOnFocus: true,   // Refetch when window regains focus
   refetchOnReconnect: true, // Refetch when regaining internet connection
-  
+
   // Tag types for cache invalidation
   // Add your tag types here as you create endpoints
   tagTypes: [
@@ -160,28 +160,28 @@ export const baseApi = createApi({
     'Notification',
     // Add more as needed
   ],
-  
+
   // Endpoints will be injected by each module
   endpoints: () => ({}),
 })
 
 /**
  * USAGE GUIDELINES:
- * 
+ *
  * When to use RTK Query (this):
  * ✅ Fetching data from APIs
- * ✅ Caching server responses  
+ * ✅ Caching server responses
  * ✅ Real-time data with polling
  * ✅ Optimistic updates
  * ✅ Request deduplication needed
  * ✅ Loading/error states needed
- * 
+ *
  * When NOT to use RTK Query:
  * ❌ Local-only state (use Redux slices)
  * ❌ One-time actions (use regular fetch)
  * ❌ File uploads (use FormData + fetch)
  * ❌ WebSocket connections (use separate solution)
- * 
+ *
  * Example - Injecting endpoints:
  * ```typescript
  * const userApi = baseApi.injectEndpoints({
@@ -215,18 +215,18 @@ export const baseApi = createApi({
  *   }),
  * })
  * ```
- * 
+ *
  * Cache Invalidation Strategies:
- * 
+ *
  * 1. Automatic (via tags):
  *    - Use providesTags on queries
  *    - Use invalidatesTags on mutations
  *    - RTK Query handles the rest
- * 
+ *
  * 2. Manual:
  *    - dispatch(api.util.invalidateTags(['User']))
  *    - dispatch(api.util.resetApiState()) // Nuclear option
- * 
+ *
  * 3. Time-based:
  *    - keepUnusedDataFor: seconds to keep in cache
  *    - refetchOnFocus: refetch when window regains focus

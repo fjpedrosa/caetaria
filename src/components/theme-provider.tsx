@@ -8,14 +8,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const savedTheme = localStorage.getItem('theme');
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     const theme = savedTheme || systemTheme;
-    
+
     // Apply theme to document
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
+
     // Listen for system theme changes if no saved preference
     if (!savedTheme) {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -26,7 +26,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           document.documentElement.classList.remove('dark');
         }
       };
-      
+
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }

@@ -101,31 +101,31 @@ export function createWhatsAppIntegrationConfig(params: {
   if (!params.businessAccountId?.trim()) {
     throw new WhatsAppConfigValidationError('Business Account ID is required');
   }
-  
+
   // Validate phone number ID
   if (!params.phoneNumberId?.trim()) {
     throw new WhatsAppConfigValidationError('Phone Number ID is required');
   }
-  
+
   // Validate app ID
   if (!params.appId?.trim()) {
     throw new WhatsAppConfigValidationError('App ID is required');
   }
-  
+
   // Validate access token
   if (!params.accessToken?.trim()) {
     throw new WhatsAppConfigValidationError('Access Token is required');
   }
-  
+
   if (params.accessToken.length < 50) {
     throw new WhatsAppConfigValidationError('Access Token appears to be invalid');
   }
-  
+
   // Validate webhook URL
   if (!params.webhookUrl?.trim()) {
     throw new WhatsAppConfigValidationError('Webhook URL is required');
   }
-  
+
   try {
     const url = new URL(params.webhookUrl);
     if (url.protocol !== 'https:') {
@@ -134,16 +134,16 @@ export function createWhatsAppIntegrationConfig(params: {
   } catch {
     throw new WhatsAppConfigValidationError('Invalid Webhook URL format');
   }
-  
+
   // Validate verify token
   if (!params.verifyToken?.trim()) {
     throw new WhatsAppConfigValidationError('Verify Token is required');
   }
-  
+
   if (params.verifyToken.length < 8) {
     throw new WhatsAppConfigValidationError('Verify Token must be at least 8 characters');
   }
-  
+
   return {
     businessAccountId: params.businessAccountId.trim() as WhatsAppBusinessAccountId,
     phoneNumberId: params.phoneNumberId.trim() as WhatsAppPhoneNumberId,
@@ -168,12 +168,12 @@ export function createPhoneNumberVerification(params: {
   if (!phoneRegex.test(params.phoneNumber.replace(/\s+/g, ''))) {
     throw new PhoneVerificationError('Invalid phone number format');
   }
-  
+
   // Validate country code
   if (!params.countryCode || params.countryCode.length !== 2) {
     throw new PhoneVerificationError('Invalid country code');
   }
-  
+
   return {
     phoneNumber: params.phoneNumber.replace(/\s+/g, ''),
     countryCode: params.countryCode.toUpperCase(),
@@ -194,15 +194,15 @@ export function createBotConfiguration(params: {
   if (!params.name?.trim()) {
     throw new WhatsAppConfigValidationError('Bot name is required');
   }
-  
+
   if (params.name.trim().length < 2) {
     throw new WhatsAppConfigValidationError('Bot name must be at least 2 characters');
   }
-  
+
   if (params.name.trim().length > 50) {
     throw new WhatsAppConfigValidationError('Bot name must be less than 50 characters');
   }
-  
+
   const defaultBusinessHours: BusinessHours = {
     enabled: false,
     timezone: 'UTC',
@@ -216,14 +216,14 @@ export function createBotConfiguration(params: {
       sunday: { isOpen: false },
     },
   };
-  
+
   return {
     name: params.name.trim(),
     welcomeMessage: params.welcomeMessage?.trim() || `Hello! Welcome to ${params.name.trim()}. How can I help you today?`,
     businessHours: { ...defaultBusinessHours, ...params.businessHours },
     autoReplyEnabled: true,
     languageCode: params.languageCode || 'en',
-    fallbackMessage: "I'm sorry, I didn't understand that. Please try again or type 'help' for assistance.",
+    fallbackMessage: 'I\'m sorry, I didn\'t understand that. Please try again or type \'help\' for assistance.',
     commands: [
       {
         trigger: 'help',
@@ -251,13 +251,13 @@ export function verifyPhoneNumber(
   if (verification.verificationAttempts >= 5) {
     throw new PhoneVerificationError('Too many verification attempts');
   }
-  
+
   if (!verification.verificationCode) {
     throw new PhoneVerificationError('No verification code sent');
   }
-  
+
   const isCodeValid = verification.verificationCode === code.trim();
-  
+
   return {
     ...verification,
     isVerified: isCodeValid,
@@ -294,14 +294,14 @@ export function validateTimeFormat(time: string): boolean {
  */
 export function isBusinessOpen(businessHours: BusinessHours, date: Date): boolean {
   if (!businessHours.enabled) return true;
-  
+
   const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
   const dayName = dayNames[date.getDay()];
   const daySchedule = businessHours.schedule[dayName];
-  
+
   if (!daySchedule.isOpen) return false;
   if (!daySchedule.openTime || !daySchedule.closeTime) return true;
-  
+
   const currentTime = date.toTimeString().slice(0, 5); // HH:MM format
   return currentTime >= daySchedule.openTime && currentTime <= daySchedule.closeTime;
 }

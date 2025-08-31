@@ -3,11 +3,11 @@
  * Tests for conversation state management and business logic
  */
 
-import { 
-  Conversation, 
-  ConversationMetadata, 
+import {
+  Conversation,
+  ConversationMetadata,
   ConversationSettings,
-  ConversationStatus 
+  ConversationStatus
 } from '../../../domain/entities/conversation';
 import { Message, MessageTiming } from '../../../domain/entities/message';
 
@@ -135,9 +135,9 @@ describe('Conversation Entity', () => {
     it('should prevent adding duplicate message IDs', () => {
       const message1 = createTestMessage('msg-1');
       const message2 = createTestMessage('msg-1'); // Same ID
-      
+
       conversation.addMessage(message1);
-      
+
       expect(() => conversation.addMessages([message2])).toThrow(
         'Duplicate message ID found: msg-1'
       );
@@ -179,7 +179,7 @@ describe('Conversation Entity', () => {
 
     it('should update estimated duration when adding/removing messages', () => {
       const initialDuration = conversation.metadata.estimatedDuration;
-      
+
       const message = createTestMessage('msg-1', {
         timing: {
           queueAt: new Date(),
@@ -187,7 +187,7 @@ describe('Conversation Entity', () => {
           delayBeforeTyping: 3000,
         }
       });
-      
+
       conversation.addMessage(message);
       expect(conversation.metadata.estimatedDuration).toBe(8000); // 5000 + 3000
 
@@ -220,9 +220,9 @@ describe('Conversation Entity', () => {
       conversation.jumpTo(3); // Beyond last message
       // Simulate completion
       (conversation as any)._status = 'completed';
-      
+
       conversation.play();
-      
+
       expect(conversation.status).toBe('playing');
       expect(conversation.currentIndex).toBe(0); // Reset to beginning
     });
@@ -230,7 +230,7 @@ describe('Conversation Entity', () => {
     it('should pause during playback', () => {
       conversation.play();
       conversation.pause();
-      
+
       expect(conversation.status).toBe('paused');
       expect(conversation.isPaused).toBe(true);
       expect(conversation.isPlaying).toBe(false);
@@ -246,9 +246,9 @@ describe('Conversation Entity', () => {
       conversation.play();
       conversation.jumpTo(1);
       conversation.pause();
-      
+
       conversation.reset();
-      
+
       expect(conversation.status).toBe('idle');
       expect(conversation.currentIndex).toBe(0);
       expect(conversation.isPlaying).toBe(false);
@@ -282,36 +282,36 @@ describe('Conversation Entity', () => {
 
     it('should advance to next message', () => {
       expect(conversation.currentIndex).toBe(0);
-      
+
       const advanced = conversation.advanceToNext();
-      
+
       expect(advanced).toBe(true);
       expect(conversation.currentIndex).toBe(1);
     });
 
     it('should complete when advancing beyond last message', () => {
       conversation.jumpTo(2); // Last message
-      
+
       const advanced = conversation.advanceToNext();
-      
+
       expect(advanced).toBe(false);
       expect(conversation.status).toBe('completed');
     });
 
     it('should go to previous message', () => {
       conversation.jumpTo(2);
-      
+
       const went = conversation.goToPrevious();
-      
+
       expect(went).toBe(true);
       expect(conversation.currentIndex).toBe(1);
     });
 
     it('should not go before first message', () => {
       expect(conversation.currentIndex).toBe(0);
-      
+
       const went = conversation.goToPrevious();
-      
+
       expect(went).toBe(false);
       expect(conversation.currentIndex).toBe(0);
     });
@@ -414,7 +414,7 @@ describe('Conversation Entity', () => {
 
     it('should calculate progress correctly', () => {
       const progress = conversation.getProgress();
-      
+
       expect(progress.currentMessageIndex).toBe(0);
       expect(progress.totalMessages).toBe(3);
       expect(progress.completionPercentage).toBe(0);
@@ -425,7 +425,7 @@ describe('Conversation Entity', () => {
     it('should update progress when advancing', () => {
       conversation.advanceToNext();
       const progress = conversation.getProgress();
-      
+
       expect(progress.currentMessageIndex).toBe(1);
       expect(progress.completionPercentage).toBeCloseTo(33.33, 2);
     });
@@ -434,14 +434,14 @@ describe('Conversation Entity', () => {
       conversation.jumpTo(2);
       conversation.advanceToNext(); // Complete
       const progress = conversation.getProgress();
-      
+
       expect(progress.completionPercentage).toBe(100);
     });
 
     it('should handle empty conversation progress', () => {
       const emptyConversation = new Conversation(createTestMetadata());
       const progress = emptyConversation.getProgress();
-      
+
       expect(progress.completionPercentage).toBe(0);
       expect(progress.totalMessages).toBe(0);
       expect(progress.remainingTime).toBe(0);
@@ -600,7 +600,7 @@ describe('Conversation Entity', () => {
 
     it('should validate timing sequence warnings', () => {
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-      
+
       const metadata = createTestMetadata();
       const messages = [
         createTestMessage('msg-1', {

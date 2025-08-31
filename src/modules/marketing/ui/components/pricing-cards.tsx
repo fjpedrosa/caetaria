@@ -42,18 +42,18 @@ const defaultPlans: PricingPlan[] = [
     description: 'For growing businesses',
     features: [
       'Unlimited conversations',
-      'Advanced AI + CRM integrations',
+      'IA avanzada + conecta con tu sistema',
       'Custom templates',
       '24/7 priority support',
-      'Advanced analytics & reports',
-      'Custom API',
+      'Reportes detallados de ventas',
+      'Conexiones personalizadas',
       'Multi-agent support',
       'Data export'
     ],
     popular: true
   },
   {
-    name: 'Enterprise',
+    name: 'Empresarial',
     price: 499,
     period: 'month',
     description: 'For large organizations',
@@ -61,7 +61,7 @@ const defaultPlans: PricingPlan[] = [
       'Everything in Pro',
       'Dedicated account manager',
       'Custom AI training',
-      'SLA guarantee',
+      'Garantía de servicio',
       'White-label options',
       'Multiple workspaces',
       'Advanced security features',
@@ -77,7 +77,7 @@ interface PricingCardsProps {
 
 /**
  * Pricing Cards Component - Client Component
- * 
+ *
  * Interactive pricing section with plan comparison,
  * billing period toggle, and CTA buttons.
  */
@@ -99,14 +99,14 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
   const handlePlanSelect = async (planName: string) => {
     setLoadingPlan(planName);
     setSelectedPlan(planName);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setLoadingPlan(null);
     console.log(`Selected plan: ${planName}`);
   };
-  
+
   const toggleBilling = () => {
     setBillingPeriod(prev => prev === 'monthly' ? 'yearly' : 'monthly');
   };
@@ -135,10 +135,10 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
           />
         ))}
       </div>
-      
+
       <div className="container mx-auto px-4 relative">
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
@@ -154,21 +154,21 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
               Flexible Pricing
             </Badge>
           </motion.div>
-          
+
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Choose the Perfect Plan
             <span className="block bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               for Your Business
             </span>
           </h2>
-          
+
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Start free, scale as you grow. All plans include our core features 
+            Start free, scale as you grow. All plans include our core features
             with transparent, usage-based pricing.
           </p>
 
           {/* Billing Period Toggle - Mobile optimized */}
-          <motion.div 
+          <motion.div
             className="flex items-center justify-center space-x-2 sm:space-x-4 bg-gray-100 rounded-lg p-1 w-fit mx-auto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
@@ -206,7 +206,7 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
             const isPopular = plan.popular;
             const currentPrice = getPrice(plan.price);
             const isSelected = selectedPlan === plan.name;
-            
+
             return (
               <motion.div
                 key={index}
@@ -214,10 +214,10 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
               >
-                <Card 
+                <Card
                   className={`relative p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1 cursor-pointer touch-manipulation ${
-                    isPopular 
-                      ? 'ring-2 ring-green-500 shadow-xl sm:scale-105 bg-gradient-to-br from-green-50 to-blue-50' 
+                    isPopular
+                      ? 'ring-2 ring-green-500 shadow-xl sm:scale-105 bg-gradient-to-br from-green-50 to-blue-50'
                       : 'hover:shadow-xl bg-white'
                   } ${
                     isSelected ? 'ring-2 ring-blue-500' : ''
@@ -237,14 +237,14 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                 <div className="text-center mb-6 sm:mb-8">
                   <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                   <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">{plan.description}</p>
-                  
+
                   {/* Price - Mobile responsive */}
                   <div className="mb-4">
                     <div className="flex items-center justify-center">
                       <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">${currentPrice}</span>
                       <span className="text-gray-500 ml-2 text-sm sm:text-base">/{billingPeriod === 'yearly' ? 'year' : 'month'}</span>
                     </div>
-                    
+
                     {billingPeriod === 'yearly' && (
                       <div className="text-xs sm:text-sm text-green-600 font-semibold mt-2">
                         <span className="block sm:inline">Save ${plan.price * 2}/year</span>
@@ -278,7 +278,7 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                       : 'border-2 border-gray-300 hover:border-green-500 active:border-green-600 bg-white hover:bg-green-50 active:bg-green-100 text-gray-900'
                   }`}
                 >
-                  {plan.name === 'Enterprise' ? 'Contact Sales' : 'Start Free Trial'}
+                  {plan.name === 'Empresarial' ? 'Contactar Ventas' : 'Prueba Gratis'}
                   {isPopular ? (
                     <Zap className="ml-2 w-5 h-5 group-hover:animate-pulse" />
                   ) : (
@@ -289,7 +289,7 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                 {/* Trust Indicator - Mobile responsive */}
                 <div className="text-center mt-3 sm:mt-4">
                   <div className="text-xs sm:text-sm text-gray-500">
-                    {plan.name === 'Enterprise' ? (
+                    {plan.name === 'Empresarial' ? (
                       'Custom pricing available'
                     ) : (
                       <>
@@ -310,13 +310,13 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
         <div className="mt-16 text-center">
           <div className="inline-flex items-center space-x-2 bg-gray-50 rounded-full px-6 py-3 mb-8">
             <Star className="w-5 h-5 text-yellow-500 fill-current" />
-            <span className="text-gray-700 font-semibold">All plans include 24/7 support and 99.9% uptime SLA</span>
+            <span className="text-gray-700 font-semibold">Todos los planes incluyen soporte 24/7 y funcionamiento garantizado</span>
           </div>
-          
+
           <p className="text-gray-600 mb-6">
             Need a custom plan for your enterprise? We offer tailored solutions for large-scale deployments.
           </p>
-          
+
           <Button
             variant="outline"
             className="border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600 px-8 py-3 font-semibold"

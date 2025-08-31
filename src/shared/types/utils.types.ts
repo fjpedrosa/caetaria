@@ -62,7 +62,7 @@ export type Tail<T extends readonly unknown[]> = T extends readonly [unknown, ..
 
 export type Last<T extends readonly unknown[]> = T extends readonly [...unknown[], infer L] ? L : never
 
-export type Length<T extends readonly unknown[]> = T["length"]
+export type Length<T extends readonly unknown[]> = T['length']
 
 export type ArrayElement<T> = T extends readonly (infer U)[] ? U : never
 
@@ -72,14 +72,14 @@ export type Tuple<T, N extends number> = N extends N
     : _TupleOf<T, N, []>
   : never
 
-type _TupleOf<T, N extends number, R extends unknown[]> = R["length"] extends N ? R : _TupleOf<T, N, [...R, T]>
+type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N ? R : _TupleOf<T, N, [...R, T]>
 
 // String utility types
 export type StringLiteral<T> = T extends string ? (string extends T ? never : T) : never
 
 export type Split<S extends string, D extends string> = string extends S
   ? string[]
-  : S extends ""
+  : S extends ''
   ? []
   : S extends `${infer T}${D}${infer U}`
   ? [T, ...Split<U, D>]
@@ -91,12 +91,12 @@ export type Join<T extends readonly string[], D extends string> = T extends read
 ]
   ? F extends string
     ? R extends readonly string[]
-      ? R["length"] extends 0
+      ? R['length'] extends 0
         ? F
         : `${F}${D}${Join<R, D>}`
       : never
     : never
-  : ""
+  : ''
 
 export type Capitalize<S extends string> = S extends `${infer F}${infer R}` ? `${Uppercase<F>}${R}` : S
 
@@ -160,7 +160,7 @@ export type ElementType<T extends React.ElementType> = T extends keyof React.JSX
 
 export type PropsWithChildren<P = {}> = P & { children?: React.ReactNode }
 
-export type PropsWithoutChildren<P> = Omit<P, "children">
+export type PropsWithoutChildren<P> = Omit<P, 'children'>
 
 // Event handler types
 export type EventHandler<T = Event> = (event: T) => void
@@ -241,7 +241,7 @@ export type ThemeValue<T> = T | ((theme: any) => T)
 export type ResponsiveValue<T> = T | T[] | Record<string, T>
 
 // Media query utility types
-export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
+export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
 export type BreakpointValue<T> = Partial<Record<Breakpoint, T>>
 
@@ -301,7 +301,7 @@ export type IsUnknown<T> = IsNever<T> extends false
   : false
 
 // Tagged union helpers
-export type TaggedUnion<T extends Record<string, any>, K extends keyof T = "type"> = {
+export type TaggedUnion<T extends Record<string, any>, K extends keyof T = 'type'> = {
   [P in T[K]]: { [Q in K]: P } & T extends { [Q in K]: P } ? T : never
 }[T[K]]
 
@@ -312,7 +312,7 @@ export type DiscriminatedUnion<T, K extends keyof T> = T extends Record<K, infer
   : never
 
 // Time utility types
-export type TimeUnit = "ms" | "s" | "m" | "h" | "d"
+export type TimeUnit = 'ms' | 's' | 'm' | 'h' | 'd'
 
 export type Duration = `${number}${TimeUnit}`
 
@@ -323,13 +323,13 @@ export type ISO8601 = string
 // File and MIME type utilities
 export type MimeType = `${string}/${string}`
 
-export type ImageMimeType = "image/jpeg" | "image/png" | "image/gif" | "image/webp" | "image/svg+xml"
+export type ImageMimeType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'image/svg+xml'
 
-export type VideoMimeType = "video/mp4" | "video/webm" | "video/ogg"
+export type VideoMimeType = 'video/mp4' | 'video/webm' | 'video/ogg'
 
-export type AudioMimeType = "audio/mp3" | "audio/wav" | "audio/ogg"
+export type AudioMimeType = 'audio/mp3' | 'audio/wav' | 'audio/ogg'
 
-export type DocumentMimeType = "application/pdf" | "application/msword" | "text/plain"
+export type DocumentMimeType = 'application/pdf' | 'application/msword' | 'text/plain'
 
 // URL and navigation types
 export type URLSearchParams = Record<string, string | string[] | undefined>
@@ -364,7 +364,7 @@ export type FeatureFlag<T extends string = string> = {
   variants?: Record<string, any>
   conditions?: Array<{
     property: string
-    operator: "eq" | "ne" | "gt" | "lt" | "in" | "nin"
+    operator: 'eq' | 'ne' | 'gt' | 'lt' | 'in' | 'nin'
     value: any
   }>
 }
@@ -375,7 +375,7 @@ export type FeatureFlags<T extends string = string> = Record<T, FeatureFlag<T>>
 export type MockFunction<T extends AnyFunction = AnyFunction> = T & {
   mock: {
     calls: Parameters<T>[]
-    results: Array<{ type: "return" | "throw"; value: any }>
+    results: Array<{ type: 'return' | 'throw'; value: any }>
   }
 }
 
@@ -386,7 +386,7 @@ export type TestUtils<T> = {
 }
 
 // Logging utility types
-export type LogLevel = "debug" | "info" | "warn" | "error"
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
 export type LogEntry = {
   level: LogLevel

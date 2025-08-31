@@ -172,7 +172,7 @@ export function PricingTeaserAB() {
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span>IA avanzada + integraciones CRM</span>
+                <span>IA avanzada + se conecta con tu sistema</span>
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
@@ -180,11 +180,11 @@ export function PricingTeaserAB() {
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span>Analytics y reportes avanzados</span>
+                <span>Reportes detallados de ventas</span>
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span>API personalizada</span>
+                <span>Conexiones personalizadas</span>
               </li>
             </ul>
 
@@ -197,7 +197,7 @@ export function PricingTeaserAB() {
           {/* Enterprise Plan */}
           <Card className="relative p-8 transition-shadow hover:shadow-lg border border-secondary/20">
             <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-bold">Enterprise</h3>
+              <h3 className="mb-2 text-2xl font-bold">Empresarial</h3>
               <p className="text-muted-foreground">
                 Para empresas que necesitan soluciones personalizadas
               </p>
@@ -221,7 +221,7 @@ export function PricingTeaserAB() {
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span>SLA dedicado</span>
+                <span>Garantía de servicio</span>
               </li>
               <li className="flex items-center">
                 <Check className="mr-3 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />

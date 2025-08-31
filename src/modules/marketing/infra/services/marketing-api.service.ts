@@ -62,21 +62,21 @@ export const marketingApiService = baseApi.injectEndpoints({
       invalidatesTags: ['Lead', 'Analytics'],
     }),
 
-    getLeads: builder.query<LeadResponse[], { 
-      page?: number 
-      limit?: number 
-      status?: LeadStatus 
-      source?: LeadSource 
+    getLeads: builder.query<LeadResponse[], {
+      page?: number
+      limit?: number
+      status?: LeadStatus
+      source?: LeadSource
     }>({
       query: ({ page = 1, limit = 50, status, source } = {}) => {
         const params = new URLSearchParams({
           page: page.toString(),
           limit: limit.toString(),
         })
-        
+
         if (status) params.append('status', status)
         if (source) params.append('source', source)
-        
+
         return `/leads?${params.toString()}`
       },
       providesTags: ['Lead'],
@@ -114,11 +114,11 @@ export const marketingApiService = baseApi.injectEndpoints({
     getLeadAnalytics: builder.query<AnalyticsResponse, AnalyticsRequest>({
       query: (params = {}) => {
         const searchParams = new URLSearchParams()
-        
+
         if (params.startDate) searchParams.append('startDate', params.startDate)
         if (params.endDate) searchParams.append('endDate', params.endDate)
         if (params.source) searchParams.append('source', params.source)
-        
+
         return `/analytics/leads?${searchParams.toString()}`
       },
       providesTags: ['Analytics'],

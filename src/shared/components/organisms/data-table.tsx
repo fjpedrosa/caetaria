@@ -1,11 +1,11 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-import { Button } from "../atoms/button"
-import { Spinner } from "../atoms/spinner"
-import { DataTableRow, type TableAction,type TableCell } from "../molecules/data-table-row"
-import { SearchInput } from "../molecules/search-input"
+import { Button } from '../atoms/button'
+import { Spinner } from '../atoms/spinner'
+import { DataTableRow, type TableAction,type TableCell } from '../molecules/data-table-row'
+import { SearchInput } from '../molecules/search-input'
 
 export interface DataTableColumn {
   key: string
@@ -28,8 +28,8 @@ export interface DataTableProps<T = any> {
   getRowId?: (row: T) => string
   getRowActions?: (row: T) => TableAction[]
   sortBy?: string
-  sortOrder?: "asc" | "desc"
-  onSort?: (key: string, order: "asc" | "desc") => void
+  sortOrder?: 'asc' | 'desc'
+  onSort?: (key: string, order: 'asc' | 'desc') => void
   pagination?: {
     page: number
     pageSize: number
@@ -46,7 +46,7 @@ function DataTable<T = any>({
   data,
   loading = false,
   searchable = false,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   selectable = false,
   selectedRows = [],
   onSelectionChange,
@@ -57,10 +57,10 @@ function DataTable<T = any>({
   sortOrder,
   onSort,
   pagination,
-  emptyMessage = "No data available",
+  emptyMessage = 'No data available',
   className,
 }: DataTableProps<T>) {
-  const [searchQuery, setSearchQuery] = React.useState("")
+  const [searchQuery, setSearchQuery] = React.useState('')
   const [internalSelectedRows, setInternalSelectedRows] = React.useState<string[]>([])
 
   // Use controlled or uncontrolled selection
@@ -70,7 +70,7 @@ function DataTable<T = any>({
   // Filter data based on search
   const filteredData = React.useMemo(() => {
     if (!searchQuery.trim()) return data
-    
+
     return data.filter((row) =>
       Object.values(row as object).some((value) =>
         String(value).toLowerCase().includes(searchQuery.toLowerCase())
@@ -80,8 +80,8 @@ function DataTable<T = any>({
 
   const handleSort = (columnKey: string) => {
     if (!onSort) return
-    
-    const newOrder = sortBy === columnKey && sortOrder === "asc" ? "desc" : "asc"
+
+    const newOrder = sortBy === columnKey && sortOrder === 'asc' ? 'desc' : 'asc'
     onSort(columnKey, newOrder)
   }
 
@@ -102,13 +102,13 @@ function DataTable<T = any>({
     }
   }
 
-  const isAllSelected = filteredData.length > 0 && 
+  const isAllSelected = filteredData.length > 0 &&
     filteredData.every((row) => currentSelectedRows.includes(getRowId(row)))
-  
+
   const isSomeSelected = currentSelectedRows.length > 0 && !isAllSelected
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       {/* Search and Actions */}
       {searchable && (
         <div className="flex items-center gap-4">
@@ -118,7 +118,7 @@ function DataTable<T = any>({
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-sm"
           />
-          
+
           {selectable && currentSelectedRows.length > 0 && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
@@ -155,13 +155,13 @@ function DataTable<T = any>({
                     />
                   </th>
                 )}
-                
+
                 {columns.map((column) => (
                   <th
                     key={column.key}
                     className={cn(
-                      "px-4 py-3 text-left text-sm font-medium text-muted-foreground",
-                      column.sortable && "cursor-pointer hover:text-foreground",
+                      'px-4 py-3 text-left text-sm font-medium text-muted-foreground',
+                      column.sortable && 'cursor-pointer hover:text-foreground',
                       column.className
                     )}
                     onClick={() => column.sortable && handleSort(column.key)}
@@ -172,10 +172,10 @@ function DataTable<T = any>({
                         <div className="flex flex-col">
                           <svg
                             className={cn(
-                              "h-3 w-3 -mb-1",
-                              sortBy === column.key && sortOrder === "asc"
-                                ? "text-foreground"
-                                : "text-muted-foreground/50"
+                              'h-3 w-3 -mb-1',
+                              sortBy === column.key && sortOrder === 'asc'
+                                ? 'text-foreground'
+                                : 'text-muted-foreground/50'
                             )}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -188,10 +188,10 @@ function DataTable<T = any>({
                           </svg>
                           <svg
                             className={cn(
-                              "h-3 w-3",
-                              sortBy === column.key && sortOrder === "desc"
-                                ? "text-foreground"
-                                : "text-muted-foreground/50"
+                              'h-3 w-3',
+                              sortBy === column.key && sortOrder === 'desc'
+                                ? 'text-foreground'
+                                : 'text-muted-foreground/50'
                             )}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -209,11 +209,11 @@ function DataTable<T = any>({
                 ))}
               </tr>
             </thead>
-            
+
             <tbody>
               {loading ? (
                 <tr>
-                  <td 
+                  <td
                     colSpan={columns.length + (selectable ? 1 : 0)}
                     className="px-4 py-12 text-center"
                   >
@@ -225,7 +225,7 @@ function DataTable<T = any>({
                 </tr>
               ) : filteredData.length === 0 ? (
                 <tr>
-                  <td 
+                  <td
                     colSpan={columns.length + (selectable ? 1 : 0)}
                     className="px-4 py-12 text-center text-muted-foreground"
                   >
@@ -236,13 +236,13 @@ function DataTable<T = any>({
                 filteredData.map((row, index) => {
                   const rowId = getRowId(row)
                   const isSelected = currentSelectedRows.includes(rowId)
-                  
+
                   // Transform row data to table cells
                   const cells: TableCell[] = columns.map((column) => ({
                     key: column.key,
                     value: column.render ? column.render(row[column.key], row) : row[column.key],
                     className: column.className,
-                    type: column.render ? "custom" : "text",
+                    type: column.render ? 'custom' : 'text',
                     render: column.render ? () => column.render!(row[column.key], row) : undefined,
                   }))
 
@@ -255,7 +255,7 @@ function DataTable<T = any>({
                       onSelect={(checked) => handleRowSelect(rowId, checked)}
                       selectable={selectable}
                       onClick={() => onRowClick?.(row)}
-                      className={onRowClick ? "cursor-pointer" : undefined}
+                      className={onRowClick ? 'cursor-pointer' : undefined}
                     />
                   )
                 })
@@ -270,12 +270,12 @@ function DataTable<T = any>({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
-              Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{" "}
-              {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{" "}
+              Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{' '}
+              {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
               {pagination.total} results
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -285,11 +285,11 @@ function DataTable<T = any>({
             >
               Previous
             </Button>
-            
+
             <span className="text-sm text-muted-foreground px-2">
               Page {pagination.page} of {Math.ceil(pagination.total / pagination.pageSize)}
             </span>
-            
+
             <Button
               variant="outline"
               size="sm"
