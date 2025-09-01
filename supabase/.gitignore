@@ -1,0 +1,40 @@
+# Supabase local development files
+.branches
+.temp
+.env
+.env.local
+.env.example.local
+
+# Logs
+logs/
+*.log
+supabase.log
+
+# Local Supabase files
+.supabase/
+
+# Database dumps
+*.sql.backup
+*.dump
+migrations/backup_*
+
+# Local certificates
+certs/
+ssl/
+
+# Temporary files
+temp/
+tmp/
+.tmp/
+
+# IDE files
+.vscode/settings.json
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local configuration overrides
+config.local.toml
+development.toml

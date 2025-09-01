@@ -8,9 +8,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { OptimizedMotion, useReducedMotion } from './optimized-motion';
-
-import { Icon } from '@/components/ui/icon';
 import {
   Calendar,
   Heart,
@@ -19,8 +16,11 @@ import {
   UtensilsCrossed,
   Wrench
 } from '@/lib/icons';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 import { ScenarioOption } from '../../scenarios';
+
+import { OptimizedMotion, useReducedMotion } from './optimized-motion';
 
 export interface VerticalOption {
   id: string;
@@ -112,7 +112,7 @@ export const VerticalSelector = React.memo<VerticalSelectorProps>(function Verti
     );
     return scenario || availableScenarios['loyalty-program'] || null;
   }, [availableScenarios]);
-  
+
   // Memoize vertical options with their scenarios
   const verticalOptionsWithScenarios = useMemo(() => {
     return VERTICAL_OPTIONS.map(vertical => ({

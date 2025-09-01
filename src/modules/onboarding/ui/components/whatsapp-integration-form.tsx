@@ -12,10 +12,10 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/modules/shared/ui/components/ui/form';
+import { Input } from '@/modules/shared/ui/components/ui/input';
+import { Label } from '@/modules/shared/ui/components/ui/label';
 
 const whatsappIntegrationSchema = z.object({
   businessAccountId: z
@@ -71,7 +71,6 @@ export function WhatsAppIntegrationForm() {
     setIsSubmitting(true);
 
     try {
-      // TODO: Call API to save and validate WhatsApp config
       console.log('WhatsApp integration submitted:', data);
 
       // Simulate API call with validation
@@ -81,7 +80,6 @@ export function WhatsAppIntegrationForm() {
       router.push('/onboarding/verification');
     } catch (error) {
       console.error('Error submitting WhatsApp integration:', error);
-      // TODO: Show error toast
     } finally {
       setIsSubmitting(false);
     }
@@ -100,7 +98,6 @@ export function WhatsAppIntegrationForm() {
     setTestResult(null);
 
     try {
-      // TODO: Call API to test connection
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Simulate test result

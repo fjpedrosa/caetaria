@@ -11,8 +11,8 @@ import {
   Users,
   Zap} from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Card } from '@/modules/shared/ui/components/ui/card';
 
 interface Metric {
   id: string;

@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 6. Selecciona agentes automáticamente según contexto
 7. Evalúa siempre qué agentes de los que dispones pueden ayudarte a cumplir lo que se te pide
 
-## Behavuior
+## Behavior
 
 1. When defining an action plan, I want that plan to also include the necessary tasks, covering both research and execution. Each task should be assigned to the appropriate expert agent or agents, and prioritized so that tasks which can be carried out in parallel are executed simultaneously to save time.
 
@@ -30,11 +30,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Technology Stack
 
 ### Core Framework & Language
+
 - **Framework**: Next.js 15.5.2 with App Router
 - **Language**: TypeScript 5.9.2
 - **Runtime**: Node.js >=18.0.0
 
 ### Frontend Stack
+
 - **Styling**: Tailwind CSS 3.4.17
 - **State Management**: Redux Toolkit 2.8.2 + React Redux 9.2.0
 - **UI Components**: Custom components based on Radix UI primitives
@@ -44,6 +46,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Utilities**: class-variance-authority, tailwind-merge, clsx
 
 ### Testing & Quality Assurance
+
 - **Unit Testing**: Jest with Next.js integration
 - **Component Testing**: React Testing Library + Jest DOM
 - **E2E Testing**: Playwright (Chrome, Firefox, Safari, mobile)
@@ -51,17 +54,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Coverage**: 80-95% thresholds (Domain: 95%, Application: 90%)
 
 ### Media & Export Capabilities
+
 - **GIF Generation**: gif.js + html2canvas
 - **Canvas Mocking**: jest-canvas-mock for testing
 - **Web Workers**: Background GIF processing
 
 ### Analytics & Monitoring
+
 - **Error Tracking**: @sentry/nextjs + @sentry/replay
 - **Analytics**: @vercel/analytics + posthog-js
 - **Performance**: @vercel/speed-insights + web-vitals 5.1
 - **A/B Testing**: Custom implementation with PostHog
 
 ### Development Tools
+
 - **Package Manager**: npm (>=8.0.0)
 - **Linting**: ESLint with Next.js integration
 - **Dev Server**: Turbopack (with Webpack fallback)
@@ -69,21 +75,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ### Development
+
 ```bash
-# Standard development
-npm run dev        # Start development server (Turbopack)
-npm run dev:stable # Enhanced memory + debugging for stable development
-npm run dev:webpack # Webpack fallback when Turbopack fails
-npm run dev:debug  # Verbose logging for HMR troubleshooting
-npm run dev:clean  # Clean cache + stable development
-npm run dev:memory # High memory limits for large projects
+# Recommended for daily use
+npm run dev:stable      # Optimized stable development (8GB, GC tuned)
+npm run dev:performance # High performance for complex features (12GB, aggressive GC)
+npm run dev:memory      # Memory debugging mode (16GB, expose-gc)
+
+# Specialized modes
+npm run dev:hot-reload  # Optimized HMR with Fast Refresh
+npm run dev:production  # Development with production-like config
+npm run dev:webpack     # Webpack fallback when Turbopack fails
+npm run dev:fallback    # Minimal config for limited resources
+
+# Debug & Analysis
+npm run dev:debug       # Debug mode with detailed Turbopack logging
+npm run dev:clean       # Clean cache + stable development
+npm run turbo:analyze   # Turbopack performance analysis
 
 # Production
-npm run build      # Build for production
-npm run start      # Start production server
+npm run build          # Build for production (8GB memory)
+npm run build:analyze  # Build with bundle size analysis
+npm run start          # Start production server
+npm run start:turbo    # Production server with Turbopack
+```
+
+### Quick Development Scripts
+```bash
+# Use the shorthand script for common commands
+./.claude/commands/dev              # Start stable development
+./.claude/commands/dev sim          # Simulator-optimized mode
+./.claude/commands/dev clean        # Clean cache and start
+./.claude/commands/dev help         # Show all available commands
+
+# Advanced utilities
+./.claude/commands/dev-utils.sh smart    # Auto-select best mode based on system
+./.claude/commands/dev-utils.sh memory   # Check memory usage
+./.claude/commands/dev-utils.sh health   # Complete system health check
 ```
 
 ### Testing
+
 ```bash
 # Unit & Integration Testing
 npm run test          # Run Jest tests
@@ -104,6 +136,7 @@ npm run test:all      # Run all tests (Jest + Playwright)
 ```
 
 ### Development Tools
+
 ```bash
 # Cache Management
 npm run clean:cache   # Clear Next.js and build cache
@@ -156,9 +189,11 @@ src/
 ## WhatsApp Simulator Module
 
 ### Overview
+
 The WhatsApp Simulator is a comprehensive module that simulates realistic WhatsApp conversations with advanced features including GIF export, typing indicators, and multiple conversation scenarios.
 
 ### Key Features
+
 - **Realistic Conversation Simulation**: Mimics WhatsApp's UI and behavior patterns
 - **Multiple Scenarios**: Pre-built conversation flows (restaurant, medical, loyalty programs)
 - **GIF Export**: Export conversations as animated GIFs with Web Worker optimization
@@ -170,35 +205,43 @@ The WhatsApp Simulator is a comprehensive module that simulates realistic WhatsA
 ### Architecture Components
 
 #### Domain Layer (`domain/`)
+
 - **Message Entity**: Represents individual WhatsApp messages with metadata
 - **Conversation Entity**: Manages message collections and conversation state
 - **Events**: Domain events for conversation lifecycle management
 
 #### Application Layer (`application/`)
+
 - **Conversation Engine**: Core business logic for conversation flow
 - **Use Cases**: Jump to message, play/pause, reset, speed control
 - **Ports**: Interfaces for external dependencies
 
 #### Infrastructure Layer (`infra/`)
+
 - **GIF Export Service**: High-performance GIF generation with optimization
 - **Conversation Factory**: Creates conversation instances from scenarios
 - **Web Worker Integration**: Background processing for GIF generation
 
 #### UI Layer (`ui/`)
+
 - **WhatsApp Simulator Component**: Main simulator interface
 - **Conversation Simulator**: Message rendering and interaction
 - **Export Controls**: GIF export interface and settings
 - **Custom Hooks**: Reusable logic for conversation flow, timing, GIF export
 
 #### Scenarios (`scenarios/`)
+
 Pre-built conversation templates:
+
 - **Restaurant Reservations**: Booking and confirmation flows
 - **Medical Appointments**: Healthcare scheduling scenarios
 - **Restaurant Orders**: Food ordering and delivery tracking
 - **Loyalty Programs**: Customer reward interactions
 
 ### Testing Strategy
+
 Comprehensive test coverage with specialized testing approaches:
+
 - **Domain Tests**: Entity behavior and business rules (95% coverage)
 - **Application Tests**: Use case execution and edge cases (90% coverage)
 - **UI Tests**: Component rendering and user interactions
@@ -207,6 +250,7 @@ Comprehensive test coverage with specialized testing approaches:
 - **Performance Tests**: Memory usage and rendering optimization
 
 ### Usage Examples
+
 ```typescript
 // Basic conversation simulation
 import { WhatsAppSimulator, RestaurantReservationScenario } from '@/modules/whatsapp-simulator';
@@ -248,15 +292,18 @@ module/
 ## Accessibility Standards
 
 ### WCAG 2.1 AA Compliance
+
 The project implements comprehensive accessibility standards to ensure usability for all users:
 
 #### Color Contrast & Visual Design
+
 - **High Contrast Support**: `prefers-contrast: high` media query implementation
 - **Minimum Ratios**: 4.5:1 for normal text, 8.2:1 for primary CTAs  
 - **Color Independence**: Information conveyed through multiple channels (color + text + icons)
 - **Focus Management**: 2-3px visible focus rings with high contrast colors
 
 #### Keyboard Navigation
+
 - **Skip Links**: `Alt + S` shortcut to main content
 - **Focus Trapping**: Complete focus management in modal dialogs
 - **Logical Tab Order**: Sequential navigation through interactive elements
@@ -264,6 +311,7 @@ The project implements comprehensive accessibility standards to ensure usability
 - **Escape Handling**: Consistent modal and dropdown dismissal
 
 #### Semantic HTML & ARIA
+
 - **Landmark Roles**: `role="banner"`, `role="navigation"`, `role="main"`
 - **Descriptive Labels**: `aria-label` and `aria-describedby` for context
 - **Live Regions**: `aria-live` for dynamic content updates
@@ -271,12 +319,14 @@ The project implements comprehensive accessibility standards to ensure usability
 - **Screen Reader Support**: Comprehensive testing with NVDA and JAWS
 
 #### Mobile Accessibility
+
 - **Touch Targets**: Minimum 44px clickable areas
 - **Gesture Alternatives**: Keyboard equivalents for all touch interactions
 - **Zoom Support**: Content remains functional at 200% zoom
 - **Orientation Independence**: Works in portrait and landscape modes
 
 ### Accessibility Testing
+
 - **Automated Testing**: Built into Jest test suite and Playwright E2E tests
 - **Manual Testing**: Screen reader testing and keyboard-only navigation
 - **Audit Reports**: Comprehensive WCAG compliance documentation available
@@ -307,6 +357,7 @@ Each module includes:
 ## Testing Infrastructure
 
 ### Jest Configuration
+
 - **Framework**: Jest with Next.js integration
 - **Environment**: jsdom for React component testing
 - **Setup**: Custom setup files for mocks and testing utilities
@@ -315,6 +366,7 @@ Each module includes:
 - **Canvas Support**: jest-canvas-mock for GIF generation testing
 
 ### Coverage Requirements
+
 ```javascript
 // Global coverage thresholds
 global: {
@@ -342,6 +394,7 @@ global: {
 ```
 
 ### Playwright E2E Testing
+
 - **Multi-browser Support**: Chrome, Firefox, Safari (desktop + mobile)
 - **Test Isolation**: Each test runs in isolated browser context
 - **Screenshots**: Automatic failure screenshots and video recording
@@ -349,6 +402,7 @@ global: {
 - **CI Integration**: GitHub Actions reporter and optimized settings
 
 ### Test Categories
+
 - **Unit Tests**: Individual component and function testing
 - **Integration Tests**: Module interaction and data flow
 - **Component Tests**: React component rendering and interaction
@@ -358,6 +412,7 @@ global: {
 - **E2E Tests**: Full user journey testing across browsers
 
 ### Testing Commands
+
 ```bash
 # Coverage focused testing
 npm run test:coverage    # Generate detailed HTML coverage report
@@ -416,24 +471,28 @@ npm run test:all         # Complete test suite (Jest + Playwright)
 ### Performance Optimization
 
 #### Core Web Vitals & Monitoring
+
 - **Real-time Tracking**: Web Vitals 5.1 with @vercel/speed-insights integration
 - **Performance Metrics**: LCP, FID, CLS monitoring and reporting
 - **Error Tracking**: Sentry integration with replay functionality
 - **Analytics Integration**: Vercel Analytics and PostHog for user behavior
 
 #### Memory & Resource Management
+
 - **Development Optimization**: Multiple NODE_OPTIONS configurations for memory limits
 - **GIF Processing**: Web Workers for background GIF generation to prevent UI blocking
 - **Canvas Optimization**: Memory-efficient rendering with cleanup procedures
 - **Service Worker**: Offline support and asset caching (sw-simulator.js)
 
 #### Build & Runtime Optimizations
+
 - **Turbopack Integration**: Fast development with Webpack fallback
 - **Bundle Analysis**: Built-in tools for bundle size monitoring
 - **Image Optimization**: Next.js Image component with optimization utilities
 - **Progressive Enhancement**: Service Worker for offline functionality
 
 #### Development Performance
+
 ```bash
 # Memory-optimized development commands
 npm run dev:stable    # 8GB memory + debugging
@@ -443,6 +502,7 @@ npm run clean:cache   # Clear build caches for fresh start
 ```
 
 #### Performance Testing
+
 - **Lighthouse Integration**: Automated performance auditing in CI/CD
 - **Memory Profiling**: Built-in memory usage monitoring for GIF export
 - **Load Testing**: Component performance under heavy usage scenarios
@@ -453,8 +513,10 @@ npm run clean:cache   # Clear build caches for fresh start
 ### Development Environment Issues
 
 #### jsx-dev-runtime Bug with Turbopack
+
 - **Issue**: Random jsx-dev-runtime errors during development
 - **Solutions**: Multiple dev commands available for different scenarios
+
   ```bash
   npm run dev:stable    # Enhanced memory + debugging
   npm run dev:webpack   # Webpack fallback when Turbopack fails
@@ -463,16 +525,20 @@ npm run clean:cache   # Clear build caches for fresh start
   ```
 
 #### Memory Issues with Large Projects
+
 - **Issue**: Node.js memory exhaustion during development
 - **Solution**: Memory-optimized development commands
+
   ```bash
   npm run dev:memory    # 12GB memory + enhanced GC
   npm run dev:stable    # 8GB memory (recommended)
   ```
 
 #### Windows-Specific Issues
+
 - **Issue**: Different environment variable syntax on Windows
 - **Solution**: Windows-specific commands available
+
   ```bash
   npm run dev:windows        # Windows environment variables
   npm run dev:clean:windows  # Windows cache cleanup
@@ -481,11 +547,13 @@ npm run clean:cache   # Clear build caches for fresh start
 ### Production Considerations
 
 #### GIF Export Performance
+
 - **Issue**: Large GIF files can impact performance
 - **Solution**: Web Worker implementation with optimization options
 - **Monitoring**: Built-in memory profiling and cleanup procedures
 
 #### Test Coverage Maintenance
+
 - **Issue**: Strict coverage requirements (95% for domain layer)
 - **Solution**: Automated coverage reporting with detailed breakdown
 - **Commands**: `npm run test:coverage` for analysis
@@ -493,6 +561,7 @@ npm run clean:cache   # Clear build caches for fresh start
 ### Build & Deployment
 
 #### Bundle Size Monitoring
+
 - **Issue**: Large bundle sizes with media processing libraries
 - **Solution**: Built-in bundle analysis tools
 - **Command**: `npm run turbo:analyze` for performance insights
@@ -500,22 +569,26 @@ npm run clean:cache   # Clear build caches for fresh start
 ## Next Steps for Development
 
 ### Priority 1: Backend Integration
+
 1. Complete Supabase lead capture integration
 2. Implement WhatsApp Cloud API webhook handling
 3. Add comprehensive error tracking with Sentry
 
 ### Priority 2: Enhanced Features  
+
 4. User authentication and session management
 5. Advanced analytics dashboard with PostHog
 6. Real-time conversation analytics
 
 ### Priority 3: Production Readiness
+
 7. Performance optimization for mobile devices
 8. Advanced accessibility testing automation
 9. Comprehensive E2E test coverage for critical paths
 10. CI/CD pipeline with automated testing and deployment
 
 ### Future Enhancements
+
 - Multi-language support for international markets
 - Advanced GIF export options (quality, formats, optimization)
 - Integration with additional messaging platforms

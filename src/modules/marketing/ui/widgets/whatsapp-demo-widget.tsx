@@ -12,9 +12,9 @@ import {
   Send,
   User} from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card } from '@/modules/shared/ui/components/ui/card';
 
 interface Message {
   id: string;

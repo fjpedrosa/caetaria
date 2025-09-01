@@ -4,9 +4,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { AnimatedIcon, Icon } from '@/components/ui/icon';
 import {
   Activity,
   ArrowRight,
@@ -16,11 +13,16 @@ import {
   Zap,
 } from '@/lib/icons';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import { type HeroContentProps } from '@/modules/marketing/domain/types';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { AnimatedIcon, Icon } from '@/modules/shared/ui/components/ui/icon';
 
 import { AnimatedCounter } from './animated-counter';
 import { TypewriterText } from './typewriter-text';
 
-interface HeroContentProps {
+// Extended props for this specific implementation
+interface ExtendedHeroContentProps extends HeroContentProps {
   isInView: boolean;
   prefersReducedMotion: boolean;
 }
@@ -81,11 +83,11 @@ const useMotionEffects = () => {
  * Contains the left side content: text, CTAs, and metrics
  * HMR Optimized: Memoized to prevent unnecessary re-renders during development
  */
-function HeroContent({ isInView, prefersReducedMotion }: HeroContentProps) {
+function HeroContent({ isInView, prefersReducedMotion }: ExtendedHeroContentProps) {
   // HMR Optimization: Memoize MARKETING_COPY extraction to prevent object recreation
   const heroContent = React.useMemo(() => MARKETING_COPY.hero, []);
   const { badge, title, subtitle, description, cta } = heroContent;
-  
+
   // HMR Optimization: Use memoized animation configurations
   const animationConfigs = useAnimationConfigs(isInView, prefersReducedMotion);
   const motionEffects = useMotionEffects();

@@ -5,8 +5,8 @@
 
 import { Bot, CheckCircle, Clock, MessageSquare, Shield,Users } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 // This would typically come from the onboarding session data
 const completionData = {

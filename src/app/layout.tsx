@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 
-import { CursorTrail } from '@/components/cursor-trail';
-import { FloatingWhatsAppCTA } from '@/components/floating-whatsapp-cta';
-import { PerformanceDashboard } from '@/components/performance-dashboard';
-import { PerformanceMonitor } from '@/components/performance-monitor';
-import { ServiceWorkerRegister } from '@/components/service-worker-register';
-import { ScrollToTop, SmoothScroll } from '@/components/smooth-scroll';
 import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
 import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
+import { CursorTrail } from '@/modules/shared/ui/components/cursor-trail';
+import { FloatingWhatsAppCTA } from '@/modules/shared/ui/components/floating-whatsapp-cta';
+import { PerformanceDashboard } from '@/modules/shared/ui/components/performance-dashboard';
+import { PerformanceMonitor } from '@/modules/shared/ui/components/performance-monitor';
+import { ServiceWorkerRegister } from '@/modules/shared/ui/components/service-worker-register';
+import { ScrollToTop, SmoothScroll } from '@/modules/shared/ui/components/smooth-scroll';
 
 import { Providers } from './providers';
 

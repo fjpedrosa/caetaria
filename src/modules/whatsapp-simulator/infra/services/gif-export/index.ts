@@ -3,8 +3,8 @@
  * Centralized exports for all GIF export functionality
  */
 
-// Types and interfaces
-export * from './types';
+// Types and interfaces (re-exported from domain layer)
+export * from '../../../domain/types/gif-export-types';
 
 // Main service
 export { gifExportService, GifExportServiceImpl } from './gif-export.service';

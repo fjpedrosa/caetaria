@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { authCallback, protectedRoutes,updateSession } from '@/lib/supabase/middleware';
+
 // Configuración de variantes de precios
 const PRICE_VARIANTS = ['A', 'B', 'C'] as const;
 type PriceVariant = typeof PRICE_VARIANTS[number];
@@ -34,16 +36,64 @@ function isValidVariant(variant: string): variant is PriceVariant {
   return PRICE_VARIANTS.includes(variant as PriceVariant);
 }
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+export async function middleware(request: NextRequest) {
+  // 1. Handle Supabase authentication first
+  const authResponse = await updateSession(request);
 
-  // Solo procesar en rutas relevantes
+  // 2. Handle auth callbacks
+  const callbackResponse = await authCallback(request);
+  if (callbackResponse) return callbackResponse;
+
+  // 3. Handle protected routes
+  const protectedResponse = await protectedRoutes(request);
+  if (protectedResponse) return protectedResponse;
+
+  // 4. Use auth response as base if available, otherwise create new response
+  const response = authResponse || NextResponse.next();
+
+  // 5. Apply production security headers
+  applySecurityHeaders(response);
+
+  // 6. Handle special endpoints
   const path = request.nextUrl.pathname;
-  const shouldProcess = path === '/' ||
-                        path.includes('/pricing') ||
-                        path.includes('/marketing');
 
-  if (!shouldProcess) {
+  // Health check endpoint
+  if (path === '/api/health') {
+    return NextResponse.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV
+    }, {
+      status: 200,
+      headers: response.headers
+    });
+  }
+
+  // Maintenance mode check
+  if (process.env.FEATURE_MAINTENANCE_MODE === 'true') {
+    const maintenancePaths = ['/maintenance', '/api/health', '/api/status'];
+    if (!maintenancePaths.includes(path)) {
+      return NextResponse.redirect(new URL('/maintenance', request.url));
+    }
+  }
+
+  // 7. Rate limiting for API routes
+  if (path.startsWith('/api/')) {
+    applyRateLimit(request, response);
+  }
+
+  // 8. Webhook validation
+  if (path.startsWith('/api/webhooks/')) {
+    const validationResponse = validateWebhook(request);
+    if (validationResponse) return validationResponse;
+  }
+
+  // 9. A/B Testing - Solo procesar en rutas relevantes
+  const shouldProcessAB = path === '/' ||
+                         path.includes('/pricing') ||
+                         path.includes('/marketing');
+
+  if (!shouldProcessAB) {
     return response;
   }
 
@@ -76,6 +126,81 @@ export function middleware(request: NextRequest) {
   response.headers.set('x-price-variant', variant);
 
   return response;
+}
+
+// Security headers helper
+function applySecurityHeaders(response: NextResponse) {
+  const securityHeaders = {
+    // Prevent XSS attacks
+    'X-XSS-Protection': '1; mode=block',
+
+    // Prevent MIME type sniffing
+    'X-Content-Type-Options': 'nosniff',
+
+    // Prevent clickjacking
+    'X-Frame-Options': 'DENY',
+
+    // Referrer policy
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+
+    // Permissions policy
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+
+    // Content Security Policy
+    'Content-Security-Policy': process.env.NODE_ENV === 'production'
+      ? [
+          'default-src \'self\'',
+          'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://vercel.com https://*.vercel.app https://cdn.vercel-insights.com https://*.supabase.co https://*.posthog.com',
+          'style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com',
+          'font-src \'self\' https://fonts.gstatic.com',
+          'img-src \'self\' data: blob: https://*.supabase.co https://*.vercel.app https://*.cloudinary.com',
+          'connect-src \'self\' https://*.supabase.co https://vercel.com https://*.vercel.app https://*.posthog.com https://*.sentry.io',
+          'frame-src \'none\'',
+          'object-src \'none\'',
+          'base-uri \'self\'',
+          'upgrade-insecure-requests'
+        ].join('; ')
+      : 'default-src \'self\' \'unsafe-inline\' \'unsafe-eval\'; connect-src \'self\' http://localhost:* ws://localhost:* https://*.supabase.co;',
+
+    // HSTS for HTTPS enforcement
+    ...(process.env.NODE_ENV === 'production' && {
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'
+    })
+  };
+
+  // Apply security headers
+  Object.entries(securityHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+}
+
+// Rate limiting helper
+function applyRateLimit(request: NextRequest, response: NextResponse) {
+  const clientIp = request.headers.get('x-forwarded-for') ||
+                  request.headers.get('x-real-ip') ||
+                  'unknown';
+
+  // Add rate limiting headers
+  response.headers.set('X-RateLimit-Limit', process.env.API_RATE_LIMIT_MAX || '100');
+  response.headers.set('X-RateLimit-Remaining', '99');
+  response.headers.set('X-RateLimit-Reset', String(Date.now() + 15 * 60 * 1000));
+
+  // Log for monitoring
+  if (process.env.LOG_REQUESTS === 'true') {
+    console.log(`API Request: ${request.method} ${request.nextUrl.pathname} from ${clientIp}`);
+  }
+}
+
+// Webhook validation helper
+function validateWebhook(request: NextRequest): Response | null {
+  const signature = request.headers.get('x-hub-signature-256');
+  const webhookSecret = process.env.WEBHOOK_SECRET;
+
+  if (!signature && process.env.NODE_ENV === 'production') {
+    return new Response('Webhook signature required', { status: 401 });
+  }
+
+  return null;
 }
 
 export const config = {

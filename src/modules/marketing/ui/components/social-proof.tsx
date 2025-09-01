@@ -3,9 +3,9 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-import { Badge } from '@/components/ui/badge';
-import { Icon } from '@/components/ui/icon';
 import { Award, Star, TrendingUp, Users } from '@/lib/icons';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 const companies = [
   { name: 'Empresa 1', logo: '🏢' },

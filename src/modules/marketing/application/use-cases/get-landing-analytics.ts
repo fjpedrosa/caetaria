@@ -46,13 +46,13 @@ export interface GetLandingAnalyticsDependencies {
 }
 
 /**
- * Get Landing Analytics Use Case
+ * Factory function for creating GetLandingAnalytics use case
  * Retrieves and calculates analytics metrics for the landing page performance
  */
-export class GetLandingAnalyticsUseCase {
-  constructor(private readonly deps: GetLandingAnalyticsDependencies) {}
+export const createGetLandingAnalyticsUseCase = (dependencies: GetLandingAnalyticsDependencies) => {
+  const { leadRepository } = dependencies;
 
-  async execute(input: LandingAnalyticsInput): Promise<LandingAnalyticsOutput> {
+  const execute = async (input: LandingAnalyticsInput): Promise<LandingAnalyticsOutput> => {
     const filters: LeadFilters = {};
 
     if (input.dateRange) {
@@ -61,7 +61,7 @@ export class GetLandingAnalyticsUseCase {
     }
 
     // Get all leads within the date range
-    const allLeads = await this.deps.leadRepository.findMany(filters);
+    const allLeads = await leadRepository.findMany(filters);
     const totalLeads = allLeads.length;
 
     // Calculate new leads (status: 'new')
@@ -137,5 +137,12 @@ export class GetLandingAnalyticsUseCase {
       dailyLeads,
       topFeatures,
     };
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type GetLandingAnalyticsUseCase = ReturnType<typeof createGetLandingAnalyticsUseCase>;

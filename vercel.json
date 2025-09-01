@@ -1,24 +1,57 @@
 {
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci",
   "framework": "nextjs",
-  "buildCommand": "pnpm run build",
-  "devCommand": "pnpm run dev",
-  "installCommand": "pnpm install",
-  "outputDirectory": ".next",
-  "regions": [
-    "iad1"
-  ],
+  "regions": ["iad1", "sfo1", "fra1"],
   "functions": {
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 30,
+      "memory": 1024
     },
-    "src/app/(marketing)/**/*.tsx": {
-      "maxDuration": 10
+    "src/app/api/webhooks/**/*.ts": {
+      "maxDuration": 60,
+      "memory": 512
     },
-    "src/app/onboarding/**/*.tsx": {
-      "maxDuration": 15
+    "src/app/api/health/route.ts": {
+      "maxDuration": 10,
+      "memory": 256
     }
   },
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "${CORS_ORIGINS}"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, X-Requested-With, X-API-Key"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -40,12 +73,47 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
         }
       ]
     },
     {
-      "source": "/(.*)\\.(js|css|map|woff2?|ttf|otf|eot)",
+      "source": "/api/health",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/status",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/_next/static/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -54,41 +122,50 @@
       ]
     },
     {
-      "source": "/(.*)\\.(jpg|jpeg|png|gif|ico|svg|webp|avif)",
+      "source": "/(.*\\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp|avif))",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, must-revalidate"
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
   "redirects": [
     {
-      "source": "/home",
+      "source": "/docs",
       "destination": "/",
-      "permanent": true
+      "permanent": false
     },
     {
-      "source": "/legal/privacy",
-      "destination": "/privacy",
-      "permanent": true
-    },
+      "source": "/dashboard",
+      "destination": "/onboarding/business",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
     {
-      "source": "/legal/terms",
-      "destination": "/terms",
-      "permanent": true
+      "source": "/api/webhooks/whatsapp",
+      "destination": "/api/webhooks/whatsapp"
     }
   ],
   "env": {
-    "NEXT_PUBLIC_APP_URL": "https://whatsapp-cloud-landing.vercel.app",
-    "NEXT_PUBLIC_API_URL": "https://api.whatsapp-cloud-landing.vercel.app"
+    "NODE_OPTIONS": "--max-old-space-size=8192"
   },
-  "crons": []
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "NODE_OPTIONS": "--max-old-space-size=8192"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/crons/cleanup",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/crons/metrics",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

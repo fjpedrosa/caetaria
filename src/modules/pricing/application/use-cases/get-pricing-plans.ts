@@ -12,19 +12,22 @@ export interface GetPricingPlansResponse {
   totalCount: number;
 }
 
-export class GetPricingPlansUseCase {
-  constructor(private readonly pricingRepository: PricingRepository) {}
+// Factory function for creating GetPricingPlans use case
+export const createGetPricingPlansUseCase = (dependencies: {
+  pricingRepository: PricingRepository;
+}) => {
+  const { pricingRepository } = dependencies;
 
-  async execute(request: GetPricingPlansRequest = {}): Promise<Result<GetPricingPlansResponse, Error>> {
+  const execute = async (request: GetPricingPlansRequest = {}): Promise<Result<GetPricingPlansResponse, Error>> => {
     try {
       let plans: PricingPlanEntity[];
 
       if (request.popularOnly) {
-        plans = await this.pricingRepository.getPopularPlans();
+        plans = await pricingRepository.getPopularPlans();
       } else if (request.includeInactive) {
-        plans = await this.pricingRepository.getAllPlans();
+        plans = await pricingRepository.getAllPlans();
       } else {
-        plans = await this.pricingRepository.getActivePlans();
+        plans = await pricingRepository.getActivePlans();
       }
 
       // Sort plans by price (ascending)
@@ -43,5 +46,12 @@ export class GetPricingPlansUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to get pricing plans'));
     }
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type GetPricingPlansUseCase = ReturnType<typeof createGetPricingPlansUseCase>;

@@ -7,7 +7,7 @@ import type React from 'react'
 // Basic utility types
 export type Prettify<T> = {
   [K in keyof T]: T[K]
-} & {}
+} & Record<string, never>
 
 export type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
@@ -29,11 +29,11 @@ export type KeysOfType<T, U> = {
 export type ValuesOfType<T, U> = T[KeysOfType<T, U>]
 
 export type RequiredKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? never : K
+  [K in keyof T]-?: Record<string, never> extends Pick<T, K> ? never : K
 }[keyof T]
 
 export type OptionalKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
+  [K in keyof T]-?: Record<string, never> extends Pick<T, K> ? K : never
 }[keyof T]
 
 export type PickByType<T, U> = Pick<T, KeysOfType<T, U>>

@@ -33,7 +33,7 @@ export function usePerformanceMonitor(
   config: Partial<PerformanceConfig> = {}
 ) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
-  
+
   // Performance tracking state
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderCount: 0,
@@ -53,7 +53,7 @@ export function usePerformanceMonitor(
   // Start render timing
   const startRenderTiming = useCallback(() => {
     if (!finalConfig.enableMonitoring) return;
-    
+
     lastRenderStartRef.current = performance.now();
   }, [finalConfig.enableMonitoring]);
 
@@ -63,7 +63,7 @@ export function usePerformanceMonitor(
 
     const endTime = performance.now();
     const renderTime = endTime - lastRenderStartRef.current;
-    
+
     // Update render times history
     renderTimesRef.current.push(renderTime);
     if (renderTimesRef.current.length > finalConfig.maxRenderHistory) {
@@ -71,7 +71,7 @@ export function usePerformanceMonitor(
     }
 
     // Calculate average
-    const averageRenderTime = renderTimesRef.current.reduce((sum, time) => sum + time, 0) / 
+    const averageRenderTime = renderTimesRef.current.reduce((sum, time) => sum + time, 0) /
                              renderTimesRef.current.length;
 
     // Check if render was slow
@@ -97,7 +97,7 @@ export function usePerformanceMonitor(
   // Track transitions
   const startTransition = useCallback(() => {
     if (!finalConfig.enableMonitoring) return;
-    
+
     transitionStartRef.current = performance.now();
   }, [finalConfig.enableMonitoring]);
 
@@ -155,7 +155,7 @@ export function usePerformanceMonitor(
 
     reportIntervalRef.current = setInterval(() => {
       checkMemoryUsage();
-      
+
       // Log performance summary in development
       if (process.env.NODE_ENV === 'development' && metrics.renderCount > 0) {
         console.group(`[Performance Report] ${componentName}`);
@@ -179,10 +179,10 @@ export function usePerformanceMonitor(
   // Component render effect
   useEffect(() => {
     startRenderTiming();
-    
+
     // End timing on next tick to capture full render
     const timeoutId = setTimeout(endRenderTiming, 0);
-    
+
     return () => clearTimeout(timeoutId);
   });
 
@@ -190,13 +190,13 @@ export function usePerformanceMonitor(
   const optimizationHelpers = {
     // Check if component should skip render based on performance
     shouldSkipRender: metrics.isSlowRender && metrics.averageRenderTime > finalConfig.slowRenderThreshold * 2,
-    
+
     // Check if animations should be reduced
     shouldReduceAnimations: metrics.averageRenderTime > finalConfig.slowRenderThreshold * 1.5,
-    
+
     // Check if component is performing well
     isPerformant: metrics.averageRenderTime <= finalConfig.slowRenderThreshold && !metrics.isSlowRender,
-    
+
     // Get performance grade
     getPerformanceGrade: () => {
       if (metrics.averageRenderTime <= finalConfig.slowRenderThreshold) return 'A';
@@ -226,15 +226,15 @@ export function useOperationTiming(operationName: string) {
   const endTiming = useCallback(() => {
     const endTime = performance.now();
     const duration = endTime - startTimeRef.current;
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log(`[Operation Timing] ${operationName}: ${duration.toFixed(2)}ms`);
-      
+
       if (duration > 100) {
         console.warn(`[Performance] Slow operation detected: ${operationName} took ${duration.toFixed(2)}ms`);
       }
     }
-    
+
     return duration;
   }, [operationName]);
 

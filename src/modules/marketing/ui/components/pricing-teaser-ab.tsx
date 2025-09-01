@@ -3,15 +3,15 @@
 import { useEffect } from 'react'
 import { ArrowRight, Check, Sparkles } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { useABAnalytics } from '@/modules/analytics/infra/services/ab-analytics'
 import {
   formatPriceWithDiscount,
   getPricingMetadata,
   usePriceVariant,
 } from '@/modules/pricing/infra/ab-testing-client'
+import { Badge } from '@/modules/shared/ui/components/ui/badge'
+import { Button } from '@/modules/shared/ui/components/ui/button'
+import { Card } from '@/modules/shared/ui/components/ui/card'
 
 export function PricingTeaserAB() {
   const { variant, pricing } = usePriceVariant()

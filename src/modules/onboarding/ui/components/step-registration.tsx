@@ -13,12 +13,12 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
+import { Button } from '@/modules/shared/ui/components/ui/button'
+import { Checkbox } from '@/modules/shared/ui/components/ui/checkbox'
+import { Input } from '@/modules/shared/ui/components/ui/input'
+import { Label } from '@/modules/shared/ui/components/ui/label'
+import { Separator } from '@/modules/shared/ui/components/ui/separator'
 
 import { type RegistrationFormData,registrationSchema } from '../../domain/schemas'
 import type { StepProps } from '../../domain/types'

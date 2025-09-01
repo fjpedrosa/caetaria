@@ -6,7 +6,7 @@
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/modules/shared/ui/components/ui/button';
 
 interface OnboardingStepWrapperProps {
   currentStep: string;

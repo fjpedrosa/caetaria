@@ -1,26 +1,24 @@
 'use client';
 
-import { useEffect,useState } from 'react';
-import { AnimatePresence,motion } from 'framer-motion';
 import {
   AlertCircle,
-  Building,
   CheckCircle,
+  Clock,
   Loader2,
-  Mail,
   MessageSquare,
-  Phone,
   Send,
+  Shield,
   Sparkles,
-  User,
   Users} from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { useLeadCapture } from '@/modules/marketing/application/hooks/use-lead-capture';
+import {
+  type FeatureOption,
+  type LeadCaptureFormProps} from '@/modules/marketing/domain/types';
+import { FormErrorBoundary, FormErrorMessage } from '@/modules/shared/ui/components/form-error-boundary';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card } from '@/modules/shared/ui/components/ui/card';
 import {
   Form,
   FormControl,
@@ -28,39 +26,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/modules/shared/ui/components/ui/form';
+import { Input } from '@/modules/shared/ui/components/ui/input';
+import { Label } from '@/modules/shared/ui/components/ui/label';
 
-import { LeadSource } from '../../domain/entities/lead';
-
-// Form validation schema
-const leadCaptureSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  firstName: z.string().min(1, 'First name is required').max(50, 'First name is too long'),
-  lastName: z.string().max(50, 'Last name is too long').optional(),
-  phoneNumber: z.string()
-    .optional()
-    .refine((phone) => !phone || phone.startsWith('+'), {
-      message: 'Phone number must include country code (e.g., +1234567890)'
-    }),
-  companyName: z.string().max(100, 'Company name is too long').optional(),
-  interestedFeatures: z.array(z.string()).optional(),
-  notes: z.string().max(500, 'Notes are too long').optional(),
-});
-
-type FormData = z.infer<typeof leadCaptureSchema>;
-
-interface LeadCaptureFormProps {
-  source: LeadSource;
-  title?: string;
-  description?: string;
-  className?: string;
-  variant?: 'default' | 'inline' | 'modal';
-  onSuccess?: (data: FormData) => void;
+// Enhanced props extending domain types
+interface EnhancedLeadCaptureFormProps extends LeadCaptureFormProps {
+  enablePersistence?: boolean;
+  enableAnalytics?: boolean;
+  showTrustBadges?: boolean;
 }
 
-const FEATURE_OPTIONS = [
+const FEATURE_OPTIONS: FeatureOption[] = [
   { id: 'whatsapp-api', label: 'WhatsApp Automático', icon: MessageSquare },
   { id: 'multi-channel', label: 'Multi-channel Support', icon: Users },
   { id: 'ai-chatbots', label: 'AI-powered Chatbots', icon: Sparkles },
@@ -79,76 +56,42 @@ export function LeadCaptureForm({
   description = 'Join thousands of businesses transforming customer communication',
   className = '',
   variant = 'default',
-  onSuccess
-}: LeadCaptureFormProps) {
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  onSuccess,
+  enablePersistence = true,
+  enableAnalytics = true,
+  showTrustBadges = true,
+}: EnhancedLeadCaptureFormProps) {
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(leadCaptureSchema),
-    defaultValues: {
-      email: '',
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      companyName: '',
-      interestedFeatures: [],
-      notes: '',
-    },
+  // ===============================================
+  // BUSINESS LOGIC - Extracted to custom hook
+  // ===============================================
+
+  const {
+    form,
+    selectedFeatures,
+    showEmailValidation,
+    emailValidationResult,
+    isSubmitting,
+    isSubmissionSuccessful,
+    isSubmissionError,
+    submissionError,
+    onSubmit,
+    toggleFeature,
+    handleEmailValidation,
+    formAnalytics,
+  } = useLeadCapture({
+    source,
+    enablePersistence,
+    enableAnalytics,
+    onSuccess,
   });
 
-  const onSubmit = async (data: FormData) => {
-    setSubmitStatus('loading');
-
-    try {
-      // TODO: Replace with RTK Query mutation
-      const response = await fetch('/api/leads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          source,
-          interestedFeatures: selectedFeatures,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
-      }
-
-      setSubmitStatus('success');
-      onSuccess?.(data);
-
-      // Reset form after successful submission
-      setTimeout(() => {
-        form.reset();
-        setSelectedFeatures([]);
-        setSubmitStatus('idle');
-      }, 3000);
-
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setSubmitStatus('error');
-
-      // Reset error state after 3 seconds
-      setTimeout(() => {
-        setSubmitStatus('idle');
-      }, 3000);
-    }
-  };
-
-  const toggleFeature = (featureId: string) => {
-    setSelectedFeatures(prev =>
-      prev.includes(featureId)
-        ? prev.filter(id => id !== featureId)
-        : [...prev, featureId]
-    );
-  };
+  // ===============================================
+  // PRESENTATION LOGIC - Pure rendering only
+  // ===============================================
 
   // Success state - Mobile optimized
-  if (submitStatus === 'success') {
+  if (isSubmissionSuccessful) {
     return (
       <Card className={`p-6 sm:p-8 text-center bg-gradient-to-br from-green-50 to-blue-50 border-green-200 ${className}`}>
         <div className="flex justify-center mb-4">
@@ -206,8 +149,31 @@ export function LeadCaptureForm({
       </div>
 
       {/* Form */}
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <FormErrorBoundary formName="Lead Capture Form">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
+
+            {/* Trust indicators */}
+            {showTrustBadges && (
+              <div className="flex items-center justify-center space-x-4 mb-6 text-sm text-gray-600">
+                <div className="flex items-center space-x-1">
+                  <Shield className="w-4 h-4 text-green-600" />
+                  <span>SSL Encrypted</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                  <span>24h Response</span>
+                </div>
+              </div>
+            )}
+
+            {/* Show submission error */}
+            {isSubmissionError && (
+              <FormErrorMessage
+                error="Failed to submit form. Please try again or contact support."
+                className="mb-4"
+              />
+            )}
           {/* Name Fields - Mobile optimized single column */}
           <div className="grid grid-cols-1 gap-4">
             <FormField
@@ -223,7 +189,7 @@ export function LeadCaptureForm({
                       autoComplete="given-name"
                       inputMode="text"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
-                      disabled={submitStatus === 'loading'}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 text-sm" />
@@ -244,7 +210,7 @@ export function LeadCaptureForm({
                       autoComplete="family-name"
                       inputMode="text"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
-                      disabled={submitStatus === 'loading'}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 text-sm" />
@@ -294,7 +260,7 @@ export function LeadCaptureForm({
                       inputMode="tel"
                       enterKeyHint="next"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
-                      disabled={submitStatus === 'loading'}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 text-sm" />
@@ -311,15 +277,17 @@ export function LeadCaptureForm({
                   <FormControl>
                     <Input
                       {...field}
+                      {...formAnalytics.getFieldHandlers('companyName')}
                       placeholder="Acme Corp"
                       autoComplete="organization"
                       inputMode="text"
                       enterKeyHint="done"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
-                      disabled={submitStatus === 'loading'}
+                      disabled={isSubmitting}
+                      aria-describedby={field.name + '-error'}
                     />
                   </FormControl>
-                  <FormMessage className="text-red-500 text-sm" />
+                  <FormMessage id={field.name + '-error'} className="text-red-500 text-sm" />
                 </FormItem>
               )}
             />
@@ -346,7 +314,8 @@ export function LeadCaptureForm({
                           ? 'border-green-500 bg-green-50 text-green-700'
                           : 'border-gray-200 hover:border-gray-300 active:border-gray-400 hover:bg-gray-50 active:bg-gray-100'
                       }`}
-                      disabled={submitStatus === 'loading'}
+                      disabled={isSubmitting}
+                      aria-label={`Select ${feature.label}`}
                     >
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         isSelected ? 'bg-green-100' : 'bg-gray-100'
@@ -369,26 +338,32 @@ export function LeadCaptureForm({
           {/* Submit Button - Mobile optimized */}
           <Button
             type="submit"
-            disabled={submitStatus === 'loading'}
-            className={'w-full min-h-[52px] py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 touch-manipulation bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 text-white shadow-lg hover:shadow-xl focus:shadow-xl'}
+            disabled={isSubmitting || !form.formState.isValid}
+            size="lg"
+            className={'w-full min-h-[52px] py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-200 touch-manipulation bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 active:from-green-800 active:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 text-white shadow-lg hover:shadow-xl focus:shadow-xl focus:ring-2 focus:ring-green-500 focus:ring-offset-2'}
+            aria-describedby="submit-help"
           >
-            {submitStatus === 'loading' ? (
+            {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                <Loader2 className="mr-2 w-5 h-5 animate-spin" aria-hidden="true" />
                 Creating Your Account...
               </>
-            ) : submitStatus === 'error' ? (
+            ) : isSubmissionError ? (
               <>
-                <AlertCircle className="mr-2 w-5 h-5" />
+                <AlertCircle className="mr-2 w-5 h-5" aria-hidden="true" />
                 Try Again
               </>
             ) : (
               <>
-                <Send className="mr-2 w-5 h-5" />
+                <Send className="mr-2 w-5 h-5" aria-hidden="true" />
                 Start Free Trial
               </>
             )}
           </Button>
+
+          <p id="submit-help" className="sr-only">
+            Submit the form to start your free trial. All fields marked with * are required.
+          </p>
 
           {/* Trust Indicators */}
           <div className="text-center">
@@ -401,8 +376,18 @@ export function LeadCaptureForm({
               and <a href="/privacy" className="text-green-600 hover:underline">Privacy Policy</a>.
             </p>
           </div>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </FormErrorBoundary>
     </Card>
+  );
+}
+
+// Export form component wrapped with error boundary for external use
+export function LeadCaptureFormWithErrorBoundary(props: EnhancedLeadCaptureFormProps) {
+  return (
+    <FormErrorBoundary formName="Lead Capture Form">
+      <LeadCaptureForm {...props} />
+    </FormErrorBoundary>
   );
 }

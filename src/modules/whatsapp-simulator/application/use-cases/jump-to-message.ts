@@ -1,8 +1,11 @@
 /**
- * JumpToMessage Use Case
+ * JumpToMessage Use Case - Functional approach using ConversationOrchestrator
  */
 
-import { ConversationEngine } from '../engines/conversation-engine';
+import type {
+  ConversationOrchestrator,
+  ConversationOrchestratorResult
+} from '../services';
 
 export interface JumpToMessageRequest {
   messageIndex: number;
@@ -14,53 +17,111 @@ export interface JumpToMessageResponse {
   jumped: boolean;
   currentIndex: number;
   error?: Error;
+  result?: ConversationOrchestratorResult;
 }
 
-export class JumpToMessageUseCase {
-  constructor(private readonly engine: ConversationEngine) {}
+/**
+ * Jump to message use case - Using ConversationOrchestrator
+ */
+export const jumpToMessage = async (
+  orchestrator: ConversationOrchestrator,
+  request: JumpToMessageRequest
+): Promise<JumpToMessageResponse> => {
+  try {
+    const { messageIndex } = request;
 
-  async execute(request: JumpToMessageRequest): Promise<JumpToMessageResponse> {
-    try {
-      const currentState = this.engine.getCurrentState();
-
-      // Check if there's a conversation loaded
-      if (!currentState.conversation) {
-        return {
-          success: false,
-          jumped: false,
-          currentIndex: 0,
-          error: new Error('No conversation loaded')
-        };
-      }
-
-      const { messageIndex } = request;
-      const totalMessages = currentState.conversation.messages.length;
-
-      // Validate message index
-      if (messageIndex < 0 || messageIndex >= totalMessages) {
-        return {
-          success: false,
-          jumped: false,
-          currentIndex: currentState.currentMessageIndex,
-          error: new Error(`Invalid message index: ${messageIndex}. Must be between 0 and ${totalMessages - 1}`)
-        };
-      }
-
-      // Jump to the specified message
-      this.engine.jumpTo(messageIndex);
-
-      return {
-        success: true,
-        jumped: true,
-        currentIndex: messageIndex
-      };
-    } catch (error) {
+    // Validate request
+    if (typeof messageIndex !== 'number' || messageIndex < 0) {
+      const error = new Error('Invalid message index');
       return {
         success: false,
         jumped: false,
-        currentIndex: this.engine.getCurrentState().currentMessageIndex,
-        error: error as Error
+        currentIndex: orchestrator.getCurrentState().currentMessageIndex,
+        error
       };
     }
+
+    // Check if jump is valid
+    if (!orchestrator.canJumpTo(messageIndex)) {
+      const error = new Error(`Cannot jump to message index ${messageIndex}`);
+      return {
+        success: false,
+        jumped: false,
+        currentIndex: orchestrator.getCurrentState().currentMessageIndex,
+        error
+      };
+    }
+
+    // Jump to message
+    const jumpResult = await orchestrator.jumpTo(messageIndex);
+
+    return {
+      success: jumpResult.success,
+      jumped: jumpResult.success,
+      currentIndex: orchestrator.getCurrentState().currentMessageIndex,
+      error: jumpResult.error,
+      result: jumpResult
+    };
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    return {
+      success: false,
+      jumped: false,
+      currentIndex: orchestrator.getCurrentState().currentMessageIndex,
+      error: err
+    };
+  }
+};
+
+/**
+ * Check if jump operation is valid
+ */
+export const canJumpToMessage = (orchestrator: ConversationOrchestrator, messageIndex: number): boolean => {
+  return orchestrator.canJumpTo(messageIndex);
+};
+
+/**
+ * Create a jump to message request
+ */
+export const createJumpToMessageRequest = (messageIndex: number, conversationId?: string): JumpToMessageRequest => ({
+  messageIndex,
+  conversationId
+});
+
+export interface JumpToMessageDependencies {
+  readonly orchestrator: ConversationOrchestrator;
+}
+
+/**
+ * Factory function to create jumpToMessage use case
+ * @param deps Dependencies required for the use case
+ * @returns Object with execute function and utility functions
+ */
+export const createJumpToMessageUseCase = (deps: JumpToMessageDependencies) => {
+  const { orchestrator } = deps;
+
+  return {
+    execute: async (request: JumpToMessageRequest): Promise<JumpToMessageResponse> => {
+      return await jumpToMessage(orchestrator, request);
+    },
+
+    canJumpTo: (messageIndex: number): boolean => {
+      return canJumpToMessage(orchestrator, messageIndex);
+    }
+  };
+};
+
+// LEGACY COMPATIBILITY - For gradual migration
+
+/**
+ * @deprecated Use createJumpToMessageUseCase factory function instead
+ * Legacy class wrapper for backward compatibility during migration
+ */
+export class JumpToMessageUseCase {
+  constructor(private orchestrator: ConversationOrchestrator) {}
+
+  async execute(request: JumpToMessageRequest): Promise<JumpToMessageResponse> {
+    const useCase = createJumpToMessageUseCase({ orchestrator: this.orchestrator });
+    return useCase.execute(request);
   }
 }

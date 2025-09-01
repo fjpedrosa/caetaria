@@ -5,3 +5,6 @@ export * from './entities/pricing-plan';
 // Value Objects
 export * from './value-objects/currency';
 export * from './value-objects/price';
+
+// Domain Types
+export * from './types';

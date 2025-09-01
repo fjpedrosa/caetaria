@@ -5,8 +5,8 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
 import React from 'react';
+import { motion } from 'framer-motion';
 
 // Optimized animation variants for common patterns
 export const animationVariants = {
@@ -15,51 +15,51 @@ export const animationVariants = {
     initial: { opacity: 0, scale: 0.98, y: 8 },
     animate: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 1.02, y: -8 },
-    transition: { 
-      duration: 0.2, 
+    transition: {
+      duration: 0.2,
       ease: [0.4, 0.0, 0.2, 1] // Custom easing for smooth feel
     }
   },
-  
+
   // Smooth message animations
   messageAppear: {
     initial: { opacity: 0, scale: 0.95, y: 10 },
     animate: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 0.95, y: -10 },
-    transition: { 
+    transition: {
       duration: 0.25,
       ease: 'easeOut'
     }
   },
-  
+
   // Loading overlay transitions
   loadingOverlay: {
     initial: { opacity: 0, backdropFilter: 'blur(0px)' },
     animate: { opacity: 1, backdropFilter: 'blur(4px)' },
     exit: { opacity: 0, backdropFilter: 'blur(0px)' },
-    transition: { 
+    transition: {
       duration: 0.15,
       ease: 'easeInOut'
     }
   },
-  
+
   // Simulator container animations
   simulatorContainer: {
     initial: { opacity: 0, scale: 0.92, rotateY: -8 },
     animate: { opacity: 1, scale: 1, rotateY: 0 },
-    transition: { 
-      duration: 0.5, 
-      delay: 0.2, 
+    transition: {
+      duration: 0.5,
+      delay: 0.2,
       ease: 'easeOut'
     }
   },
-  
+
   // Badge animations
   badgeAppear: {
     initial: { opacity: 0, scale: 0.8, y: 20 },
     animate: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 0.8, y: -20 },
-    transition: { 
+    transition: {
       type: 'spring',
       damping: 20,
       stiffness: 300,
@@ -77,10 +77,10 @@ export const OptimizedMotion = {
         <motion.div
           {...animationVariants.scenarioTransition}
           {...props}
-          style={{ 
+          style={{
             willChange: 'transform, opacity',
             backfaceVisibility: 'hidden',
-            ...props.style 
+            ...props.style
           }}
         />
       );
@@ -94,9 +94,9 @@ export const OptimizedMotion = {
         <motion.div
           {...animationVariants.messageAppear}
           {...props}
-          style={{ 
+          style={{
             willChange: 'transform, opacity',
-            ...props.style 
+            ...props.style
           }}
         />
       );
@@ -170,7 +170,7 @@ export const reducedMotionVariants = {
     exit: { opacity: 0 },
     transition: { duration: 0.1 }
   },
-  
+
   messageAppear: {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
@@ -182,18 +182,18 @@ export const reducedMotionVariants = {
 // Hook to detect reduced motion preference
 export function useReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
-  
+
   React.useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
       setPrefersReducedMotion(e.matches);
     };
-    
+
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
-  
+
   return prefersReducedMotion;
 }

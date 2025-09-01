@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { Check, X } from 'lucide-react';
 
-import { Badge } from '../../../../components/ui/badge';
-import { Button } from '../../../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import { Skeleton } from '../../../../components/ui/loading-skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../components/ui/tabs';
+import { Badge } from '../../../shared/ui/components/ui/badge';
+import { Button } from '../../../shared/ui/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../shared/ui/components/ui/card';
+import { Skeleton } from '../../../shared/ui/components/ui/loading-skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../shared/ui/components/ui/tabs';
 import { useGetPricingPlansQuery } from '../../infra/services/pricing-api';
 
 interface PricingTableProps {

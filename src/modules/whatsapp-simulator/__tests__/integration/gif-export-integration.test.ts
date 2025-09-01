@@ -3,8 +3,8 @@
  * Tests for the complete GIF export workflow including DOM capture and encoding
  */
 
+import { ExportOptions, GifExportResult } from '../../domain/types/gif-export-types';
 import { GifExportServiceImpl } from '../../infra/services/gif-export/gif-export.service';
-import { ExportOptions, GifExportResult } from '../../infra/services/gif-export/types';
 
 // Mock HTML2Canvas
 const mockHtml2Canvas = jest.fn();

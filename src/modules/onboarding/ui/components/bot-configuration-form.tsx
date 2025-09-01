@@ -12,12 +12,12 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/modules/shared/ui/components/ui/form';
+import { Input } from '@/modules/shared/ui/components/ui/input';
+import { Label } from '@/modules/shared/ui/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/modules/shared/ui/components/ui/select';
+import { Textarea } from '@/modules/shared/ui/components/ui/textarea';
 
 import { getSupportedLanguages } from '../../domain/value-objects/whatsapp-config';
 
@@ -135,7 +135,6 @@ export function BotConfigurationForm() {
     setIsSubmitting(true);
 
     try {
-      // TODO: Call API to save bot configuration
       console.log('Bot configuration submitted:', data);
 
       // Simulate API call
@@ -145,7 +144,6 @@ export function BotConfigurationForm() {
       router.push('/onboarding/testing');
     } catch (error) {
       console.error('Error submitting bot configuration:', error);
-      // TODO: Show error toast
     } finally {
       setIsSubmitting(false);
     }

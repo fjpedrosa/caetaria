@@ -72,7 +72,9 @@ export interface GetEventsApiResponse {
   hasMore: boolean;
 }
 
-export interface GetMetricsApiRequest extends GetMetricsRequest {}
+export interface GetMetricsApiRequest extends GetMetricsRequest {
+  // Inherits all properties from GetMetricsRequest
+}
 
 export interface GetMetricsApiResponse {
   metrics: MetricApiModel[];

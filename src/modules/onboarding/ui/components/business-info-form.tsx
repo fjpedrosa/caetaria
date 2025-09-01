@@ -2,122 +2,72 @@
 
 /**
  * Business Info Form Component
- * Client Component - Form for collecting business information
+ * Presentation Layer - Pure UI component for business information form
+ *
+ * This component contains ONLY presentation logic:
+ * - JSX rendering
+ * - Form field rendering
+ * - UI event handling (delegated to hook)
+ *
+ * ALL business logic is extracted to useBusinessInfoForm hook
  */
 
-import { useState } from 'react';
 import { ArrowRight, Building2, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/modules/shared/ui/components/ui/form';
+import { Input } from '@/modules/shared/ui/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/modules/shared/ui/components/ui/select';
+import { Textarea } from '@/modules/shared/ui/components/ui/textarea';
 
-import { BusinessType, Industry } from '../../domain/value-objects/business-info';
+import { useBusinessInfoForm, type UseBusinessInfoFormOptions } from '../../application/hooks/use-business-info-form';
 
-const businessFormSchema = z.object({
-  companyName: z
-    .string()
-    .min(2, 'Company name must be at least 2 characters')
-    .max(100, 'Company name must be less than 100 characters'),
-  businessType: z.enum(['startup', 'sme', 'enterprise', 'agency', 'non-profit', 'other']),
-  industry: z.enum([
-    'e-commerce', 'healthcare', 'education', 'finance', 'real-estate',
-    'travel', 'food-beverage', 'technology', 'consulting', 'retail', 'other'
-  ]),
-  employeeCount: z
-    .number()
-    .min(1, 'Employee count must be at least 1')
-    .max(1000000, 'Employee count seems too high'),
-  website: z
-    .string()
-    .url('Please enter a valid URL')
-    .optional()
-    .or(z.literal('')),
-  description: z
-    .string()
-    .max(500, 'Description must be less than 500 characters')
-    .optional(),
-  expectedVolume: z.enum(['low', 'medium', 'high']),
-});
+// =============================================================================
+// COMPONENT PROPS - Pure presentation interface
+// =============================================================================
 
-type BusinessFormData = z.infer<typeof businessFormSchema>;
+export interface BusinessInfoFormProps {
+  className?: string;
+  onSuccess?: UseBusinessInfoFormOptions['onSuccess'];
+  onError?: UseBusinessInfoFormOptions['onError'];
+  defaultValues?: UseBusinessInfoFormOptions['defaultValues'];
+}
 
-const businessTypes: Array<{ value: BusinessType; label: string }> = [
-  { value: 'startup', label: 'Startup' },
-  { value: 'sme', label: 'Small/Medium Enterprise' },
-  { value: 'enterprise', label: 'Large Enterprise' },
-  { value: 'agency', label: 'Agency/Consultancy' },
-  { value: 'non-profit', label: 'Non-Profit Organization' },
-  { value: 'other', label: 'Other' },
-];
+// =============================================================================
+// PRESENTATIONAL COMPONENT - Only JSX rendering
+// =============================================================================
 
-const industries: Array<{ value: Industry; label: string }> = [
-  { value: 'e-commerce', label: 'E-commerce & Online Retail' },
-  { value: 'healthcare', label: 'Healthcare & Medical' },
-  { value: 'education', label: 'Education & Training' },
-  { value: 'finance', label: 'Financial Services' },
-  { value: 'real-estate', label: 'Real Estate' },
-  { value: 'travel', label: 'Travel & Hospitality' },
-  { value: 'food-beverage', label: 'Food & Beverage' },
-  { value: 'technology', label: 'Technology & Software' },
-  { value: 'consulting', label: 'Consulting & Professional Services' },
-  { value: 'retail', label: 'Retail & Consumer Goods' },
-  { value: 'other', label: 'Other' },
-];
+export function BusinessInfoForm({
+  className,
+  onSuccess,
+  onError,
+  defaultValues
+}: BusinessInfoFormProps) {
 
-const volumeOptions = [
-  { value: 'low' as const, label: 'Low (< 1,000 messages/month)', description: 'Small scale operation' },
-  { value: 'medium' as const, label: 'Medium (1,000 - 10,000 messages/month)', description: 'Growing business' },
-  { value: 'high' as const, label: 'High (> 10,000 messages/month)', description: 'Large scale operation' },
-];
+  // =============================================================================
+  // HOOK INTEGRATION - All business logic from hook
+  // =============================================================================
 
-export function BusinessInfoForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-
-  const form = useForm<BusinessFormData>({
-    resolver: zodResolver(businessFormSchema),
-    defaultValues: {
-      companyName: '',
-      businessType: undefined,
-      industry: undefined,
-      employeeCount: undefined,
-      website: '',
-      description: '',
-      expectedVolume: undefined,
-    },
+  const {
+    form,
+    isSubmitting,
+    onSubmit,
+    businessTypes,
+    industries,
+    volumeOptions
+  } = useBusinessInfoForm({
+    onSuccess,
+    onError,
+    defaultValues
   });
 
-  const onSubmit = async (data: BusinessFormData) => {
-    setIsSubmitting(true);
-
-    try {
-      // TODO: Call API to save business info
-      console.log('Business info submitted:', data);
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Navigate to next step
-      router.push('/onboarding/integration');
-    } catch (error) {
-      console.error('Error submitting business info:', error);
-      // TODO: Show error toast
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // =============================================================================
+  // PURE JSX RENDERING - No business logic
+  // =============================================================================
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className={`space-y-6 ${className || ''}`}>
         {/* Company Name */}
         <FormField
           control={form.control}

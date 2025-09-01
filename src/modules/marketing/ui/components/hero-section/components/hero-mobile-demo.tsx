@@ -3,16 +3,12 @@
 import { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
 
-import { Icon } from '@/components/ui/icon';
 import {
-  Brain,
-  Database,
   Menu,
-  MessageCircle,
   Phone,
   Video,
-  Zap,
 } from '@/lib/icons';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 interface HeroMobileDemoProps {
   isInView: boolean;
@@ -302,9 +298,6 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
             <div className="absolute -right-[2px] top-32 w-[3px] h-16 bg-gradient-to-b from-gray-600 to-gray-800 rounded-r-lg shadow-inner"></div>
             <div className="absolute -left-[2px] top-28 w-[3px] h-10 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-lg shadow-inner"></div>
             <div className="absolute -left-[2px] top-40 w-[3px] h-10 bg-gradient-to-b from-gray-600 to-gray-800 rounded-l-lg shadow-inner"></div>
-
-            {/* Camera bump (subtle) */}
-            <div className="absolute -top-1 right-4 w-16 h-16 bg-gray-700 rounded-2xl shadow-lg opacity-30"></div>
 
             {/* Inner bezel with realistic depth */}
             <div className="bg-black rounded-[3rem] p-[6px] shadow-inner">
@@ -642,86 +635,9 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
           </div>
         </motion.div>
 
-        {/* Enhanced floating badges */}
-        <motion.div
-          className="absolute -top-6 -right-6 bg-primary/5 dark:bg-primary/10 rounded-2xl shadow-2xl p-4 border border-primary/20 dark:border-primary/30 backdrop-blur-sm z-40"
-          initial={{ opacity: 0, scale: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-          transition={{ delay: 2, duration: 0.5, ease: 'easeOut' }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <div className="text-xs text-primary/80 dark:text-primary/90 mb-1 flex items-center gap-1">
-            <motion.div
-              animate={{ rotate: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <Zap className="w-4 h-4 text-primary" />
-            </motion.div>
-            Respuesta instantánea
-          </div>
-          <motion.div
-            className="text-2xl font-bold text-primary"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            ⚡ Inmediato
-          </motion.div>
-        </motion.div>
 
-        <motion.div
-          className="absolute -bottom-6 -left-6 bg-card/95 dark:bg-card/95 rounded-2xl px-4 py-3 shadow-xl border border-border backdrop-blur-sm z-30"
-          initial={{ opacity: 0, scale: 0, y: -20 }}
-          animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-          transition={{ delay: 2.2, duration: 0.5, ease: 'easeOut' }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <div className="flex items-center gap-2">
-            <motion.div
-              className="w-3 h-3 bg-success rounded-full"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-xs font-semibold text-foreground">Siempre disponible 24/7</span>
-          </div>
-        </motion.div>
 
-        {/* New Badge: Integración CRM - Top Left */}
-        <motion.div
-          className="absolute -top-6 -left-6 bg-secondary/95 dark:bg-secondary/95 rounded-2xl px-4 py-3 shadow-xl border border-border backdrop-blur-sm z-30"
-          initial={{ opacity: 0, scale: 0, y: 20, x: -20 }}
-          animate={isInView ? { opacity: 1, scale: 1, y: 0, x: 0 } : {}}
-          transition={{ delay: 2.4, duration: 0.5, ease: 'easeOut' }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <div className="flex items-center gap-2">
-            <motion.div
-              animate={{ rotate: [0, 5, 0] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <Database className="w-4 h-4 text-muted-foreground" />
-            </motion.div>
-            <span className="text-xs font-semibold text-muted-foreground">Integración CRM</span>
-          </div>
-        </motion.div>
 
-        {/* New Badge: Responde con IA - Bottom Right */}
-        <motion.div
-          className="absolute -bottom-6 -right-6 bg-accent/95 dark:bg-accent/95 rounded-2xl px-4 py-3 shadow-xl border border-border backdrop-blur-sm z-30"
-          initial={{ opacity: 0, scale: 0, y: -20, x: 20 }}
-          animate={isInView ? { opacity: 1, scale: 1, y: 0, x: 0 } : {}}
-          transition={{ delay: 2.6, duration: 0.5, ease: 'easeOut' }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <div className="flex items-center gap-2">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-            >
-              <Brain className="w-4 h-4 text-accent-foreground" />
-            </motion.div>
-            <span className="text-xs font-semibold text-accent-foreground">Responde con IA</span>
-          </div>
-        </motion.div>
       </div>
     </motion.div>
   );

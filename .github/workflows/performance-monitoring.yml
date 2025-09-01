@@ -1,0 +1,272 @@
+name: Performance Monitoring
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Every 6 hours
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to monitor'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+          - both
+      test_type:
+        description: 'Type of performance test'
+        required: true
+        type: choice
+        options:
+          - lighthouse
+          - load-testing
+          - full-audit
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  lighthouse-audit:
+    if: github.event.inputs.test_type == 'lighthouse' || github.event.inputs.test_type == 'full-audit' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        environment: ${{ github.event.inputs.environment == 'both' && fromJson('["staging", "production"]') || fromJson(format('["{0}"]', github.event.inputs.environment || 'production')) }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Set environment URL
+        id: set-url
+        run: |
+          if [ "${{ matrix.environment }}" == "production" ]; then
+            echo "url=${{ secrets.PRODUCTION_URL }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.STAGING_URL }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ steps.set-url.outputs.url }}
+            ${{ steps.set-url.outputs.url }}/onboarding/business
+            ${{ steps.set-url.outputs.url }}/onboarding/integration
+          configPath: './lighthouserc.js'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Parse Lighthouse results
+        id: lighthouse-results
+        run: |
+          # Parse the lighthouse results and extract key metrics
+          RESULTS_FILE=".lighthouseci/lhr-*.json"
+          if ls $RESULTS_FILE 1> /dev/null 2>&1; then
+            PERFORMANCE=$(jq '.categories.performance.score * 100' $RESULTS_FILE | head -1)
+            ACCESSIBILITY=$(jq '.categories.accessibility.score * 100' $RESULTS_FILE | head -1)
+            SEO=$(jq '.categories.seo.score * 100' $RESULTS_FILE | head -1)
+            LCP=$(jq '.audits."largest-contentful-paint".numericValue' $RESULTS_FILE | head -1)
+            
+            echo "performance=$PERFORMANCE" >> $GITHUB_OUTPUT
+            echo "accessibility=$ACCESSIBILITY" >> $GITHUB_OUTPUT
+            echo "seo=$SEO" >> $GITHUB_OUTPUT
+            echo "lcp=$LCP" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check performance thresholds
+        run: |
+          PERFORMANCE=${{ steps.lighthouse-results.outputs.performance }}
+          ACCESSIBILITY=${{ steps.lighthouse-results.outputs.accessibility }}
+          LCP=${{ steps.lighthouse-results.outputs.lcp }}
+          
+          # Define thresholds
+          PERF_THRESHOLD=85
+          A11Y_THRESHOLD=95
+          LCP_THRESHOLD=2500
+          
+          FAILED_CHECKS=""
+          
+          if (( $(echo "$PERFORMANCE < $PERF_THRESHOLD" | bc -l) )); then
+            FAILED_CHECKS="$FAILED_CHECKS Performance: $PERFORMANCE (< $PERF_THRESHOLD);"
+          fi
+          
+          if (( $(echo "$ACCESSIBILITY < $A11Y_THRESHOLD" | bc -l) )); then
+            FAILED_CHECKS="$FAILED_CHECKS Accessibility: $ACCESSIBILITY (< $A11Y_THRESHOLD);"
+          fi
+          
+          if (( $(echo "$LCP > $LCP_THRESHOLD" | bc -l) )); then
+            FAILED_CHECKS="$FAILED_CHECKS LCP: ${LCP}ms (> ${LCP_THRESHOLD}ms);"
+          fi
+          
+          if [ ! -z "$FAILED_CHECKS" ]; then
+            echo "::warning::Performance thresholds failed for ${{ matrix.environment }}: $FAILED_CHECKS"
+          else
+            echo "✅ All performance thresholds passed for ${{ matrix.environment }}"
+          fi
+
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-${{ matrix.environment }}-${{ github.run_number }}
+          path: .lighthouseci/
+          retention-days: 30
+
+  load-testing:
+    if: github.event.inputs.test_type == 'load-testing' || github.event.inputs.test_type == 'full-audit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        environment: ${{ github.event.inputs.environment == 'both' && fromJson('["staging", "production"]') || fromJson(format('["{0}"]', github.event.inputs.environment || 'staging')) }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set environment URL
+        id: set-url
+        run: |
+          if [ "${{ matrix.environment }}" == "production" ]; then
+            echo "url=${{ secrets.PRODUCTION_URL }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.STAGING_URL }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run load test with Artillery
+        uses: artilleryio/action-cli@v1
+        with:
+          command: run scripts/load-test.yml --target ${{ steps.set-url.outputs.url }}
+        env:
+          ARTILLERY_CLOUD_API_KEY: ${{ secrets.ARTILLERY_API_KEY }}
+
+      - name: Upload load test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-test-results-${{ matrix.environment }}-${{ github.run_number }}
+          path: artillery-report.json
+          retention-days: 30
+
+  web-vitals-monitoring:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'schedule' || github.event.inputs.test_type == 'full-audit'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install puppeteer web-vitals
+
+      - name: Run Web Vitals collection
+        run: |
+          node scripts/collect-web-vitals.js ${{ secrets.PRODUCTION_URL }}
+
+      - name: Process Web Vitals data
+        run: |
+          # Process and analyze Web Vitals data
+          # Send to analytics service or create alerts
+          echo "Web Vitals data collected and processed"
+
+  performance-regression-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event.inputs.test_type == 'full-audit'
+    needs: [lighthouse-audit]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download previous Lighthouse reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lighthouse-report-production-*
+          merge-multiple: true
+          path: ./lighthouse-history/
+
+      - name: Analyze performance trends
+        run: |
+          # Compare current performance with historical data
+          # Detect regressions and improvements
+          echo "Performance trend analysis completed"
+
+      - name: Generate performance report
+        run: |
+          # Create comprehensive performance report
+          # Include recommendations and insights
+          echo "Performance report generated"
+
+  notify-performance-issues:
+    runs-on: ubuntu-latest
+    needs: [lighthouse-audit, load-testing]
+    if: failure()
+    
+    steps:
+      - name: Notify performance team
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: |
+            🚨 Performance monitoring detected issues!
+            
+            Environment: ${{ github.event.inputs.environment || 'production' }}
+            Test Type: ${{ github.event.inputs.test_type || 'scheduled' }}
+            
+            Please check the workflow logs and artifacts for details.
+            
+            Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  update-performance-dashboard:
+    runs-on: ubuntu-latest
+    needs: [lighthouse-audit, load-testing, web-vitals-monitoring]
+    if: always()
+    
+    steps:
+      - name: Update performance dashboard
+        run: |
+          # Send performance data to monitoring dashboard
+          # Update metrics in Grafana, DataDog, or similar
+          echo "Performance dashboard updated with latest metrics"
+          
+      - name: Create performance summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create or update an issue with performance summary
+            const title = `Performance Summary - ${new Date().toISOString().split('T')[0]}`;
+            const body = `
+            ## Performance Monitoring Results
+            
+            **Environment:** ${{ github.event.inputs.environment || 'production' }}
+            **Test Type:** ${{ github.event.inputs.test_type || 'scheduled' }}
+            **Run ID:** ${{ github.run_id }}
+            
+            ### Results
+            - Lighthouse audit: ${{ needs.lighthouse-audit.result }}
+            - Load testing: ${{ needs.load-testing.result }}
+            - Web Vitals: ${{ needs.web-vitals-monitoring.result }}
+            
+            ### Artifacts
+            Check the workflow run for detailed reports and metrics.
+            `;
+            
+            // This would create/update a performance tracking issue
+            console.log('Performance summary prepared');

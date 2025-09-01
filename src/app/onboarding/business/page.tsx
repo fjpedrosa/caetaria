@@ -6,9 +6,9 @@
 import { Suspense } from 'react';
 import { Building2, Clock, Users } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BusinessInfoForm } from '@/modules/onboarding/ui/components/business-info-form';
 import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 export default async function BusinessInfoPage() {
   return (

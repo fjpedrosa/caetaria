@@ -7,7 +7,11 @@ import { Conversation } from '../domain/entities';
 import {
   ConversationFactory,
   ConversationTemplate,
-  MessageTemplate
+  createConversationFromScenario,
+  createConversationFromTemplate,
+  createScenarioConfig,
+  MessageTemplate,
+  ScenarioConfig
 } from '../infra/factories/conversation-factory';
 
 /**
@@ -201,7 +205,35 @@ export const restaurantReservationScenario = {
 };
 
 /**
- * Factory function to create the restaurant reservation conversation
+ * Factory function para crear la configuración del scenario (evita circular dependency)
+ */
+export const createRestaurantReservationScenarioConfig = (): ScenarioConfig => {
+  return createScenarioConfig({
+    id: 'restaurant-reservation',
+    metadata: restaurantReservationScenario.metadata,
+    messages: restaurantReservationScenario.messages,
+    settings: {
+      playbackSpeed: 1.0,
+      autoAdvance: true,
+      showTypingIndicators: true,
+      showReadReceipts: true
+    },
+    educationalBadges: restaurantReservationScenario.educationalBadges,
+    flowSteps: restaurantReservationScenario.flowSteps,
+    timing: restaurantReservationScenario.timing
+  });
+};
+
+/**
+ * Modern functional factory function (recommended)
+ */
+export const createRestaurantReservationConversationFunctional = (): Conversation => {
+  return createConversationFromScenario(createRestaurantReservationScenarioConfig());
+};
+
+/**
+ * Legacy factory function to create the restaurant reservation conversation
+ * @deprecated Use createRestaurantReservationConversationFunctional instead
  */
 export function createRestaurantReservationConversation(): Conversation {
   const template: ConversationTemplate = {
@@ -224,7 +256,7 @@ export function createRestaurantReservationConversation(): Conversation {
     }
   };
 
-  return ConversationFactory.createFromTemplate(template);
+  return createConversationFromTemplate(template);
 }
 
 /**

@@ -1,7 +1,7 @@
 import { failure,Result, success } from '../../../shared/domain/value-objects/result';
-import { EventEntity } from '../../domain/entities/event';
-import { MetricEntity } from '../../domain/entities/metric';
-import { EventType } from '../../domain/value-objects/event-type';
+import { Event, getEventProperty } from '../../domain/entities/event';
+import { Metric } from '../../domain/entities/metric';
+import { EventType, EventTypeInterface } from '../../domain/value-objects/event-type';
 import { MetricValue } from '../../domain/value-objects/metric-value';
 import { AnalyticsRepository, MetricsRepository, ReportingRepository } from '../ports/analytics-repository';
 
@@ -10,7 +10,7 @@ export interface GenerateReportRequest {
   startDate: Date;
   endDate: Date;
   includeMetrics?: string[];
-  includeEvents?: EventType[];
+  includeEvents?: (EventType | EventTypeInterface)[];
   includeSummary?: boolean;
   includeCharts?: boolean;
   groupBy?: 'day' | 'week' | 'month';
@@ -51,14 +51,15 @@ export interface GenerateReportResponse {
   };
 }
 
-export class GenerateReportUseCase {
-  constructor(
-    private readonly analyticsRepository: AnalyticsRepository,
-    private readonly metricsRepository: MetricsRepository,
-    private readonly reportingRepository: ReportingRepository
-  ) {}
+// Factory function for creating GenerateReport use case
+export const createGenerateReportUseCase = (dependencies: {
+  analyticsRepository: AnalyticsRepository;
+  metricsRepository: MetricsRepository;
+  reportingRepository: ReportingRepository;
+}) => {
+  const { analyticsRepository, metricsRepository, reportingRepository } = dependencies;
 
-  async execute(request: GenerateReportRequest): Promise<Result<GenerateReportResponse, Error>> {
+  const execute = async (request: GenerateReportRequest): Promise<Result<GenerateReportResponse, Error>> => {
     const startTime = Date.now();
 
     try {
@@ -68,7 +69,7 @@ export class GenerateReportUseCase {
       }
 
       // Generate report using repository
-      const reportData = await this.reportingRepository.generateReport(
+      const reportData = await reportingRepository.generateReport(
         request.reportType === 'custom' ? 'daily' : request.reportType,
         {
           startDate: request.startDate,
@@ -79,16 +80,16 @@ export class GenerateReportUseCase {
       );
 
       // Process and organize data into sections
-      const sections = await this.createReportSections(reportData, request);
+      const sections = await createReportSections(reportData, request);
 
       // Generate summary
-      const summary = this.generateSummary(reportData);
+      const summary = generateSummary(reportData);
 
       // Calculate execution time
       const executionTime = Date.now() - startTime;
 
       // Create report response
-      const reportId = this.generateReportId();
+      const reportId = generateReportId();
 
       const response: GenerateReportResponse = {
         reportId,
@@ -119,12 +120,12 @@ export class GenerateReportUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to generate report'));
     }
-  }
+  };
 
-  private async createReportSections(
-    data: { events: EventEntity[]; metrics: MetricEntity[]; summary: Record<string, any> },
+  const createReportSections = async (
+    data: { events: Event[]; metrics: Metric[]; summary: Record<string, any> },
     request: GenerateReportRequest
-  ): Promise<ReportSection[]> {
+  ): Promise<ReportSection[]> => {
     const sections: ReportSection[] = [];
 
     // Overview section
@@ -140,8 +141,8 @@ export class GenerateReportUseCase {
 
     // Events section
     if (data.events.length > 0) {
-      const eventsByType = this.groupEventsByType(data.events);
-      const eventsByTime = request.groupBy ? this.groupEventsByTime(data.events, request.groupBy) : {};
+      const eventsByType = groupEventsByType(data.events);
+      const eventsByTime = request.groupBy ? groupEventsByTime(data.events, request.groupBy) : {};
 
       sections.push({
         title: 'Events Analysis',
@@ -149,7 +150,7 @@ export class GenerateReportUseCase {
         data: {
           byType: eventsByType,
           byTime: eventsByTime,
-          topEvents: this.getTopEvents(eventsByType, 10),
+          topEvents: getTopEvents(eventsByType, 10),
         },
         chartConfig: request.includeCharts ? {
           type: 'bar',
@@ -162,8 +163,8 @@ export class GenerateReportUseCase {
 
     // Metrics section
     if (data.metrics.length > 0) {
-      const metricsByName = this.groupMetricsByName(data.metrics);
-      const metricTrends = request.groupBy ? this.calculateMetricTrends(data.metrics, request.groupBy) : {};
+      const metricsByName = groupMetricsByName(data.metrics);
+      const metricTrends = request.groupBy ? calculateMetricTrends(data.metrics, request.groupBy) : {};
 
       sections.push({
         title: 'Metrics Analysis',
@@ -171,7 +172,7 @@ export class GenerateReportUseCase {
         data: {
           byName: metricsByName,
           trends: metricTrends,
-          summary: this.summarizeMetrics(data.metrics),
+          summary: summarizeMetrics(data.metrics),
         },
         chartConfig: request.includeCharts ? {
           type: 'line',
@@ -183,7 +184,7 @@ export class GenerateReportUseCase {
     }
 
     // User behavior section
-    const userMetrics = this.calculateUserMetrics(data.events);
+    const userMetrics = calculateUserMetrics(data.events);
     if (Object.keys(userMetrics).length > 0) {
       sections.push({
         title: 'User Behavior',
@@ -197,7 +198,7 @@ export class GenerateReportUseCase {
     }
 
     // Performance section
-    const performanceMetrics = this.calculatePerformanceMetrics(data.events, data.metrics);
+    const performanceMetrics = calculatePerformanceMetrics(data.events, data.metrics);
     if (Object.keys(performanceMetrics).length > 0) {
       sections.push({
         title: 'Performance',
@@ -207,16 +208,16 @@ export class GenerateReportUseCase {
     }
 
     return sections;
-  }
+  };
 
-  private generateSummary(data: { events: EventEntity[]; metrics: MetricEntity[]; summary: Record<string, any> }) {
+  const generateSummary = (data: { events: Event[]; metrics: Metric[]; summary: Record<string, any> }) => {
     const uniqueUsers = new Set(data.events.map(e => e.userId).filter(Boolean)).size;
     const uniqueSessions = new Set(data.events.map(e => e.sessionId).filter(Boolean)).size;
 
-    const eventsByType = this.groupEventsByType(data.events);
-    const topEvents = this.getTopEvents(eventsByType, 5);
+    const eventsByType = groupEventsByType(data.events);
+    const topEvents = getTopEvents(eventsByType, 5);
 
-    const keyMetrics = this.getKeyMetrics(data.metrics);
+    const keyMetrics = getKeyMetrics(data.metrics);
 
     return {
       totalEvents: data.events.length,
@@ -225,43 +226,43 @@ export class GenerateReportUseCase {
       topEvents,
       keyMetrics,
     };
-  }
+  };
 
-  private groupEventsByType(events: EventEntity[]): Record<string, number> {
+  const groupEventsByType = (events: Event[]): Record<string, number> => {
     return events.reduce((acc, event) => {
       const type = event.type.value;
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-  }
+  };
 
-  private groupEventsByTime(events: EventEntity[], groupBy: 'day' | 'week' | 'month'): Record<string, number> {
+  const groupEventsByTime = (events: Event[], groupBy: 'day' | 'week' | 'month'): Record<string, number> => {
     return events.reduce((acc, event) => {
-      const key = this.getTimeKey(event.timestamp, groupBy);
+      const key = getTimeKey(event.timestamp, groupBy);
       acc[key] = (acc[key] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-  }
+  };
 
-  private groupMetricsByName(metrics: MetricEntity[]): Record<string, MetricEntity[]> {
+  const groupMetricsByName = (metrics: Metric[]): Record<string, Metric[]> => {
     return metrics.reduce((acc, metric) => {
       if (!acc[metric.name]) {
         acc[metric.name] = [];
       }
       acc[metric.name].push(metric);
       return acc;
-    }, {} as Record<string, MetricEntity[]>);
-  }
+    }, {} as Record<string, Metric[]>);
+  };
 
-  private calculateMetricTrends(metrics: MetricEntity[], groupBy: 'day' | 'week' | 'month'): Record<string, any> {
+  const calculateMetricTrends = (metrics: Metric[], groupBy: 'day' | 'week' | 'month'): Record<string, any> => {
     const grouped = metrics.reduce((acc, metric) => {
-      const key = this.getTimeKey(metric.timestamp, groupBy);
+      const key = getTimeKey(metric.timestamp, groupBy);
       if (!acc[key]) {
         acc[key] = [];
       }
       acc[key].push(metric);
       return acc;
-    }, {} as Record<string, MetricEntity[]>);
+    }, {} as Record<string, Metric[]>);
 
     return Object.entries(grouped).reduce((acc, [time, timeMetrics]) => {
       acc[time] = {
@@ -274,9 +275,9 @@ export class GenerateReportUseCase {
       };
       return acc;
     }, {} as Record<string, any>);
-  }
+  };
 
-  private calculateUserMetrics(events: EventEntity[]): Record<string, any> {
+  const calculateUserMetrics = (events: Event[]): Record<string, any> => {
     const userEvents = events.filter(e => e.userId);
     if (userEvents.length === 0) return {};
 
@@ -292,11 +293,11 @@ export class GenerateReportUseCase {
     return {
       uniqueUsers: Object.keys(usersWithEventCounts).length,
       averageEventsPerUser: Math.round(avgEventsPerUser * 100) / 100,
-      userEngagement: this.categorizeUserEngagement(eventCounts),
+      userEngagement: categorizeUserEngagement(eventCounts),
     };
-  }
+  };
 
-  private calculatePerformanceMetrics(events: EventEntity[], metrics: MetricEntity[]): Record<string, any> {
+  const calculatePerformanceMetrics = (events: Event[], metrics: Metric[]): Record<string, any> => {
     const performanceEvents = events.filter(e => e.type.value === 'performance_metric');
     const performanceMetrics = metrics.filter(m =>
       m.tags.includes('performance') || m.name.includes('performance')
@@ -309,19 +310,19 @@ export class GenerateReportUseCase {
     return {
       totalPerformanceEvents: performanceEvents.length,
       performanceMetrics: performanceMetrics.length,
-      averageLoadTime: this.calculateAverageLoadTime(performanceEvents),
+      averageLoadTime: calculateAverageLoadTime(performanceEvents),
     };
-  }
+  };
 
-  private getTopEvents(eventsByType: Record<string, number>, limit: number): Array<{ type: string; count: number }> {
+  const getTopEvents = (eventsByType: Record<string, number>, limit: number): Array<{ type: string; count: number }> => {
     return Object.entries(eventsByType)
       .sort(([, a], [, b]) => b - a)
       .slice(0, limit)
       .map(([type, count]) => ({ type, count }));
-  }
+  };
 
-  private getKeyMetrics(metrics: MetricEntity[]): Array<{ name: string; value: string; change?: string }> {
-    const metricsByName = this.groupMetricsByName(metrics);
+  const getKeyMetrics = (metrics: Metric[]): Array<{ name: string; value: string; change?: string }> => {
+    const metricsByName = groupMetricsByName(metrics);
 
     return Object.entries(metricsByName)
       .slice(0, 10) // Top 10 metrics
@@ -330,50 +331,50 @@ export class GenerateReportUseCase {
         return {
           name,
           value: latest.value.formatted,
-          change: this.calculateMetricChange(metricList),
+          change: calculateMetricChange(metricList),
         };
       });
-  }
+  };
 
-  private getTimeKey(date: Date, groupBy: 'day' | 'week' | 'month'): string {
+  const getTimeKey = (date: Date, groupBy: 'day' | 'week' | 'month'): string => {
     switch (groupBy) {
       case 'day':
         return date.toISOString().split('T')[0]; // YYYY-MM-DD
       case 'week':
-        const week = this.getWeekNumber(date);
+        const week = getWeekNumber(date);
         return `${date.getFullYear()}-W${week}`;
       case 'month':
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       default:
         return date.toISOString();
     }
-  }
+  };
 
-  private getWeekNumber(date: Date): number {
+  const getWeekNumber = (date: Date): number => {
     const firstDay = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date.getTime() - firstDay.getTime()) / 86400000;
     return Math.ceil((pastDaysOfYear + firstDay.getDay() + 1) / 7);
-  }
+  };
 
-  private categorizeUserEngagement(eventCounts: number[]): Record<string, number> {
+  const categorizeUserEngagement = (eventCounts: number[]): Record<string, number> => {
     const low = eventCounts.filter(count => count <= 5).length;
     const medium = eventCounts.filter(count => count > 5 && count <= 20).length;
     const high = eventCounts.filter(count => count > 20).length;
 
     return { low, medium, high };
-  }
+  };
 
-  private calculateAverageLoadTime(performanceEvents: EventEntity[]): number {
+  const calculateAverageLoadTime = (performanceEvents: Event[]): number => {
     const loadTimes = performanceEvents
-      .map(e => e.getProperty<number>('loadTime'))
+      .map(e => getEventProperty<number>(e, 'loadTime'))
       .filter((time): time is number => typeof time === 'number');
 
     return loadTimes.length > 0
       ? loadTimes.reduce((sum, time) => sum + time, 0) / loadTimes.length
       : 0;
-  }
+  };
 
-  private calculateMetricChange(metrics: MetricEntity[]): string | undefined {
+  const calculateMetricChange = (metrics: Metric[]): string | undefined => {
     if (metrics.length < 2) return undefined;
 
     const first = metrics[0].value.raw;
@@ -385,9 +386,9 @@ export class GenerateReportUseCase {
     const sign = change > 0 ? '+' : '';
 
     return `${sign}${change.toFixed(1)}%`;
-  }
+  };
 
-  private summarizeMetrics(metrics: MetricEntity[]): Record<string, any> {
+  const summarizeMetrics = (metrics: Metric[]): Record<string, any> => {
     if (metrics.length === 0) return {};
 
     const numericMetrics = metrics.filter(m =>
@@ -405,11 +406,18 @@ export class GenerateReportUseCase {
       min: Math.min(...values),
       max: Math.max(...values),
     };
-  }
+  };
 
-  private generateReportId(): string {
+  const generateReportId = (): string => {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substr(2, 9);
     return `report_${timestamp}_${random}`;
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type GenerateReportUseCase = ReturnType<typeof createGenerateReportUseCase>;
