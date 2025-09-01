@@ -4,10 +4,10 @@ import { useRef,useState } from 'react';
 import { AnimatePresence,motion, useInView } from 'framer-motion';
 import { ArrowRight, Check, Crown, Loader2,Sparkles, Star, Zap } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card } from '@/modules/shared/ui/components/ui/card';
+import { Switch } from '@/modules/shared/ui/components/ui/switch';
 
 interface PricingPlan {
   name: string;

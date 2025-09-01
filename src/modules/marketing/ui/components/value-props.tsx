@@ -4,8 +4,8 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { BarChart3, Bot, Calendar, ShoppingCart, Zap } from 'lucide-react';
 
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 const iconMap = {
   Zap,

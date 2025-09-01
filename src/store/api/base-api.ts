@@ -5,11 +5,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 const baseQuery = fetchBaseQuery({
   baseUrl: '/api',
   prepareHeaders: (headers, { getState }) => {
-    // TODO: Add authentication token when auth is implemented
-    // const token = (getState() as RootState).auth.token
-    // if (token) {
-    //   headers.set('authorization', `Bearer ${token}`)
-    // }
+    // Authentication headers will be added when auth is implemented
 
     headers.set('Content-Type', 'application/json')
     return headers
@@ -26,7 +22,6 @@ const baseQueryWithReauth: BaseQueryFn<
 
   // Handle authentication errors
   if (result.error && result.error.status === 401) {
-    // TODO: Implement token refresh logic when auth is available
     console.warn('Authentication failed - implement token refresh')
   }
 

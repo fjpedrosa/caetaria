@@ -13,12 +13,12 @@ import {
   Terminal,
   Zap} from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card } from '@/modules/shared/ui/components/ui/card';
+import { Input } from '@/modules/shared/ui/components/ui/input';
+import { Label } from '@/modules/shared/ui/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/modules/shared/ui/components/ui/tabs';
 
 interface ApiExample {
   id: string;

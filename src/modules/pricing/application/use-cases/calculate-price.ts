@@ -1,7 +1,7 @@
 import { failure, isSuccess,Result, success } from '../../../shared/domain/value-objects/result';
-import { DiscountEntity } from '../../domain/entities/discount';
-import { PricingPlanEntity } from '../../domain/entities/pricing-plan';
-import { Price } from '../../domain/value-objects/price';
+import { calculateDiscountAmount,canDiscountApplyToPlan, Discount, DiscountEntity, isDiscountValid } from '../../domain/entities/discount';
+import { calculateYearlyPrice,PricingPlanEntity } from '../../domain/entities/pricing-plan';
+import { addPrices, createPrice,createZeroPrice, multiplyPrice, Price, PriceInterface, pricesEqual, subtractPrices } from '../../domain/value-objects/price';
 import { DiscountRepository,PricingRepository } from '../ports/pricing-repository';
 
 export interface CalculatePriceRequest {
@@ -12,28 +12,29 @@ export interface CalculatePriceRequest {
 }
 
 export interface CalculatePriceResponse {
-  originalPrice: Price;
-  discountAmount: Price;
-  finalPrice: Price;
-  appliedDiscount?: DiscountEntity;
+  originalPrice: PriceInterface;
+  discountAmount: PriceInterface;
+  finalPrice: PriceInterface;
+  appliedDiscount?: Discount;
   billingPeriod: 'monthly' | 'yearly';
   priceBreakdown: {
-    basePrice: Price;
+    basePrice: PriceInterface;
     discountApplied: boolean;
     discountPercentage?: number;
-    savingsAmount?: Price;
+    savingsAmount?: PriceInterface;
   };
 }
 
-export class CalculatePriceUseCase {
-  constructor(
-    private readonly pricingRepository: PricingRepository,
-    private readonly discountRepository: DiscountRepository
-  ) {}
+// Factory function for creating CalculatePrice use case
+export const createCalculatePriceUseCase = (dependencies: {
+  pricingRepository: PricingRepository;
+  discountRepository: DiscountRepository;
+}) => {
+  const { pricingRepository, discountRepository } = dependencies;
 
-  async execute(request: CalculatePriceRequest): Promise<Result<CalculatePriceResponse, Error>> {
+  const execute = async (request: CalculatePriceRequest): Promise<Result<CalculatePriceResponse, Error>> => {
     try {
-      const plan = await this.pricingRepository.getPlanById(request.planId);
+      const plan = await pricingRepository.getPlanById(request.planId);
       if (!plan) {
         return failure(new Error(`Pricing plan not found: ${request.planId}`));
       }
@@ -49,15 +50,15 @@ export class CalculatePriceUseCase {
 
       // Determine the billing period and base price
       const billingPeriod = request.billingPeriod ?? plan.billingPeriod;
-      const basePrice = billingPeriod === 'yearly' ? plan.calculateYearlyPrice() : plan.price;
-      const originalPrice = basePrice.multiply(quantity);
+      const basePrice = billingPeriod === 'yearly' ? calculateYearlyPrice(plan) : plan.price;
+      const originalPrice = multiplyPrice(basePrice, quantity);
 
-      let appliedDiscount: DiscountEntity | undefined;
-      let discountAmount = Price.zero(originalPrice.currency);
+      let appliedDiscount: Discount | undefined;
+      let discountAmount = createZeroPrice(originalPrice.currency);
 
       // Apply discount if provided
       if (request.discountCode) {
-        const discountResult = await this.applyDiscount(request.discountCode, originalPrice, plan.id);
+        const discountResult = await applyDiscount(request.discountCode, originalPrice, plan.id);
         if (isSuccess(discountResult)) {
           const { discount, amount } = discountResult.data;
           appliedDiscount = discount;
@@ -65,13 +66,13 @@ export class CalculatePriceUseCase {
         }
       }
 
-      const finalPrice = originalPrice.subtract(discountAmount);
+      const finalPrice = subtractPrices(originalPrice, discountAmount);
 
       // Calculate savings for yearly billing
       let savingsAmount: Price | undefined;
       if (billingPeriod === 'yearly' && plan.billingPeriod === 'monthly') {
-        const monthlyTotal = plan.price.multiply(12 * quantity);
-        savingsAmount = monthlyTotal.subtract(originalPrice);
+        const monthlyTotal = multiplyPrice(plan.price, 12 * quantity);
+        savingsAmount = subtractPrices(monthlyTotal, originalPrice);
       }
 
       return success({
@@ -82,7 +83,7 @@ export class CalculatePriceUseCase {
         billingPeriod,
         priceBreakdown: {
           basePrice,
-          discountApplied: !discountAmount.equals(Price.zero(originalPrice.currency)),
+          discountApplied: !pricesEqual(discountAmount, createZeroPrice(originalPrice.currency)),
           discountPercentage: appliedDiscount && appliedDiscount.type === 'percentage'
             ? appliedDiscount.value
             : undefined,
@@ -92,29 +93,47 @@ export class CalculatePriceUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to calculate price'));
     }
-  }
+  };
 
-  private async applyDiscount(
+  const applyDiscount = async (
     discountCode: string,
     originalPrice: Price,
     planId: string
-  ): Promise<Result<{ discount: DiscountEntity; amount: Price }, Error>> {
+  ): Promise<Result<{ discount: Discount; amount: PriceInterface }, Error>> => {
     try {
-      const discount = await this.discountRepository.getDiscountByCode(discountCode);
+      const discount = await discountRepository.getDiscountByCode(discountCode);
       if (!discount) {
         return failure(new Error('Invalid discount code'));
       }
 
-      if (!discount.isValid()) {
+      // Handle both functional Discount and legacy DiscountEntity
+      let isValid: boolean;
+      let canApply: boolean;
+      let discountAmountValue: number;
+
+      if ('isValid' in discount && typeof discount.isValid === 'function') {
+        // Legacy DiscountEntity approach
+        const entity = discount as DiscountEntity;
+        isValid = entity.isValid();
+        canApply = entity.canApplyToPlan(planId);
+        discountAmountValue = entity.calculateDiscountAmount(originalPrice.amount, originalPrice.currency);
+      } else {
+        // Functional approach
+        const functionalDiscount = discount as Discount;
+        isValid = isDiscountValid(functionalDiscount);
+        canApply = canDiscountApplyToPlan(functionalDiscount, planId);
+        discountAmountValue = calculateDiscountAmount(functionalDiscount, originalPrice.amount, originalPrice.currency);
+      }
+
+      if (!isValid) {
         return failure(new Error('Discount is not valid or has expired'));
       }
 
-      if (!discount.canApplyToPlan(planId)) {
+      if (!canApply) {
         return failure(new Error('Discount cannot be applied to this plan'));
       }
 
-      const discountAmount = discount.calculateDiscountAmount(originalPrice.amount, originalPrice.currency);
-      const discountPrice = new Price(discountAmount, originalPrice.currency);
+      const discountPrice = createPrice(discountAmountValue, originalPrice.currency);
 
       return success({
         discount,
@@ -123,5 +142,12 @@ export class CalculatePriceUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to apply discount'));
     }
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type CalculatePriceUseCase = ReturnType<typeof createCalculatePriceUseCase>;

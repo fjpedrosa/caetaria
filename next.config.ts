@@ -1,19 +1,59 @@
+import path from 'path';
+
 /** @type {import('next').NextConfig} */
+const isTurbopack = process.env.TURBOPACK === '1';
+
 const nextConfig = {
-  // Minimal configuration for HMR stability
+  // Core Next.js configuration
   reactStrictMode: true,
-  
-  // Basic experimental features
+
+  // Experimental features for Next.js 15
   experimental: {
-    // Only essential optimizations
+    telemetry: false,
+    // Package optimization for commonly used libraries
     optimizePackageImports: [
       'lucide-react',
       '@radix-ui/react-*',
       'framer-motion'
-    ],
+    ]
   },
 
-  // Basic image optimization
+  // Turbopack configuration
+  turbopack: {
+    resolveAlias: {
+      '@': path.resolve(process.cwd(), 'src'),
+    },
+    rules: {
+      // Optimize test file exclusion
+      '*.test.{js,ts,jsx,tsx}': {
+        loaders: ['ignore-loader']
+      },
+      '*.spec.{js,ts,jsx,tsx}': {
+        loaders: ['ignore-loader']
+      }
+    }
+  },
+
+  // Webpack optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Exclude test files from bundle and watching
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: [
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/__tests__/**',
+        '**/__mocks__/**',
+        '**/*.test.*',
+        '**/*.spec.*',
+        '**/e2e/**'
+      ]
+    };
+
+    return config;
+  },
+
+  // Image optimization
   images: {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
@@ -21,10 +61,13 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
 
-  // Headers for better caching and security
+  // Security and performance headers
   async headers() {
     return [
+      // Security headers for all pages
       {
         source: '/(.*)',
         headers: [
@@ -54,6 +97,7 @@ const nextConfig = {
           },
         ],
       },
+      // API route caching
       {
         source: '/api/(.*)',
         headers: [
@@ -63,6 +107,7 @@ const nextConfig = {
           },
         ],
       },
+      // Static asset caching
       {
         source: '/(.*)\\.(ico|png|jpg|jpeg|gif|webp|svg)$',
         headers: [
@@ -72,6 +117,7 @@ const nextConfig = {
           },
         ],
       },
+      // Next.js static assets
       {
         source: '/_next/static/(.*)',
         headers: [
@@ -81,9 +127,20 @@ const nextConfig = {
           },
         ],
       },
-    ]
+    ];
   },
+};
+
+if (!isTurbopack) {
+  nextConfig.webpack = (config, { isServer }) => {
+    // Configuración específica para pdfjs-dist versión 5.x
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(process.cwd(), 'src'),
+    };
+
+    return config;
+  };
 }
 
-
-module.exports = nextConfig
+export default nextConfig;

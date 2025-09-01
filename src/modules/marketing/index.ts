@@ -16,18 +16,63 @@ export { createPhoneNumber, formatPhoneNumber } from './domain/value-objects/pho
 export type { AnalyticsEvent, AnalyticsService, LeadAnalyticsData } from './application/ports/analytics-service';
 export type { EmailNotification, NotificationService, SlackNotification } from './application/ports/notification-service';
 export type { LandingAnalyticsInput, LandingAnalyticsOutput } from './application/use-cases/get-landing-analytics';
-export { GetLandingAnalyticsUseCase } from './application/use-cases/get-landing-analytics';
+export type { GetLandingAnalyticsUseCase } from './application/use-cases/get-landing-analytics';
+export { createGetLandingAnalyticsUseCase } from './application/use-cases/get-landing-analytics';
 export type { SubmitLeadFormInput, SubmitLeadFormOutput } from './application/use-cases/submit-lead-form';
-export { SubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
+export type { SubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
+export { createSubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
+
+// Enhanced notification system exports
+export type {
+  EnhancedSubmitLeadFormInput,
+  EnhancedSubmitLeadFormOutput,
+  EnhancedSubmitLeadFormUseCase
+} from './application/use-cases/submit-lead-form-enhanced';
+export { createEnhancedSubmitLeadFormUseCase } from './application/use-cases/submit-lead-form-enhanced';
 
 // Infrastructure Layer - Adapters and services
-export { SupabaseLeadRepository } from './infra/adapters/supabase-lead-repository';
-export { EmailNotificationService } from './infra/services/email-notification-service';
-export { GoogleAnalyticsService, MockAnalyticsService } from './infra/services/google-analytics-service';
+export { createSupabaseLeadRepository } from './infra/adapters/supabase-lead-repository';
+export { createEmailNotificationService } from './infra/services/email-notification-service';
+export {
+  createAnalyticsConfig,
+  createAnalyticsService,
+  createGoogleAnalyticsService,
+  createMockAnalyticsService,
+} from './infra/services/google-analytics-service';
+
+// Comprehensive notification system exports
+export * from './notification-system';
 
 // UI Layer - React components
 export type { LeadFormData, LeadFormProps } from './ui/components/lead-form';
 export { LeadForm } from './ui/components/lead-form';
 
-// Module Configuration
-export type { LandingModuleConfig, LandingModuleDependencies,LandingUseCaseFactories } from './marketing-module';
+// Module Configuration - Functional Implementation
+export type {
+  AnalyticsConfig,
+  Environment,
+  LandingModuleDependencies,
+  MarketingModuleConfig,
+  MarketingModuleDependencies,
+  NotificationConfig,
+} from './marketing-module';
+export {
+  createConfigForEnvironment,
+  // Environment-specific factories
+  createDevelopmentConfig,
+  // Main functional configuration
+  createMarketingModuleConfig,
+  createProductionConfig,
+  createTestConfig,
+  // Backward compatibility (deprecated)
+  LandingModuleConfig,
+  LandingUseCaseFactories,
+  // Use case factories (new functional approach)
+  MarketingUseCaseFactories,
+  registerMarketingModuleDependencies,
+  // Convenience setup functions
+  setupMarketingModuleForDevelopment,
+  setupMarketingModuleForProduction,
+  setupMarketingModuleForTest,
+  setupMarketingModuleWithConfig,
+} from './marketing-module';

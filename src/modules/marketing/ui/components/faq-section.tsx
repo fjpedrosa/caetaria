@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion';
 import { HelpCircle,Plus } from 'lucide-react';
 
+import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+} from '@/modules/shared/ui/components/ui/accordion';
 
 /**
  * FAQ Section Component - Client Component

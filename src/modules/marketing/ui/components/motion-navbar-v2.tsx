@@ -5,12 +5,12 @@ import { AnimatePresence,motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-// Components
-import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
 // Icons
 import { ArrowRight, Menu, MessageCircle } from '@/lib/icons';
 import { cn } from '@/lib/utils';
+// Components
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 import { useLinkPrefetch } from './navbar-v2/hooks/use-link-prefetch';
 import { useMicroInteractions } from './navbar-v2/hooks/use-micro-interactions';

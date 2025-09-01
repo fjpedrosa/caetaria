@@ -9,9 +9,9 @@ import { useEffect,useRef, useState } from 'react';
 import { AlertCircle, Bot, CheckCircle, Loader2, Send, User, Wifi, WifiOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
+import { Input } from '@/modules/shared/ui/components/ui/input';
 
 interface Message {
   id: string;

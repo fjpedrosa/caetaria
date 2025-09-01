@@ -5,19 +5,19 @@ import { Clock, MessageSquare, Plus, Sparkles, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/modules/shared/ui/components/ui/badge'
+import { Button } from '@/modules/shared/ui/components/ui/button'
+import { Label } from '@/modules/shared/ui/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { cn } from '@/lib/utils'
+} from '@/modules/shared/ui/components/ui/select'
+import { Switch } from '@/modules/shared/ui/components/ui/switch'
+import { Textarea } from '@/modules/shared/ui/components/ui/textarea'
 
 import { type AutoMessageFormData,autoMessageSchema } from '../../domain/schemas'
 import type { StepProps } from '../../domain/types'

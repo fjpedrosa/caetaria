@@ -6,9 +6,9 @@
 import { Suspense } from 'react';
 import { Bot, Globe, MessageSquare, Settings } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BotConfigurationForm } from '@/modules/onboarding/ui/components/bot-configuration-form';
 import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 export default async function BotSetupPage() {
   return (

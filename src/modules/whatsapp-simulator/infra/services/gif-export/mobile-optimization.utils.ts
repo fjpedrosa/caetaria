@@ -3,7 +3,7 @@
  * Mobile-specific optimizations for GIF export
  */
 
-import { ExportOptions } from './types';
+import { ExportOptions } from '../../../domain/types/gif-export-types';
 
 export interface MobileOptimizationConfig {
   /** Detect mobile devices */
@@ -18,11 +18,13 @@ export interface MobileOptimizationConfig {
   batteryLevel: number | null;
 }
 
-export class MobileOptimizationUtils {
-  /**
-   * Detect current device and connection characteristics
-   */
-  static detectDeviceCapabilities(): MobileOptimizationConfig {
+/**
+ * Mobile Optimization Utilities Factory
+ * Creates functional utilities for mobile-specific GIF optimizations
+ */
+export const createMobileOptimizationUtils = () => {
+  // Helper functions
+  const detectDeviceCapabilities = (): MobileOptimizationConfig => {
     const userAgent = navigator.userAgent;
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 
@@ -58,15 +60,56 @@ export class MobileOptimizationUtils {
       connectionType,
       batteryLevel
     };
-  }
+  };
 
-  /**
-   * Optimize export options for mobile devices
-   */
-  static optimizeForMobile(
+  const supportsWebWorkers = (): boolean => {
+    return typeof Worker !== 'undefined';
+  };
+
+  const createPerformanceMonitor = () => {
+    const startTime = performance.now();
+    let frameCount = 0;
+    const memoryPeaks: number[] = [];
+
+    return {
+      recordFrame: () => {
+        frameCount++;
+
+        // Record memory usage if available
+        if ('memory' in performance) {
+          const memory = (performance as any).memory;
+          memoryPeaks.push(memory.usedJSHeapSize);
+        }
+      },
+
+      getMetrics: () => {
+        const totalTime = performance.now() - startTime;
+        const avgFPS = frameCount / (totalTime / 1000);
+        const peakMemory = Math.max(...memoryPeaks) / (1024 * 1024); // MB
+
+        return {
+          totalTime,
+          frameCount,
+          averageFPS: avgFPS,
+          peakMemoryUsage: peakMemory
+        };
+      },
+
+      shouldReduceQuality: () => {
+        const metrics = performance.now() - startTime;
+        const currentFPS = frameCount / (metrics / 1000);
+
+        // Reduce quality if FPS is too low
+        return currentFPS < 5;
+      }
+    };
+  };
+
+  // Public API
+  const optimizeForMobile = (
     baseOptions: ExportOptions,
     config: MobileOptimizationConfig
-  ): ExportOptions {
+  ): ExportOptions => {
     const optimized = { ...baseOptions };
 
     if (!config.isMobile) {
@@ -104,12 +147,9 @@ export class MobileOptimizationUtils {
     }
 
     return optimized;
-  }
+  };
 
-  /**
-   * Check if device supports smooth GIF export
-   */
-  static canHandleSmoothExport(config: MobileOptimizationConfig): boolean {
+  const canHandleSmoothExport = (config: MobileOptimizationConfig): boolean => {
     // Basic capability check
     if (!config.isMobile) return true;
 
@@ -123,17 +163,14 @@ export class MobileOptimizationUtils {
     if (config.batteryLevel && config.batteryLevel < 0.1) return false;
 
     return true;
-  }
+  };
 
-  /**
-   * Get mobile-specific capture options
-   */
-  static getMobileCaptureOptions(config: MobileOptimizationConfig): {
+  const getMobileCaptureOptions = (config: MobileOptimizationConfig): {
     batchSize: number;
     maxConcurrentCaptures: number;
     frameDelay: number;
     memoryCleanupInterval: number;
-  } {
+  } => {
     const base = {
       batchSize: 5,
       maxConcurrentCaptures: 2,
@@ -150,61 +187,16 @@ export class MobileOptimizationUtils {
       frameDelay: config.connectionType === 'slow' ? 200 : base.frameDelay,
       memoryCleanupInterval: 5 // More frequent cleanup on mobile
     };
-  }
+  };
 
-  /**
-   * Monitor performance during export
-   */
-  static createPerformanceMonitor() {
-    const startTime = performance.now();
-    let frameCount = 0;
-    const memoryPeaks: number[] = [];
-
-    return {
-      recordFrame: () => {
-        frameCount++;
-
-        // Record memory usage if available
-        if ('memory' in performance) {
-          const memory = (performance as any).memory;
-          memoryPeaks.push(memory.usedJSHeapSize);
-        }
-      },
-
-      getMetrics: () => {
-        const totalTime = performance.now() - startTime;
-        const avgFPS = frameCount / (totalTime / 1000);
-        const peakMemory = Math.max(...memoryPeaks) / (1024 * 1024); // MB
-
-        return {
-          totalTime,
-          frameCount,
-          averageFPS: avgFPS,
-          peakMemoryUsage: peakMemory
-        };
-      },
-
-      shouldReduceQuality: () => {
-        const metrics = performance.now() - startTime;
-        const currentFPS = frameCount / (metrics / 1000);
-
-        // Reduce quality if FPS is too low
-        return currentFPS < 5;
-      }
-    };
-  }
-
-  /**
-   * Adaptive quality adjustment based on performance
-   */
-  static adaptiveQualityControl(
+  const adaptiveQualityControl = (
     currentOptions: ExportOptions,
     performanceMetrics: {
       averageFPS: number;
       peakMemoryUsage: number;
       totalTime: number;
     }
-  ): ExportOptions {
+  ): ExportOptions => {
     const adjusted = { ...currentOptions };
 
     // Reduce quality if performance is poor
@@ -225,12 +217,9 @@ export class MobileOptimizationUtils {
     adjusted.scale = Math.max(0.5, adjusted.scale);
 
     return adjusted;
-  }
+  };
 
-  /**
-   * Get viewport-aware scaling
-   */
-  static getViewportAwareScale(element: HTMLElement): number {
+  const getViewportAwareScale = (element: HTMLElement): number => {
     const rect = element.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -240,30 +229,40 @@ export class MobileOptimizationUtils {
     const scaleY = viewportHeight / rect.height;
 
     return Math.min(1, Math.min(scaleX, scaleY) * 0.9); // 90% of viewport
-  }
+  };
 
-  /**
-   * Check if device supports Web Workers
-   */
-  static supportsWebWorkers(): boolean {
-    return typeof Worker !== 'undefined';
-  }
+  const getOptimalWorkerCount = (): number => {
+    const config = detectDeviceCapabilities();
 
-  /**
-   * Get optimal worker count for device
-   */
-  static getOptimalWorkerCount(): number {
-    const config = this.detectDeviceCapabilities();
-
-    if (!this.supportsWebWorkers()) return 0;
+    if (!supportsWebWorkers()) return 0;
 
     if (config.isMobile) return 1; // Single worker on mobile
 
     return Math.min(4, navigator.hardwareConcurrency || 2);
-  }
-}
+  };
+
+  // Return service interface
+  return {
+    detectDeviceCapabilities,
+    optimizeForMobile,
+    canHandleSmoothExport,
+    getMobileCaptureOptions,
+    createPerformanceMonitor,
+    adaptiveQualityControl,
+    getViewportAwareScale,
+    supportsWebWorkers,
+    getOptimalWorkerCount
+  };
+};
 
 /**
- * Singleton mobile optimization utility
+ * Create default mobile optimization utils instance
  */
-export const mobileOptimizationUtils = MobileOptimizationUtils;
+export const createDefaultMobileOptimizationUtils = () => {
+  return createMobileOptimizationUtils();
+};
+
+/**
+ * Singleton mobile optimization utility factory
+ */
+export const mobileOptimizationUtils = createMobileOptimizationUtils();

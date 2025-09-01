@@ -1,8 +1,9 @@
 /**
- * Conversation Entity - Core domain entity representing a WhatsApp conversation
+ * Conversation Entity - Functional approach for WhatsApp conversation
+ * Following Clean Architecture principles with no classes
  */
 
-import { Message, SenderType } from './message';
+import { createMessageFromJSON, getMessageTotalAnimationTime, Message, messageToJSON,SenderType } from './message';
 
 export type ConversationStatus =
   | 'idle'
@@ -43,383 +44,367 @@ export interface ConversationSettings {
   debugMode: boolean;
 }
 
-export class Conversation {
-  public readonly metadata: ConversationMetadata;
-  private _messages: Message[];
-  private _status: ConversationStatus;
-  private _currentIndex: number;
-  private _settings: ConversationSettings;
-  private _startTime?: Date;
-  private _pauseTime?: Date;
-  private _totalPausedTime: number;
+/**
+ * Conversation State - Immutable representation
+ */
+export interface Conversation {
+  readonly metadata: ConversationMetadata;
+  readonly messages: readonly Message[];
+  readonly status: ConversationStatus;
+  readonly currentIndex: number;
+  readonly settings: ConversationSettings;
+  readonly startTime?: Date;
+  readonly pauseTime?: Date;
+  readonly totalPausedTime: number;
+}
 
-  constructor(
-    metadata: ConversationMetadata,
-    messages: Message[] = [],
-    settings?: Partial<ConversationSettings>
-  ) {
-    this.metadata = metadata;
-    this._messages = messages;
-    this._status = 'idle';
-    this._currentIndex = 0;
-    this._totalPausedTime = 0;
-    this._settings = {
-      playbackSpeed: 1.0,
-      autoAdvance: true,
-      showTypingIndicators: true,
-      showReadReceipts: true,
-      enableSounds: false,
-      debugMode: false,
-      ...settings
-    };
+/**
+ * Create a new conversation with default values
+ * Single Responsibility: Only creates conversation instances
+ */
+export const createConversation = (
+  metadata: ConversationMetadata,
+  messages: Message[] = [],
+  settings?: Partial<ConversationSettings>
+): Conversation => {
+  const defaultSettings: ConversationSettings = {
+    playbackSpeed: 1.0,
+    autoAdvance: true,
+    showTypingIndicators: true,
+    showReadReceipts: true,
+    enableSounds: false,
+    debugMode: false,
+    ...settings
+  };
 
-    this.validateMessages();
+  const conversation: Conversation = {
+    metadata,
+    messages,
+    status: 'idle',
+    currentIndex: 0,
+    settings: defaultSettings,
+    totalPausedTime: 0
+  };
+
+  // Validate messages on creation
+  validateMessages(conversation.messages);
+  return conversation;
+};
+
+/**
+ * Create conversation from JSON data
+ * Single Responsibility: Only handles deserialization
+ */
+export const createConversationFromJSON = (data: any): Conversation => {
+  const metadata = {
+    ...data.metadata,
+    createdAt: new Date(data.metadata.createdAt),
+    updatedAt: new Date(data.metadata.updatedAt)
+  };
+
+  // Using the functional API for Message deserialization
+  const messages = data.messages.map((msgData: any) => createMessageFromJSON(msgData));
+
+  return {
+    metadata,
+    messages,
+    status: data.status,
+    currentIndex: data.currentIndex,
+    settings: data.settings,
+    startTime: data.startTime ? new Date(data.startTime) : undefined,
+    totalPausedTime: data.totalPausedTime || 0
+  };
+};
+
+
+export const isPlaying = (conversation: Conversation): boolean =>
+  conversation.status === 'playing';
+
+export const isPaused = (conversation: Conversation): boolean =>
+  conversation.status === 'paused';
+
+export const isCompleted = (conversation: Conversation): boolean =>
+  conversation.status === 'completed';
+
+export const hasError = (conversation: Conversation): boolean =>
+  conversation.status === 'error';
+
+export const canGoBack = (conversation: Conversation): boolean =>
+  conversation.currentIndex > 0;
+
+export const canGoForward = (conversation: Conversation): boolean =>
+  conversation.currentIndex < conversation.messages.length - 1;
+
+
+export const getCurrentMessage = (conversation: Conversation): Message | null =>
+  conversation.messages[conversation.currentIndex] || null;
+
+export const getNextMessage = (conversation: Conversation): Message | null =>
+  conversation.messages[conversation.currentIndex + 1] || null;
+
+export const getPreviousMessage = (conversation: Conversation): Message | null =>
+  conversation.messages[conversation.currentIndex - 1] || null;
+
+export const getMessagesUpTo = (conversation: Conversation, index?: number): Message[] => {
+  const endIndex = index !== undefined ? index : conversation.currentIndex + 1;
+  return [...conversation.messages.slice(0, Math.max(0, endIndex))];
+};
+
+export const getMessagesBySender = (conversation: Conversation, sender: SenderType): Message[] =>
+  conversation.messages.filter(msg => msg.sender === sender);
+
+export const getMessagesByType = (conversation: Conversation, type: string): Message[] =>
+  conversation.messages.filter(msg => msg.type === type);
+
+
+export const getConversationProgress = (conversation: Conversation): ConversationProgress => {
+  const totalMessages = conversation.messages.length;
+  const elapsedTime = calculateElapsedTime(conversation);
+  const remainingTime = calculateRemainingTime(conversation);
+
+  return {
+    currentMessageIndex: conversation.currentIndex,
+    totalMessages,
+    elapsedTime,
+    remainingTime: Math.max(0, remainingTime),
+    completionPercentage: totalMessages > 0 ? (conversation.currentIndex / totalMessages) * 100 : 0
+  };
+};
+
+export const calculateElapsedTime = (conversation: Conversation): number => {
+  if (!conversation.startTime) return 0;
+
+  const currentTime = conversation.pauseTime || new Date();
+  const rawElapsed = currentTime.getTime() - conversation.startTime.getTime();
+
+  return Math.max(0, rawElapsed - conversation.totalPausedTime);
+};
+
+export const calculateRemainingTime = (conversation: Conversation): number => {
+  const remainingMessages = conversation.messages.slice(conversation.currentIndex + 1);
+  const remainingDuration = remainingMessages.reduce((total, message) => {
+    return total + getMessageTotalAnimationTime(message);
+  }, 0);
+
+  return remainingDuration / conversation.settings.playbackSpeed;
+};
+
+export const calculateEstimatedDuration = (messages: readonly Message[]): number =>
+  messages.reduce((total, message) => total + getMessageTotalAnimationTime(message), 0);
+
+
+export const playConversation = (conversation: Conversation): Conversation => {
+  const now = new Date();
+
+  if (conversation.status === 'completed') {
+    return resetConversation(conversation);
   }
 
-  // Getters
-  get messages(): readonly Message[] {
-    return this._messages;
+  let newTotalPausedTime = conversation.totalPausedTime;
+  if (conversation.pauseTime) {
+    newTotalPausedTime += now.getTime() - conversation.pauseTime.getTime();
   }
 
-  get status(): ConversationStatus {
-    return this._status;
+  return {
+    ...conversation,
+    status: 'playing',
+    startTime: conversation.startTime || now,
+    pauseTime: undefined,
+    totalPausedTime: newTotalPausedTime
+  };
+};
+
+export const pauseConversation = (conversation: Conversation): Conversation => {
+  if (conversation.status !== 'playing') {
+    return conversation;
   }
 
-  get currentIndex(): number {
-    return this._currentIndex;
+  return {
+    ...conversation,
+    status: 'paused',
+    pauseTime: new Date()
+  };
+};
+
+export const resetConversation = (conversation: Conversation): Conversation => ({
+  ...conversation,
+  status: 'idle',
+  currentIndex: 0,
+  startTime: undefined,
+  pauseTime: undefined,
+  totalPausedTime: 0
+});
+
+export const jumpToMessage = (conversation: Conversation, index: number): Conversation => {
+  if (index < 0 || index >= conversation.messages.length) {
+    throw new Error(`Invalid message index: ${index}`);
   }
 
-  get settings(): ConversationSettings {
-    return { ...this._settings };
-  }
+  return {
+    ...conversation,
+    currentIndex: index
+  };
+};
 
-  get isPlaying(): boolean {
-    return this._status === 'playing';
-  }
-
-  get isPaused(): boolean {
-    return this._status === 'paused';
-  }
-
-  get isCompleted(): boolean {
-    return this._status === 'completed';
-  }
-
-  get hasError(): boolean {
-    return this._status === 'error';
-  }
-
-  get currentMessage(): Message | null {
-    return this._messages[this._currentIndex] || null;
-  }
-
-  get nextMessage(): Message | null {
-    return this._messages[this._currentIndex + 1] || null;
-  }
-
-  get previousMessage(): Message | null {
-    return this._messages[this._currentIndex - 1] || null;
-  }
-
-  get canGoBack(): boolean {
-    return this._currentIndex > 0;
-  }
-
-  get canGoForward(): boolean {
-    return this._currentIndex < this._messages.length - 1;
-  }
-
-  /**
-   * Get conversation progress information
-   */
-  getProgress(): ConversationProgress {
-    const totalMessages = this._messages.length;
-    const elapsedTime = this.calculateElapsedTime();
-    const estimatedRemainingTime = this.calculateRemainingTime();
-
+export const advanceToNext = (conversation: Conversation): Conversation => {
+  if (!canGoForward(conversation)) {
     return {
-      currentMessageIndex: this._currentIndex,
-      totalMessages,
-      elapsedTime,
-      remainingTime: Math.max(0, estimatedRemainingTime),
-      completionPercentage: totalMessages > 0 ? (this._currentIndex / totalMessages) * 100 : 0
+      ...conversation,
+      status: 'completed'
     };
   }
 
-  /**
-   * Update conversation settings
-   */
-  updateSettings(updates: Partial<ConversationSettings>): void {
-    this._settings = { ...this._settings, ...updates };
+  return {
+    ...conversation,
+    currentIndex: conversation.currentIndex + 1
+  };
+};
+
+export const goToPrevious = (conversation: Conversation): Conversation => {
+  if (!canGoBack(conversation)) {
+    return conversation;
   }
 
-  /**
-   * Add message to the conversation
-   */
-  addMessage(message: Message): void {
-    this._messages.push(message);
-    this.metadata.estimatedDuration = this.calculateEstimatedDuration();
-    this.metadata.updatedAt = new Date();
-  }
+  return {
+    ...conversation,
+    currentIndex: conversation.currentIndex - 1
+  };
+};
 
-  /**
-   * Add multiple messages to the conversation
-   */
-  addMessages(messages: Message[]): void {
-    this._messages.push(...messages);
-    this.metadata.estimatedDuration = this.calculateEstimatedDuration();
-    this.metadata.updatedAt = new Date();
-    this.validateMessages();
-  }
+export const setConversationError = (conversation: Conversation, error: Error): Conversation => {
+  console.error('Conversation error:', error);
+  return {
+    ...conversation,
+    status: 'error'
+  };
+};
 
-  /**
-   * Remove message from the conversation
-   */
-  removeMessage(messageId: string): boolean {
-    const initialLength = this._messages.length;
-    this._messages = this._messages.filter(msg => msg.id !== messageId);
+export const updateConversationSettings = (
+  conversation: Conversation,
+  updates: Partial<ConversationSettings>
+): Conversation => ({
+  ...conversation,
+  settings: { ...conversation.settings, ...updates }
+});
 
-    if (this._messages.length < initialLength) {
-      this.metadata.estimatedDuration = this.calculateEstimatedDuration();
-      this.metadata.updatedAt = new Date();
+export const addMessage = (conversation: Conversation, message: Message): Conversation => {
+  const newMessages = [...conversation.messages, message];
+  const newEstimatedDuration = calculateEstimatedDuration(newMessages);
 
-      // Adjust current index if necessary
-      if (this._currentIndex >= this._messages.length) {
-        this._currentIndex = Math.max(0, this._messages.length - 1);
-      }
-
-      return true;
+  return {
+    ...conversation,
+    messages: newMessages,
+    metadata: {
+      ...conversation.metadata,
+      estimatedDuration: newEstimatedDuration,
+      updatedAt: new Date()
     }
+  };
+};
 
-    return false;
-  }
+export const addMessages = (conversation: Conversation, messages: Message[]): Conversation => {
+  const newMessages = [...conversation.messages, ...messages];
+  validateMessages(newMessages);
 
-  /**
-   * Start conversation playback
-   */
-  play(): void {
-    if (this._status === 'completed') {
-      this.reset();
+  const newEstimatedDuration = calculateEstimatedDuration(newMessages);
+
+  return {
+    ...conversation,
+    messages: newMessages,
+    metadata: {
+      ...conversation.metadata,
+      estimatedDuration: newEstimatedDuration,
+      updatedAt: new Date()
     }
+  };
+};
 
-    this._status = 'playing';
+export const removeMessage = (conversation: Conversation, messageId: string): Conversation => {
+  const initialLength = conversation.messages.length;
+  const newMessages = conversation.messages.filter(msg => msg.id !== messageId);
 
-    if (!this._startTime) {
-      this._startTime = new Date();
+  if (newMessages.length === initialLength) {
+    return conversation; // No change
+  }
+
+  const newEstimatedDuration = calculateEstimatedDuration(newMessages);
+  let newCurrentIndex = conversation.currentIndex;
+
+  // Adjust current index if necessary
+  if (newCurrentIndex >= newMessages.length) {
+    newCurrentIndex = Math.max(0, newMessages.length - 1);
+  }
+
+  return {
+    ...conversation,
+    messages: newMessages,
+    currentIndex: newCurrentIndex,
+    metadata: {
+      ...conversation.metadata,
+      estimatedDuration: newEstimatedDuration,
+      updatedAt: new Date()
     }
+  };
+};
 
-    if (this._pauseTime) {
-      this._totalPausedTime += Date.now() - this._pauseTime.getTime();
-      this._pauseTime = undefined;
-    }
-  }
-
-  /**
-   * Pause conversation playback
-   */
-  pause(): void {
-    if (this._status === 'playing') {
-      this._status = 'paused';
-      this._pauseTime = new Date();
-    }
-  }
-
-  /**
-   * Stop and reset conversation
-   */
-  reset(): void {
-    this._status = 'idle';
-    this._currentIndex = 0;
-    this._startTime = undefined;
-    this._pauseTime = undefined;
-    this._totalPausedTime = 0;
-  }
-
-  /**
-   * Jump to specific message index
-   */
-  jumpTo(index: number): void {
-    if (index >= 0 && index < this._messages.length) {
-      this._currentIndex = index;
-    } else {
-      throw new Error(`Invalid message index: ${index}`);
-    }
-  }
-
-  /**
-   * Advance to next message
-   */
-  advanceToNext(): boolean {
-    if (this.canGoForward) {
-      this._currentIndex++;
-      return true;
-    }
-
-    if (this._currentIndex >= this._messages.length - 1) {
-      this._status = 'completed';
-    }
-
-    return false;
-  }
-
-  /**
-   * Go back to previous message
-   */
-  goToPrevious(): boolean {
-    if (this.canGoBack) {
-      this._currentIndex--;
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Set error status with message
-   */
-  setError(error: Error): void {
-    this._status = 'error';
-    console.error('Conversation error:', error);
-  }
-
-  /**
-   * Get messages up to current index
-   */
-  getMessagesUpTo(index?: number): Message[] {
-    const endIndex = index !== undefined ? index : this._currentIndex + 1;
-    return this._messages.slice(0, Math.max(0, endIndex));
-  }
-
-  /**
-   * Get messages by sender type
-   */
-  getMessagesBySender(sender: SenderType): Message[] {
-    return this._messages.filter(msg => msg.sender === sender);
-  }
-
-  /**
-   * Get messages by type
-   */
-  getMessagesByType(type: string): Message[] {
-    return this._messages.filter(msg => msg.type === type);
-  }
-
-  /**
-   * Calculate total estimated duration
-   */
-  private calculateEstimatedDuration(): number {
-    return this._messages.reduce((total, message) => {
-      return total + message.getTotalAnimationTime();
-    }, 0);
-  }
-
-  /**
-   * Calculate elapsed time considering pauses and speed
-   */
-  private calculateElapsedTime(): number {
-    if (!this._startTime) return 0;
-
-    const currentTime = this._pauseTime || new Date();
-    const rawElapsed = currentTime.getTime() - this._startTime.getTime();
-
-    return Math.max(0, rawElapsed - this._totalPausedTime);
-  }
-
-  /**
-   * Calculate remaining time based on current progress
-   */
-  private calculateRemainingTime(): number {
-    const remainingMessages = this._messages.slice(this._currentIndex + 1);
-    const remainingDuration = remainingMessages.reduce((total, message) => {
-      return total + message.getTotalAnimationTime();
-    }, 0);
-
-    return remainingDuration / this._settings.playbackSpeed;
-  }
-
-  /**
-   * Validate messages for consistency
-   */
-  private validateMessages(): void {
-    // Check for duplicate IDs
-    const ids = new Set();
-    for (const message of this._messages) {
-      if (ids.has(message.id)) {
-        throw new Error(`Duplicate message ID found: ${message.id}`);
-      }
-      ids.add(message.id);
-    }
-
-    // Validate timing sequences
-    for (let i = 1; i < this._messages.length; i++) {
-      const current = this._messages[i];
-      const previous = this._messages[i - 1];
-
-      if (current.timing.queueAt < previous.timing.queueAt) {
-        console.warn(`Message timing inconsistency at index ${i}`);
-      }
-    }
-  }
-
-  /**
-   * Create a copy of the conversation
-   */
-  clone(updates?: {
+export const cloneConversation = (
+  conversation: Conversation,
+  updates?: {
     metadata?: Partial<ConversationMetadata>;
     messages?: Message[];
     settings?: Partial<ConversationSettings>;
-  }): Conversation {
-    const newMetadata = updates?.metadata
-      ? { ...this.metadata, ...updates.metadata }
-      : this.metadata;
-
-    const newMessages = updates?.messages || this._messages;
-    const newSettings = updates?.settings
-      ? { ...this._settings, ...updates.settings }
-      : this._settings;
-
-    return new Conversation(newMetadata, newMessages, newSettings);
   }
+): Conversation => {
+  const newMetadata = updates?.metadata
+    ? { ...conversation.metadata, ...updates.metadata }
+    : conversation.metadata;
 
-  /**
-   * Serialize conversation to JSON
-   */
-  toJSON(): Record<string, any> {
-    return {
-      metadata: {
-        ...this.metadata,
-        createdAt: this.metadata.createdAt.toISOString(),
-        updatedAt: this.metadata.updatedAt.toISOString()
-      },
-      messages: this._messages.map(msg => msg.toJSON()),
-      status: this._status,
-      currentIndex: this._currentIndex,
-      settings: this._settings,
-      startTime: this._startTime?.toISOString(),
-      totalPausedTime: this._totalPausedTime
-    };
-  }
+  const newMessages = updates?.messages || conversation.messages;
+  const newSettings = updates?.settings
+    ? { ...conversation.settings, ...updates.settings }
+    : conversation.settings;
 
-  /**
-   * Create conversation from JSON data
-   */
-  static fromJSON(data: any): Conversation {
-    const metadata = {
-      ...data.metadata,
-      createdAt: new Date(data.metadata.createdAt),
-      updatedAt: new Date(data.metadata.updatedAt)
-    };
+  return {
+    ...conversation,
+    metadata: newMetadata,
+    messages: newMessages,
+    settings: newSettings
+  };
+};
 
-    const messages = data.messages.map((msgData: any) => Message.fromJSON(msgData));
 
-    const conversation = new Conversation(metadata, messages, data.settings);
-    conversation._status = data.status;
-    conversation._currentIndex = data.currentIndex;
-    conversation._totalPausedTime = data.totalPausedTime || 0;
+export const conversationToJSON = (conversation: Conversation): Record<string, any> => ({
+  metadata: {
+    ...conversation.metadata,
+    createdAt: conversation.metadata.createdAt.toISOString(),
+    updatedAt: conversation.metadata.updatedAt.toISOString()
+  },
+  messages: conversation.messages.map(msg => messageToJSON(msg)),
+  status: conversation.status,
+  currentIndex: conversation.currentIndex,
+  settings: conversation.settings,
+  startTime: conversation.startTime?.toISOString(),
+  totalPausedTime: conversation.totalPausedTime
+});
 
-    if (data.startTime) {
-      conversation._startTime = new Date(data.startTime);
+
+export const validateMessages = (messages: readonly Message[]): void => {
+  // Check for duplicate IDs
+  const ids = new Set();
+  for (const message of messages) {
+    if (ids.has(message.id)) {
+      throw new Error(`Duplicate message ID found: ${message.id}`);
     }
-
-    return conversation;
+    ids.add(message.id);
   }
-}
+
+  // Validate timing sequences
+  for (let i = 1; i < messages.length; i++) {
+    const current = messages[i];
+    const previous = messages[i - 1];
+
+    if (current.timing.queueAt < previous.timing.queueAt) {
+      console.warn(`Message timing inconsistency at index ${i}`);
+    }
+  }
+};

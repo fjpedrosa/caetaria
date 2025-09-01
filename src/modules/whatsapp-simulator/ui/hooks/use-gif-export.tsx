@@ -5,14 +5,15 @@
 
 import { useCallback, useEffect,useRef, useState } from 'react';
 
-import { gifExportService } from '../../infra/services/gif-export/gif-export.service';
-import { gifOptimizationUtils } from '../../infra/services/gif-export/gif-optimization.utils';
 import {
   EXPORT_PRESETS,
   ExportOptions,
   GifExportError,
   GifExportResult,
-  GifGenerationProgress} from '../../infra/services/gif-export/types';
+  GifGenerationProgress
+} from '../../domain/types/gif-export-types';
+import { gifExportService } from '../../infra/services/gif-export/gif-export.service';
+import { gifOptimizationUtils } from '../../infra/services/gif-export/gif-optimization.utils';
 
 export interface UseGifExportOptions {
   /** Default export preset */
@@ -117,10 +118,15 @@ export function useGifExport(hookOptions: UseGifExportOptions = {}): {
     if (!enableProgress) return;
 
     const interval = setInterval(() => {
-      const memoryUsage = gifExportService.getMemoryUsage();
+      const memoryMonitor = gifExportService.getMemoryUsage();
       setState(prev => ({
         ...prev,
-        memoryUsage
+        memoryUsage: {
+          current: memoryMonitor.current,
+          peak: memoryMonitor.peak,
+          limit: memoryMonitor.limit,
+          nearLimit: memoryMonitor.nearLimit
+        }
       }));
     }, 1000);
 

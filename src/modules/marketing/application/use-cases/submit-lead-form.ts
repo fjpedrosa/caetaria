@@ -35,14 +35,14 @@ export interface SubmitLeadFormDependencies {
 }
 
 /**
- * Submit Lead Form Use Case
+ * Factory function for creating SubmitLeadForm use case
  * Handles the complete flow of lead form submission including validation,
  * duplicate checking, persistence, analytics tracking, and notifications
  */
-export class SubmitLeadFormUseCase {
-  constructor(private readonly deps: SubmitLeadFormDependencies) {}
+export const createSubmitLeadFormUseCase = (dependencies: SubmitLeadFormDependencies) => {
+  const { leadRepository, analyticsService, notificationService } = dependencies;
 
-  async execute(input: SubmitLeadFormInput): Promise<SubmitLeadFormOutput> {
+  const execute = async (input: SubmitLeadFormInput): Promise<SubmitLeadFormOutput> => {
     try {
       // 1. Validate and create value objects
       const email = createEmail(input.email);
@@ -53,10 +53,10 @@ export class SubmitLeadFormUseCase {
       }
 
       // 2. Check for existing lead
-      const existingLead = await this.deps.leadRepository.findByEmail(email);
+      const existingLead = await leadRepository.findByEmail(email);
       if (existingLead) {
         // Track analytics for duplicate attempt
-        await this.deps.analyticsService.track({
+        await analyticsService.track({
           event: 'lead_duplicate_attempt',
           properties: {
             email: input.email,
@@ -84,10 +84,10 @@ export class SubmitLeadFormUseCase {
       });
 
       // 4. Save lead
-      await this.deps.leadRepository.save(lead);
+      await leadRepository.save(lead);
 
       // 5. Track analytics
-      await this.deps.analyticsService.trackLeadConversion({
+      await analyticsService.trackLeadConversion({
         email,
         source: input.source,
         companyName: input.companyName,
@@ -96,8 +96,8 @@ export class SubmitLeadFormUseCase {
 
       // 6. Send notifications (don't await to avoid blocking)
       Promise.all([
-        this.deps.notificationService.sendWelcomeEmail(lead),
-        this.deps.notificationService.notifySalesTeam(lead),
+        notificationService.sendWelcomeEmail(lead),
+        notificationService.notifySalesTeam(lead),
       ]).catch(error => {
         // Log error but don't fail the entire operation
         console.error('Notification error:', error);
@@ -110,7 +110,7 @@ export class SubmitLeadFormUseCase {
 
     } catch (error) {
       // Track error analytics
-      await this.deps.analyticsService.track({
+      await analyticsService.track({
         event: 'lead_submission_error',
         properties: {
           email: input.email,
@@ -126,5 +126,12 @@ export class SubmitLeadFormUseCase {
         error: error instanceof Error ? error.message : 'Failed to submit lead',
       };
     }
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type SubmitLeadFormUseCase = ReturnType<typeof createSubmitLeadFormUseCase>;

@@ -1,7 +1,3 @@
-/**
- * Lead Form Component
- * UI layer - React component for lead capture form
- */
 
 'use client';
 
@@ -41,10 +37,6 @@ const DEFAULT_FEATURES = [
   'Conexiones Automáticas',
 ];
 
-/**
- * Lead capture form component
- * Handles user input validation and submission
- */
 export function LeadForm({
   source,
   onSubmit,

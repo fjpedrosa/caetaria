@@ -24,7 +24,7 @@ import {
   Square,
   X} from 'lucide-react';
 
-import { EXPORT_PRESETS,ExportOptions } from '../../infra/services/gif-export/types';
+import { EXPORT_PRESETS, ExportOptions } from '../../domain/types/gif-export-types';
 import {
   formatDuration,
   formatFileSize,

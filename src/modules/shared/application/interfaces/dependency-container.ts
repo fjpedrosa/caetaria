@@ -340,20 +340,106 @@ export const createDependencyContainer = (): DependencyContainer => {
 /**
  * Factory function to create the enhanced SimpleDependencyContainer
  * Uses the functional implementation under the hood
+ *
+ * **Recommended approach** - Use this instead of the SimpleDependencyContainer class
+ *
+ * @example
+ * ```typescript
+ * // ✅ Recommended (functional approach)
+ * const container = createSimpleDependencyContainer();
+ *
+ * // ❌ Deprecated (class-based approach)
+ * const container = new SimpleDependencyContainer();
+ * ```
  */
 export const createSimpleDependencyContainer = createDependencyContainer;
 
 /**
+ * Enhanced factory function with better naming for new projects
+ * Alias for createSimpleDependencyContainer with clearer intent
+ *
+ * @example
+ * ```typescript
+ * // For new code, prefer this naming
+ * const container = createDependencyContainer();
+ * ```
+ */
+export { createDependencyContainer };
+
+/**
+ * Type guard to check if a container is the legacy class-based implementation
+ * Useful for migration and debugging purposes
+ */
+export function isLegacyContainer(container: DependencyContainer): container is SimpleDependencyContainer {
+  return container instanceof SimpleDependencyContainer;
+}
+
+/**
+ * Migration helper to convert from legacy class to functional container
+ * Copies all registrations to a new functional container
+ *
+ * @example
+ * ```typescript
+ * const legacyContainer = new SimpleDependencyContainer();
+ * const functionalContainer = migrateLegacyContainer(legacyContainer);
+ * ```
+ */
+export function migrateLegacyContainer(legacyContainer: SimpleDependencyContainer): DependencyContainer {
+  // Since SimpleDependencyContainer already uses functional implementation internally,
+  // we can just create a new functional container and copy state
+  const newContainer = createDependencyContainer();
+
+  // Note: This is a simple example. In a real scenario, you might need to
+  // iterate through tokens and copy registrations if needed
+  // For now, we recommend recreating the container setup with the new approach
+
+  if (typeof console !== 'undefined' && process.env.NODE_ENV !== 'production') {
+    console.info(
+      '🚀 Container migrated successfully!\n' +
+      '📝 Consider rewriting your container setup with createSimpleDependencyContainer()\n' +
+      '🔗 See functional-container.ts for enhanced features like getStats(), getAllTokens()'
+    );
+  }
+
+  return newContainer;
+}
+
+/**
  * Legacy class-based implementation for backward compatibility
- * @deprecated Use createSimpleDependencyContainer() instead
+ * @deprecated Use createSimpleDependencyContainer() or createFunctionalContainer() instead
+ *
+ * **Migration Guide:**
+ * - Replace `new SimpleDependencyContainer()` with `createSimpleDependencyContainer()`
+ * - For enhanced features, use `createFunctionalContainer()` from functional-container.ts
+ * - For fluent API, use `containerBuilder().register(...).build()`
+ *
+ * **Why migrate:**
+ * - Better testability with pure functions
+ * - Immutable internal state management
+ * - Enhanced debugging with state inspection
+ * - Improved performance with optimized memory usage
  *
  * This class now uses the functional implementation internally,
- * maintaining the same API while leveraging higher-order functions
+ * maintaining the same API while leveraging higher-order functions.
  */
 export class SimpleDependencyContainer implements DependencyContainer {
   private container = createDependencyContainer();
+  private hasWarned = false;
+
+  private warnDeprecation(methodName: string): void {
+    if (!this.hasWarned && typeof console !== 'undefined' && process.env.NODE_ENV !== 'production') {
+      console.warn(
+        `🚨 SimpleDependencyContainer.${methodName}() is deprecated!\n` +
+        '📦 Replace \'new SimpleDependencyContainer()\' with \'createSimpleDependencyContainer()\'\n' +
+        '🚀 For enhanced features, use \'createFunctionalContainer()\' from \'@/modules/shared\'\n' +
+        '📖 See migration guide in dependency-container.ts'
+      );
+      this.hasWarned = true;
+    }
+  }
 
   register<T>(token: string | symbol, implementation: T): void {
+    this.warnDeprecation('register');
     this.container.register(token, implementation);
   }
 

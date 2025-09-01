@@ -1,11 +1,11 @@
 import { cookies, headers } from 'next/headers';
 
-import type { PriceVariant, PricingPlan } from './ab-testing-types';
-import { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
+import type { PriceVariant, PricingPlan } from '../domain/types';
+import { PRICE_VARIANTS, PRICING_MAP } from '../domain/types';
 
 // Re-export types for backward compatibility
-export type { PriceVariant, PricingPlan } from './ab-testing-types';
-export { PRICE_VARIANTS, PRICING_MAP } from './ab-testing-types';
+export type { PriceVariant, PricingPlan } from '../domain/types';
+export { PRICE_VARIANTS, PRICING_MAP } from '../domain/types';
 
 // Helper para obtener variante en Server Components
 export async function getPriceVariant(): Promise<PriceVariant> {

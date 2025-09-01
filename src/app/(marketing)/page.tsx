@@ -2,17 +2,22 @@ import { FaqSection } from '@/modules/marketing/ui/components/faq-section';
 import { FeaturesGrid } from '@/modules/marketing/ui/components/features-grid';
 import { FinalCta } from '@/modules/marketing/ui/components/final-cta';
 import { HeroSection } from '@/modules/marketing/ui/components/hero-section';
+// TEMPORAL: HeroComparison disabled due to missing service exports
+// import { HeroComparison } from '@/modules/marketing/ui/components/hero-section/components/hero-comparison';
 import { HowItWorks } from '@/modules/marketing/ui/components/how-it-works';
 // Footer removed - now handled in layout.tsx
 // Navbar removed - now handled in layout.tsx
 import { PricingTeaserAB } from '@/modules/marketing/ui/components/pricing-teaser-ab';
 import { Testimonials } from '@/modules/marketing/ui/components/testimonials';
+import { UseCasesSection } from '@/modules/marketing/ui/components/use-cases-section';
 import { ValueProps } from '@/modules/marketing/ui/components/value-props';
 
 /**
  * Landing Page
  * Main marketing page with all sections and enhanced accessibility
  * HMR OPTIMIZED: jsx-dev-runtime errors resolved
+ *
+ * TEMPORAL: Includes HeroComparison section for QA testing
  */
 export default function HomePage() {
   return (
@@ -36,22 +41,25 @@ export default function HomePage() {
         {/* 2. Features Grid - Main product features */}
         <FeaturesGrid />
 
-        {/* 3. How it Works - 3-4 step process */}
+        {/* 3. Use Cases - Interactive demonstrations */}
+        <UseCasesSection />
+
+        {/* 4. How it Works - 3-4 step process */}
         <HowItWorks />
 
-        {/* 4. Benefits/Use Cases - Value propositions */}
+        {/* 5. Benefits/Value Props - Value propositions */}
         <ValueProps />
 
-        {/* 5. Testimonials - Customer reviews */}
+        {/* 6. Testimonials - Customer reviews */}
         <Testimonials />
 
-        {/* 6. Pricing - Plans comparison */}
+        {/* 7. Pricing - Plans comparison */}
         <PricingTeaserAB />
 
-        {/* 7. FAQ - Frequently asked questions */}
+        {/* 8. FAQ - Frequently asked questions */}
         <FaqSection />
 
-        {/* 8. Final CTA - Call to action */}
+        {/* 9. Final CTA - Call to action */}
         <FinalCta />
       </main>
 

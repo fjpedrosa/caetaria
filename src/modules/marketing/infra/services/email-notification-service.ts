@@ -1,10 +1,22 @@
 /**
  * Email Notification Service Adapter
- * Infrastructure layer - Email service implementation of NotificationService
+ * Infrastructure layer - Enhanced email service with template support and analytics
  */
 
-import { EmailNotification, NotificationService, SlackNotification } from '../../application/ports/notification-service';
-import { getLeadFullName,Lead } from '../../domain/entities/lead';
+import {
+  EmailNotification as LegacyEmailNotification,
+  NotificationService as LegacyNotificationService,
+  SlackNotification as LegacySlackNotification
+} from '../../application/ports/notification-service';
+import { getLeadFullName, Lead } from '../../domain/entities/lead';
+import {
+  EmailNotification,
+  EmailNotificationData,
+  NotificationChannel,
+  NotificationEventType,
+  NotificationStatus,
+  NotificationTemplate,
+} from '../../domain/entities/notification';
 import { Email } from '../../domain/value-objects/email';
 
 // Email service client interface (could be Resend, SendGrid, etc.)
@@ -30,24 +42,22 @@ interface SlackClient {
 }
 
 /**
- * Email-based notification service implementation
+ * Email-based notification service implementation factory
  * Handles email notifications and integrates with Slack for team notifications
  */
-export class EmailNotificationService implements NotificationService {
-  constructor(
-    private readonly emailClient: EmailClient,
-    private readonly config: {
-      fromEmail: Email;
-      salesTeamChannel?: string;
-      baseUrl: string;
-    },
-    private readonly slackClient?: SlackClient
-  ) {}
-
-  async sendEmail(notification: EmailNotification): Promise<void> {
+export const createEmailNotificationService = (
+  emailClient: EmailClient,
+  config: {
+    fromEmail: Email;
+    salesTeamChannel?: string;
+    baseUrl: string;
+  },
+  slackClient?: SlackClient
+): NotificationService => {
+  const sendEmail = async (notification: EmailNotification): Promise<void> => {
     try {
-      await this.emailClient.send({
-        from: notification.from || this.config.fromEmail,
+      await emailClient.send({
+        from: notification.from || config.fromEmail,
         to: notification.to,
         subject: notification.subject,
         html: notification.htmlBody,
@@ -56,99 +66,9 @@ export class EmailNotificationService implements NotificationService {
     } catch (error) {
       throw new Error(`Failed to send email: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-  }
+  };
 
-  async sendWelcomeEmail(lead: Lead): Promise<void> {
-    const fullName = getLeadFullName(lead);
-    const firstName = lead.firstName || fullName.split(' ')[0] || 'there';
-
-    const htmlBody = this.generateWelcomeEmailHtml(firstName, lead);
-    const textBody = this.generateWelcomeEmailText(firstName);
-
-    await this.sendEmail({
-      to: lead.email,
-      subject: 'Welcome to WhatsApp Cloud API - Let\'s Get Started!',
-      htmlBody,
-      textBody,
-    });
-  }
-
-  async notifySalesTeam(lead: Lead): Promise<void> {
-    const fullName = getLeadFullName(lead);
-
-    // Send email notification to sales team
-    const salesEmailHtml = this.generateSalesNotificationHtml(lead, fullName);
-    const salesEmailText = this.generateSalesNotificationText(lead, fullName);
-
-    await this.sendEmail({
-      to: this.config.fromEmail, // Sales team email
-      subject: `New Lead: ${fullName} (${lead.source})`,
-      htmlBody: salesEmailHtml,
-      textBody: salesEmailText,
-    });
-
-    // Send Slack notification if configured
-    if (this.slackClient && this.config.salesTeamChannel) {
-      await this.sendSlackNotification({
-        channel: this.config.salesTeamChannel,
-        message: '🎯 New lead generated!',
-        attachments: [{
-          title: `${fullName} - ${lead.source}`,
-          color: 'good',
-          fields: [
-            {
-              title: 'Email',
-              value: lead.email,
-              short: true,
-            },
-            {
-              title: 'Company',
-              value: lead.companyName || 'Not provided',
-              short: true,
-            },
-            {
-              title: 'Phone',
-              value: lead.phoneNumber || 'Not provided',
-              short: true,
-            },
-            {
-              title: 'Source',
-              value: lead.source,
-              short: true,
-            },
-            {
-              title: 'Interested Features',
-              value: lead.interestedFeatures?.join(', ') || 'None specified',
-              short: false,
-            },
-            ...(lead.notes ? [{
-              title: 'Notes',
-              value: lead.notes,
-              short: false,
-            }] : []),
-          ],
-        }],
-      });
-    }
-  }
-
-  async sendSlackNotification(notification: SlackNotification): Promise<void> {
-    if (!this.slackClient) {
-      throw new Error('Slack client not configured');
-    }
-
-    try {
-      await this.slackClient.chat.postMessage({
-        channel: notification.channel,
-        text: notification.message,
-        attachments: notification.attachments,
-      });
-    } catch (error) {
-      throw new Error(`Failed to send Slack notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  }
-
-  private generateWelcomeEmailHtml(firstName: string, lead: Lead): string {
+  const generateWelcomeEmailHtml = (firstName: string, lead: Lead): string => {
     return `
       <!DOCTYPE html>
       <html>
@@ -195,7 +115,7 @@ export class EmailNotificationService implements NotificationService {
           ` : ''}
 
           <div class="cta">
-            <a href="${this.config.baseUrl}/demo" class="button">Schedule Your Demo</a>
+            <a href="${config.baseUrl}/demo" class="button">Schedule Your Demo</a>
           </div>
 
           <p>Our team will be in touch within 24 hours to help you get started. In the meantime, feel free to explore our documentation and resources.</p>
@@ -205,14 +125,14 @@ export class EmailNotificationService implements NotificationService {
 
         <div class="footer">
           <p>© 2024 WhatsApp Cloud API Platform. All rights reserved.</p>
-          <p>Need help? Reply to this email or visit our <a href="${this.config.baseUrl}/support" style="color: #25D366;">support center</a>.</p>
+          <p>Need help? Reply to this email or visit our <a href="${config.baseUrl}/support" style="color: #25D366;">support center</a>.</p>
         </div>
       </body>
       </html>
     `;
-  }
+  };
 
-  private generateWelcomeEmailText(firstName: string): string {
+  const generateWelcomeEmailText = (firstName: string): string => {
     return `
       Hi ${firstName},
 
@@ -227,7 +147,7 @@ export class EmailNotificationService implements NotificationService {
       - Local Compliance: Built for African markets with GDPR/POPIA/NDPR compliance
       - Analytics & Insights: Track performance and optimize your communications
 
-      Schedule your demo: ${this.config.baseUrl}/demo
+      Schedule your demo: ${config.baseUrl}/demo
 
       Our team will be in touch within 24 hours to help you get started.
 
@@ -235,11 +155,11 @@ export class EmailNotificationService implements NotificationService {
       The WhatsApp Cloud API Team
 
       ---
-      Need help? Reply to this email or visit: ${this.config.baseUrl}/support
+      Need help? Reply to this email or visit: ${config.baseUrl}/support
     `;
-  }
+  };
 
-  private generateSalesNotificationHtml(lead: Lead, fullName: string): string {
+  const generateSalesNotificationHtml = (lead: Lead, fullName: string): string => {
     return `
       <!DOCTYPE html>
       <html>
@@ -308,9 +228,9 @@ export class EmailNotificationService implements NotificationService {
       </body>
       </html>
     `;
-  }
+  };
 
-  private generateSalesNotificationText(lead: Lead, fullName: string): string {
+  const generateSalesNotificationText = (lead: Lead, fullName: string): string => {
     return `
       🎯 NEW LEAD GENERATED!
 
@@ -326,5 +246,280 @@ export class EmailNotificationService implements NotificationService {
 
       Next Steps: Follow up within 24 hours for best conversion rates.
     `;
-  }
+  };
+
+  const sendWelcomeEmail = async (lead: Lead): Promise<void> => {
+    const fullName = getLeadFullName(lead);
+    const firstName = lead.firstName || fullName.split(' ')[0] || 'there';
+
+    const htmlBody = generateWelcomeEmailHtml(firstName, lead);
+    const textBody = generateWelcomeEmailText(firstName);
+
+    await sendEmail({
+      to: lead.email,
+      subject: 'Welcome to WhatsApp Cloud API - Let\'s Get Started!',
+      htmlBody,
+      textBody,
+    });
+  };
+
+  const notifySalesTeam = async (lead: Lead): Promise<void> => {
+    const fullName = getLeadFullName(lead);
+
+    // Send email notification to sales team
+    const salesEmailHtml = generateSalesNotificationHtml(lead, fullName);
+    const salesEmailText = generateSalesNotificationText(lead, fullName);
+
+    await sendEmail({
+      to: config.fromEmail, // Sales team email
+      subject: `New Lead: ${fullName} (${lead.source})`,
+      htmlBody: salesEmailHtml,
+      textBody: salesEmailText,
+    });
+
+    // Send Slack notification if configured
+    if (slackClient && config.salesTeamChannel) {
+      await sendSlackNotification({
+        channel: config.salesTeamChannel,
+        message: '🎯 New lead generated!',
+        attachments: [{
+          title: `${fullName} - ${lead.source}`,
+          color: 'good',
+          fields: [
+            {
+              title: 'Email',
+              value: lead.email,
+              short: true,
+            },
+            {
+              title: 'Company',
+              value: lead.companyName || 'Not provided',
+              short: true,
+            },
+            {
+              title: 'Phone',
+              value: lead.phoneNumber || 'Not provided',
+              short: true,
+            },
+            {
+              title: 'Source',
+              value: lead.source,
+              short: true,
+            },
+            {
+              title: 'Interested Features',
+              value: lead.interestedFeatures?.join(', ') || 'None specified',
+              short: false,
+            },
+            ...(lead.notes ? [{
+              title: 'Notes',
+              value: lead.notes,
+              short: false,
+            }] : []),
+          ],
+        }],
+      });
+    }
+  };
+
+  const sendSlackNotification = async (notification: SlackNotification): Promise<void> => {
+    if (!slackClient) {
+      throw new Error('Slack client not configured');
+    }
+
+    try {
+      await slackClient.chat.postMessage({
+        channel: notification.channel,
+        text: notification.message,
+        attachments: notification.attachments,
+      });
+    } catch (error) {
+      throw new Error(`Failed to send Slack notification: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  return {
+    sendEmail,
+    sendWelcomeEmail,
+    notifySalesTeam,
+    sendSlackNotification,
+  };
+};
+
+// Template engine interface
+interface TemplateEngine {
+  render(template: string, data: Record<string, any>): string;
 }
+
+// Simple template engine implementation
+const createSimpleTemplateEngine = (): TemplateEngine => ({
+  render: (template: string, data: Record<string, any>): string => {
+    return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+      return data[key]?.toString() || match;
+    });
+  },
+});
+
+// Enhanced email service interface
+export interface EnhancedEmailService {
+  send(notification: EmailNotification): Promise<{ id: string; status: NotificationStatus }>;
+  sendWithTemplate(templateId: string, to: Email, data: Record<string, any>): Promise<{ id: string; status: NotificationStatus }>;
+  renderTemplate(template: NotificationTemplate, data: Record<string, any>): { subject: string; htmlBody: string; textBody?: string };
+  validateTemplate(template: NotificationTemplate): { isValid: boolean; errors: string[] };
+  getDeliveryStatus(messageId: string): Promise<NotificationStatus>;
+}
+
+/**
+ * Enhanced email notification service with template support
+ */
+export const createEnhancedEmailService = (
+  emailClient: EmailClient,
+  templateEngine: TemplateEngine = createSimpleTemplateEngine(),
+  config: {
+    fromEmail: Email;
+    baseUrl: string;
+    trackingEnabled?: boolean;
+  }
+): EnhancedEmailService => {
+
+  const send = async (notification: EmailNotification): Promise<{ id: string; status: NotificationStatus }> => {
+    try {
+      const result = await emailClient.send({
+        from: notification.data.from || config.fromEmail,
+        to: notification.data.to,
+        subject: notification.data.subject,
+        html: notification.data.htmlBody,
+        text: notification.data.textBody,
+      });
+
+      return {
+        id: result.id,
+        status: NotificationStatus.SENT,
+      };
+    } catch (error) {
+      console.error('Failed to send email notification:', error);
+      return {
+        id: '',
+        status: NotificationStatus.FAILED,
+      };
+    }
+  };
+
+  const sendWithTemplate = async (
+    templateId: string,
+    to: Email,
+    data: Record<string, any>
+  ): Promise<{ id: string; status: NotificationStatus }> => {
+    // In a real implementation, this would fetch the template from the repository
+    // For now, we'll use a mock template
+    const mockTemplate: NotificationTemplate = {
+      id: templateId,
+      name: 'Mock Template',
+      description: 'Mock template for testing',
+      channel: NotificationChannel.EMAIL,
+      eventType: NotificationEventType.CUSTOM,
+      subject: 'Welcome to {{productName}}',
+      htmlTemplate: `
+        <h1>Welcome {{firstName}}!</h1>
+        <p>Thank you for joining {{productName}}.</p>
+      `,
+      textTemplate: `
+        Welcome {{firstName}}!
+        Thank you for joining {{productName}}.
+      `,
+      variables: [],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const rendered = renderTemplate(mockTemplate, data);
+
+    try {
+      const result = await emailClient.send({
+        from: config.fromEmail,
+        to,
+        subject: rendered.subject,
+        html: rendered.htmlBody,
+        text: rendered.textBody,
+      });
+
+      return {
+        id: result.id,
+        status: NotificationStatus.SENT,
+      };
+    } catch (error) {
+      console.error('Failed to send templated email:', error);
+      return {
+        id: '',
+        status: NotificationStatus.FAILED,
+      };
+    }
+  };
+
+  const renderTemplate = (
+    template: NotificationTemplate,
+    data: Record<string, any>
+  ): { subject: string; htmlBody: string; textBody?: string } => {
+    const subject = template.subject ? templateEngine.render(template.subject, data) : '';
+    const htmlBody = template.htmlTemplate ? templateEngine.render(template.htmlTemplate, data) : '';
+    const textBody = template.textTemplate ? templateEngine.render(template.textTemplate, data) : undefined;
+
+    return { subject, htmlBody, textBody };
+  };
+
+  const validateTemplate = (template: NotificationTemplate): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = [];
+
+    // Validate required fields
+    if (!template.name?.trim()) {
+      errors.push('Template name is required');
+    }
+
+    if (!template.subject?.trim()) {
+      errors.push('Template subject is required');
+    }
+
+    if (!template.htmlTemplate?.trim() && !template.textTemplate?.trim()) {
+      errors.push('Template must have either HTML or text content');
+    }
+
+    // Validate template variables
+    const subjectVars = extractTemplateVariables(template.subject || '');
+    const htmlVars = extractTemplateVariables(template.htmlTemplate || '');
+    const textVars = extractTemplateVariables(template.textTemplate || '');
+    const allVars = [...new Set([...subjectVars, ...htmlVars, ...textVars])];
+
+    const declaredVars = template.variables.map(v => v.name);
+    const undeclaredVars = allVars.filter(v => !declaredVars.includes(v));
+
+    if (undeclaredVars.length > 0) {
+      errors.push(`Undeclared template variables: ${undeclaredVars.join(', ')}`);
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  };
+
+  const extractTemplateVariables = (template: string): string[] => {
+    const matches = template.match(/\{\{(\w+)\}\}/g);
+    if (!matches) return [];
+    return matches.map(match => match.replace(/[{}]/g, ''));
+  };
+
+  const getDeliveryStatus = async (messageId: string): Promise<NotificationStatus> => {
+    // In a real implementation, this would check with the email provider
+    // For now, return a mock status
+    return NotificationStatus.DELIVERED;
+  };
+
+  return {
+    send,
+    sendWithTemplate,
+    renderTemplate,
+    validateTemplate,
+    getDeliveryStatus,
+  };
+};

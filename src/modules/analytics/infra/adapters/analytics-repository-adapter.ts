@@ -4,9 +4,9 @@ import {
   MetricFilters,
   MetricsRepository,
   ReportingRepository} from '../../application/ports/analytics-repository';
-import { EventEntity } from '../../domain/entities/event';
-import { MetricEntity } from '../../domain/entities/metric';
-import { EventType } from '../../domain/value-objects/event-type';
+import { Event, eventFromJSON, eventToJSON } from '../../domain/entities/event';
+import { Metric, metricFromJSON, metricToJSON } from '../../domain/entities/metric';
+import { EventType, EventTypeInterface } from '../../domain/value-objects/event-type';
 import { MetricValue } from '../../domain/value-objects/metric-value';
 import {
   analyticsApi,
@@ -14,56 +14,54 @@ import {
   GenerateReportApiResponse,
   MetricApiModel} from '../services/analytics-api';
 
-// Mappers for converting between domain entities and API models
-export class AnalyticsModelMapper {
-  static toDomainEvent(apiModel: EventApiModel): EventEntity {
-    return EventEntity.fromJSON({
+// Functional mapper object for converting between domain entities and API models
+export const analyticsModelMapper = {
+  toDomainEvent: (apiModel: EventApiModel): Event => {
+    return eventFromJSON({
       ...apiModel,
       type: apiModel.type,
     });
-  }
+  },
 
-  static toApiEvent(domainEntity: EventEntity): EventApiModel {
-    const json = domainEntity.toJSON();
+  toApiEvent: (domainEntity: Event): EventApiModel => {
+    const json = eventToJSON(domainEntity);
     return json as EventApiModel;
-  }
+  },
 
-  static toDomainMetric(apiModel: MetricApiModel): MetricEntity {
-    return MetricEntity.fromJSON({
+  toDomainMetric: (apiModel: MetricApiModel): Metric => {
+    return metricFromJSON({
       ...apiModel,
       value: apiModel.value,
     });
-  }
+  },
 
-  static toApiMetric(domainEntity: MetricEntity): MetricApiModel {
-    const json = domainEntity.toJSON();
+  toApiMetric: (domainEntity: Metric): MetricApiModel => {
+    const json = metricToJSON(domainEntity);
     return json as MetricApiModel;
-  }
+  },
 
-  static serializeEventFilters(filters: EventFilters): any {
+  serializeEventFilters: (filters: EventFilters): any => {
     return {
       ...filters,
       eventTypes: filters.eventTypes?.map(type => type.value),
       startDate: filters.startDate?.toISOString(),
       endDate: filters.endDate?.toISOString(),
     };
-  }
+  },
 
-  static serializeMetricFilters(filters: MetricFilters): any {
+  serializeMetricFilters: (filters: MetricFilters): any => {
     return {
       ...filters,
       startDate: filters.startDate?.toISOString(),
       endDate: filters.endDate?.toISOString(),
     };
   }
-}
+};
 
-export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
-  constructor(private readonly store: any) {} // RTK store reference
-
-  async saveEvent(event: EventEntity): Promise<EventEntity> {
-    const apiEvent = AnalyticsModelMapper.toApiEvent(event);
-    const result = await this.store.dispatch(
+export const createAnalyticsRepository = (dependencies: { store: any }): AnalyticsRepository => ({
+  async saveEvent(event: Event): Promise<Event> {
+    const apiEvent = analyticsModelMapper.toApiEvent(event);
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.trackEvent.initiate({
         type: event.type.value,
         name: event.name,
@@ -78,12 +76,12 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
       throw new Error('Failed to save event');
     }
 
-    return AnalyticsModelMapper.toDomainEvent(result.data.event);
-  }
+    return analyticsModelMapper.toDomainEvent(result.data.event);
+  },
 
-  async getEvents(filters: EventFilters): Promise<EventEntity[]> {
-    const serializedFilters = AnalyticsModelMapper.serializeEventFilters(filters);
-    const result = await this.store.dispatch(
+  async getEvents(filters: EventFilters): Promise<Event[]> {
+    const serializedFilters = analyticsModelMapper.serializeEventFilters(filters);
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getEvents.initiate(serializedFilters)
     );
 
@@ -91,11 +89,11 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
       throw new Error('Failed to get events');
     }
 
-    return result.data.events.map(AnalyticsModelMapper.toDomainEvent);
-  }
+    return result.data.events.map(analyticsModelMapper.toDomainEvent);
+  },
 
-  async getEventById(id: string): Promise<EventEntity | null> {
-    const result = await this.store.dispatch(
+  async getEventById(id: string): Promise<Event | null> {
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getEvent.initiate(id)
     );
 
@@ -103,12 +101,12 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
       return null;
     }
 
-    return result.data ? AnalyticsModelMapper.toDomainEvent(result.data) : null;
-  }
+    return result.data ? analyticsModelMapper.toDomainEvent(result.data) : null;
+  },
 
   async getEventCount(filters: Omit<EventFilters, 'limit' | 'offset'>): Promise<number> {
-    const serializedFilters = AnalyticsModelMapper.serializeEventFilters(filters);
-    const result = await this.store.dispatch(
+    const serializedFilters = analyticsModelMapper.serializeEventFilters(filters);
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getEvents.initiate({ ...serializedFilters, limit: 1 })
     );
 
@@ -117,19 +115,19 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
     }
 
     return result.data.totalCount;
-  }
+  },
 
   async deleteEvent(id: string): Promise<void> {
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.deleteEvent.initiate(id)
     );
 
     if (result.error) {
       throw new Error('Failed to delete event');
     }
-  }
+  },
 
-  async saveEvents(events: EventEntity[]): Promise<EventEntity[]> {
+  async saveEvents(events: Event[]): Promise<Event[]> {
     const apiEvents = events.map(event => ({
       type: event.type.value,
       name: event.name,
@@ -139,7 +137,7 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
       skipEnrichment: true,
     }));
 
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.trackEvents.initiate({ events: apiEvents })
     );
 
@@ -150,15 +148,24 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
     // Since batch endpoint doesn't return full events, return the input events
     // In a real implementation, the API would return the saved events
     return events;
-  }
+  },
 
   async deleteEvents(filters: EventFilters): Promise<number> {
     // This would require a batch delete endpoint in the API
     throw new Error('Batch delete events not implemented');
-  }
+  },
 
   async getUniqueUsers(filters: Omit<EventFilters, 'userId'>): Promise<string[]> {
-    const events = await this.getEvents(filters);
+    const serializedFilters = analyticsModelMapper.serializeEventFilters(filters);
+    const result = await dependencies.store.dispatch(
+      analyticsApi.endpoints.getEvents.initiate(serializedFilters)
+    );
+
+    if (result.error) {
+      throw new Error('Failed to get events for unique users');
+    }
+
+    const events = result.data.events.map(analyticsModelMapper.toDomainEvent);
     const userIds = new Set<string>();
 
     events.forEach(event => {
@@ -168,10 +175,19 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
     });
 
     return Array.from(userIds);
-  }
+  },
 
   async getUniqueSessions(filters: EventFilters): Promise<string[]> {
-    const events = await this.getEvents(filters);
+    const serializedFilters = analyticsModelMapper.serializeEventFilters(filters);
+    const result = await dependencies.store.dispatch(
+      analyticsApi.endpoints.getEvents.initiate(serializedFilters)
+    );
+
+    if (result.error) {
+      throw new Error('Failed to get events for unique sessions');
+    }
+
+    const events = result.data.events.map(analyticsModelMapper.toDomainEvent);
     const sessionIds = new Set<string>();
 
     events.forEach(event => {
@@ -181,11 +197,20 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
     });
 
     return Array.from(sessionIds);
-  }
+  },
 
-  async getEventsByType(filters: EventFilters): Promise<Record<string, EventEntity[]>> {
-    const events = await this.getEvents(filters);
-    const eventsByType: Record<string, EventEntity[]> = {};
+  async getEventsByType(filters: EventFilters): Promise<Record<string, Event[]>> {
+    const serializedFilters = analyticsModelMapper.serializeEventFilters(filters);
+    const result = await dependencies.store.dispatch(
+      analyticsApi.endpoints.getEvents.initiate(serializedFilters)
+    );
+
+    if (result.error) {
+      throw new Error('Failed to get events by type');
+    }
+
+    const events = result.data.events.map(analyticsModelMapper.toDomainEvent);
+    const eventsByType: Record<string, Event[]> = {};
 
     events.forEach(event => {
       const type = event.type.value;
@@ -197,16 +222,14 @@ export class AnalyticsRepositoryAdapter implements AnalyticsRepository {
 
     return eventsByType;
   }
-}
+});
 
-export class MetricsRepositoryAdapter implements MetricsRepository {
-  constructor(private readonly store: any) {} // RTK store reference
-
-  async saveMetric(metric: MetricEntity): Promise<MetricEntity> {
-    const apiMetric = AnalyticsModelMapper.toApiMetric(metric);
+export const createMetricsRepository = (dependencies: { store: any }): MetricsRepository => ({
+  async saveMetric(metric: Metric): Promise<Metric> {
+    const apiMetric = analyticsModelMapper.toApiMetric(metric);
     const { id, timestamp, ...metricData } = apiMetric;
 
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.saveMetric.initiate(metricData)
     );
 
@@ -214,12 +237,12 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
       throw new Error('Failed to save metric');
     }
 
-    return AnalyticsModelMapper.toDomainMetric(result.data);
-  }
+    return analyticsModelMapper.toDomainMetric(result.data);
+  },
 
-  async getMetrics(filters: MetricFilters): Promise<MetricEntity[]> {
-    const serializedFilters = AnalyticsModelMapper.serializeMetricFilters(filters);
-    const result = await this.store.dispatch(
+  async getMetrics(filters: MetricFilters): Promise<Metric[]> {
+    const serializedFilters = analyticsModelMapper.serializeMetricFilters(filters);
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getMetrics.initiate(serializedFilters)
     );
 
@@ -227,11 +250,11 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
       throw new Error('Failed to get metrics');
     }
 
-    return result.data.metrics.map(AnalyticsModelMapper.toDomainMetric);
-  }
+    return result.data.metrics.map(analyticsModelMapper.toDomainMetric);
+  },
 
-  async getMetricById(id: string): Promise<MetricEntity | null> {
-    const result = await this.store.dispatch(
+  async getMetricById(id: string): Promise<Metric | null> {
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getMetric.initiate(id)
     );
 
@@ -239,27 +262,27 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
       return null;
     }
 
-    return result.data ? AnalyticsModelMapper.toDomainMetric(result.data) : null;
-  }
+    return result.data ? analyticsModelMapper.toDomainMetric(result.data) : null;
+  },
 
   async deleteMetric(id: string): Promise<void> {
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.deleteMetric.initiate(id)
     );
 
     if (result.error) {
       throw new Error('Failed to delete metric');
     }
-  }
+  },
 
-  async saveMetrics(metrics: MetricEntity[]): Promise<MetricEntity[]> {
+  async saveMetrics(metrics: Metric[]): Promise<Metric[]> {
     const apiMetrics = metrics.map(metric => {
-      const apiMetric = AnalyticsModelMapper.toApiMetric(metric);
+      const apiMetric = analyticsModelMapper.toApiMetric(metric);
       const { id, timestamp, ...metricData } = apiMetric;
       return metricData;
     });
 
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.saveMetrics.initiate({ metrics: apiMetrics })
     );
 
@@ -269,23 +292,23 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
 
     // Return the input metrics since batch endpoint doesn't return full metrics
     return metrics;
-  }
+  },
 
   async deleteMetrics(filters: MetricFilters): Promise<number> {
     // This would require a batch delete endpoint in the API
     throw new Error('Batch delete metrics not implemented');
-  }
+  },
 
   async aggregateMetrics(
     names: string[],
     aggregationType: 'sum' | 'average' | 'min' | 'max' | 'count',
     filters: MetricFilters
-  ): Promise<MetricEntity[]> {
-    const result = await this.store.dispatch(
+  ): Promise<Metric[]> {
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.aggregateMetrics.initiate({
         names,
         aggregationType,
-        filters: AnalyticsModelMapper.serializeMetricFilters(filters),
+        filters: analyticsModelMapper.serializeMetricFilters(filters),
       })
     );
 
@@ -293,15 +316,15 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
       throw new Error('Failed to aggregate metrics');
     }
 
-    return result.data.map(AnalyticsModelMapper.toDomainMetric);
-  }
+    return result.data.map(analyticsModelMapper.toDomainMetric);
+  },
 
   async getMetricTrend(
     name: string,
     granularity: 'minute' | 'hour' | 'day' | 'week' | 'month',
     filters: MetricFilters
-  ): Promise<MetricEntity[]> {
-    const result = await this.store.dispatch(
+  ): Promise<Metric[]> {
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.getMetricTrend.initiate({
         name,
         granularity,
@@ -316,27 +339,25 @@ export class MetricsRepositoryAdapter implements MetricsRepository {
       throw new Error('Failed to get metric trend');
     }
 
-    return result.data.trend.map(AnalyticsModelMapper.toDomainMetric);
+    return result.data.trend.map(analyticsModelMapper.toDomainMetric);
   }
-}
+});
 
-export class ReportingRepositoryAdapter implements ReportingRepository {
-  constructor(private readonly store: any) {} // RTK store reference
-
+export const createReportingRepository = (dependencies: { store: any }): ReportingRepository => ({
   async generateReport(
     reportType: 'daily' | 'weekly' | 'monthly',
     filters: {
       startDate: Date;
       endDate: Date;
       includeMetrics?: string[];
-      includeEvents?: EventType[];
+      includeEvents?: (EventType | EventTypeInterface)[];
     }
   ): Promise<{
-    events: EventEntity[];
-    metrics: MetricEntity[];
+    events: Event[];
+    metrics: Metric[];
     summary: Record<string, any>;
   }> {
-    const result = await this.store.dispatch(
+    const result = await dependencies.store.dispatch(
       analyticsApi.endpoints.generateReport.initiate({
         reportType,
         startDate: filters.startDate,
@@ -354,8 +375,8 @@ export class ReportingRepositoryAdapter implements ReportingRepository {
 
     // Extract events and metrics from report sections
     // This is a simplified extraction - in practice, you'd parse the report structure
-    const events: EventEntity[] = [];
-    const metrics: MetricEntity[] = [];
+    const events: Event[] = [];
+    const metrics: Metric[] = [];
 
     return {
       events,
@@ -363,4 +384,4 @@ export class ReportingRepositoryAdapter implements ReportingRepository {
       summary: result.data.summary,
     };
   }
-}
+});

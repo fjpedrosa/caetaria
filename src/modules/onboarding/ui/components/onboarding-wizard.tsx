@@ -4,8 +4,8 @@ import { useEffect,useState } from 'react'
 import { ArrowLeft, CheckCircle2, PartyPopper,Sparkles } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '@/modules/shared/ui/components/ui/button'
+import { Card } from '@/modules/shared/ui/components/ui/card'
 
 import type { OnboardingState, OnboardingStep } from '../../domain/types'
 import {

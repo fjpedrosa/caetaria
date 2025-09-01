@@ -1,145 +1,82 @@
 'use client';
 
-import React, { useEffect,useState } from 'react';
+import React from 'react';
 import { AlertCircle, Check, Percent, Tag } from 'lucide-react';
 
-import { Badge } from '../../../../components/ui/badge';
-import { Button } from '../../../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import { Input } from '../../../../components/ui/input';
-import { Label } from '../../../../components/ui/label';
-import { Skeleton } from '../../../../components/ui/loading-skeleton';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
-import { Separator } from '../../../../components/ui/separator';
-import {
-  useCalculatePriceMutation,
-  useGetPricingPlansQuery,
-  useLazyValidateDiscountQuery
-} from '../../infra/services/pricing-api';
+import { Badge } from '../../../shared/ui/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../shared/ui/components/ui/card';
+import { Input } from '../../../shared/ui/components/ui/input';
+import { Label } from '../../../shared/ui/components/ui/label';
+import { Skeleton } from '../../../shared/ui/components/ui/loading-skeleton';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../shared/ui/components/ui/select';
+import { Separator } from '../../../shared/ui/components/ui/separator';
+import type { UsePriceCalculatorResult } from '../../application/hooks/use-price-calculator';
 
 interface PriceCalculatorProps {
-  onPriceCalculated?: (calculation: any) => void;
-  defaultPlanId?: string;
+  // State from hook
+  selectedPlanId: string;
+  billingPeriod: 'monthly' | 'yearly';
+  quantity: number;
+  discountCode: string;
+  discountValidation: UsePriceCalculatorResult['discountValidation'];
+
+  // Computed state from hook
+  pricingData: any;
+  calculation: any;
+  selectedPlan: any;
+
+  // Loading states from hook
+  plansLoading: boolean;
+  calculating: boolean;
+  validatingDiscount: boolean;
+
+  // Error states from hook
+  calculationError: any;
+
+  // Actions from hook
+  onSelectedPlanChange: (planId: string) => void;
+  onBillingPeriodChange: (period: 'monthly' | 'yearly') => void;
+  onQuantityChange: (quantity: number) => void;
+  onDiscountCodeChange: (code: string) => void;
+  formatPrice: (price: { amount: number; currency: string }) => string;
+
+  // Options
   showQuantity?: boolean;
   showDiscount?: boolean;
 }
 
 export function PriceCalculator({
-  onPriceCalculated,
-  defaultPlanId,
+  // State from hook
+  selectedPlanId,
+  billingPeriod,
+  quantity,
+  discountCode,
+  discountValidation,
+
+  // Computed state from hook
+  pricingData,
+  calculation,
+  selectedPlan,
+
+  // Loading states from hook
+  plansLoading,
+  calculating,
+  validatingDiscount,
+
+  // Error states from hook
+  calculationError,
+
+  // Actions from hook
+  onSelectedPlanChange,
+  onBillingPeriodChange,
+  onQuantityChange,
+  onDiscountCodeChange,
+  formatPrice,
+
+  // Options
   showQuantity = true,
   showDiscount = true
 }: PriceCalculatorProps) {
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(defaultPlanId || '');
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
-  const [quantity, setQuantity] = useState<number>(1);
-  const [discountCode, setDiscountCode] = useState<string>('');
-  const [discountValidation, setDiscountValidation] = useState<{
-    isValid: boolean;
-    message?: string;
-    discount?: any;
-  } | null>(null);
-
-  const { data: pricingData, isLoading: plansLoading } = useGetPricingPlansQuery({
-    includeInactive: false
-  });
-
-  const [calculatePrice, {
-    data: calculation,
-    isLoading: calculating,
-    error: calculationError
-  }] = useCalculatePriceMutation();
-
-  const [validateDiscount, {
-    isLoading: validatingDiscount
-  }] = useLazyValidateDiscountQuery();
-
-  // Set default plan if available
-  useEffect(() => {
-    if (!selectedPlanId && pricingData?.plans.length) {
-      const defaultPlan = pricingData.plans.find(p => p.isPopular) || pricingData.plans[0];
-      setSelectedPlanId(defaultPlan.id);
-    }
-  }, [pricingData, selectedPlanId]);
-
-  // Calculate price when inputs change
-  useEffect(() => {
-    if (selectedPlanId) {
-      handleCalculate();
-    }
-  }, [selectedPlanId, billingPeriod, quantity, discountValidation]);
-
-  // Notify parent of calculation changes
-  useEffect(() => {
-    if (calculation) {
-      onPriceCalculated?.(calculation);
-    }
-  }, [calculation, onPriceCalculated]);
-
-  const handleCalculate = async () => {
-    if (!selectedPlanId) return;
-
-    try {
-      await calculatePrice({
-        planId: selectedPlanId,
-        billingPeriod,
-        quantity: showQuantity ? quantity : 1,
-        discountCode: discountValidation?.isValid ? discountCode : undefined,
-      });
-    } catch (error) {
-      console.error('Price calculation failed:', error);
-    }
-  };
-
-  const handleDiscountValidation = async (code: string) => {
-    if (!code.trim() || !selectedPlanId) {
-      setDiscountValidation(null);
-      return;
-    }
-
-    try {
-      const result = await validateDiscount({
-        discountCode: code.trim().toUpperCase(),
-        planId: selectedPlanId,
-      });
-
-      if (result.data) {
-        setDiscountValidation(result.data);
-      }
-    } catch (error) {
-      setDiscountValidation({
-        isValid: false,
-        message: 'Failed to validate discount code',
-      });
-    }
-  };
-
-  const handleDiscountCodeChange = (code: string) => {
-    setDiscountCode(code);
-    // Debounce validation
-    const timeoutId = setTimeout(() => {
-      handleDiscountValidation(code);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  };
-
-  const formatPrice = (price: { amount: number; currency: string }) => {
-    const currencySymbols: Record<string, string> = {
-      USD: '$',
-      EUR: '€',
-      GBP: '£',
-      ZAR: 'R',
-      NGN: '₦',
-      KES: 'KSh',
-      GHS: '₵'
-    };
-
-    const symbol = currencySymbols[price.currency] || price.currency;
-    return `${symbol}${price.amount.toFixed(2)}`;
-  };
-
-  const selectedPlan = pricingData?.plans.find(p => p.id === selectedPlanId);
 
   if (plansLoading) {
     return <Skeleton className="h-96" />;
@@ -173,7 +110,7 @@ export function PriceCalculator({
         {/* Plan Selection */}
         <div className="space-y-2">
           <Label htmlFor="plan-select">Select Plan</Label>
-          <Select value={selectedPlanId} onValueChange={setSelectedPlanId}>
+          <Select value={selectedPlanId} onValueChange={onSelectedPlanChange}>
             <SelectTrigger>
               <SelectValue placeholder="Choose a plan" />
             </SelectTrigger>
@@ -197,7 +134,7 @@ export function PriceCalculator({
         {/* Billing Period */}
         <div className="space-y-2">
           <Label htmlFor="billing-period">Billing Period</Label>
-          <Select value={billingPeriod} onValueChange={(value) => setBillingPeriod(value as 'monthly' | 'yearly')}>
+          <Select value={billingPeriod} onValueChange={(value) => onBillingPeriodChange(value as 'monthly' | 'yearly')}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -225,7 +162,7 @@ export function PriceCalculator({
               min="1"
               max="100"
               value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
             />
           </div>
         )}
@@ -238,7 +175,7 @@ export function PriceCalculator({
               id="discount-code"
               placeholder="Enter discount code"
               value={discountCode}
-              onChange={(e) => handleDiscountCodeChange(e.target.value)}
+              onChange={(e) => onDiscountCodeChange(e.target.value)}
             />
             {validatingDiscount && (
               <p className="text-xs text-muted-foreground">Validating...</p>

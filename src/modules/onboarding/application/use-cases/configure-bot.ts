@@ -16,70 +16,98 @@ export interface ConfigureBotCommand {
   readonly businessHours?: Partial<BusinessHours>;
 }
 
+export interface ConfigureBotDependencies {
+  readonly onboardingRepository: OnboardingRepository;
+}
+
+/**
+ * Factory function to create configureBot use case
+ * @param deps Dependencies required for the use case
+ * @returns Object with execute function
+ */
+export const createConfigureBotUseCase = (deps: ConfigureBotDependencies) => {
+  const { onboardingRepository } = deps;
+
+  return {
+    execute: async (command: ConfigureBotCommand): Promise<Result<OnboardingSession, Error>> => {
+      try {
+        // Find the onboarding session
+        const sessionResult = await onboardingRepository.findById(
+          command.sessionId as OnboardingSessionId
+        );
+
+        if (!isSuccess(sessionResult) || !sessionResult.data) {
+          return failure(new Error('Onboarding session not found'));
+        }
+
+        const session = sessionResult.data;
+
+        // Validate that we're on the correct step
+        if (session.currentStep !== 'bot-setup' && !session.completedSteps.includes('bot-setup')) {
+          return failure(new Error('Invalid step for bot configuration'));
+        }
+
+        // Check if phone verification is complete
+        if (!session.stepData.phoneVerification?.isVerified) {
+          return failure(new Error('Phone verification required before bot configuration'));
+        }
+
+        // Create and validate bot configuration
+        let botConfig: BotConfiguration;
+        try {
+          botConfig = createBotConfiguration({
+            name: command.name,
+            welcomeMessage: command.welcomeMessage,
+            languageCode: command.languageCode,
+            businessHours: command.businessHours,
+          });
+        } catch (error) {
+          return failure(new Error(
+            error instanceof Error ? error.message : 'Invalid bot configuration'
+          ));
+        }
+
+        // Update session with bot configuration
+        const updatedSession = updateOnboardingStepData(session, {
+          botConfig,
+        });
+
+        // Advance to next step if we're currently on bot-setup step
+        const finalSession = session.currentStep === 'bot-setup'
+          ? advanceOnboardingStep(updatedSession, 'testing')
+          : updatedSession;
+
+        // Save the updated session
+        const saveResult = await onboardingRepository.update(finalSession);
+        if (!isSuccess(saveResult)) {
+          return failure(new Error('Failed to save bot configuration'));
+        }
+
+        return success(saveResult.data);
+      } catch (error) {
+        return failure(new Error(
+          error instanceof Error ? error.message : 'Unknown error configuring bot'
+        ));
+      }
+    }
+  };
+};
+
+// =============================================================================
+// LEGACY COMPATIBILITY - For gradual migration
+// =============================================================================
+
+/**
+ * @deprecated Use createConfigureBotUseCase factory function instead
+ * Legacy class wrapper for backward compatibility during migration
+ */
 export class ConfigureBotUseCase {
   constructor(
     private readonly onboardingRepository: OnboardingRepository
   ) {}
 
   async execute(command: ConfigureBotCommand): Promise<Result<OnboardingSession, Error>> {
-    try {
-      // Find the onboarding session
-      const sessionResult = await this.onboardingRepository.findById(
-        command.sessionId as OnboardingSessionId
-      );
-
-      if (!isSuccess(sessionResult) || !sessionResult.data) {
-        return failure(new Error('Onboarding session not found'));
-      }
-
-      const session = sessionResult.data;
-
-      // Validate that we're on the correct step
-      if (session.currentStep !== 'bot-setup' && !session.completedSteps.includes('bot-setup')) {
-        return failure(new Error('Invalid step for bot configuration'));
-      }
-
-      // Check if phone verification is complete
-      if (!session.stepData.phoneVerification?.isVerified) {
-        return failure(new Error('Phone verification required before bot configuration'));
-      }
-
-      // Create and validate bot configuration
-      let botConfig: BotConfiguration;
-      try {
-        botConfig = createBotConfiguration({
-          name: command.name,
-          welcomeMessage: command.welcomeMessage,
-          languageCode: command.languageCode,
-          businessHours: command.businessHours,
-        });
-      } catch (error) {
-        return failure(new Error(
-          error instanceof Error ? error.message : 'Invalid bot configuration'
-        ));
-      }
-
-      // Update session with bot configuration
-      const updatedSession = updateOnboardingStepData(session, {
-        botConfig,
-      });
-
-      // Advance to next step if we're currently on bot-setup step
-      const finalSession = session.currentStep === 'bot-setup'
-        ? advanceOnboardingStep(updatedSession, 'testing')
-        : updatedSession;
-
-      // Save the updated session
-      const saveResult = await this.onboardingRepository.update(finalSession);
-      if (!isSuccess(saveResult)) {
-        return failure(new Error('Failed to save bot configuration'));
-      }
-
-      return success(saveResult.data);
-    } catch (error) {
-      return failure(new Error(
-        error instanceof Error ? error.message : 'Unknown error configuring bot'
-      ));
-    }
+    const useCase = createConfigureBotUseCase({ onboardingRepository: this.onboardingRepository });
+    return useCase.execute(command);
   }
 }

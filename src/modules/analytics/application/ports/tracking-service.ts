@@ -1,5 +1,6 @@
-import { EventEntity } from '../../domain/entities/event';
-import { MetricEntity } from '../../domain/entities/metric';
+import { Event } from '../../domain/entities/event';
+import { Metric } from '../../domain/entities/metric';
+import { EventTypeInterface } from '../../domain/value-objects/event-type';
 
 export interface TrackingContext {
   readonly userId?: string;
@@ -16,14 +17,73 @@ export interface TrackingContext {
 }
 
 export interface TrackingService {
-  // Event tracking
-  trackEvent(event: EventEntity): Promise<void>;
-  trackEvents(events: EventEntity[]): Promise<void>;
+  // Generic event tracking
+  track(params: {
+    type: EventTypeInterface;
+    name: string;
+    userId?: string;
+    sessionId?: string;
+    properties?: Record<string, any>;
+  }): Promise<Event>;
+
+  // Detailed event tracking
+  trackEvent(event: Event): Promise<void>;
+  trackEvents(events: Event[]): Promise<void>;
+
+  // Page view tracking
+  trackPageView(params: {
+    path: string;
+    userId?: string;
+    sessionId?: string;
+    properties?: Record<string, any>;
+  }): Promise<Event>;
+
+  // Conversion tracking
+  trackConversion(params: {
+    type: string;
+    value?: number;
+    userId?: string;
+    sessionId?: string;
+    properties?: Record<string, any>;
+  }): Promise<Event>;
+
+  // Error tracking
+  trackError(params: {
+    message: string;
+    stack?: string;
+    level?: 'error' | 'warning' | 'info';
+    userId?: string;
+    sessionId?: string;
+  }): Promise<Event>;
+
+  // Performance tracking
+  trackPerformance(params: {
+    metric: string;
+    value: number;
+    userId?: string;
+    sessionId?: string;
+  }): Promise<Event>;
+
+  // A/B Test tracking
+  trackABTestView(params: {
+    testId: string;
+    variantId: string;
+    userId?: string;
+    sessionId?: string;
+  }): Promise<Event>;
+
+  trackABTestConversion(params: {
+    testId: string;
+    variantId: string;
+    conversionValue?: number;
+    userId?: string;
+    sessionId?: string;
+  }): Promise<Event>;
 
   // Context management
   setContext(context: TrackingContext): void;
   getContext(): TrackingContext;
-  enrichEvent(event: EventEntity): EventEntity;
+  enrichEvent(event: Event): Event;
 
   // Session management
   startSession(): string;

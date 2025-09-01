@@ -4,9 +4,9 @@ import { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight,Star } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shared/ui/components/ui/card';
 
 /**
  * Testimonials Component - Client Component

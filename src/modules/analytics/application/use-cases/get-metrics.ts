@@ -1,5 +1,5 @@
 import { failure,Result, success } from '../../../shared/domain/value-objects/result';
-import { AggregationType,MetricEntity, TimeGranularity } from '../../domain/entities/metric';
+import { AggregationType, Metric, TimeGranularity } from '../../domain/entities/metric';
 import { MetricFilters,MetricsRepository } from '../ports/analytics-repository';
 
 export interface GetMetricsRequest extends MetricFilters {
@@ -8,27 +8,30 @@ export interface GetMetricsRequest extends MetricFilters {
 }
 
 export interface GetMetricsResponse {
-  metrics: MetricEntity[];
+  metrics: Metric[];
   totalCount: number;
   hasMore: boolean;
   aggregations?: Record<string, number>;
 }
 
-export class GetMetricsUseCase {
-  constructor(private readonly metricsRepository: MetricsRepository) {}
+// Factory function for creating GetMetrics use case
+export const createGetMetricsUseCase = (dependencies: {
+  metricsRepository: MetricsRepository;
+}) => {
+  const { metricsRepository } = dependencies;
 
-  async execute(request: GetMetricsRequest = {}): Promise<Result<GetMetricsResponse, Error>> {
+  const execute = async (request: GetMetricsRequest = {}): Promise<Result<GetMetricsResponse, Error>> => {
     try {
       const { sortBy, sortOrder, ...filters } = request;
 
       // Get metrics from repository
-      const metrics = await this.metricsRepository.getMetrics(filters);
+      const metrics = await metricsRepository.getMetrics(filters);
 
       // Sort metrics if requested
-      const sortedMetrics = this.sortMetrics(metrics, sortBy, sortOrder);
+      const sortedMetrics = sortMetrics(metrics, sortBy, sortOrder);
 
       // Calculate aggregations for numeric metrics
-      const aggregations = this.calculateAggregations(sortedMetrics);
+      const aggregations = calculateAggregations(sortedMetrics);
 
       // Determine if there are more results
       const hasMore = filters.limit ? sortedMetrics.length >= filters.limit : false;
@@ -42,13 +45,13 @@ export class GetMetricsUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to get metrics'));
     }
-  }
+  };
 
-  private sortMetrics(
-    metrics: MetricEntity[],
+  const sortMetrics = (
+    metrics: Metric[],
     sortBy?: string,
     sortOrder: 'asc' | 'desc' = 'desc'
-  ): MetricEntity[] {
+  ): Metric[] => {
     if (!sortBy) {
       return metrics.sort((a, b) =>
         sortOrder === 'asc'
@@ -76,9 +79,9 @@ export class GetMetricsUseCase {
 
       return sortOrder === 'asc' ? comparison : -comparison;
     });
-  }
+  };
 
-  private calculateAggregations(metrics: MetricEntity[]): Record<string, number> {
+  const calculateAggregations = (metrics: Metric[]): Record<string, number> => {
     if (metrics.length === 0) {
       return {};
     }
@@ -100,8 +103,15 @@ export class GetMetricsUseCase {
       max: Math.max(...values),
       count: values.length,
     };
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type GetMetricsUseCase = ReturnType<typeof createGetMetricsUseCase>;
 
 export interface GetMetricTrendRequest {
   name: string;
@@ -113,7 +123,7 @@ export interface GetMetricTrendRequest {
 }
 
 export interface GetMetricTrendResponse {
-  trend: MetricEntity[];
+  trend: Metric[];
   summary: {
     totalDataPoints: number;
     timeRange: {
@@ -125,17 +135,20 @@ export interface GetMetricTrendResponse {
   };
 }
 
-export class GetMetricTrendUseCase {
-  constructor(private readonly metricsRepository: MetricsRepository) {}
+// Factory function for creating GetMetricTrend use case
+export const createGetMetricTrendUseCase = (dependencies: {
+  metricsRepository: MetricsRepository;
+}) => {
+  const { metricsRepository } = dependencies;
 
-  async execute(request: GetMetricTrendRequest): Promise<Result<GetMetricTrendResponse, Error>> {
+  const execute = async (request: GetMetricTrendRequest): Promise<Result<GetMetricTrendResponse, Error>> => {
     try {
       // Set default date range if not provided
       const endDate = request.endDate || new Date();
-      const startDate = request.startDate || this.getDefaultStartDate(endDate, request.granularity);
+      const startDate = request.startDate || getDefaultStartDate(endDate, request.granularity);
 
       // Get trend data from repository
-      const trend = await this.metricsRepository.getMetricTrend(request.name, request.granularity, {
+      const trend = await metricsRepository.getMetricTrend(request.name, request.granularity, {
         startDate,
         endDate,
         dimensions: request.dimensions,
@@ -147,8 +160,8 @@ export class GetMetricTrendUseCase {
       }
 
       // Analyze trend
-      const trendAnalysis = this.analyzeTrend(trend);
-      const changePercentage = this.calculateChangePercentage(trend);
+      const trendAnalysis = analyzeTrend(trend);
+      const changePercentage = calculateChangePercentage(trend);
 
       return success({
         trend,
@@ -165,9 +178,9 @@ export class GetMetricTrendUseCase {
     } catch (error) {
       return failure(error instanceof Error ? error : new Error('Failed to get metric trend'));
     }
-  }
+  };
 
-  private getDefaultStartDate(endDate: Date, granularity: TimeGranularity): Date {
+  const getDefaultStartDate = (endDate: Date, granularity: TimeGranularity): Date => {
     const start = new Date(endDate);
 
     switch (granularity) {
@@ -189,9 +202,9 @@ export class GetMetricTrendUseCase {
     }
 
     return start;
-  }
+  };
 
-  private analyzeTrend(metrics: MetricEntity[]): 'increasing' | 'decreasing' | 'stable' | 'volatile' {
+  const analyzeTrend = (metrics: Metric[]): 'increasing' | 'decreasing' | 'stable' | 'volatile' => {
     if (metrics.length < 3) {
       return 'stable';
     }
@@ -205,7 +218,7 @@ export class GetMetricTrendUseCase {
     }
 
     const avgChange = changes.reduce((acc, val) => acc + val, 0) / changes.length;
-    const volatility = this.calculateVolatility(changes);
+    const volatility = calculateVolatility(changes);
 
     // High volatility threshold
     if (volatility > 50) {
@@ -220,9 +233,9 @@ export class GetMetricTrendUseCase {
     } else {
       return 'stable';
     }
-  }
+  };
 
-  private calculateVolatility(changes: number[]): number {
+  const calculateVolatility = (changes: number[]): number => {
     if (changes.length === 0) return 0;
 
     const mean = changes.reduce((acc, val) => acc + val, 0) / changes.length;
@@ -230,9 +243,9 @@ export class GetMetricTrendUseCase {
     const variance = squaredDiffs.reduce((acc, val) => acc + val, 0) / changes.length;
 
     return Math.sqrt(variance);
-  }
+  };
 
-  private calculateChangePercentage(metrics: MetricEntity[]): number {
+  const calculateChangePercentage = (metrics: Metric[]): number => {
     if (metrics.length < 2) {
       return 0;
     }
@@ -245,5 +258,12 @@ export class GetMetricTrendUseCase {
     }
 
     return ((lastValue - firstValue) / firstValue) * 100;
-  }
-}
+  };
+
+  return {
+    execute,
+  };
+};
+
+// Export type for the use case factory
+export type GetMetricTrendUseCase = ReturnType<typeof createGetMetricTrendUseCase>;

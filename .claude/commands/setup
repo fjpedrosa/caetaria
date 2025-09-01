@@ -1,0 +1,511 @@
+#!/bin/bash
+# One-command project setup script
+# Usage: ./.claude/commands/setup [options]
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+NC='\033[0m' # No Color
+
+# Configuration
+SETUP_MODE="full"
+SKIP_DEPS="false"
+SKIP_DB="false"
+SKIP_ENV="false"
+
+# Utility functions
+log() {
+    echo -e "${GREEN}[SETUP]${NC} $1"
+}
+
+warn() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+header() {
+    echo -e "${PURPLE}$1${NC}"
+}
+
+# Show help
+show_help() {
+    echo "One-Command Project Setup"
+    echo
+    echo "Usage: $0 [options]"
+    echo
+    echo "Setup Modes:"
+    echo "  --full        Complete setup (default)"
+    echo "  --quick       Quick setup (skip optional components)"
+    echo "  --minimal     Minimal setup (dependencies only)"
+    echo
+    echo "Options:"
+    echo "  --skip-deps   Skip dependency installation"
+    echo "  --skip-db     Skip database setup"
+    echo "  --skip-env    Skip environment setup"
+    echo "  --help        Show this help message"
+    echo
+    echo "Examples:"
+    echo "  $0                    # Full setup"
+    echo "  $0 --quick            # Quick setup"
+    echo "  $0 --skip-db          # Setup without database"
+    echo
+}
+
+# Parse command line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --full)
+                SETUP_MODE="full"
+                shift
+                ;;
+            --quick)
+                SETUP_MODE="quick"
+                shift
+                ;;
+            --minimal)
+                SETUP_MODE="minimal"
+                shift
+                ;;
+            --skip-deps)
+                SKIP_DEPS="true"
+                shift
+                ;;
+            --skip-db)
+                SKIP_DB="true"
+                shift
+                ;;
+            --skip-env)
+                SKIP_ENV="true"
+                shift
+                ;;
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            *)
+                error "Unknown option: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Check system requirements
+check_system_requirements() {
+    header "🔍 Checking System Requirements"
+    
+    local required_tools=("node" "npm" "git")
+    local optional_tools=("docker" "supabase" "vercel")
+    local missing_required=()
+    local missing_optional=()
+    
+    # Check required tools
+    for tool in "${required_tools[@]}"; do
+        if ! command -v $tool &> /dev/null; then
+            missing_required+=("$tool")
+        else
+            local version
+            case $tool in
+                "node")
+                    version=$(node --version)
+                    log "✅ Node.js $version"
+                    ;;
+                "npm")
+                    version=$(npm --version)
+                    log "✅ npm $version"
+                    ;;
+                "git")
+                    version=$(git --version | cut -d' ' -f3)
+                    log "✅ Git $version"
+                    ;;
+            esac
+        fi
+    done
+    
+    # Check optional tools
+    for tool in "${optional_tools[@]}"; do
+        if ! command -v $tool &> /dev/null; then
+            missing_optional+=("$tool")
+        else
+            local version
+            case $tool in
+                "docker")
+                    version=$(docker --version | cut -d' ' -f3 | tr -d ',')
+                    log "✅ Docker $version"
+                    ;;
+                "supabase")
+                    version=$(supabase --version | cut -d' ' -f2)
+                    log "✅ Supabase CLI $version"
+                    ;;
+                "vercel")
+                    version=$(vercel --version)
+                    log "✅ Vercel CLI $version"
+                    ;;
+            esac
+        fi
+    done
+    
+    # Handle missing required tools
+    if [ ${#missing_required[@]} -gt 0 ]; then
+        error "Missing required tools:"
+        for tool in "${missing_required[@]}"; do
+            echo "  - $tool"
+        done
+        echo
+        echo "Please install the required tools and run setup again."
+        exit 1
+    fi
+    
+    # Handle missing optional tools
+    if [ ${#missing_optional[@]} -gt 0 ]; then
+        warn "Missing optional tools (setup will continue):"
+        for tool in "${missing_optional[@]}"; do
+            case $tool in
+                "docker")
+                    echo "  - $tool (needed for local Supabase development)"
+                    echo "    Install: https://docs.docker.com/get-docker/"
+                    ;;
+                "supabase")
+                    echo "  - $tool (needed for database operations)"
+                    echo "    Install: npm install -g supabase"
+                    ;;
+                "vercel")
+                    echo "  - $tool (needed for deployment)"
+                    echo "    Install: npm install -g vercel"
+                    ;;
+            esac
+        done
+        echo
+    fi
+}
+
+# Install dependencies
+install_dependencies() {
+    if [ "$SKIP_DEPS" = "true" ]; then
+        warn "Skipping dependency installation"
+        return
+    fi
+    
+    header "📦 Installing Dependencies"
+    
+    # Check if package-lock.json exists
+    if [ -f "package-lock.json" ]; then
+        log "Using npm ci for faster, reliable installation..."
+        npm ci
+    else
+        log "Installing dependencies with npm install..."
+        npm install
+    fi
+    
+    # Install global tools if needed
+    if [ "$SETUP_MODE" = "full" ]; then
+        log "Checking global tools..."
+        
+        if ! command -v supabase &> /dev/null; then
+            log "Installing Supabase CLI globally..."
+            npm install -g supabase
+        fi
+        
+        if ! command -v vercel &> /dev/null; then
+            log "Installing Vercel CLI globally..."
+            npm install -g vercel
+        fi
+        
+        if ! command -v playwright &> /dev/null; then
+            log "Installing Playwright browsers..."
+            npx playwright install --with-deps
+        fi
+    fi
+    
+    log "✅ Dependencies installed successfully"
+}
+
+# Setup environment variables
+setup_environment() {
+    if [ "$SKIP_ENV" = "true" ]; then
+        warn "Skipping environment setup"
+        return
+    fi
+    
+    header "🔧 Setting Up Environment"
+    
+    # Check if .env.local exists
+    if [ -f ".env.local" ]; then
+        info "Environment file .env.local already exists"
+        read -p "Do you want to overwrite it? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            info "Keeping existing .env.local"
+            return
+        fi
+    fi
+    
+    # Copy from example
+    if [ -f ".env.example" ]; then
+        log "Creating .env.local from .env.example..."
+        cp .env.example .env.local
+        
+        info "Environment file created at .env.local"
+        info "Please update the values with your actual configuration"
+        
+        if [ "$SETUP_MODE" = "full" ]; then
+            echo
+            echo "Key environment variables to configure:"
+            echo "  - NEXT_PUBLIC_SUPABASE_URL"
+            echo "  - NEXT_PUBLIC_SUPABASE_ANON_KEY"
+            echo "  - SUPABASE_SERVICE_ROLE_KEY"
+            echo "  - VERCEL_TOKEN (for deployment)"
+            echo "  - SENTRY_DSN (for error tracking)"
+        fi
+    else
+        warn "No .env.example file found"
+        info "Creating basic .env.local..."
+        
+        cat > .env.local << EOF
+# Basic environment configuration
+NODE_ENV=development
+NEXT_TELEMETRY_DISABLED=1
+
+# Supabase (local development)
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+
+# Add your configuration here
+EOF
+        
+        info "Basic .env.local created. Please configure with your actual values."
+    fi
+}
+
+# Setup database
+setup_database() {
+    if [ "$SKIP_DB" = "true" ]; then
+        warn "Skipping database setup"
+        return
+    fi
+    
+    header "🗄️ Setting Up Database"
+    
+    # Check if Docker is available
+    if ! command -v docker &> /dev/null; then
+        warn "Docker not available. Skipping local database setup."
+        info "To set up the database later:"
+        info "  1. Install Docker"
+        info "  2. Run: ./.claude/commands/db start"
+        return
+    fi
+    
+    # Check if Supabase CLI is available
+    if ! command -v supabase &> /dev/null; then
+        warn "Supabase CLI not available. Skipping database setup."
+        info "To set up the database later:"
+        info "  1. Install Supabase CLI: npm install -g supabase"
+        info "  2. Run: ./.claude/commands/db start"
+        return
+    fi
+    
+    # Check if Docker is running
+    if ! docker info &> /dev/null; then
+        warn "Docker is not running. Please start Docker and run setup again."
+        info "Or skip database setup with: $0 --skip-db"
+        return
+    fi
+    
+    log "Starting local Supabase environment..."
+    
+    # Initialize Supabase if not already initialized
+    if [ ! -f "supabase/config.toml" ]; then
+        log "Initializing Supabase project..."
+        supabase init
+    fi
+    
+    # Start Supabase
+    log "Starting Supabase services (this may take a few minutes)..."
+    supabase start
+    
+    if [ $? -eq 0 ]; then
+        log "✅ Supabase started successfully!"
+        
+        # Generate types
+        log "Generating TypeScript types..."
+        npm run supabase:types
+        
+        # Show connection info
+        echo
+        supabase status
+        
+        info "Database is ready for development!"
+        info "Access Supabase Studio at: http://127.0.0.1:54323"
+    else
+        error "Failed to start Supabase"
+        info "You can try starting it manually later with: ./.claude/commands/db start"
+    fi
+}
+
+# Run initial build and tests
+run_initial_validation() {
+    if [ "$SETUP_MODE" = "minimal" ]; then
+        return
+    fi
+    
+    header "🧪 Running Initial Validation"
+    
+    # Type checking
+    log "Running type checking..."
+    npm run type-check
+    
+    # Linting
+    log "Running linter..."
+    npm run lint
+    
+    if [ "$SETUP_MODE" = "full" ]; then
+        # Build application
+        log "Testing build process..."
+        npm run build
+        
+        # Run tests
+        log "Running tests..."
+        npm run test:unit
+    fi
+    
+    log "✅ Initial validation completed"
+}
+
+# Setup development tools
+setup_development_tools() {
+    if [ "$SETUP_MODE" != "full" ]; then
+        return
+    fi
+    
+    header "⚙️ Setting Up Development Tools"
+    
+    # Install Playwright browsers if available
+    if command -v playwright &> /dev/null; then
+        log "Installing Playwright browsers..."
+        npx playwright install --with-deps chromium firefox
+    fi
+    
+    # Setup Git hooks if available
+    if [ -d ".git" ]; then
+        log "Setting up Git hooks..."
+        
+        # Create pre-commit hook
+        mkdir -p .git/hooks
+        cat > .git/hooks/pre-commit << 'EOF'
+#!/bin/bash
+# Pre-commit hook for code quality
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Run linter
+npm run lint:strict
+
+# Run type checking
+npm run type-check
+
+# Run unit tests
+npm run test:unit
+
+echo "✅ Pre-commit checks passed"
+EOF
+        
+        chmod +x .git/hooks/pre-commit
+        log "✅ Git pre-commit hook installed"
+    fi
+    
+    log "✅ Development tools configured"
+}
+
+# Show completion message
+show_completion_message() {
+    echo
+    header "🎉 Setup Complete!"
+    echo
+    
+    log "Your project is ready for development!"
+    echo
+    
+    info "Next steps:"
+    echo "  1. Configure environment variables in .env.local"
+    
+    if [ "$SKIP_DB" != "true" ] && command -v supabase &> /dev/null; then
+        echo "  2. Database is running at http://127.0.0.1:54323"
+        echo "  3. Start development: npm run dev"
+    else
+        echo "  2. Start database: ./.claude/commands/db start"
+        echo "  3. Start development: npm run dev"
+    fi
+    
+    echo
+    info "Available commands:"
+    echo "  npm run dev                    # Start development server"
+    echo "  npm run build                  # Build for production"
+    echo "  npm run test                   # Run tests"
+    echo "  ./.claude/commands/db start    # Start database"
+    echo "  ./.claude/commands/deploy      # Deploy to staging/production"
+    echo
+    
+    if [ -f ".env.local" ]; then
+        warn "Don't forget to configure your environment variables in .env.local"
+    fi
+    
+    info "Happy coding! 🚀"
+}
+
+# Error handling
+handle_error() {
+    local exit_code=$?
+    local line_number=$1
+    
+    error "Setup failed at line $line_number with exit code $exit_code"
+    echo
+    info "You can:"
+    echo "  - Fix the issue and run setup again"
+    echo "  - Skip problematic steps with --skip-* flags"
+    echo "  - Run individual setup steps manually"
+    
+    exit $exit_code
+}
+
+# Set up error handling
+trap 'handle_error $LINENO' ERR
+
+# Make sure we're in the project root
+cd "$(dirname "$0")/../.."
+
+# Main execution
+main() {
+    parse_arguments "$@"
+    
+    echo
+    header "🚀 WhatsApp Cloud Landing - Project Setup"
+    info "Setup mode: $SETUP_MODE"
+    echo
+    
+    check_system_requirements
+    install_dependencies
+    setup_environment
+    setup_database
+    run_initial_validation
+    setup_development_tools
+    show_completion_message
+}
+
+# Run main function with all arguments
+main "$@"

@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Alias para comandos comunes de desarrollo
+# Uso: ./dev <comando>
+
+case "$1" in
+    # Comandos principales
+    ""|"stable")
+        echo "🚀 Starting stable development mode..."
+        npm run dev:stable
+        ;;
+    "perf"|"performance")
+        echo "⚡ Starting performance development mode..."
+        npm run dev:performance
+        ;;
+    "mem"|"memory")
+        echo "💾 Starting memory-intensive development mode..."
+        npm run dev:memory
+        ;;
+    "sim"|"simulator")
+        echo "📱 Starting WhatsApp Simulator optimized mode..."
+        npm run dev:performance
+        ;;
+    
+    # Comandos de fallback
+    "webpack"|"wp")
+        echo "🔧 Starting webpack fallback mode..."
+        npm run dev:webpack
+        ;;
+    "fallback"|"fb")
+        echo "⚠️  Starting minimal fallback mode..."
+        npm run dev:fallback
+        ;;
+    
+    # Comandos de debugging
+    "debug"|"d")
+        echo "🔍 Starting debug mode..."
+        npm run dev:debug
+        ;;
+    
+    # Comandos de limpieza
+    "clean"|"c")
+        echo "🧹 Cleaning and starting development..."
+        npm run dev:clean
+        ;;
+    
+    # Comandos de build
+    "build"|"b")
+        echo "🏗️  Building application..."
+        npm run build
+        ;;
+    "build:analyze"|"ba")
+        echo "📊 Building with analysis..."
+        npm run build:analyze
+        ;;
+    
+    # Comandos de testing
+    "test"|"t")
+        echo "🧪 Running tests..."
+        npm run test
+        ;;
+    "test:watch"|"tw")
+        echo "👀 Running tests in watch mode..."
+        npm run test:watch
+        ;;
+    "test:e2e"|"te")
+        echo "🎭 Running E2E tests..."
+        npm run test:e2e
+        ;;
+    "test:all"|"ta")
+        echo "🔬 Running all tests..."
+        npm run test:all
+        ;;
+    
+    # Comandos de utilidad
+    "lint"|"l")
+        echo "🔎 Running linter..."
+        npm run lint
+        ;;
+    "type"|"tc")
+        echo "🏷️  Type checking..."
+        npm run type-check
+        ;;
+    "health"|"h")
+        echo "🏥 Health check..."
+        npm run health:check && npm run health:memory
+        ;;
+    
+    # Help
+    "help"|"--help"|"-h")
+        echo "🛠️  Development Commands Helper"
+        echo ""
+        echo "Usage: ./dev <command>"
+        echo ""
+        echo "📍 Main Development Commands:"
+        echo "  (empty), stable    Start stable development (RECOMMENDED)"
+        echo "  perf, performance  High performance mode for complex features"
+        echo "  mem, memory        Memory-intensive mode for debugging"
+        echo "  sim, simulator     WhatsApp Simulator optimized mode"
+        echo ""
+        echo "🔄 Fallback Commands:"
+        echo "  webpack, wp        Use webpack instead of turbopack"
+        echo "  fallback, fb       Minimal configuration mode"
+        echo ""
+        echo "🔍 Debug & Utility:"
+        echo "  debug, d           Debug mode with detailed logging"
+        echo "  clean, c           Clean cache and start development"
+        echo ""
+        echo "🏗️  Build Commands:"
+        echo "  build, b           Build for production"
+        echo "  build:analyze, ba  Build with bundle analysis"
+        echo ""
+        echo "🧪 Testing Commands:"
+        echo "  test, t            Run unit tests"
+        echo "  test:watch, tw     Run tests in watch mode"
+        echo "  test:e2e, te       Run E2E tests"
+        echo "  test:all, ta       Run all tests"
+        echo ""
+        echo "🔧 Quality Commands:"
+        echo "  lint, l            Run ESLint"
+        echo "  type, tc           Run TypeScript check"
+        echo "  health, h          System health check"
+        echo ""
+        echo "💡 Examples:"
+        echo "  ./dev              # Start stable development"
+        echo "  ./dev sim          # Start simulator-optimized mode"
+        echo "  ./dev clean        # Clean cache and start"
+        echo "  ./dev test:watch   # Run tests in watch mode"
+        ;;
+    *)
+        echo "❌ Unknown command: $1"
+        echo "Use './dev help' for available commands."
+        exit 1
+        ;;
+esac

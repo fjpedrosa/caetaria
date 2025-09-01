@@ -1,6 +1,8 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+  // Enable class-based dark mode (required for next-themes)
+  darkMode: 'class',
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",

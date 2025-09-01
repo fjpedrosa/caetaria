@@ -1,327 +1,74 @@
-/**
- * Enhanced WhatsApp Simulator
- * Supports educational badges, iPhone UI, and WhatsApp Flows
- * Designed to replace the hardcoded hero-mobile-demo-v2.tsx
- */
-
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Icon } from '@/components/ui/icon';
-import {
-  Brain,
-  Database,
-  Menu,
-  Phone,
-  Settings,
-  Sparkles,
-  Video,
-} from '@/lib/icons';
+// UI Components
+import { Menu, Phone, Video } from '@/lib/icons';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
-import { Conversation, Message } from '../../domain/entities';
-import {
-  createRestaurantReservationConversation,
-  EducationalBadge,
-  FlowStep,
-  restaurantReservationScenario,
-  WhatsAppSimulatorProps} from '../../scenarios/restaurant-reservation-scenario';
-import { ConversationFactory } from '../../infra/factories/conversation-factory';
-import { useConversationFlow } from '../hooks/use-conversation-flow';
-import { useFlowExecutionWithEvents } from '../hooks/use-flow-execution';
-import { useTypingIndicatorWithEvents } from '../hooks/use-typing-indicator';
+// Domain Types
+import type { Conversation } from '../../domain/entities';
+import type { FlowStepId, ReservationData, WhatsAppSimulatorProps } from '../../domain/types';
 
-interface ReservationData {
-  guests: number;
-  date: string;
-  time: string;
+// Presentational Components
+import { EducationalBadge } from './educational-badge';
+import { FlowPanel } from './flow-panel';
+
+export interface WhatsAppSimulatorPresentationalProps {
+  // Core state
+  conversation: Conversation | null;
+  isInitialized: boolean;
+  activeBadge: any;
+  showFlow: boolean;
+  flowStep: FlowStepId;
+  reservationData: ReservationData;
+
+  // Configuration
+  device: 'iphone14' | 'android';
+  enableEducationalBadges: boolean;
+  className: string;
+
+  // Hooks data
+  conversationFlow: any;
+  typingIndicator: any;
+  flowExecution: any;
+
+  // Event handlers
+  onDataChange: (data: ReservationData) => void;
 }
 
-type FlowStepId = 'guests' | 'date' | 'time' | 'confirmation';
-
-/**
- * Enhanced WhatsApp Simulator with iPhone UI and educational badges
- */
-export const WhatsAppSimulator = React.memo<WhatsAppSimulatorProps>(function WhatsAppSimulator({
-  scenario = restaurantReservationScenario,
-  device = 'iphone14',
-  autoPlay = false,
-  enableEducationalBadges = true,
-  enableGifExport = false,
-  onComplete,
-  onBadgeShow,
-  onFlowStep,
-  className = ''
-}) {
-  // Memoized conversation flow config to prevent re-initialization
-  const flowConfig = useMemo(() => ({
-    enableDebug: false,
-    autoCleanup: true
-  }), []);
-  
-  const conversationFlow = useConversationFlow(flowConfig);
-
-  // Memoized configs to prevent re-initialization
-  const typingConfig = useMemo(() => ({
-    showTypingIndicator: true,
-    animationDuration: 1200
-  }), []);
-  
-  const executionConfig = useMemo(() => ({
-    enableMockExecution: true,
-    autoCompleteFlows: true
-  }), []);
-
-  // Typing indicator integration
-  const typingIndicator = useTypingIndicatorWithEvents(
-    conversationFlow.events$,
-    typingConfig
-  );
-
-  // Flow execution integration
-  const flowExecution = useFlowExecutionWithEvents(
-    conversationFlow.events$,
-    executionConfig
-  );
-
-  // Component state
-  const [conversation, setConversation] = useState<Conversation | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [activeBadge, setActiveBadge] = useState<EducationalBadge | null>(null);
-  const [showFlow, setShowFlow] = useState(false);
-  const [flowStep, setFlowStep] = useState<FlowStepId>('guests');
-  const [reservationData, setReservationData] = useState<ReservationData>({
-    guests: 0,
-    date: '',
-    time: ''
-  });
-
-  // Memoized scenario template creation to prevent unnecessary re-computation
-  const conversationTemplate = useMemo(() => {
-    if (!scenario) return null;
-    
-    return {
-      metadata: {
-        title: scenario?.metadata?.title || 'WhatsApp Demo',
-        description: scenario?.metadata?.description || 'WhatsApp Business Demo',
-        tags: scenario?.metadata?.tags || ['demo'],
-        businessName: scenario?.metadata?.businessName || 'Demo Business',
-        businessPhoneNumber: scenario?.metadata?.businessPhoneNumber || '+1234567890',
-        userPhoneNumber: scenario?.metadata?.userPhoneNumber || '+1987654321',
-        language: scenario?.metadata?.language || 'es',
-        category: scenario?.metadata?.category || 'demo'
-      },
-      messages: scenario?.messages?.map(msg => ({
-        sender: msg.sender,
-        type: 'text' as const,
-        content: { text: msg.text },
-        delayBeforeTyping: msg.timestamp,
-        typingDuration: scenario?.timing?.typingDuration || 1200
-      })) || [],
-      settings: {
-        playbackSpeed: 1.0,
-        autoAdvance: true,
-        showTypingIndicators: true,
-        showReadReceipts: true
-      }
-    };
-  }, [scenario]);
-  
-  // Optimized conversation initialization with cleanup
-  const initializeConversation = useCallback(async () => {
-    const scenarioId = scenario?.metadata?.id || 'restaurant-reservation';
-    
-    console.log(`[WhatsAppSimulator] Initializing with scenario: ${scenarioId}`);
-    
-    // Clean up previous state
-    setActiveBadge(null);
-    setShowFlow(false);
-    setFlowStep('guests');
-    setReservationData({ guests: 0, date: '', time: '' });
-    setIsInitialized(false);
-    
-    // Create conversation based on memoized template
-    let conv: Conversation;
-    
-    try {
-      if (conversationTemplate) {
-        conv = ConversationFactory.createFromTemplate(conversationTemplate);
-      } else {
-        throw new Error('No conversation template available');
-      }
-    } catch (error) {
-      console.error(`[WhatsAppSimulator] Error creating conversation for scenario ${scenarioId}:`, error);
-      conv = createRestaurantReservationConversation();
-    }
-    
-    setConversation(conv);
-
-    const success = await conversationFlow.actions.loadConversation(conv);
-    if (success) {
-      setIsInitialized(true);
-
-      // Auto-play if enabled - optimized delay
-      if (autoPlay) {
-        // Use requestAnimationFrame for better performance
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            console.log(`[WhatsAppSimulator] Starting autoPlay for scenario: ${scenarioId}...`);
-            conversationFlow.actions.play();
-          }, 100); // Reduced from 500ms to 100ms
-        });
-      }
-    }
-  }, [scenario, autoPlay, conversationFlow.actions, conversationTemplate]);
-
-  // Initialize conversation with proper cleanup
-  useEffect(() => {
-    let isMounted = true;
-    
-    const initialize = async () => {
-      if (isMounted) {
-        await initializeConversation();
-      }
-    };
-    
-    initialize();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [initializeConversation]);
-
-  // Memoized badge handling with proper cleanup
-  const handleBadgeDisplay = useCallback((badge: EducationalBadge) => {
-    // Use requestAnimationFrame for smoother animations
-    requestAnimationFrame(() => {
-      setActiveBadge(badge);
-      onBadgeShow?.(badge);
-
-      // Hide badge after duration with cleanup
-      const timeoutId = setTimeout(() => {
-        setActiveBadge(null);
-      }, badge.displayDuration);
-      
-      // Store timeout for potential cleanup
-      return () => clearTimeout(timeoutId);
-    });
-  }, [onBadgeShow]);
-  
-  const startFlowSequence = useCallback(() => {
-    const sequence = [
-      { step: 'guests' as FlowStepId, delay: 1500 },
-      { step: 'date' as FlowStepId, delay: 4000 },
-      { step: 'time' as FlowStepId, delay: 6500 },
-      { step: 'confirmation' as FlowStepId, delay: 9000 },
-    ];
-
-    const timeouts: NodeJS.Timeout[] = [];
-    
-    sequence.forEach(({ step, delay }) => {
-      const timeoutId = setTimeout(() => {
-        setFlowStep(step);
-        onFlowStep?.(scenario.flowSteps.find(s => s.id === step)!);
-
-        if (step === 'guests') {
-          setReservationData(prev => ({ ...prev, guests: 6 }));
-        } else if (step === 'date') {
-          const tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          setReservationData(prev => ({ ...prev, date: tomorrow.toISOString().split('T')[0] }));
-        } else if (step === 'time') {
-          setReservationData(prev => ({ ...prev, time: '19:00' }));
-        }
-      }, delay);
-      
-      timeouts.push(timeoutId);
-    });
-
-    // Close flow after confirmation
-    const closeTimeout = setTimeout(() => {
-      setShowFlow(false);
-    }, 10500);
-    timeouts.push(closeTimeout);
-    
-    // Return cleanup function
-    return () => {
-      timeouts.forEach(timeout => clearTimeout(timeout));
-    };
-  }, [scenario.flowSteps, onFlowStep]);
-
-  // Handle educational badges with optimized subscription
-  useEffect(() => {
-    if (!enableEducationalBadges || !conversationFlow.events$) return;
-
-    const subscription = conversationFlow.events$.subscribe(event => {
-      if (event.type === 'message.sent') {
-        const messageIndex = conversationFlow.state.currentMessageIndex;
-        const badge = scenario.educationalBadges.find(
-          b => b.triggerAtMessageIndex === messageIndex
-        );
-
-        if (badge) {
-          // Reduced delay for snappier response
-          setTimeout(() => {
-            handleBadgeDisplay(badge);
-          }, 200); // Reduced from 500ms
-        }
-
-        // Trigger flow if this message has flowTrigger
-        const currentMessage = scenario.messages[messageIndex];
-        if (currentMessage?.flowTrigger) {
-          setTimeout(() => {
-            setShowFlow(true);
-            const cleanup = startFlowSequence();
-            // Store cleanup function if needed
-          }, 800); // Reduced from 1500ms
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [conversationFlow.events$, enableEducationalBadges, scenario, handleBadgeDisplay, startFlowSequence]);
-
-  // Handle conversation complete
-  useEffect(() => {
-    if (!conversationFlow.events$) return;
-
-    const subscription = conversationFlow.events$.subscribe(event => {
-      if (event.type === 'conversation.completed') {
-        onComplete?.();
-
-        // Auto-restart after delay
-        setTimeout(() => {
-          conversationFlow.actions.reset();
-          setActiveBadge(null);
-          setShowFlow(false);
-          setFlowStep('guests');
-          setReservationData({ guests: 0, date: '', time: '' });
-
-          if (autoPlay) {
-            setTimeout(() => {
-              conversationFlow.actions.play();
-            }, 1000);
-          }
-        }, scenario.timing.restartDelay);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [conversationFlow.events$, onComplete, autoPlay, scenario]);
-
-  if (!isInitialized || !conversation) {
-    return (
-      <div className={`flex items-center justify-center p-8 ${className}`}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-600">Cargando simulador...</p>
+export const WhatsAppSimulator = React.memo<WhatsAppSimulatorPresentationalProps>(
+  function WhatsAppSimulator({
+    conversation,
+    isInitialized,
+    activeBadge,
+    showFlow,
+    flowStep,
+    reservationData,
+    device = 'iphone14',
+    enableEducationalBadges = true,
+    className = '',
+    conversationFlow,
+    typingIndicator,
+    flowExecution,
+    onDataChange
+  }) {
+    // Loading state - pure UI rendering
+    if (!isInitialized || !conversation) {
+      console.log('[WhatsAppSimulator UI] Loading state:', {isInitialized, hasConversation: !!conversation});
+      return (
+        <div className={`flex items-center justify-center p-8 ${className}`}>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+            <p className="mt-2 text-sm text-gray-600">Cargando simulador...</p>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  return (
+    // Main simulator UI - pure JSX rendering
+    return (
     <motion.div
       className={`relative flex justify-center items-center w-full lg:justify-center overflow-hidden ${className}`}
       initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
@@ -405,8 +152,7 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorProps>(function Wha
 
                   {/* Chat Messages */}
                   <div className="flex-1 bg-[#e5ddd5] bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22whatsapp-bg%22%20patternUnits%3D%22userSpaceOnUse%22%20width%3D%2260%22%20height%3D%2260%22%3E%3Cpath%20d%3D%22M0%2030h60v30H0z%22%20fill%3D%22%23e5ddd5%22%20opacity%3D%22.8%22%2F%3E%3Cpath%20d%3D%22M0%200h60v30H0z%22%20fill%3D%22%23d9d0c7%22%20opacity%3D%22.8%22%2F%3E%3C%2Fpattern%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23whatsapp-bg)%22%2F%3E%3C%2Fsvg%3E')] p-4 space-y-3 overflow-hidden">
-                    {/* Render messages */}
-                    {console.log('[WhatsAppSimulator] Rendering messages:', conversationFlow.state.messages.length, 'currentIndex:', conversationFlow.state.currentMessageIndex)}
+                    {/* Render messages - pure presentation */}
                     {conversationFlow.state.messages.map((message, index) => {
                       const isVisible = index <= conversationFlow.state.currentMessageIndex;
                       if (!isVisible) return null;
@@ -507,7 +253,7 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorProps>(function Wha
                         <FlowPanel
                           step={flowStep}
                           reservationData={reservationData}
-                          onDataChange={setReservationData}
+                          onDataChange={onDataChange}
                         />
                       </motion.div>
                     </motion.div>
@@ -521,454 +267,24 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorProps>(function Wha
         {/* Educational Badges */}
         <AnimatePresence>
           {enableEducationalBadges && activeBadge && (
-            <div className="hidden sm:block">
-              <DynamicBadgeDisplay badge={activeBadge} />
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* Mobile-friendly badges */}
-        <AnimatePresence>
-          {enableEducationalBadges && activeBadge && (
-            <motion.div
-              className="sm:hidden absolute inset-0 z-50 pointer-events-none flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="bg-black/20 absolute inset-0" />
-              <motion.div
-                className={`
-                  ${activeBadge.bgColor} 
-                  ${activeBadge.color} 
-                  rounded-xl shadow-xl p-3 mx-4 max-w-[280px]
-                  border border-white/20
-                `}
-                initial={{ scale: 0.8, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.8, y: -20 }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  {activeBadge.id === 'ai' && <Brain className="w-5 h-5" />}
-                  {activeBadge.id === 'flow' && <Settings className="w-5 h-5" />}
-                  {activeBadge.id === 'crm' && <Database className="w-5 h-5" />}
-                  <span className="font-bold text-sm">{activeBadge.title}</span>
-                </div>
-                <p className="text-xs opacity-90">{activeBadge.subtitle}</p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-});
-
-/**
- * Dynamic Badge Display Component
- */
-function DynamicBadgeDisplay({ badge }: { badge: EducationalBadge }) {
-  const IconComponent = badge.id === 'ai' ? Brain : badge.id === 'flow' ? Settings : Database;
-
-  return (
-    <motion.div
-      className={`
-        absolute z-60 ${badge.bgColor} ${badge.color} rounded-2xl shadow-2xl border border-white/20
-        min-w-[140px] p-3 text-xs
-        sm:min-w-[160px] sm:p-4 sm:text-sm
-        hidden xs:block
-      `}
-      style={badge.position}
-      initial={{
-        opacity: 0,
-        scale: 0.8,
-        x: badge.arrowDirection === 'left' ? 30 : badge.arrowDirection === 'right' ? -30 : 0,
-        y: badge.arrowDirection === 'up' ? 30 : badge.arrowDirection === 'down' ? -30 : 0
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        x: 0,
-        y: 0
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.8,
-        transition: { duration: 0.3 }
-      }}
-      transition={{
-        type: 'spring',
-        damping: 20,
-        stiffness: 300,
-        duration: 0.6
-      }}
-      whileHover={{ scale: 1.05 }}
-    >
-      <div className="flex items-start gap-2 sm:gap-3">
-        <motion.div
-          className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center"
-          animate={{
-            rotate: [0, 5, -5, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatType: 'reverse'
-          }}
-        >
-          <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
-        </motion.div>
-        <div className="flex-1">
-          <motion.h3
-            className="font-bold text-xs sm:text-sm mb-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            {badge.title}
-          </motion.h3>
-          <motion.p
-            className="text-[10px] sm:text-xs opacity-90 leading-tight"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            {badge.subtitle}
-          </motion.p>
-        </div>
-      </div>
-
-      {/* Animated arrow pointer */}
-      <motion.div
-        className={`absolute ${badge.color}`}
-        style={{
-          ...(badge.arrowDirection === 'left' && {
-            right: '-8px',
-            top: '50%',
-            transform: 'translateY(-50%)'
-          }),
-          ...(badge.arrowDirection === 'right' && {
-            left: '-8px',
-            top: '50%',
-            transform: 'translateY(-50%)'
-          }),
-          ...(badge.arrowDirection === 'down' && {
-            bottom: '-8px',
-            left: '50%',
-            transform: 'translateX(-50%)'
-          }),
-          ...(badge.arrowDirection === 'up' && {
-            top: '-8px',
-            left: '50%',
-            transform: 'translateX(-50%)'
-          }),
-        }}
-        animate={{
-          x: badge.arrowDirection === 'left' ? [0, -5, 0] :
-             badge.arrowDirection === 'right' ? [0, 5, 0] : 0,
-          y: badge.arrowDirection === 'up' ? [0, -5, 0] :
-             badge.arrowDirection === 'down' ? [0, 5, 0] : 0,
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      >
-        {badge.arrowDirection === 'left' && '◀'}
-        {badge.arrowDirection === 'right' && '▶'}
-        {badge.arrowDirection === 'up' && '▲'}
-        {badge.arrowDirection === 'down' && '▼'}
-      </motion.div>
-
-      {/* Sparkle effects */}
-      <motion.div
-        className="absolute -top-1 -right-1"
-        animate={{
-          scale: [0, 1, 0],
-          rotate: [0, 180, 360]
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          repeatType: 'loop'
-        }}
-      >
-        <Sparkles className={`w-4 h-4 ${badge.color}`} />
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/**
- * Flow Panel Component
- */
-function FlowPanel({
-  step,
-  reservationData,
-  onDataChange
-}: {
-  step: FlowStepId;
-  reservationData: ReservationData;
-  onDataChange: (data: ReservationData) => void;
-}) {
-  const handleFlowNext = (data: Partial<ReservationData>) => {
-    onDataChange({ ...reservationData, ...data });
-  };
-
-  return (
-    <>
-      {/* Flow header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <div>
-          <h2 className="font-semibold text-gray-900">Reserva tu mesa</h2>
-          <p className="text-sm text-gray-500">Paso {
-            step === 'guests' ? '1' :
-            step === 'date' ? '2' :
-            step === 'time' ? '3' : '4'
-          } de 4</p>
-        </div>
-        <div className="flex gap-2">
-          {['guests', 'date', 'time', 'confirmation'].map((stepName, index) => (
-            <div
-              key={stepName}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                step === stepName ||
-                (['guests', 'date', 'time', 'confirmation'].indexOf(step) > index)
-                  ? 'bg-green-500'
-                  : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Flow content */}
-      <div className="flex-1 overflow-y-auto">
-        <AnimatePresence mode="wait">
-          {step === 'guests' && (
-            <GuestSelection
-              key="guests"
-              onNext={handleFlowNext}
-              data={reservationData}
-            />
-          )}
-          {step === 'date' && (
-            <DateSelection
-              key="date"
-              onNext={handleFlowNext}
-              data={reservationData}
-            />
-          )}
-          {step === 'time' && (
-            <TimeSelection
-              key="time"
-              onNext={handleFlowNext}
-              data={reservationData}
-            />
-          )}
-          {step === 'confirmation' && (
-            <ConfirmationStep
-              key="confirmation"
-              data={reservationData}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-    </>
-  );
-}
-
-// Flow Step Components (identical to original)
-function GuestSelection({ onNext, data }: { onNext: (data: Partial<ReservationData>) => void; data: ReservationData }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6"
-    >
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">¿Cuántas personas?</h3>
-      <div className="grid grid-cols-4 gap-3 mb-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-          <motion.button
-            key={num}
-            className={`w-12 h-12 rounded-full border-2 transition-colors ${
-              data.guests === num
-                ? 'bg-green-500 border-green-500 text-white'
-                : 'border-gray-300 text-gray-700 hover:border-green-400'
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onNext({ guests: num })}
-          >
-            {num}
-          </motion.button>
-        ))}
-      </div>
-
-      <AnimatePresence>
-        {data.guests > 0 && (
-          <motion.button
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Siguiente →
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function DateSelection({ onNext, data }: { onNext: (data: Partial<ReservationData>) => void; data: ReservationData }) {
-  const today = new Date();
-  const dates = Array.from({ length: 3 }, (_, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    return date;
-  });
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6"
-    >
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">¿Qué día prefieres?</h3>
-      <div className="space-y-3 mb-6">
-        {dates.map((date) => {
-          const dateStr = date.toISOString().split('T')[0];
-          const isSelected = data.date === dateStr;
-          return (
-            <motion.button
-              key={dateStr}
-              className={`w-full p-4 rounded-xl border-2 text-left transition-colors ${
-                isSelected
-                  ? 'bg-green-50 border-green-500 text-green-700'
-                  : 'border-gray-300 text-gray-700 hover:border-green-400'
-              }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onNext({ date: dateStr })}
-            >
-              <div className="font-medium">
-                {date.toLocaleDateString('es-ES', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long'
-                })}
+            <>
+              {/* Desktop badge */}
+              <div className="hidden sm:block">
+                <EducationalBadge badge={activeBadge} isMobile={false} />
               </div>
-            </motion.button>
-          );
-        })}
-      </div>
 
-      <AnimatePresence>
-        {data.date && (
-          <motion.button
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Siguiente →
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function TimeSelection({ onNext, data }: { onNext: (data: Partial<ReservationData>) => void; data: ReservationData }) {
-  const times = ['18:00', '19:00', '20:00', '21:00'];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6"
-    >
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">¿A qué hora?</h3>
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {times.map((time) => (
-          <motion.button
-            key={time}
-            className={`p-4 rounded-xl border-2 transition-colors ${
-              data.time === time
-                ? 'bg-green-50 border-green-500 text-green-700'
-                : 'border-gray-300 text-gray-700 hover:border-green-400'
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onNext({ time })}
-          >
-            <div className="font-medium text-lg">{time}</div>
-          </motion.button>
-        ))}
-      </div>
-
-      <AnimatePresence>
-        {data.time && (
-          <motion.button
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Confirmar reserva →
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function ConfirmationStep({ data }: { data: ReservationData }) {
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    });
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6"
-    >
-      <div className="text-center">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
-        >
-          <span className="text-2xl">✓</span>
-        </motion.div>
-        <h3 className="text-lg font-semibold mb-4 text-gray-900">¡Reserva confirmada!</h3>
-        <div className="bg-gray-50 rounded-xl p-4 text-left">
-          <div className="space-y-2 text-sm text-gray-600">
-            <div><strong>Personas:</strong> {data.guests}</div>
-            <div><strong>Fecha:</strong> {formatDate(data.date)}</div>
-            <div><strong>Hora:</strong> {data.time}</div>
-          </div>
-        </div>
-        <p className="text-sm text-gray-500 mt-4">
-          Te hemos enviado la confirmación por WhatsApp
-        </p>
+              {/* Mobile badge */}
+              <div className="sm:hidden">
+                <EducationalBadge badge={activeBadge} isMobile={true} />
+              </div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
-  );
-}
+    );
+  }
+);
+
+
+export default WhatsAppSimulator;

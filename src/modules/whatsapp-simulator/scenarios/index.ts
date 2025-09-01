@@ -6,10 +6,10 @@
 // Original restaurant reservation scenario
 export * from './restaurant-reservation-scenario';
 
-// New Phase 1 scenarios - Quick Wins
-export * from './loyalty-program-scenario';
-export * from './medical-appointments-scenario';
-export * from './restaurant-orders-scenario';
+// New Phase 1 scenarios - Quick Wins (temporarily disabled)
+// export * from './loyalty-program-scenario';
+// export * from './medical-appointments-scenario';
+// export * from './restaurant-orders-scenario';
 
 // Scenario selector type and configuration
 export interface ScenarioOption {
@@ -32,12 +32,15 @@ export interface ScenarioOption {
 /**
  * Available scenarios for demo selector
  */
-import loyaltyProgramScenario from './loyalty-program-scenario';
-import medicalAppointmentsScenario from './medical-appointments-scenario';
-import restaurantOrdersScenario from './restaurant-orders-scenario';
+// Temporarily disabled scenarios
+// import loyaltyProgramScenario from './loyalty-program-scenario';
+// import medicalAppointmentsScenario from './medical-appointments-scenario';
+// import restaurantOrdersScenario from './restaurant-orders-scenario';
 import { restaurantReservationScenario } from './restaurant-reservation-scenario';
 
 export const AVAILABLE_SCENARIOS: Record<string, ScenarioOption> = {
+  // Temporarily disabled scenarios
+  /*
   'loyalty-program': {
     id: 'loyalty-program',
     title: 'Club VIP Automático',
@@ -65,6 +68,7 @@ export const AVAILABLE_SCENARIOS: Record<string, ScenarioOption> = {
     hook: medicalAppointmentsScenario.metadata.hook,
     scenario: medicalAppointmentsScenario
   },
+  */
   'restaurant-reservation': {
     id: 'restaurant-reservation',
     title: 'Reservas de Mesa',

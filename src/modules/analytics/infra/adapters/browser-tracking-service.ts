@@ -1,5 +1,5 @@
 import { TrackingContext,TrackingService } from '../../application/ports/tracking-service';
-import { EventEntity } from '../../domain/entities/event';
+import { addEventProperties, Event, eventToJSON,withSessionId, withUserId } from '../../domain/entities/event';
 
 interface StoredSession {
   id: string;
@@ -16,48 +16,68 @@ interface TrackingConfig {
   enableAutoTracking: boolean;
 }
 
-export class BrowserTrackingService implements TrackingService {
-  private context: TrackingContext = {};
-  private currentSession?: StoredSession;
-  private eventQueue: EventEntity[] = [];
-  private trackingEnabled = true;
-  private consentLevel: 'none' | 'essential' | 'analytics' | 'all' = 'analytics';
-  private config: TrackingConfig;
-  private flushTimer?: NodeJS.Timeout;
+interface BrowserTrackingState {
+  context: TrackingContext;
+  currentSession?: StoredSession;
+  eventQueue: Event[];
+  trackingEnabled: boolean;
+  consentLevel: 'none' | 'essential' | 'analytics' | 'all';
+  flushTimer?: NodeJS.Timeout;
+}
 
-  constructor(config: Partial<TrackingConfig> = {}) {
-    this.config = {
-      sessionTimeout: 30, // 30 minutes
-      batchSize: 10,
-      flushInterval: 5000, // 5 seconds
-      enableLocalStorage: true,
-      enableAutoTracking: true,
-      ...config,
-    };
+/**
+ * Browser Tracking Service Factory
+ * Functional implementation for browser-based analytics tracking
+ */
+export const createBrowserTrackingService = (configParams: Partial<TrackingConfig> = {}): TrackingService => {
+  const config: TrackingConfig = {
+    sessionTimeout: 30, // 30 minutes
+    batchSize: 10,
+    flushInterval: 5000, // 5 seconds
+    enableLocalStorage: true,
+    enableAutoTracking: true,
+    ...configParams,
+  };
 
-    this.initializeTracking();
-  }
+  const state: BrowserTrackingState = {
+    context: {},
+    currentSession: undefined,
+    eventQueue: [],
+    trackingEnabled: true,
+    consentLevel: 'analytics',
+    flushTimer: undefined,
+  };
 
-  private initializeTracking(): void {
-    // Detect browser context
-    if (typeof window !== 'undefined') {
-      this.context = this.detectBrowserContext();
+  // Helper functions (previously private methods)
+  const detectDeviceType = (userAgent: string): 'desktop' | 'mobile' | 'tablet' => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    const isTablet = /iPad|Android(?=.*\\bMobile\\b)/i.test(userAgent);
 
-      if (this.config.enableLocalStorage) {
-        this.loadStoredSession();
-        this.loadTrackingPreferences();
-      }
+    if (isTablet) return 'tablet';
+    if (isMobile) return 'mobile';
+    return 'desktop';
+  };
 
-      if (this.config.enableAutoTracking) {
-        this.setupAutoTracking();
-      }
+  const detectBrowser = (userAgent: string): string => {
+    if (userAgent.includes('Chrome')) return 'Chrome';
+    if (userAgent.includes('Firefox')) return 'Firefox';
+    if (userAgent.includes('Safari')) return 'Safari';
+    if (userAgent.includes('Edge')) return 'Edge';
+    return 'Unknown';
+  };
 
-      // Start periodic flush
-      this.startFlushTimer();
-    }
-  }
+  const detectOS = (userAgent: string): string => {
+    if (userAgent.includes('Windows')) return 'Windows';
+    if (userAgent.includes('Mac')) return 'macOS';
+    if (userAgent.includes('Linux')) return 'Linux';
+    if (userAgent.includes('Android')) return 'Android';
+    if (userAgent.includes('iOS')) return 'iOS';
+    return 'Unknown';
+  };
 
-  private detectBrowserContext(): TrackingContext {
+  const detectBrowserContext = (): TrackingContext => {
+    if (typeof window === 'undefined') return {};
+
     const userAgent = navigator.userAgent;
     const url = window.location.href;
     const referrer = document.referrer;
@@ -66,69 +86,20 @@ export class BrowserTrackingService implements TrackingService {
       userAgent,
       url,
       referrer: referrer || undefined,
-      deviceType: this.detectDeviceType(userAgent),
-      browser: this.detectBrowser(userAgent),
-      os: this.detectOS(userAgent),
+      deviceType: detectDeviceType(userAgent),
+      browser: detectBrowser(userAgent),
+      os: detectOS(userAgent),
     };
-  }
+  };
 
-  private detectDeviceType(userAgent: string): 'desktop' | 'mobile' | 'tablet' {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    const isTablet = /iPad|Android(?=.*\\bMobile\\b)/i.test(userAgent);
+  const generateSessionId = (): string => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    return `sess_${timestamp}_${random}`;
+  };
 
-    if (isTablet) return 'tablet';
-    if (isMobile) return 'mobile';
-    return 'desktop';
-  }
-
-  private detectBrowser(userAgent: string): string {
-    if (userAgent.includes('Chrome')) return 'Chrome';
-    if (userAgent.includes('Firefox')) return 'Firefox';
-    if (userAgent.includes('Safari')) return 'Safari';
-    if (userAgent.includes('Edge')) return 'Edge';
-    return 'Unknown';
-  }
-
-  private detectOS(userAgent: string): string {
-    if (userAgent.includes('Windows')) return 'Windows';
-    if (userAgent.includes('Mac')) return 'macOS';
-    if (userAgent.includes('Linux')) return 'Linux';
-    if (userAgent.includes('Android')) return 'Android';
-    if (userAgent.includes('iOS')) return 'iOS';
-    return 'Unknown';
-  }
-
-  private setupAutoTracking(): void {
-    if (typeof window === 'undefined') return;
-
-    // Track page visibility changes
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        this.flush(); // Ensure events are sent before page becomes hidden
-      }
-    });
-
-    // Track page unload
-    window.addEventListener('beforeunload', () => {
-      this.flush();
-    });
-
-    // Update session activity
-    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    activityEvents.forEach(event => {
-      document.addEventListener(event, this.updateSessionActivity.bind(this), { passive: true });
-    });
-  }
-
-  private updateSessionActivity(): void {
-    if (this.currentSession) {
-      this.currentSession.lastActivity = new Date();
-      this.saveSessionToStorage();
-    }
-  }
-
-  private loadStoredSession(): void {
-    if (!this.config.enableLocalStorage) return;
+  const loadStoredSession = (): void => {
+    if (!config.enableLocalStorage || typeof window === 'undefined') return;
 
     try {
       const stored = localStorage.getItem('analytics_session');
@@ -139,9 +110,9 @@ export class BrowserTrackingService implements TrackingService {
 
         // Check if session is still valid
         const now = new Date();
-        const timeoutMs = this.config.sessionTimeout * 60 * 1000;
+        const timeoutMs = config.sessionTimeout * 60 * 1000;
         if (now.getTime() - session.lastActivity.getTime() < timeoutMs) {
-          this.currentSession = session;
+          state.currentSession = session;
         } else {
           localStorage.removeItem('analytics_session');
         }
@@ -149,185 +120,232 @@ export class BrowserTrackingService implements TrackingService {
     } catch (error) {
       console.warn('Failed to load stored session:', error);
     }
-  }
+  };
 
-  private saveSessionToStorage(): void {
-    if (!this.config.enableLocalStorage || !this.currentSession) return;
+  const saveSessionToStorage = (): void => {
+    if (!config.enableLocalStorage || !state.currentSession || typeof window === 'undefined') return;
 
     try {
-      localStorage.setItem('analytics_session', JSON.stringify(this.currentSession));
+      localStorage.setItem('analytics_session', JSON.stringify(state.currentSession));
     } catch (error) {
       console.warn('Failed to save session to storage:', error);
     }
-  }
+  };
 
-  private loadTrackingPreferences(): void {
-    if (!this.config.enableLocalStorage) return;
+  const loadTrackingPreferences = (): void => {
+    if (!config.enableLocalStorage || typeof window === 'undefined') return;
 
     try {
       const enabled = localStorage.getItem('analytics_tracking_enabled');
       if (enabled !== null) {
-        this.trackingEnabled = enabled === 'true';
+        state.trackingEnabled = enabled === 'true';
       }
 
       const consent = localStorage.getItem('analytics_consent_level');
       if (consent) {
-        this.consentLevel = consent as typeof this.consentLevel;
+        state.consentLevel = consent as typeof state.consentLevel;
       }
     } catch (error) {
       console.warn('Failed to load tracking preferences:', error);
     }
-  }
+  };
 
-  private saveTrackingPreferences(): void {
-    if (!this.config.enableLocalStorage) return;
+  const saveTrackingPreferences = (): void => {
+    if (!config.enableLocalStorage || typeof window === 'undefined') return;
 
     try {
-      localStorage.setItem('analytics_tracking_enabled', this.trackingEnabled.toString());
-      localStorage.setItem('analytics_consent_level', this.consentLevel);
+      localStorage.setItem('analytics_tracking_enabled', state.trackingEnabled.toString());
+      localStorage.setItem('analytics_consent_level', state.consentLevel);
     } catch (error) {
       console.warn('Failed to save tracking preferences:', error);
     }
-  }
+  };
 
-  private startFlushTimer(): void {
-    if (this.flushTimer) {
-      clearInterval(this.flushTimer);
+  const updateSessionActivity = (): void => {
+    if (state.currentSession) {
+      state.currentSession.lastActivity = new Date();
+      saveSessionToStorage();
+    }
+  };
+
+  const setupAutoTracking = (): void => {
+    if (typeof window === 'undefined') return;
+
+    // Track page visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        flush(); // Ensure events are sent before page becomes hidden
+      }
+    });
+
+    // Track page unload
+    window.addEventListener('beforeunload', () => {
+      flush();
+    });
+
+    // Update session activity
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, updateSessionActivity, { passive: true });
+    });
+  };
+
+  const startFlushTimer = (): void => {
+    if (state.flushTimer) {
+      clearInterval(state.flushTimer);
     }
 
-    this.flushTimer = setInterval(() => {
-      this.flush();
-    }, this.config.flushInterval);
-  }
+    state.flushTimer = setInterval(() => {
+      flush();
+    }, config.flushInterval);
+  };
 
-  // TrackingService implementation
-  async trackEvent(event: EventEntity): Promise<void> {
-    if (!this.trackingEnabled) {
+  const initializeTracking = (): void => {
+    // Detect browser context
+    if (typeof window !== 'undefined') {
+      state.context = detectBrowserContext();
+
+      if (config.enableLocalStorage) {
+        loadStoredSession();
+        loadTrackingPreferences();
+      }
+
+      if (config.enableAutoTracking) {
+        setupAutoTracking();
+      }
+
+      // Start periodic flush
+      startFlushTimer();
+    }
+  };
+
+  // Public API implementation
+  const trackEvent = async (event: Event): Promise<void> => {
+    if (!state.trackingEnabled) {
       return;
     }
 
-    this.eventQueue.push(event);
+    state.eventQueue.push(event);
 
     // Auto-flush if queue is full
-    if (this.eventQueue.length >= this.config.batchSize) {
-      await this.flush();
+    if (state.eventQueue.length >= config.batchSize) {
+      await flush();
     }
-  }
+  };
 
-  async trackEvents(events: EventEntity[]): Promise<void> {
-    if (!this.trackingEnabled) {
+  const trackEvents = async (events: Event[]): Promise<void> => {
+    if (!state.trackingEnabled) {
       return;
     }
 
-    this.eventQueue.push(...events);
+    state.eventQueue.push(...events);
 
     // Auto-flush if queue is full
-    if (this.eventQueue.length >= this.config.batchSize) {
-      await this.flush();
+    if (state.eventQueue.length >= config.batchSize) {
+      await flush();
     }
-  }
+  };
 
-  setContext(context: TrackingContext): void {
-    this.context = { ...this.context, ...context };
-  }
+  const setContext = (context: TrackingContext): void => {
+    state.context = { ...state.context, ...context };
+  };
 
-  getContext(): TrackingContext {
-    return { ...this.context };
-  }
+  const getContext = (): TrackingContext => {
+    return { ...state.context };
+  };
 
-  enrichEvent(event: EventEntity): EventEntity {
+  const enrichEvent = (event: Event): Event => {
     // Add current context to event metadata
-    const enrichedEvent = event
-      .withUserId(event.userId || this.context.userId)
-      .withSessionId(event.sessionId || this.getCurrentSession());
+    let enrichedEvent = withUserId(event, event.userId || state.context.userId || '');
+    enrichedEvent = withSessionId(enrichedEvent, event.sessionId || getCurrentSession() || '');
 
     // Add context properties
     const contextProperties = {
-      url: this.context.url,
-      referrer: this.context.referrer,
-      device_type: this.context.deviceType,
-      browser: this.context.browser,
-      os: this.context.os,
+      url: state.context.url,
+      referrer: state.context.referrer,
+      device_type: state.context.deviceType,
+      browser: state.context.browser,
+      os: state.context.os,
     };
 
-    return enrichedEvent.addProperties(contextProperties);
-  }
+    return addEventProperties(enrichedEvent, contextProperties);
+  };
 
-  startSession(): string {
-    const sessionId = this.generateSessionId();
+  const startSession = (): string => {
+    const sessionId = generateSessionId();
     const now = new Date();
 
-    this.currentSession = {
+    state.currentSession = {
       id: sessionId,
       startTime: now,
       lastActivity: now,
-      userId: this.context.userId,
+      userId: state.context.userId,
     };
 
-    this.saveSessionToStorage();
+    saveSessionToStorage();
     return sessionId;
-  }
+  };
 
-  endSession(sessionId: string): void {
-    if (this.currentSession?.id === sessionId) {
-      this.currentSession = undefined;
-      if (this.config.enableLocalStorage) {
+  const endSession = (sessionId: string): void => {
+    if (state.currentSession?.id === sessionId) {
+      state.currentSession = undefined;
+      if (config.enableLocalStorage && typeof window !== 'undefined') {
         localStorage.removeItem('analytics_session');
       }
     }
-  }
+  };
 
-  getCurrentSession(): string | undefined {
-    if (!this.currentSession) {
+  const getCurrentSession = (): string | undefined => {
+    if (!state.currentSession) {
       // Auto-start session if none exists
-      return this.startSession();
+      return startSession();
     }
 
     // Check if session is still valid
     const now = new Date();
-    const timeoutMs = this.config.sessionTimeout * 60 * 1000;
-    if (now.getTime() - this.currentSession.lastActivity.getTime() >= timeoutMs) {
+    const timeoutMs = config.sessionTimeout * 60 * 1000;
+    if (now.getTime() - state.currentSession.lastActivity.getTime() >= timeoutMs) {
       // Session expired, start new one
-      return this.startSession();
+      return startSession();
     }
 
-    return this.currentSession.id;
-  }
+    return state.currentSession.id;
+  };
 
-  setTrackingEnabled(enabled: boolean): void {
-    this.trackingEnabled = enabled;
-    this.saveTrackingPreferences();
+  const setTrackingEnabled = (enabled: boolean): void => {
+    state.trackingEnabled = enabled;
+    saveTrackingPreferences();
 
     if (!enabled) {
       // Clear queue when tracking is disabled
-      this.eventQueue = [];
+      state.eventQueue = [];
     }
-  }
+  };
 
-  isTrackingEnabled(): boolean {
-    return this.trackingEnabled;
-  }
+  const isTrackingEnabled = (): boolean => {
+    return state.trackingEnabled;
+  };
 
-  setConsentLevel(level: 'none' | 'essential' | 'analytics' | 'all'): void {
-    this.consentLevel = level;
-    this.saveTrackingPreferences();
+  const setConsentLevel = (level: 'none' | 'essential' | 'analytics' | 'all'): void => {
+    state.consentLevel = level;
+    saveTrackingPreferences();
 
     if (level === 'none') {
-      this.setTrackingEnabled(false);
+      setTrackingEnabled(false);
     }
-  }
+  };
 
-  getConsentLevel(): 'none' | 'essential' | 'analytics' | 'all' {
-    return this.consentLevel;
-  }
+  const getConsentLevel = (): 'none' | 'essential' | 'analytics' | 'all' => {
+    return state.consentLevel;
+  };
 
-  async flush(): Promise<void> {
-    if (this.eventQueue.length === 0) {
+  const flush = async (): Promise<void> => {
+    if (state.eventQueue.length === 0) {
       return;
     }
 
-    const eventsToSend = [...this.eventQueue];
-    this.eventQueue = [];
+    const eventsToSend = [...state.eventQueue];
+    state.eventQueue = [];
 
     try {
       // In a real implementation, this would send events to your analytics API
@@ -339,43 +357,65 @@ export class BrowserTrackingService implements TrackingService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            events: eventsToSend.map(event => event.toJSON()),
+            events: eventsToSend.map(event => eventToJSON(event)),
           }),
         });
       }
     } catch (error) {
       console.warn('Failed to flush analytics events:', error);
       // Re-queue events on failure (with some limit to prevent memory issues)
-      if (this.eventQueue.length < 100) {
-        this.eventQueue.unshift(...eventsToSend);
+      if (state.eventQueue.length < 100) {
+        state.eventQueue.unshift(...eventsToSend);
       }
     }
-  }
+  };
 
-  async clear(): Promise<void> {
-    this.eventQueue = [];
-    this.currentSession = undefined;
+  const clear = async (): Promise<void> => {
+    state.eventQueue = [];
+    state.currentSession = undefined;
 
-    if (this.config.enableLocalStorage) {
+    if (config.enableLocalStorage && typeof window !== 'undefined') {
       localStorage.removeItem('analytics_session');
       localStorage.removeItem('analytics_tracking_enabled');
       localStorage.removeItem('analytics_consent_level');
     }
-  }
+  };
 
-  private generateSessionId(): string {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substr(2, 9);
-    return `sess_${timestamp}_${random}`;
-  }
-
-  // Cleanup method
-  destroy(): void {
-    if (this.flushTimer) {
-      clearInterval(this.flushTimer);
+  const destroy = (): void => {
+    if (state.flushTimer) {
+      clearInterval(state.flushTimer);
     }
 
     // Flush remaining events
-    this.flush();
-  }
-}
+    flush();
+  };
+
+  // Initialize tracking on creation
+  initializeTracking();
+
+  // Return service interface
+  return {
+    trackEvent,
+    trackEvents,
+    setContext,
+    getContext,
+    enrichEvent,
+    startSession,
+    endSession,
+    getCurrentSession,
+    setTrackingEnabled,
+    isTrackingEnabled,
+    setConsentLevel,
+    getConsentLevel,
+    flush,
+    clear,
+    destroy,
+  };
+};
+
+/**
+ * Create default browser tracking service instance
+ */
+export const createDefaultBrowserTrackingService = (): TrackingService => {
+  return createBrowserTrackingService();
+};

@@ -4,16 +4,16 @@ import { Building2, TrendingUp,Users } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/modules/shared/ui/components/ui/button'
+import { Input } from '@/modules/shared/ui/components/ui/input'
+import { Label } from '@/modules/shared/ui/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/modules/shared/ui/components/ui/select'
 
 import { type BusinessInfoFormData,businessInfoSchema } from '../../domain/schemas'
 import type { StepProps } from '../../domain/types'

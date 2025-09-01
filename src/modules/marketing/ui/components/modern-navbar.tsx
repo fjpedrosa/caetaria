@@ -5,18 +5,6 @@ import { AnimatePresence, motion, useMotionValueEvent,useScroll } from 'framer-m
 import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 
-// ThemeToggle removed - was causing import errors
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Icon, IconButton } from '@/components/ui/icon';
-// NavigationMenu temporarily disabled due to TypeScript issues
-// import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import {
   ArrowRight,
   BarChart3,
@@ -37,6 +25,18 @@ import {
   X,
   Zap} from '@/lib/icons';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/modules/shared/ui/components/theme-toggle';
+import { Button, buttonVariants } from '@/modules/shared/ui/components/ui/button';
+import { Icon, IconButton } from '@/modules/shared/ui/components/ui/icon';
+// NavigationMenu temporarily disabled due to TypeScript issues
+// import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/modules/shared/ui/components/ui/sheet';
 
 interface MegaMenuSection {
   title: string;
@@ -233,7 +233,7 @@ export function ModernNavbar({
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  
+
   // Accessibility state
   const [accessibilityState, setAccessibilityState] = useState<AccessibilityState>({
     announcements: [],
@@ -248,7 +248,7 @@ export function ModernNavbar({
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50);
-    
+
     // Handle hideOnScroll behavior
     if (hideOnScroll) {
       if (latest > lastScrollY && latest > 100) {
@@ -275,7 +275,7 @@ export function ModernNavbar({
     const detectAccessibilityPreferences = () => {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const highContrast = window.matchMedia('(prefers-contrast: more)').matches;
-      
+
       setAccessibilityState(prev => ({
         ...prev,
         reducedMotion,
@@ -297,7 +297,7 @@ export function ModernNavbar({
           }));
         }
       }
-      
+
       // Alt+M to open menu
       if (e.altKey && e.key === 'm') {
         e.preventDefault();
@@ -312,11 +312,11 @@ export function ModernNavbar({
     window.addEventListener('resize', handleResize);
     window.addEventListener('keydown', handleKeyDown);
     detectAccessibilityPreferences();
-    
+
     // Listen for preference changes
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     mediaQuery.addEventListener('change', detectAccessibilityPreferences);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('keydown', handleKeyDown);
@@ -388,21 +388,21 @@ export function ModernNavbar({
       <motion.header
         variants={navbarVariants}
         initial="initial"
-        animate={isVisible ? "animate" : "initial"}
+        animate={isVisible ? 'animate' : 'initial'}
         role="banner"
         className={cn(
           'fixed top-0 left-0 right-0 z-40 transition-all duration-500',
           isScrolled
             ? 'bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg'
-            : variant === 'transparent' 
-              ? 'bg-transparent' 
+            : variant === 'transparent'
+              ? 'bg-transparent'
               : 'bg-background/50 backdrop-blur-sm',
           !isVisible && hideOnScroll && 'transform -translate-y-full',
           accessibilityState.highContrast && 'border-2 border-foreground',
           className
         )}
       >
-        <nav 
+        <nav
           className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
           role="navigation"
           aria-label="Navegación principal"
@@ -414,8 +414,8 @@ export function ModernNavbar({
               whileTap={{ scale: 0.95 }}
               className="flex-shrink-0"
             >
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="flex items-center space-x-2 group focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg"
                 aria-label="Caetaria - Ir al inicio"
               >
@@ -501,7 +501,10 @@ export function ModernNavbar({
               animate="animate"
               className="hidden md:flex items-center space-x-3"
             >
-              {/* Theme Toggle removed due to import issues - can be re-added later */}
+              {/* Theme Toggle */}
+              <motion.div variants={linkVariants}>
+                <ThemeToggle />
+              </motion.div>
               <motion.div variants={linkVariants}>
                 <Link
                   href="/login"
@@ -552,25 +555,21 @@ export function ModernNavbar({
                   <Menu className="h-6 w-6" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
-              <SheetContent 
-                side="right" 
+              <SheetContent
+                side="right"
                 className="w-80 sm:w-96"
-                onEscapeKeyDown={() => setAccessibilityState(prev => ({
-                  ...prev,
-                  announcements: [...prev.announcements, 'Menú cerrado con tecla Escape']
-                }))}
               >
                 <SheetHeader>
                   <SheetTitle>Menú de navegación</SheetTitle>
                 </SheetHeader>
-                <nav 
+                <nav
                   className="flex flex-col space-y-2 mt-8"
                   role="navigation"
                   aria-label="Menú móvil"
                 >
-                  <Link 
-                    href="/productos" 
-                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation" 
+                  <Link
+                    href="/productos"
+                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation"
                     onClick={() => {
                       setIsOpen(false);
                       setAccessibilityState(prev => ({
@@ -582,9 +581,9 @@ export function ModernNavbar({
                   >
                     Productos
                   </Link>
-                  <Link 
-                    href="/soluciones" 
-                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation" 
+                  <Link
+                    href="/soluciones"
+                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation"
                     onClick={() => {
                       setIsOpen(false);
                       setAccessibilityState(prev => ({
@@ -597,10 +596,10 @@ export function ModernNavbar({
                     Soluciones
                   </Link>
                   {NavigationLinks.map((link) => (
-                    <Link 
-                      key={link.href} 
-                      href={link.href} 
-                      className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation" 
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({
@@ -612,10 +611,16 @@ export function ModernNavbar({
                       {link.label}
                     </Link>
                   ))}
+
+                  {/* Theme Toggle for mobile */}
+                  <div className="pt-4 flex justify-center">
+                    <ThemeToggle />
+                  </div>
+
                   <div className="pt-6 border-t border-border space-y-3" role="group" aria-label="Acciones de cuenta">
-                    <Link 
-                      href="/login" 
-                      className="block px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation" 
+                    <Link
+                      href="/login"
+                      className="block px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({
@@ -627,9 +632,9 @@ export function ModernNavbar({
                     >
                       Iniciar sesión
                     </Link>
-                    <Link 
-                      href="/onboarding" 
-                      className="block px-4 py-3 min-h-[48px] rounded-md bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-colors font-semibold flex items-center justify-center touch-manipulation" 
+                    <Link
+                      href="/onboarding"
+                      className="block px-4 py-3 min-h-[48px] rounded-md bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-colors font-semibold flex items-center justify-center touch-manipulation"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({

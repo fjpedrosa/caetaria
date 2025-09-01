@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 // Types
 interface CTAConfig {
@@ -249,7 +249,8 @@ export function MinimalCTASection({
       scale: 1,
       transition: {
         duration: 0.4,
-        ease: [0.4, 0.0, 0.2, 1] // ease-out as number array
+        type: 'spring' as const,
+        ease: 'easeOut' as const
       }
     }
   };
@@ -300,7 +301,7 @@ export function AnimatedCTASection({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.4, 0.0, 0.2, 1],
+        ease: 'easeOut' as const,
         staggerChildren: 0.15,
         delayChildren: 0.4
       }
@@ -319,7 +320,7 @@ export function AnimatedCTASection({
       scale: 1,
       transition: {
         duration: 0.4,
-        ease: [0.4, 0.0, 0.2, 1]
+        ease: 'easeOut' as const
       }
     }
   };

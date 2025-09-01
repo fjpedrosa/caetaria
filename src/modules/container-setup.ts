@@ -3,9 +3,19 @@
  * Clean Architecture - Dependency injection configuration
  */
 
-import { LandingModuleConfig } from './marketing/marketing-module';
-import { OnboardingModuleConfig } from './onboarding/onboarding-module';
 import {
+  createConfigForEnvironment,
+  LandingModuleConfig,
+  registerMarketingModuleDependencies
+} from './marketing/marketing-module';
+import {
+  createOnboardingModule,
+  OnboardingModuleConfig,
+  registerOnlyRepositories,
+  registerOnlyServices
+} from './onboarding/onboarding-module';
+import {
+  createSimpleDependencyContainer,
   DEPENDENCY_TOKENS,
   DependencyContainer,
   SimpleDependencyContainer} from './shared/application/interfaces/dependency-container';
@@ -34,9 +44,10 @@ export interface ApplicationConfig {
 
 /**
  * Creates and configures the application dependency container
+ * Using the new functional implementation with higher-order functions
  */
 export function createApplicationContainer(config: ApplicationConfig): DependencyContainer {
-  const container = new SimpleDependencyContainer();
+  const container = createSimpleDependencyContainer();
 
   // Register shared dependencies
   container.register(DEPENDENCY_TOKENS.CONFIG, {
@@ -50,11 +61,15 @@ export function createApplicationContainer(config: ApplicationConfig): Dependenc
   registerExternalClients(container, config);
 
   // Register module configurations
-  const landingModule = new LandingModuleConfig(config.environment);
-  const onboardingModule = new OnboardingModuleConfig(config.environment);
+  // Marketing module
+  const marketingConfig = createConfigForEnvironment(config.environment);
+  registerMarketingModuleDependencies(marketingConfig)(container);
 
-  landingModule.registerDependencies(container);
+
+  // Onboarding module
+  const onboardingModule = createOnboardingModule(config.environment);
   onboardingModule.registerDependencies(container);
+
 
   return container;
 }
@@ -182,4 +197,58 @@ export function getContainer(): DependencyContainer {
  */
 export function clearContainer(): void {
   globalContainer = null;
+}
+
+// =============================================================================
+// FUNCTIONAL APPROACH DEMO
+// =============================================================================
+
+/**
+ * Creates application container using the legacy class-based approach
+ * @deprecated Use createApplicationContainer() instead (now uses functional approach)
+ */
+export function createApplicationContainerLegacy(config: ApplicationConfig): DependencyContainer {
+  const container = new SimpleDependencyContainer();
+
+  // Register shared dependencies
+  container.register(DEPENDENCY_TOKENS.CONFIG, {
+    fromEmail: config.email.fromEmail,
+    slackSalesChannel: config.slack?.salesChannel,
+    baseUrl: config.baseUrl,
+    gaTrackingId: config.analytics.gaTrackingId,
+  });
+
+  // Register external clients
+  registerExternalClients(container, config);
+
+  // Register modules using functional approach
+  const landingModule = new LandingModuleConfig(config.environment);
+  const onboardingModule = createOnboardingModule(config.environment);
+
+  // Register dependencies
+  landingModule.registerDependencies(container);
+  onboardingModule.registerDependencies(container);
+
+  return container;
+}
+
+/**
+ * Example of partial module registration using functional approach
+ * Useful for testing specific parts of the application
+ */
+export function createTestContainer(config: ApplicationConfig): DependencyContainer {
+  const container = createSimpleDependencyContainer();
+
+  // Register only shared dependencies
+  container.register(DEPENDENCY_TOKENS.CONFIG, {
+    fromEmail: config.email.fromEmail,
+    baseUrl: config.baseUrl,
+  });
+
+  // Register only specific module parts for testing
+  // Using the modular registration functions from the functional approach
+  registerOnlyRepositories('test')(container);
+  registerOnlyServices('test')(container);
+
+  return container;
 }

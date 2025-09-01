@@ -6,9 +6,9 @@
 import { ArrowRight, BarChart3, CheckCircle, MessageSquare, Sparkles, Users } from 'lucide-react';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OnboardingComplete } from '@/modules/onboarding/ui/components/onboarding-complete';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 const nextStepsFeatures = [
   {

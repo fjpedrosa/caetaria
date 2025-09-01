@@ -1,0 +1,25 @@
+{
+  "moderate": true,
+  "high": true,
+  "critical": true,
+  "summary": true,
+  "allowlist": [],
+  "report": {
+    "type": ["json", "text"],
+    "format": "detailed"
+  },
+  "advisories": [],
+  "whitelist": [],
+  "registry": "https://registry.npmjs.org",
+  "skip-dev": false,
+  "show-found": true,
+  "show-not-found": false,
+  "retry": {
+    "count": 3,
+    "delay": 1000
+  },
+  "output": {
+    "file": "security-audit.json",
+    "format": "json"
+  }
+}

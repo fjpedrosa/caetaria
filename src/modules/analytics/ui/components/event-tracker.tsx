@@ -1,29 +1,50 @@
 'use client';
 
-import React, { createContext, useCallback,useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { EventEntity, EventProperties } from '../../domain/entities/event';
-import { EventType } from '../../domain/value-objects/event-type';
-import { BrowserTrackingService } from '../../infra/adapters/browser-tracking-service';
+// Import the new clean analytics provider and hooks
+import {
+  AnalyticsProvider,
+  useAnalytics,
+  useEventAnalytics,
+  useFormAnalytics,
+  usePageAnalytics,
+  useScrollAnalytics,
+  useVisibilityAnalytics,
+} from '../../application/providers/analytics-context';
+// Import specialized hook types
+import type {
+  ConsentLevel,
+  ScrollDepthTrackerProps,
+  TimeOnPageTrackerProps,
+  VisibilityTrackerProps,
+} from '../../domain/types';
 
+/**
+ * Event Tracker - Refactored with Clean Architecture
+ *
+ * Now serves as a composition layer over specialized tracking hooks
+ * All business logic moved to application layer hooks
+ * Pure presentational component following separation of concerns
+ */
+
+// Legacy interface for backward compatibility
 interface EventTrackerContextType {
-  trackEvent: (type: EventType, name: string, properties?: EventProperties) => Promise<void>;
+  trackEvent: (type: any, name: string, properties?: Record<string, any>) => Promise<void>;
   trackPageView: (url?: string, title?: string) => Promise<void>;
-  trackClick: (element: string, properties?: EventProperties) => Promise<void>;
-  trackFormSubmit: (formName: string, properties?: EventProperties) => Promise<void>;
-  trackCustom: (eventName: string, properties?: EventProperties) => Promise<void>;
+  trackClick: (element: string, properties?: Record<string, any>) => Promise<void>;
+  trackFormSubmit: (formName: string, properties?: Record<string, any>) => Promise<void>;
+  trackCustom: (eventName: string, properties?: Record<string, any>) => Promise<void>;
   setUserId: (userId: string) => void;
   setTrackingEnabled: (enabled: boolean) => void;
-  setConsentLevel: (level: 'none' | 'essential' | 'analytics' | 'all') => void;
+  setConsentLevel: (level: ConsentLevel) => void;
 }
-
-const EventTrackerContext = createContext<EventTrackerContextType | null>(null);
 
 interface EventTrackerProviderProps {
   children: React.ReactNode;
   userId?: string;
   enableAutoTracking?: boolean;
-  consentLevel?: 'none' | 'essential' | 'analytics' | 'all';
+  consentLevel?: ConsentLevel;
   config?: {
     sessionTimeout?: number;
     batchSize?: number;
@@ -32,6 +53,14 @@ interface EventTrackerProviderProps {
   };
 }
 
+// Legacy context for backward compatibility (deprecated)
+const EventTrackerContext = React.createContext<EventTrackerContextType | null>(null);
+
+/**
+ * New EventTrackerProvider - Clean Architecture Implementation
+ *
+ * Uses the new AnalyticsProvider internally with backward compatibility
+ */
 export function EventTrackerProvider({
   children,
   userId,
@@ -39,131 +68,81 @@ export function EventTrackerProvider({
   consentLevel = 'analytics',
   config,
 }: EventTrackerProviderProps) {
-  const trackingService = React.useRef<BrowserTrackingService | null>(null);
+  return (
+    <AnalyticsProvider
+      userId={userId}
+      enableAutoTracking={enableAutoTracking}
+      consentLevel={consentLevel}
+      config={config}
+    >
+      <LegacyContextBridge>
+        {children}
+      </LegacyContextBridge>
+    </AnalyticsProvider>
+  );
+}
 
-  useEffect(() => {
-    // Initialize tracking service
-    trackingService.current = new BrowserTrackingService({
-      enableAutoTracking,
-      ...config,
-    });
+/**
+ * Legacy Context Bridge
+ *
+ * Provides backward compatibility by bridging new hooks to old context interface
+ */
+function LegacyContextBridge({ children }: { children: React.ReactNode }) {
+  const { eventTracking, pageTracking } = useAnalytics();
 
-    // Set initial consent level
-    trackingService.current.setConsentLevel(consentLevel);
-
-    // Set user ID if provided
-    if (userId) {
-      trackingService.current.setContext({ userId });
-    }
-
-    // Cleanup on unmount
-    return () => {
-      trackingService.current?.destroy();
-    };
-  }, [enableAutoTracking, consentLevel, config]);
-
-  useEffect(() => {
-    // Update user ID when it changes
-    if (trackingService.current && userId) {
-      trackingService.current.setContext({ userId });
-    }
-  }, [userId]);
-
-  const trackEvent = useCallback(async (type: EventType, name: string, properties?: EventProperties) => {
-    if (!trackingService.current) return;
-
-    const event = EventEntity.create({
-      type,
-      name,
-      properties,
-    });
-
-    const enrichedEvent = trackingService.current.enrichEvent(event);
-    await trackingService.current.trackEvent(enrichedEvent);
-  }, []);
-
-  const trackPageView = useCallback(async (url?: string, title?: string) => {
-    if (!trackingService.current) return;
-
-    const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
-    const currentTitle = title || (typeof document !== 'undefined' ? document.title : '');
-
-    await trackEvent(EventType.PAGE_VIEW, 'Page View', {
-      url: currentUrl,
-      title: currentTitle,
-      timestamp: new Date().toISOString(),
-    });
-  }, [trackEvent]);
-
-  const trackClick = useCallback(async (element: string, properties?: EventProperties) => {
-    await trackEvent(EventType.CLICK, 'Click', {
-      element,
-      timestamp: new Date().toISOString(),
-      ...properties,
-    });
-  }, [trackEvent]);
-
-  const trackFormSubmit = useCallback(async (formName: string, properties?: EventProperties) => {
-    await trackEvent(EventType.FORM_SUBMIT, 'Form Submit', {
-      form_name: formName,
-      timestamp: new Date().toISOString(),
-      ...properties,
-    });
-  }, [trackEvent]);
-
-  const trackCustom = useCallback(async (eventName: string, properties?: EventProperties) => {
-    const customEventType = EventType.createCustom(eventName);
-    await trackEvent(customEventType, eventName, {
-      timestamp: new Date().toISOString(),
-      ...properties,
-    });
-  }, [trackEvent]);
-
-  const setUserId = useCallback((userId: string) => {
-    if (trackingService.current) {
-      trackingService.current.setContext({ userId });
-    }
-  }, []);
-
-  const setTrackingEnabled = useCallback((enabled: boolean) => {
-    if (trackingService.current) {
-      trackingService.current.setTrackingEnabled(enabled);
-    }
-  }, []);
-
-  const setConsentLevel = useCallback((level: 'none' | 'essential' | 'analytics' | 'all') => {
-    if (trackingService.current) {
-      trackingService.current.setConsentLevel(level);
-    }
-  }, []);
-
-  const contextValue: EventTrackerContextType = {
-    trackEvent,
-    trackPageView,
-    trackClick,
-    trackFormSubmit,
-    trackCustom,
-    setUserId,
-    setTrackingEnabled,
-    setConsentLevel,
-  };
+  // Create legacy interface from new specialized hooks
+  const legacyContextValue: EventTrackerContextType = React.useMemo(() => ({
+    trackEvent: eventTracking.trackEvent,
+    trackPageView: pageTracking.trackPageView,
+    trackClick: async (element: string, properties?: Record<string, any>) => {
+      await eventTracking.trackCustom('click', {
+        element,
+        timestamp: new Date().toISOString(),
+        ...properties,
+      });
+    },
+    trackFormSubmit: async (formName: string, properties?: Record<string, any>) => {
+      await eventTracking.trackCustom('form_submit', {
+        form_name: formName,
+        timestamp: new Date().toISOString(),
+        ...properties,
+      });
+    },
+    trackCustom: eventTracking.trackCustom,
+    setUserId: (userId: string) => {
+      // This would be handled at the provider level in new architecture
+      console.warn('setUserId: Use AnalyticsProvider userId prop instead');
+    },
+    setTrackingEnabled: eventTracking.setTrackingEnabled,
+    setConsentLevel: eventTracking.setConsentLevel,
+  }), [eventTracking, pageTracking]);
 
   return (
-    <EventTrackerContext.Provider value={contextValue}>
+    <EventTrackerContext.Provider value={legacyContextValue}>
       {children}
     </EventTrackerContext.Provider>
   );
 }
 
+/**
+ * Legacy useEventTracker hook
+ *
+ * Provides backward compatibility while encouraging migration to new hooks
+ * @deprecated Use useEventAnalytics, usePageAnalytics, etc. instead
+ */
 export function useEventTracker(): EventTrackerContextType {
-  const context = useContext(EventTrackerContext);
+  const context = React.useContext(EventTrackerContext);
   if (!context) {
     throw new Error('useEventTracker must be used within an EventTrackerProvider');
   }
   return context;
 }
 
-// Higher-order component for automatic page view tracking
+/**
+ * Higher-order component for automatic page view tracking
+ *
+ * Refactored to use new page analytics hook
+ */
 export function withPageViewTracking<P extends object>(
   WrappedComponent: React.ComponentType<P>,
   options?: {
@@ -174,7 +153,7 @@ export function withPageViewTracking<P extends object>(
   const { trackOnMount = true, customPageName } = options || {};
 
   return function TrackedComponent(props: P) {
-    const { trackPageView } = useEventTracker();
+    const { trackPageView } = usePageAnalytics();
 
     useEffect(() => {
       if (trackOnMount) {
@@ -187,141 +166,138 @@ export function withPageViewTracking<P extends object>(
   };
 }
 
-// Hook for automatic click tracking
+/**
+ * Hook for automatic click tracking
+ *
+ * Refactored to use new event analytics hook
+ */
 export function useClickTracking(elementName: string, enabled: boolean = true) {
-  const { trackClick } = useEventTracker();
+  const { trackCustom } = useEventAnalytics();
 
-  return useCallback(
-    (event: React.MouseEvent, additionalProperties?: EventProperties) => {
+  return React.useCallback(
+    (event: React.MouseEvent, additionalProperties?: Record<string, any>) => {
       if (enabled) {
-        trackClick(elementName, {
+        trackCustom('click', {
+          element: elementName,
           target: event.currentTarget.tagName,
+          timestamp: new Date().toISOString(),
           ...additionalProperties,
         });
       }
     },
-    [trackClick, elementName, enabled]
+    [trackCustom, elementName, enabled]
   );
 }
 
-// Hook for form submission tracking
+/**
+ * Hook for form submission tracking
+ *
+ * Refactored to use new form analytics hook with enhanced capabilities
+ */
 export function useFormTracking(formName: string) {
-  const { trackFormSubmit } = useEventTracker();
+  const formTracker = useFormAnalytics(formName);
 
-  return useCallback(
+  return React.useCallback(
     (formData?: Record<string, any>) => {
-      const properties: Record<string, string | number | boolean | Date | null> = {
-        form_fields: formData ? Object.keys(formData).length : 0,
-      };
-
-      // Add non-sensitive form data
-      if (formData) {
-        Object.entries(formData).forEach(([key, value]) => {
-          // Only track non-sensitive field metadata
-          if (typeof value === 'string' && !key.toLowerCase().includes('password')) {
-            properties[`field_${key}_length`] = value.length;
-            properties[`field_${key}_filled`] = value.length > 0;
-          }
-        });
-      }
-
-      trackFormSubmit(formName, properties);
+      // Use the new form tracker's comprehensive submit tracking
+      formTracker.trackFormSubmit(formData);
     },
-    [trackFormSubmit, formName]
+    [formTracker]
   );
 }
 
-// Component for tracking scroll depth
+/**
+ * Component for tracking scroll depth
+ *
+ * Refactored to use specialized scroll tracking hook
+ */
 export function ScrollDepthTracker({
   thresholds = [25, 50, 75, 100],
   enabled = true
-}: {
-  thresholds?: number[];
-  enabled?: boolean;
-}) {
-  const { trackCustom } = useEventTracker();
-  const trackedThresholds = React.useRef(new Set<number>());
+}: ScrollDepthTrackerProps) {
+  const scrollTracker = useScrollAnalytics();
 
   useEffect(() => {
-    if (!enabled || typeof window === 'undefined') return;
+    // Update scroll tracking configuration
+    scrollTracker.updateThresholds(thresholds);
+    scrollTracker.setEnabled(enabled);
+  }, [thresholds, enabled, scrollTracker]);
 
-    const handleScroll = () => {
-      const scrollPercentage = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
-
-      thresholds.forEach(threshold => {
-        if (scrollPercentage >= threshold && !trackedThresholds.current.has(threshold)) {
-          trackedThresholds.current.add(threshold);
-          trackCustom('scroll_depth', {
-            percentage: threshold,
-            absolute_position: window.scrollY,
-            page_height: document.documentElement.scrollHeight,
-          });
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [thresholds, enabled, trackCustom]);
-
+  // The new hook handles all scroll tracking logic internally
+  // This component now just manages configuration
   return null;
 }
 
-// Component for tracking time on page
+/**
+ * Component for tracking time on page
+ *
+ * Refactored to use visibility tracking hook which includes time-based metrics
+ */
 export function TimeOnPageTracker({
   intervals = [30, 60, 120, 300], // seconds
   enabled = true
-}: {
-  intervals?: number[];
-  enabled?: boolean;
-}) {
-  const { trackCustom } = useEventTracker();
-  const startTime = React.useRef(Date.now());
+}: TimeOnPageTrackerProps) {
+  const visibilityTracker = useVisibilityAnalytics();
+  const { trackCustom } = useEventAnalytics();
   const trackedIntervals = React.useRef(new Set<number>());
 
   useEffect(() => {
     if (!enabled) return;
 
     const checkTimeIntervals = () => {
-      const timeSpent = Math.floor((Date.now() - startTime.current) / 1000);
+      const totalVisibleTime = Math.floor(visibilityTracker.getTotalPageVisibleTime() / 1000);
 
       intervals.forEach(interval => {
-        if (timeSpent >= interval && !trackedIntervals.current.has(interval)) {
+        if (totalVisibleTime >= interval && !trackedIntervals.current.has(interval)) {
           trackedIntervals.current.add(interval);
           trackCustom('time_on_page', {
             seconds: interval,
+            total_visible_time: totalVisibleTime,
             url: typeof window !== 'undefined' ? window.location.href : '',
           });
         }
       });
     };
 
-    const timer = setInterval(checkTimeIntervals, 5000); // Check every 5 seconds
+    const timer = setInterval(checkTimeIntervals, 5000);
     return () => clearInterval(timer);
-  }, [intervals, enabled, trackCustom]);
+  }, [intervals, enabled, trackCustom, visibilityTracker]);
 
   return null;
 }
 
-// Component for tracking visibility changes
-export function VisibilityTracker({ enabled = true }: { enabled?: boolean }) {
-  const { trackCustom } = useEventTracker();
+/**
+ * Component for tracking visibility changes
+ *
+ * Refactored to use specialized visibility tracking hook
+ */
+export function VisibilityTracker({ enabled = true }: VisibilityTrackerProps) {
+  const visibilityTracker = useVisibilityAnalytics();
 
   useEffect(() => {
-    if (!enabled || typeof document === 'undefined') return;
+    // Configure visibility tracking
+    visibilityTracker.setEnabled(enabled);
+  }, [enabled, visibilityTracker]);
 
-    const handleVisibilityChange = () => {
-      trackCustom('page_visibility', {
-        visible: !document.hidden,
-        timestamp: new Date().toISOString(),
-      });
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [enabled, trackCustom]);
-
+  // The new hook handles all visibility tracking logic internally
+  // This component now just manages configuration
   return null;
 }
+
+/**
+ * New Exports - Modern Analytics Hooks
+ *
+ * These are the recommended hooks for new implementations
+ */
+
+// Re-export the new clean hooks for easy access
+export {
+  useEventAnalytics,
+  useFormAnalytics,
+  usePageAnalytics,
+  useScrollAnalytics,
+  useVisibilityAnalytics,
+} from '../../application/providers/analytics-context';
+
+// Re-export the provider for direct use
+export { AnalyticsProvider } from '../../application/providers/analytics-context';

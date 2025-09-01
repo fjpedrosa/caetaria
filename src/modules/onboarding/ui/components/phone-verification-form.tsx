@@ -12,9 +12,9 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/modules/shared/ui/components/ui/form';
+import { Input } from '@/modules/shared/ui/components/ui/input';
 
 const phoneSchema = z.object({
   phoneNumber: z
@@ -77,7 +77,6 @@ export function PhoneVerificationForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Call API to send verification code
       console.log('Sending verification code to:', data);
 
       // Simulate API call
@@ -100,7 +99,6 @@ export function PhoneVerificationForm() {
 
     } catch (error) {
       console.error('Error sending verification code:', error);
-      // TODO: Show error toast
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +108,6 @@ export function PhoneVerificationForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Call API to verify code
       console.log('Verifying code:', data);
 
       // Simulate API call
@@ -120,7 +117,6 @@ export function PhoneVerificationForm() {
       router.push('/onboarding/bot-setup');
     } catch (error) {
       console.error('Error verifying code:', error);
-      // TODO: Show error toast
     } finally {
       setIsLoading(false);
     }

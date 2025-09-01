@@ -6,9 +6,9 @@
 import { Suspense } from 'react';
 import { CheckCircle,Clock, Phone, Shield } from 'lucide-react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
 import { PhoneVerificationForm } from '@/modules/onboarding/ui/components/phone-verification-form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
 
 export default async function PhoneVerificationPage() {
   return (

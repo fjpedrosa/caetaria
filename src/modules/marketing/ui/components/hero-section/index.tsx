@@ -4,27 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 import { HeroContent } from './components/hero-content';
-import { HeroMobileDemo } from './components/hero-mobile-demo';
 import { HeroMobileDemoV2 } from './components/hero-mobile-demo-v2';
-import { HeroMobileDemoV3 } from './components/hero-mobile-demo-v3';
 
-// Demo version configuration - easily switch between versions
-// V1: Original simple version
-// V2: Hardcoded complex version (1050+ lines)
-// V3: New modular WhatsApp Simulator version (<100 lines)
-const DEMO_VERSION = 'V3'; // 'V1', 'V2', or 'V3'
-const DemoComponent =
-  DEMO_VERSION === 'V3' ? HeroMobileDemoV3 :
-  DEMO_VERSION === 'V2' ? HeroMobileDemoV2 : HeroMobileDemo;
-
-/**
- * Hero Section Component - Client Component
- * Main hero with mobile mockup and CTA with advanced animations
- */
-/**
- * Hero Section Component - Main orchestrator
- * Contains background animations and composes the content and mobile demo components
- */
 export function HeroSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
@@ -124,8 +105,8 @@ export function HeroSection() {
             prefersReducedMotion={prefersReducedMotion}
           />
 
-          {/* Right: Mobile Mockup */}
-          <DemoComponent isInView={isInView} />
+          {/* Right: Mobile Mockup - Using V2 with Clean Architecture */}
+          <HeroMobileDemoV2 isInView={isInView} />
         </div>
       </div>
     </section>

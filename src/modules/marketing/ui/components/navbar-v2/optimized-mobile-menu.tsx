@@ -5,10 +5,10 @@ import { AnimatePresence,motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
 import { ArrowRight, ChevronRight,MessageCircle, X } from '@/lib/icons';
 import { cn } from '@/lib/utils';
+import { Button } from '@/modules/shared/ui/components/ui/button';
+import { Icon } from '@/modules/shared/ui/components/ui/icon';
 
 // Hooks
 import { useSwipeToClose } from './hooks/use-mobile-gestures';

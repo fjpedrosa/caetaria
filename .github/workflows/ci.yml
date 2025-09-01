@@ -1,0 +1,224 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    strategy:
+      matrix:
+        test-group: [unit, integration, e2e]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase local development setup
+        if: matrix.test-group != 'unit'
+        run: |
+          supabase start
+          sleep 10
+
+      - name: Generate Supabase types
+        if: matrix.test-group != 'unit'
+        run: pnpm run supabase:types
+
+      - name: Run linting
+        if: matrix.test-group == 'unit'
+        run: pnpm run lint:strict
+
+      - name: Run type checking
+        if: matrix.test-group == 'unit'
+        run: pnpm run type-check
+
+      - name: Run unit tests
+        if: matrix.test-group == 'unit'
+        run: pnpm run test:unit
+
+      - name: Run integration tests
+        if: matrix.test-group == 'integration'
+        run: pnpm run test:integration
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_LOCAL }}
+
+      - name: Install Playwright browsers
+        if: matrix.test-group == 'e2e'
+        run: npx playwright install --with-deps
+
+      - name: Build application for E2E
+        if: matrix.test-group == 'e2e'
+        run: pnpm run build
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_LOCAL }}
+
+      - name: Run E2E tests
+        if: matrix.test-group == 'e2e'
+        run: pnpm run test:e2e
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_LOCAL }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: failure() && matrix.test-group == 'e2e'
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Stop Supabase
+        if: always() && matrix.test-group != 'unit'
+        run: supabase stop
+
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Start Supabase
+        run: |
+          supabase start
+          sleep 10
+
+      - name: Generate Supabase types
+        run: pnpm run supabase:types
+
+      - name: Run coverage tests
+        run: pnpm run test:coverage
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_LOCAL }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+          verbose: true
+
+      - name: Coverage check
+        run: pnpm run test:coverage:check
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security audit
+        run: |
+          npx audit-ci --config audit-ci.json
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          NODE_OPTIONS: '--max-old-space-size=8192'
+
+      - name: Analyze bundle size
+        run: pnpm run build:analyze
+        env:
+          ANALYZE: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: .next/
+          retention-days: 7

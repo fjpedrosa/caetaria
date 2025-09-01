@@ -6,13 +6,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, tap, throttleTime } from 'rxjs/operators';
 
-import { ConversationEngine, PlaybackState } from '../../application/engines/conversation-engine';
 import {
-  JumpToMessageUseCase,
-  PauseConversationUseCase,
-  PlayConversationUseCase,
-  ResetConversationUseCase,
-  SetPlaybackSpeedUseCase
+  ConversationOrchestrator,
+  createConversationOrchestrator,
+  PlaybackState
+} from '../../application/services';
+import {
+  jumpToMessage,
+  pauseConversation,
+  playConversation,
+  resetConversation,
+  setPlaybackSpeed
 } from '../../application/use-cases';
 import { Conversation, Message } from '../../domain/entities';
 import { ConversationEvent } from '../../domain/events';
@@ -79,21 +83,15 @@ export interface ConversationFlowReturn {
   state: ConversationFlowState;
   actions: ConversationFlowActions;
   events$: Observable<ConversationEvent>;
-  engine: ConversationEngine;
+  orchestrator: ConversationOrchestrator;
+  isReady: boolean;
 }
 
 export function useConversationFlow(
   config: ConversationFlowConfig = {}
 ): ConversationFlowReturn {
-  // Engine and use case instances
-  const engineRef = useRef<ConversationEngine | null>(null);
-  const useCasesRef = useRef<{
-    play: PlayConversationUseCase;
-    pause: PauseConversationUseCase;
-    reset: ResetConversationUseCase;
-    jumpTo: JumpToMessageUseCase;
-    setSpeed: SetPlaybackSpeedUseCase;
-  } | null>(null);
+  // Orchestrator instance
+  const orchestratorRef = useRef<ConversationOrchestrator | null>(null);
 
   // Subscriptions
   const subscriptionsRef = useRef<Subscription[]>([]);
@@ -120,9 +118,10 @@ export function useConversationFlow(
 
   const [events, setEvents] = useState<ConversationEvent[]>([]);
   const [lastEvent, setLastEvent] = useState<ConversationEvent | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  // Memoized engine configuration
-  const engineConfig = useMemo(() => ({
+  // Memoized orchestrator configuration
+  const orchestratorConfig = useMemo(() => ({
     enableDebug: config.enableDebug || false,
     enablePerformanceTracking: config.enablePerformanceTracking || false,
     maxRetries: config.maxRetries || 3,
@@ -130,22 +129,17 @@ export function useConversationFlow(
     fastModeEnabled: config.enableDebug === false // Enable fast mode when not debugging
   }), [config.enableDebug, config.enablePerformanceTracking, config.maxRetries]);
 
-  // Initialize engine and use cases with optimized config
+  // Initialize orchestrator with optimized config
   useEffect(() => {
-    if (!engineRef.current) {
-      engineRef.current = new ConversationEngine(engineConfig);
-
-      useCasesRef.current = {
-        play: new PlayConversationUseCase(engineRef.current),
-        pause: new PauseConversationUseCase(engineRef.current),
-        reset: new ResetConversationUseCase(engineRef.current),
-        jumpTo: new JumpToMessageUseCase(engineRef.current),
-        setSpeed: new SetPlaybackSpeedUseCase(engineRef.current)
-      };
+    if (!orchestratorRef.current) {
+      console.log('[ConversationFlow] Initializing orchestrator with config:', orchestratorConfig);
+      orchestratorRef.current = createConversationOrchestrator(orchestratorConfig);
+      console.log('[ConversationFlow] Orchestrator initialized successfully');
+      setIsReady(true);
 
       // Subscribe to playback state changes with optimization
-      const playbackStateSubscription = engineRef.current.playbackState$.pipe(
-        distinctUntilChanged((prev, curr) => 
+      const playbackStateSubscription = orchestratorRef.current.playbackState$.pipe(
+        distinctUntilChanged((prev, curr) =>
           prev.isPlaying === curr.isPlaying &&
           prev.currentMessageIndex === curr.currentMessageIndex &&
           prev.isCompleted === curr.isCompleted
@@ -160,10 +154,9 @@ export function useConversationFlow(
       );
 
       // Subscribe to events with throttling
-      const eventsSubscription = engineRef.current.events$.pipe(
+      const eventsSubscription = orchestratorRef.current.events$.pipe(
         throttleTime(50), // Throttle high-frequency events
         tap(event => {
-          // Only log important events in production
           if (config.enableDebug || ['conversation.started', 'conversation.completed', 'message.sent'].includes(event.type)) {
             console.log('[ConversationFlow] Event:', event.type);
           }
@@ -172,7 +165,7 @@ export function useConversationFlow(
         (event) => {
           setLastEvent(event);
           setEvents(prev => {
-            const newEvents = [...prev.slice(-49), event]; // Reduced from 100 to 50 events
+            const newEvents = [...prev.slice(-49), event];
             return newEvents;
           });
         }
@@ -186,19 +179,20 @@ export function useConversationFlow(
         cleanup();
       }
     };
-  }, [engineConfig, config.autoCleanup]); // Removed cleanup dependency to fix initialization order
+  }, [orchestratorConfig, config.autoCleanup]);
 
   // Action implementations
   const loadConversation = useCallback(async (conversation: Conversation): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      console.log('[ConversationFlow] loadConversation called, orchestrator exists:', !!orchestratorRef.current);
+      if (!orchestratorRef.current) {
+        console.error('[ConversationFlow] Orchestrator not initialized yet');
+        return false;
+      }
 
-      // Load conversation without starting playback
-      const result = await useCasesRef.current.play.execute({
-        conversation,
-        autoStart: false
-      });
-
+      console.log('[ConversationFlow] Calling orchestrator.loadConversation...');
+      const result = await orchestratorRef.current.loadConversation(conversation);
+      console.log('[ConversationFlow] Load result:', result);
       return result.success;
     } catch (error) {
       console.error('Failed to load conversation:', error);
@@ -208,14 +202,9 @@ export function useConversationFlow(
 
   const play = useCallback(async (): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      if (!orchestratorRef.current) return false;
 
-      // Just start playback without reloading the conversation
-      const result = await useCasesRef.current.play.execute({
-        // Don't pass conversation to avoid reloading
-        autoStart: true
-      });
-
+      const result = await orchestratorRef.current.play({ autoStart: true });
       return result.success;
     } catch (error) {
       console.error('Failed to play conversation:', error);
@@ -225,9 +214,9 @@ export function useConversationFlow(
 
   const pause = useCallback(async (): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      if (!orchestratorRef.current) return false;
 
-      const result = await useCasesRef.current.pause.execute();
+      const result = await orchestratorRef.current.pause();
       return result.success;
     } catch (error) {
       console.error('Failed to pause conversation:', error);
@@ -237,9 +226,9 @@ export function useConversationFlow(
 
   const reset = useCallback(async (): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      if (!orchestratorRef.current) return false;
 
-      const result = await useCasesRef.current.reset.execute();
+      const result = await orchestratorRef.current.reset();
       return result.success;
     } catch (error) {
       console.error('Failed to reset conversation:', error);
@@ -249,12 +238,9 @@ export function useConversationFlow(
 
   const jumpTo = useCallback(async (messageIndex: number): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      if (!orchestratorRef.current) return false;
 
-      const result = await useCasesRef.current.jumpTo.execute({
-        messageIndex
-      });
-
+      const result = await orchestratorRef.current.jumpTo(messageIndex);
       return result.success;
     } catch (error) {
       console.error('Failed to jump to message:', error);
@@ -264,12 +250,9 @@ export function useConversationFlow(
 
   const setSpeed = useCallback(async (speed: number): Promise<boolean> => {
     try {
-      if (!useCasesRef.current) return false;
+      if (!orchestratorRef.current) return false;
 
-      const result = await useCasesRef.current.setSpeed.execute({
-        speed
-      });
-
+      const result = await orchestratorRef.current.setSpeed(speed);
       return result.success;
     } catch (error) {
       console.error('Failed to set playback speed:', error);
@@ -277,19 +260,17 @@ export function useConversationFlow(
     }
   }, []);
 
-  const nextMessage = useCallback((): void => {
-    if (playbackState.conversation && playbackState.conversation.canGoForward) {
-      const nextIndex = playbackState.currentMessageIndex + 1;
-      jumpTo(nextIndex);
+  const nextMessage = useCallback(async (): Promise<void> => {
+    if (orchestratorRef.current) {
+      await orchestratorRef.current.nextMessage();
     }
-  }, [playbackState.conversation, playbackState.currentMessageIndex, jumpTo]);
+  }, []);
 
-  const previousMessage = useCallback((): void => {
-    if (playbackState.conversation && playbackState.conversation.canGoBack) {
-      const previousIndex = playbackState.currentMessageIndex - 1;
-      jumpTo(previousIndex);
+  const previousMessage = useCallback(async (): Promise<void> => {
+    if (orchestratorRef.current) {
+      await orchestratorRef.current.previousMessage();
     }
-  }, [playbackState.conversation, playbackState.currentMessageIndex, jumpTo]);
+  }, []);
 
   const clearEvents = useCallback((): void => {
     setEvents([]);
@@ -307,18 +288,15 @@ export function useConversationFlow(
     });
     subscriptionsRef.current = [];
 
-    // Destroy engine with proper cleanup
-    if (engineRef.current) {
+    // Destroy orchestrator with proper cleanup
+    if (orchestratorRef.current) {
       try {
-        engineRef.current.destroy();
+        orchestratorRef.current.destroy();
       } catch (error) {
-        console.warn('[ConversationFlow] Error destroying engine:', error);
+        console.warn('[ConversationFlow] Error destroying orchestrator:', error);
       }
-      engineRef.current = null;
+      orchestratorRef.current = null;
     }
-
-    // Clear use cases
-    useCasesRef.current = null;
 
     // Reset state
     setEvents([]);
@@ -369,14 +347,15 @@ export function useConversationFlow(
   ]);
 
   const events$ = useMemo(
-    () => engineRef.current?.events$ || new Observable<ConversationEvent>(),
-    [engineRef.current]
+    () => orchestratorRef.current?.events$ || new Observable<ConversationEvent>(),
+    [orchestratorRef.current]
   );
 
   return {
     state,
     actions,
     events$,
-    engine: engineRef.current!
+    orchestrator: orchestratorRef.current!,
+    isReady
   };
 }

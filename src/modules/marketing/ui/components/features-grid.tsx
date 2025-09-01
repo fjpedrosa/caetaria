@@ -3,9 +3,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { FeatureIcon, Icon } from '@/components/ui/icon';
 import {
   Check,
   featureIcons,
@@ -13,6 +10,9 @@ import {
   Shield,
   Sparkles,
   Zap} from '@/lib/icons';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Card } from '@/modules/shared/ui/components/ui/card';
+import { FeatureIcon, Icon } from '@/modules/shared/ui/components/ui/icon';
 
 import { MARKETING_COPY } from '../../domain/copy';
 
@@ -25,7 +25,10 @@ interface Feature {
 }
 
 // Features obtenidos del copy centralizado
-const defaultFeatures: Feature[] = MARKETING_COPY.features.items;
+const defaultFeatures: Feature[] = MARKETING_COPY.features.items.map(item => ({
+  ...item,
+  benefits: [...item.benefits]
+})) as Feature[];
 
 interface FeaturesGridProps {
   features?: Feature[];

@@ -31,5 +31,34 @@ export {
   getIndustryDisplayName,
   getRecommendedPlan} from './domain/value-objects/business-info';
 
-// Module Configuration
-export type { OnboardingModuleConfig, OnboardingModuleDependencies,OnboardingUseCaseFactories } from './onboarding-module';
+// Module Configuration - Functional Approach (Recommended)
+export type {
+  Environment,
+  OnboardingModuleConfiguration,
+  OnboardingModuleDependencies,
+  OnboardingRepositoryConfiguration,
+  OnboardingServiceConfiguration,
+  OnboardingUseCaseConfiguration,
+  RepositoryFactory,
+  ServiceFactory,
+  UseCaseFactory
+} from './onboarding-module';
+export {
+  createConfigForEnvironment,
+  createDevelopmentConfig,
+  // Functional Module Factory
+  createOnboardingModule,
+  // Pure Configuration Functions
+  createOnboardingModuleConfiguration,
+  createProductionConfig,
+  createTestConfig,
+  environmentConfigFactories,
+  // Backward Compatibility (Deprecated)
+  OnboardingModuleConfig,
+  // Use Case Factories
+  OnboardingUseCaseFactories,
+  // Dependency Registration Functions
+  registerOnboardingDependencies,
+  registerOnlyRepositories,
+  registerOnlyServices,
+  registerOnlyUseCases} from './onboarding-module';

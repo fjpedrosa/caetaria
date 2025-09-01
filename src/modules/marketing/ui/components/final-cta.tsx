@@ -1,9 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import { Badge } from '@/modules/shared/ui/components/ui/badge';
+import { Button } from '@/modules/shared/ui/components/ui/button';
 
 /**
  * Final CTA Component - Server Component

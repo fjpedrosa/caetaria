@@ -4,8 +4,8 @@ import React, { ReactNode, useRef } from 'react'
 import { ThemeProvider } from 'next-themes'
 import { Provider as ReduxProvider } from 'react-redux'
 
-import ErrorBoundary from '@/components/error-boundary'
 import { EventTrackerProvider, ScrollDepthTracker, TimeOnPageTracker, VisibilityTracker } from '@/modules/analytics/ui/components/event-tracker'
+import ErrorBoundary from '@/modules/shared/ui/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
 

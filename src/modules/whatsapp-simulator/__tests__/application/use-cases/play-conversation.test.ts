@@ -6,7 +6,7 @@
 import { firstValueFrom, take } from 'rxjs';
 
 import { ConversationEngine } from '../../../application/engines/conversation-engine';
-import { PlayConversationUseCase } from '../../../application/use-cases/play-conversation';
+import { createPlayConversationUseCase, PlayConversationUseCase } from '../../../application/use-cases/play-conversation';
 import { Conversation, Message } from '../../../domain/entities';
 import { ConversationEventFactory } from '../../../domain/events';
 
@@ -14,7 +14,7 @@ import { ConversationEventFactory } from '../../../domain/events';
 jest.mock('../../../application/engines/conversation-engine');
 
 describe('PlayConversationUseCase', () => {
-  let useCase: PlayConversationUseCase;
+  let useCase: ReturnType<typeof createPlayConversationUseCase>;
   let mockEngine: jest.Mocked<ConversationEngine>;
   let testConversation: Conversation;
 
@@ -44,8 +44,8 @@ describe('PlayConversationUseCase', () => {
       typingStates$: { pipe: jest.fn() },
     } as any;
 
-    // Create use case with mock engine
-    useCase = new PlayConversationUseCase(mockEngine);
+    // Create use case with mock engine using factory
+    useCase = createPlayConversationUseCase({ orchestrator: mockEngine });
 
     // Create test conversation
     const metadata = {

@@ -1,0 +1,198 @@
+config:
+  target: "{{ $processEnvironment.TARGET || 'http://localhost:3000' }}"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 10
+      name: "Ramp up load"
+    - duration: 300
+      arrivalRate: 15
+      name: "Sustained load"
+    - duration: 120
+      arrivalRate: 25
+      name: "Peak load"
+    - duration: 60
+      arrivalRate: 5
+      name: "Cool down"
+  
+  # Performance thresholds
+  ensure:
+    # Response time thresholds
+    p95: 2000  # 95% of requests should complete within 2 seconds
+    p99: 5000  # 99% of requests should complete within 5 seconds
+    
+    # Error rate threshold
+    maxErrorRate: 5  # Maximum 5% error rate
+    
+  # Plugins
+  plugins:
+    expect: {}
+    metrics-by-endpoint: {}
+    
+  # Variables
+  variables:
+    userEmail: "test+{{ $randomString() }}@example.com"
+    businessName: "Test Business {{ $randomInt(1, 1000) }}"
+    phoneNumber: "+1555{{ $randomInt(1000000, 9999999) }}"
+
+scenarios:
+  - name: "Landing Page Journey"
+    weight: 40
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+            - hasHeader: "content-type"
+            - contentType: text/html
+          capture:
+            - regexp: 'name="csrf-token" content="([^"]+)"'
+              as: csrfToken
+
+      - think: 3
+
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+
+      - think: 2
+
+      - post:
+          url: "/api/leads"
+          json:
+            email: "{{ userEmail }}"
+            businessName: "{{ businessName }}"
+            phone: "{{ phoneNumber }}"
+            source: "landing_page"
+          expect:
+            - statusCode: [200, 201]
+          capture:
+            - json: "$.id"
+              as: leadId
+
+  - name: "Onboarding Flow"
+    weight: 35
+    flow:
+      - get:
+          url: "/onboarding/business"
+          expect:
+            - statusCode: 200
+
+      - think: 5
+
+      - post:
+          url: "/api/onboarding/business"
+          json:
+            businessName: "{{ businessName }}"
+            industry: "Restaurant"
+            size: "Small"
+            country: "US"
+          expect:
+            - statusCode: [200, 201]
+
+      - think: 3
+
+      - get:
+          url: "/onboarding/integration"
+          expect:
+            - statusCode: 200
+
+      - think: 4
+
+      - get:
+          url: "/onboarding/bot-setup"
+          expect:
+            - statusCode: 200
+
+      - think: 8
+
+      - post:
+          url: "/api/onboarding/bot-setup"
+          json:
+            botName: "Test Bot"
+            greeting: "Hello! Welcome to our restaurant."
+            language: "en"
+          expect:
+            - statusCode: [200, 201]
+
+      - get:
+          url: "/onboarding/testing"
+          expect:
+            - statusCode: 200
+
+      - think: 10
+
+      - get:
+          url: "/onboarding/complete"
+          expect:
+            - statusCode: 200
+
+  - name: "API Endpoints"
+    weight: 15
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+            - contentType: application/json
+
+      - get:
+          url: "/api/pricing"
+          expect:
+            - statusCode: 200
+
+      - get:
+          url: "/api/analytics/metrics"
+          expect:
+            - statusCode: [200, 401, 403]
+
+  - name: "Static Assets"
+    weight: 10
+    flow:
+      - get:
+          url: "/_next/static/css/app.css"
+          expect:
+            - statusCode: [200, 404]
+
+      - get:
+          url: "/_next/static/chunks/main.js"
+          expect:
+            - statusCode: [200, 404]
+
+      - get:
+          url: "/favicon.ico"
+          expect:
+            - statusCode: [200, 404]
+
+      - get:
+          url: "/images/hero-demo.png"
+          expect:
+            - statusCode: [200, 404]
+
+# Error scenarios for resilience testing
+  - name: "Error Scenarios"
+    weight: 5
+    flow:
+      # Test 404 handling
+      - get:
+          url: "/non-existent-page"
+          expect:
+            - statusCode: 404
+
+      # Test malformed requests
+      - post:
+          url: "/api/leads"
+          json:
+            invalid: "data"
+          expect:
+            - statusCode: [400, 422]
+
+      # Test rate limiting (if implemented)
+      - loop:
+          count: 20
+          over:
+            - get:
+                url: "/api/health"

@@ -23,6 +23,26 @@ export type OnboardingStatus =
   | 'completed'
   | 'abandoned';
 
+export interface SessionAnalytics {
+  readonly startedAt: Date;
+  readonly lastActivityAt: Date;
+  readonly completedAt?: Date;
+  readonly abandonedAt?: Date;
+  readonly resumedAt?: Date;
+  readonly pausedAt?: Date;
+  readonly stepTimestamps: Record<OnboardingStep, Date[]>;
+  readonly stepDurations: Record<OnboardingStep, number>;
+  readonly deviceInfo?: {
+    readonly userAgent: string;
+    readonly ip: string;
+    readonly country?: string;
+    readonly city?: string;
+  };
+  readonly abTestVariants: Record<string, string>;
+  readonly conversionSource?: string;
+  readonly abandonmentReason?: string;
+}
+
 export interface OnboardingSession {
   readonly id: OnboardingSessionId;
   readonly userEmail: Email;
@@ -34,6 +54,9 @@ export interface OnboardingSession {
   readonly completedAt?: Date;
   readonly stepData: OnboardingStepData;
   readonly metadata?: Record<string, unknown>;
+  readonly analytics: SessionAnalytics;
+  readonly recoveryToken?: string;
+  readonly expiresAt: Date;
 }
 
 export function createOnboardingSessionId(): OnboardingSessionId {
@@ -41,10 +64,22 @@ export function createOnboardingSessionId(): OnboardingSessionId {
 }
 
 /**
+ * Pure function to create a recovery token for session restoration
+ */
+export function createRecoveryToken(): string {
+  return crypto.randomUUID();
+}
+
+/**
  * Pure function to create a new onboarding session
  */
-export function createOnboardingSession(userEmail: Email): OnboardingSession {
+export function createOnboardingSession(
+  userEmail: Email,
+  deviceInfo?: SessionAnalytics['deviceInfo'],
+  conversionSource?: string
+): OnboardingSession {
   const now = new Date();
+  const expiryTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
   return {
     id: createOnboardingSessionId(),
@@ -56,6 +91,33 @@ export function createOnboardingSession(userEmail: Email): OnboardingSession {
     lastActivityAt: now,
     stepData: {},
     metadata: {},
+    analytics: {
+      startedAt: now,
+      lastActivityAt: now,
+      stepTimestamps: {
+        'welcome': [now],
+        'business': [],
+        'integration': [],
+        'verification': [],
+        'bot-setup': [],
+        'testing': [],
+        'complete': [],
+      },
+      stepDurations: {
+        'welcome': 0,
+        'business': 0,
+        'integration': 0,
+        'verification': 0,
+        'bot-setup': 0,
+        'testing': 0,
+        'complete': 0,
+      },
+      deviceInfo,
+      abTestVariants: {},
+      conversionSource,
+    },
+    recoveryToken: createRecoveryToken(),
+    expiresAt: expiryTime,
   };
 }
 
@@ -85,6 +147,26 @@ export function advanceOnboardingStep(
   const isCompleted = nextStep === 'complete';
   const now = new Date();
 
+  // Calculate step duration for current step
+  const currentStepTimestamps = session.analytics.stepTimestamps[session.currentStep];
+  const stepStartTime = currentStepTimestamps[currentStepTimestamps.length - 1] || session.analytics.lastActivityAt;
+  const currentStepDuration = now.getTime() - stepStartTime.getTime();
+
+  // Update analytics
+  const updatedAnalytics: SessionAnalytics = {
+    ...session.analytics,
+    lastActivityAt: now,
+    completedAt: isCompleted ? now : session.analytics.completedAt,
+    stepTimestamps: {
+      ...session.analytics.stepTimestamps,
+      [nextStep]: [...(session.analytics.stepTimestamps[nextStep] || []), now],
+    },
+    stepDurations: {
+      ...session.analytics.stepDurations,
+      [session.currentStep]: session.analytics.stepDurations[session.currentStep] + currentStepDuration,
+    },
+  };
+
   return {
     ...session,
     currentStep: nextStep,
@@ -93,6 +175,7 @@ export function advanceOnboardingStep(
     lastActivityAt: now,
     completedAt: isCompleted ? now : session.completedAt,
     stepData: stepData ? { ...session.stepData, ...stepData } : session.stepData,
+    analytics: updatedAnalytics,
   };
 }
 
@@ -256,4 +339,141 @@ export function isStepAccessible(
     session.completedSteps.includes(targetStep) ||
     targetIndex === currentIndex + 1
   );
+}
+
+/**
+ * Pure function to abandon onboarding session
+ */
+export function abandonOnboarding(
+  session: OnboardingSession,
+  reason?: string
+): OnboardingSession {
+  const now = new Date();
+
+  return {
+    ...session,
+    status: 'abandoned',
+    lastActivityAt: now,
+    analytics: {
+      ...session.analytics,
+      abandonedAt: now,
+      lastActivityAt: now,
+      abandonmentReason: reason,
+    },
+  };
+}
+
+/**
+ * Pure function to extend session expiry
+ */
+export function extendSessionExpiry(
+  session: OnboardingSession,
+  additionalHours: number = 24
+): OnboardingSession {
+  const now = new Date();
+  const newExpiryTime = new Date(now.getTime() + additionalHours * 60 * 60 * 1000);
+
+  return {
+    ...session,
+    expiresAt: newExpiryTime,
+    lastActivityAt: now,
+    analytics: {
+      ...session.analytics,
+      lastActivityAt: now,
+    },
+  };
+}
+
+/**
+ * Pure function to check if session is expired
+ */
+export function isSessionExpired(session: OnboardingSession): boolean {
+  return new Date() > session.expiresAt;
+}
+
+/**
+ * Pure function to record A/B test variant
+ */
+export function recordAbTestVariant(
+  session: OnboardingSession,
+  testName: string,
+  variant: string
+): OnboardingSession {
+  return {
+    ...session,
+    analytics: {
+      ...session.analytics,
+      abTestVariants: {
+        ...session.analytics.abTestVariants,
+        [testName]: variant,
+      },
+    },
+  };
+}
+
+/**
+ * Pure function to update device information
+ */
+export function updateDeviceInfo(
+  session: OnboardingSession,
+  deviceInfo: SessionAnalytics['deviceInfo']
+): OnboardingSession {
+  return {
+    ...session,
+    analytics: {
+      ...session.analytics,
+      deviceInfo,
+    },
+  };
+}
+
+/**
+ * Pure function to get session duration in minutes
+ */
+export function getSessionDurationMinutes(session: OnboardingSession): number {
+  const endTime = session.completedAt || session.analytics.abandonedAt || new Date();
+  const startTime = session.startedAt;
+  return Math.round((endTime.getTime() - startTime.getTime()) / (1000 * 60));
+}
+
+/**
+ * Pure function to get current step duration in minutes
+ */
+export function getCurrentStepDurationMinutes(session: OnboardingSession): number {
+  const currentStepTimestamps = session.analytics.stepTimestamps[session.currentStep];
+  if (!currentStepTimestamps || currentStepTimestamps.length === 0) {
+    return 0;
+  }
+
+  const stepStartTime = currentStepTimestamps[currentStepTimestamps.length - 1];
+  const now = new Date();
+  return Math.round((now.getTime() - stepStartTime.getTime()) / (1000 * 60));
+}
+
+/**
+ * Pure function to generate analytics summary
+ */
+export function generateAnalyticsSummary(session: OnboardingSession) {
+  const totalDuration = getSessionDurationMinutes(session);
+  const currentStepDuration = getCurrentStepDurationMinutes(session);
+  const progress = calculateOnboardingProgress(session);
+
+  return {
+    sessionId: session.id,
+    status: session.status,
+    progress,
+    currentStep: session.currentStep,
+    completedSteps: session.completedSteps.length,
+    totalSteps: 6,
+    totalDurationMinutes: totalDuration,
+    currentStepDurationMinutes: currentStepDuration,
+    averageStepDuration: Object.values(session.analytics.stepDurations)
+      .filter(d => d > 0)
+      .reduce((acc, duration, index, arr) => acc + duration / arr.length, 0) / (1000 * 60),
+    conversionSource: session.analytics.conversionSource,
+    abTestVariants: session.analytics.abTestVariants,
+    deviceInfo: session.analytics.deviceInfo,
+    isExpired: isSessionExpired(session),
+    timeToExpiry: Math.max(0, Math.round((session.expiresAt.getTime() - new Date().getTime()) / (1000 * 60))),
+  };
 }
