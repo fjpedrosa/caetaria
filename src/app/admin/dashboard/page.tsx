@@ -32,12 +32,12 @@ import {
   useRealtimeAnalytics,
   useRealtimeConnection,
   useRealtimeLeads} from '@/lib/supabase/realtime';
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Input } from '@/modules/shared/ui/components/ui/input';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Input } from '@/modules/shared/presentation/components/ui/input';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 // Import API hooks
 import {
   useAnalyticsTracking,
@@ -63,7 +63,7 @@ import { NotificationCenter } from './components/notification-center';
 import { OnboardingMonitor } from './components/onboarding-monitor';
 import { SystemHealth } from './components/system-health';
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);

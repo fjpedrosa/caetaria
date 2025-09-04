@@ -4,12 +4,20 @@
  */
 
 import {
+  cloneMessage,
+  createMessage,
+  createMessageFromJSON,
+  getMessageDisplayText,
+  getMessageTotalAnimationTime,
+  isFlowTrigger,
   Message,
   MessageContent,
   MessageStatus,
   MessageTiming,
+  messageToJSON,
   MessageType,
-  SenderType} from '../../../domain/entities/message';
+  SenderType,
+  updateMessageStatus} from '../../../domain/entities/message';
 
 describe('Message Entity', () => {
   const createTestMessage = (overrides: Partial<{
@@ -31,7 +39,7 @@ describe('Message Entity', () => {
       text: 'Test message',
     };
 
-    return new Message({
+    return createMessage({
       id: 'msg-1',
       type: 'text',
       sender: 'user',
@@ -74,36 +82,36 @@ describe('Message Entity', () => {
       const message = createTestMessage({ status: 'sending' });
 
       // sending -> sent
-      expect(() => message.updateStatus('sent')).not.toThrow();
-      expect(message.status).toBe('sent');
+      let updatedMessage = updateMessageStatus(message, 'sent');
+      expect(updatedMessage.status).toBe('sent');
 
       // sent -> delivered
-      expect(() => message.updateStatus('delivered')).not.toThrow();
-      expect(message.status).toBe('delivered');
+      updatedMessage = updateMessageStatus(updatedMessage, 'delivered');
+      expect(updatedMessage.status).toBe('delivered');
 
       // delivered -> read
-      expect(() => message.updateStatus('read')).not.toThrow();
-      expect(message.status).toBe('read');
+      updatedMessage = updateMessageStatus(updatedMessage, 'read');
+      expect(updatedMessage.status).toBe('read');
     });
 
     it('should allow failed transition from any status', () => {
       const message1 = createTestMessage({ status: 'sending' });
-      expect(() => message1.updateStatus('failed')).not.toThrow();
+      expect(() => updateMessageStatus(message1, 'failed')).not.toThrow();
 
       const message2 = createTestMessage({ status: 'sent' });
-      expect(() => message2.updateStatus('failed')).not.toThrow();
+      expect(() => updateMessageStatus(message2, 'failed')).not.toThrow();
     });
 
     it('should allow retry from failed status', () => {
       const message = createTestMessage({ status: 'failed' });
-      expect(() => message.updateStatus('sending')).not.toThrow();
-      expect(message.status).toBe('sending');
+      const updatedMessage = updateMessageStatus(message, 'sending');
+      expect(updatedMessage.status).toBe('sending');
     });
 
     it('should reject invalid status transitions', () => {
       const message = createTestMessage({ status: 'sent' });
 
-      expect(() => message.updateStatus('sending')).toThrow(
+      expect(() => updateMessageStatus(message, 'sending')).toThrow(
         'Invalid status transition from sent to sending'
       );
     });
@@ -111,8 +119,8 @@ describe('Message Entity', () => {
     it('should not allow changes from read status', () => {
       const message = createTestMessage({ status: 'read' });
 
-      expect(() => message.updateStatus('delivered')).toThrow();
-      expect(() => message.updateStatus('sent')).toThrow();
+      expect(() => updateMessageStatus(message, 'delivered')).toThrow();
+      expect(() => updateMessageStatus(message, 'sent')).toThrow();
     });
   });
 
@@ -128,7 +136,7 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(flowMessage.isFlowTrigger()).toBe(true);
+      expect(isFlowTrigger(flowMessage)).toBe(true);
     });
 
     it('should identify interactive flow messages as flow triggers', () => {
@@ -143,7 +151,7 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(interactiveFlowMessage.isFlowTrigger()).toBe(true);
+      expect(isFlowTrigger(interactiveFlowMessage)).toBe(true);
     });
 
     it('should not identify regular messages as flow triggers', () => {
@@ -160,9 +168,9 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(textMessage.isFlowTrigger()).toBe(false);
-      expect(imageMessage.isFlowTrigger()).toBe(false);
-      expect(buttonMessage.isFlowTrigger()).toBe(false);
+      expect(isFlowTrigger(textMessage)).toBe(false);
+      expect(isFlowTrigger(imageMessage)).toBe(false);
+      expect(isFlowTrigger(buttonMessage)).toBe(false);
     });
   });
 
@@ -301,7 +309,7 @@ describe('Message Entity', () => {
     testCases.forEach(({ type, content, expected }) => {
       it(`should generate correct display text for ${type} messages`, () => {
         const message = createTestMessage({ type, content });
-        expect(message.getDisplayText()).toBe(expected);
+        expect(getMessageDisplayText(message)).toBe(expected);
       });
     });
   });
@@ -316,7 +324,7 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(message.getTotalAnimationTime()).toBe(4000); // 1500 + 2500
+      expect(getMessageTotalAnimationTime(message)).toBe(4000); // 1500 + 2500
     });
 
     it('should handle zero timing values', () => {
@@ -328,14 +336,14 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(message.getTotalAnimationTime()).toBe(0);
+      expect(getMessageTotalAnimationTime(message)).toBe(0);
     });
   });
 
   describe('Cloning', () => {
     it('should create a copy with updated status', () => {
       const original = createTestMessage({ status: 'sending' });
-      const cloned = original.clone({ status: 'sent' });
+      const cloned = cloneMessage(original, { status: 'sent' });
 
       expect(cloned).not.toBe(original);
       expect(cloned.id).toBe(original.id);
@@ -346,7 +354,7 @@ describe('Message Entity', () => {
     it('should create a copy with updated timing', () => {
       const original = createTestMessage();
       const newTiming = { delayBeforeTyping: 3000 };
-      const cloned = original.clone({ timing: newTiming });
+      const cloned = cloneMessage(original, { timing: newTiming });
 
       expect(cloned.timing.delayBeforeTyping).toBe(3000);
       expect(cloned.timing.typingDuration).toBe(original.timing.typingDuration);
@@ -356,7 +364,7 @@ describe('Message Entity', () => {
     it('should create a copy with updated content', () => {
       const original = createTestMessage();
       const newContent = { text: 'Updated message' };
-      const cloned = original.clone({ content: newContent });
+      const cloned = cloneMessage(original, { content: newContent });
 
       expect(cloned.content.text).toBe('Updated message');
       expect(original.content.text).toBe('Test message'); // Original unchanged
@@ -366,7 +374,7 @@ describe('Message Entity', () => {
   describe('Serialization', () => {
     it('should serialize to JSON correctly', () => {
       const message = createTestMessage();
-      const json = message.toJSON();
+      const json = messageToJSON(message);
 
       expect(json.id).toBe('msg-1');
       expect(json.type).toBe('text');
@@ -389,7 +397,7 @@ describe('Message Entity', () => {
       };
 
       const message = createTestMessage({ timing });
-      const json = message.toJSON();
+      const json = messageToJSON(message);
 
       expect(json.timing.sentAt).toBe('2024-01-01T10:00:05.000Z');
       expect(json.timing.deliveredAt).toBe('2024-01-01T10:00:06.000Z');
@@ -398,8 +406,8 @@ describe('Message Entity', () => {
 
     it('should deserialize from JSON correctly', () => {
       const originalMessage = createTestMessage();
-      const json = originalMessage.toJSON();
-      const deserialized = Message.fromJSON(json);
+      const json = messageToJSON(originalMessage);
+      const deserialized = createMessageFromJSON(json);
 
       expect(deserialized.id).toBe(originalMessage.id);
       expect(deserialized.type).toBe(originalMessage.type);
@@ -426,9 +434,9 @@ describe('Message Entity', () => {
         }
       });
 
-      const json = original.toJSON();
-      const deserialized = Message.fromJSON(json);
-      const reserializedJson = deserialized.toJSON();
+      const json = messageToJSON(original);
+      const deserialized = createMessageFromJSON(json);
+      const reserializedJson = messageToJSON(deserialized);
 
       expect(JSON.stringify(json)).toBe(JSON.stringify(reserializedJson));
     });
@@ -437,7 +445,7 @@ describe('Message Entity', () => {
   describe('Edge Cases', () => {
     it('should handle empty content objects', () => {
       const message = createTestMessage({ content: {} });
-      expect(message.getDisplayText()).toBe(''); // Empty text for text message with no content
+      expect(getMessageDisplayText(message)).toBe(''); // Empty text for text message with no content
     });
 
     it('should handle null/undefined values in content', () => {
@@ -445,7 +453,7 @@ describe('Message Entity', () => {
         type: 'text',
         content: { text: undefined }
       });
-      expect(message.getDisplayText()).toBe('');
+      expect(getMessageDisplayText(message)).toBe('');
     });
 
     it('should handle complex nested content structures', () => {
@@ -468,8 +476,8 @@ describe('Message Entity', () => {
         }
       });
 
-      expect(() => message.toJSON()).not.toThrow();
-      expect(() => Message.fromJSON(message.toJSON())).not.toThrow();
+      expect(() => messageToJSON(message)).not.toThrow();
+      expect(() => createMessageFromJSON(messageToJSON(message))).not.toThrow();
     });
   });
 });

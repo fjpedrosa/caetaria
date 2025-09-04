@@ -35,7 +35,7 @@ import { createPhoneNumber } from '@/modules/marketing/domain/value-objects/phon
 import {
   createSupabaseLeadRepository,
   DuplicateLeadError,
-  LeadRepositoryError} from '@/modules/marketing/infra/adapters/supabase-lead-repository';
+  LeadRepositoryError} from '@/modules/marketing/infrastructure/adapters/supabase-lead-repository';
 
 // Validation schemas
 const createLeadSchema = z.object({

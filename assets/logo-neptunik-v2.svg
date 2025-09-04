@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente radial para efecto 3D del planeta -->
+    <radialGradient id="planet3D" cx="40%" cy="30%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#00f2fe;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#0080ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003d7a;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Gradiente para la estrella brillante -->
+    <radialGradient id="star3D" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#ffeb3b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Sombra profunda -->
+    <filter id="deepShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="3" dy="5" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.4"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Efecto de brillo -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Sombra base del planeta -->
+  <ellipse cx="93" cy="175" rx="55" ry="15" fill="#000000" opacity="0.2"/>
+  
+  <!-- Planeta con efecto 3D -->
+  <circle cx="90" cy="100" r="65" fill="url(#planet3D)" filter="url(#deepShadow)"/>
+  
+  <!-- Brillo superior del planeta -->
+  <ellipse cx="75" cy="70" rx="35" ry="25" fill="#ffffff" opacity="0.3" transform="rotate(-20 75 70)"/>
+  
+  <!-- Líneas de textura del planeta -->
+  <path d="M 40,100 Q 90,80 140,100" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.2"/>
+  <path d="M 40,110 Q 90,95 140,110" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.15"/>
+  <path d="M 40,90 Q 90,105 140,90" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.15"/>
+  
+  <!-- Estrella de 4 puntas con efecto 3D -->
+  <g transform="translate(140, 50)" filter="url(#glow)">
+    <!-- Sombra de la estrella -->
+    <g transform="translate(2, 3)" opacity="0.3">
+      <path d="M 20,5 L 25,20 L 20,35 L 15,20 Z" fill="#000000"/>
+      <path d="M 5,20 L 20,15 L 35,20 L 20,25 Z" fill="#000000"/>
+    </g>
+    
+    <!-- Estrella principal -->
+    <path d="M 20,5 L 25,20 L 20,35 L 15,20 Z" fill="url(#star3D)"/>
+    <path d="M 5,20 L 20,15 L 35,20 L 20,25 Z" fill="url(#star3D)"/>
+    
+    <!-- Centro brillante -->
+    <circle cx="20" cy="20" r="6" fill="#ffffff" opacity="1"/>
+    <circle cx="20" cy="20" r="3" fill="#ffeb3b"/>
+  </g>
+  
+  <!-- Partículas de polvo estelar -->
+  <circle cx="50" cy="40" r="1" fill="#ffffff" opacity="0.6"/>
+  <circle cx="160" cy="90" r="1" fill="#ffffff" opacity="0.6"/>
+  <circle cx="130" cy="140" r="1" fill="#ffffff" opacity="0.6"/>
+  <circle cx="60" cy="160" r="1" fill="#ffffff" opacity="0.6"/>
+</svg>

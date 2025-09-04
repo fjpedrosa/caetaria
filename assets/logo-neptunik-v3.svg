@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente tech minimalista -->
+    <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f2027;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#203a43;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c5364;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradiente para líneas de acento -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Patrón de líneas -->
+    <pattern id="lines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Fondo con patrón de cuadrícula sutil -->
+  <rect x="0" y="0" width="200" height="200" fill="none"/>
+  
+  <!-- Planeta geométrico -->
+  <g transform="translate(85, 100)">
+    <!-- Círculo exterior -->
+    <circle cx="0" cy="0" r="60" fill="none" stroke="url(#techGradient)" stroke-width="3"/>
+    
+    <!-- Hexágono interno -->
+    <polygon points="0,-50 43.3,-25 43.3,25 0,50 -43.3,25 -43.3,-25" 
+             fill="url(#techGradient)" opacity="0.8"/>
+    
+    <!-- Líneas de conexión internas -->
+    <line x1="0" y1="-50" x2="43.3" y2="25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    <line x1="0" y1="-50" x2="-43.3" y2="25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    <line x1="43.3" y1="-25" x2="-43.3" y2="-25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    <line x1="43.3" y1="25" x2="-43.3" y2="25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    <line x1="0" y1="50" x2="43.3" y2="-25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    <line x1="0" y1="50" x2="-43.3" y2="-25" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+    
+    <!-- Núcleo central -->
+    <circle cx="0" cy="0" r="15" fill="url(#accentGradient)" opacity="0.9"/>
+    <circle cx="0" cy="0" r="10" fill="#0f2027"/>
+    <circle cx="0" cy="0" r="5" fill="url(#accentGradient)"/>
+  </g>
+  
+  <!-- Estrella de 4 puntas geométrica -->
+  <g transform="translate(140, 55)">
+    <!-- Marco exterior de la estrella -->
+    <rect x="10" y="10" width="20" height="20" fill="none" stroke="url(#accentGradient)" 
+          stroke-width="1" transform="rotate(45 20 20)"/>
+    
+    <!-- Estrella principal -->
+    <g transform="scale(1.2)">
+      <polygon points="16.67,8.33 18.33,16.67 16.67,25 15,16.67" fill="url(#accentGradient)"/>
+      <polygon points="8.33,16.67 16.67,15 25,16.67 16.67,18.33" fill="url(#accentGradient)"/>
+    </g>
+    
+    <!-- Punto de luz central -->
+    <circle cx="20" cy="20" r="2" fill="#ffffff"/>
+    
+    <!-- Líneas de conexión con el planeta -->
+    <line x1="-10" y1="35" x2="-40" y2="45" stroke="url(#accentGradient)" stroke-width="1" 
+          opacity="0.3" stroke-dasharray="2,2"/>
+  </g>
+  
+  <!-- Elementos decorativos tech -->
+  <g opacity="0.3">
+    <!-- Nodos de conexión -->
+    <circle cx="30" cy="40" r="2" fill="url(#accentGradient)"/>
+    <circle cx="170" cy="90" r="2" fill="url(#accentGradient)"/>
+    <circle cx="140" cy="160" r="2" fill="url(#accentGradient)"/>
+    <circle cx="40" cy="150" r="2" fill="url(#accentGradient)"/>
+    
+    <!-- Líneas de conexión -->
+    <line x1="30" y1="40" x2="85" y2="70" stroke="url(#accentGradient)" stroke-width="0.5"/>
+    <line x1="170" y1="90" x2="145" y2="100" stroke="url(#accentGradient)" stroke-width="0.5"/>
+  </g>
+  
+  <!-- Texto estilizado (opcional) -->
+  <text x="100" y="185" font-family="monospace" font-size="8" fill="url(#accentGradient)" 
+        text-anchor="middle" opacity="0.5">[ NEPTUNIK ]</text>
+</svg>

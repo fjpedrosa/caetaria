@@ -273,8 +273,8 @@ export class PageHelper {
       const resources = performance.getEntriesByType('resource');
       
       return {
-        loadTime: navigation.loadEventEnd - navigation.navigationStart,
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.navigationStart,
+        loadTime: navigation.loadEventEnd - navigation.fetchStart,
+        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.fetchStart,
         firstContentfulPaint: performance.getEntriesByType('paint').find(p => p.name === 'first-contentful-paint')?.startTime || 0,
         resourceCount: resources.length,
         totalResourceSize: resources.reduce((sum, r) => sum + (r as any).transferSize || 0, 0)

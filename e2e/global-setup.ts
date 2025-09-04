@@ -54,8 +54,10 @@ async function setupTestEnvironment() {
   console.log('🔧 Setting up test environment...');
   
   // Setup environment variables for testing
-  process.env.NODE_ENV = 'test';
-  process.env.NEXT_PUBLIC_TESTING = 'true';
+  if (!process.env.NODE_ENV) {
+    Object.assign(process.env, { NODE_ENV: 'test' });
+  }
+  Object.assign(process.env, { NEXT_PUBLIC_TESTING: 'true' });
   
   // Mock external services during E2E tests if needed
   process.env.MOCK_EXTERNAL_APIS = 'true';

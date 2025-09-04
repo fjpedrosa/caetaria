@@ -5,6 +5,9 @@
 
 import { performance } from 'perf_hooks';
 
+import { createConversationEngine } from '../../application/engines/conversation-engine';
+import { createConversation,createMessage } from '../../domain/entities';
+
 // Mock Web APIs for performance testing
 global.performance = performance as any;
 
@@ -46,7 +49,7 @@ describe('WhatsApp Simulator Performance', () => {
       const startTime = performance.now();
 
       // Dynamically import the component to measure load time
-      const { WhatsAppSimulator } = await import('../../ui/components/whatsapp-simulator');
+      const { WhatsAppSimulator } = await import('../../presentation/components/whatsapp-simulator');
 
       const loadTime = performance.now() - startTime;
 
@@ -59,7 +62,7 @@ describe('WhatsApp Simulator Performance', () => {
       const startTime = performance.now();
 
       // Test lazy loading of GIF export functionality
-      const gifExportModule = await import('../../infra/services/gif-export');
+      const gifExportModule = await import('../../infrastructure/services/gif-export');
 
       const loadTime = performance.now() - startTime;
 
@@ -179,7 +182,7 @@ describe('WhatsApp Simulator Performance', () => {
 
       // Create many messages to test memory usage
       for (let i = 0; i < 1000; i++) {
-        const message = new Message({
+        const message = createMessage({
           id: `msg-${i}`,
           type: 'text',
           sender: i % 2 === 0 ? 'user' : 'business',
@@ -212,7 +215,7 @@ describe('WhatsApp Simulator Performance', () => {
 
       // Create and destroy multiple engines
       for (let i = 0; i < 10; i++) {
-        const engine = new ConversationEngine();
+        const engine = createConversationEngine();
         engines.push(engine);
 
         // Use the engine briefly
@@ -277,8 +280,8 @@ describe('WhatsApp Simulator Performance', () => {
       // Test that main components don't pull in unnecessary dependencies
       const coreModules = [
         '../../domain/entities',
-        '../../ui/hooks/use-conversation-flow',
-        '../../ui/components/whatsapp-simulator',
+        '../../presentation/hooks/use-conversation-flow',
+        '../../presentation/components/whatsapp-simulator',
       ];
 
       const importSizes = [];
@@ -313,7 +316,7 @@ describe('WhatsApp Simulator Performance', () => {
       ];
 
       const heavyModules = [
-        '../../infra/services/gif-export',
+        '../../infrastructure/services/gif-export',
       ];
 
       const lightLoadTimes = [];
@@ -348,7 +351,7 @@ describe('WhatsApp Simulator Performance', () => {
       const { Conversation, Message } = require('../../domain/entities');
 
       // Create test conversation
-      const messages = Array.from({ length: 50 }, (_, i) => new Message({
+      const messages = Array.from({ length: 50 }, (_, i) => createMessage({
         id: `msg-${i}`,
         type: 'text',
         sender: i % 2 === 0 ? 'user' : 'business',
@@ -360,7 +363,7 @@ describe('WhatsApp Simulator Performance', () => {
         },
       }));
 
-      const conversation = new Conversation(
+      const conversation = createConversation(
         {
           id: 'perf-test',
           title: 'Performance Test',
@@ -376,7 +379,7 @@ describe('WhatsApp Simulator Performance', () => {
         messages
       );
 
-      const engine = new ConversationEngine({ enableDebug: false });
+      const engine = createConversationEngine({ enableDebug: false });
 
       // Measure performance during playback
       const performanceMarks = [];
@@ -414,7 +417,7 @@ describe('WhatsApp Simulator Performance', () => {
 
       // Create multiple engines and perform concurrent operations
       for (let i = 0; i < 5; i++) {
-        const engine = new ConversationEngine({ enableDebug: false });
+        const engine = createConversationEngine({ enableDebug: false });
         engines.push(engine);
 
         // Queue various operations
@@ -444,7 +447,7 @@ describe('WhatsApp Simulator Performance', () => {
       // Benchmark message operations
       const iterations = 1000;
       const operations = [
-        () => new Message({
+        () => createMessage({
           id: 'test',
           type: 'text',
           sender: 'user',
@@ -473,7 +476,7 @@ describe('WhatsApp Simulator Performance', () => {
           } else {
             // Other operations need a message instance
             if (messages.length === 0) {
-              messages.push(new Message({
+              messages.push(createMessage({
                 id: `test-${i}`,
                 type: 'text',
                 sender: 'user',
@@ -515,7 +518,7 @@ describe('WhatsApp Simulator Performance', () => {
       const { ConversationEngine } = require('../../application/engines/conversation-engine');
 
       // Create engine and stress test it
-      const engine = new ConversationEngine({ enableDebug: false });
+      const engine = createConversationEngine({ enableDebug: false });
 
       const startTime = performance.now();
 

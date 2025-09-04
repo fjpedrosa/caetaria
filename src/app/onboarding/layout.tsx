@@ -3,7 +3,7 @@
  * Server Component - Layout wrapper for onboarding pages with progress indicator
  */
 
-import { OnboardingProgress } from '@/modules/onboarding/ui/components/onboarding-progress';
+import { OnboardingProgress } from '@/modules/onboarding/presentation/components/onboarding-progress';
 
 export default function OnboardingLayout({
   children,

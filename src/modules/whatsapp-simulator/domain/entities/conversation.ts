@@ -59,8 +59,13 @@ export interface Conversation {
 }
 
 /**
- * Create a new conversation with default values
- * Single Responsibility: Only creates conversation instances
+ * Creates a new conversation instance with optional default settings
+ *
+ * @param {ConversationMetadata} metadata - Essential metadata for the conversation
+ * @param {Message[]} [messages=[]] - Array of messages in the conversation
+ * @param {Partial<ConversationSettings>} [settings={}] - Optional custom conversation settings
+ * @returns {Conversation} A new conversation instance
+ * @throws {Error} If message validation fails
  */
 export const createConversation = (
   metadata: ConversationMetadata,
@@ -167,10 +172,18 @@ export const getConversationProgress = (conversation: Conversation): Conversatio
     totalMessages,
     elapsedTime,
     remainingTime: Math.max(0, remainingTime),
-    completionPercentage: totalMessages > 0 ? (conversation.currentIndex / totalMessages) * 100 : 0
+    completionPercentage: totalMessages > 0 ?
+      conversation.status === 'completed' ? 100 :
+      (conversation.currentIndex / totalMessages) * 100 : 0
   };
 };
 
+/**
+ * Calculates the total elapsed time of a conversation, excluding paused periods
+ *
+ * @param {Conversation} conversation - The conversation instance to calculate elapsed time for
+ * @returns {number} Total elapsed time in milliseconds, always non-negative
+ */
 export const calculateElapsedTime = (conversation: Conversation): number => {
   if (!conversation.startTime) return 0;
 
@@ -181,12 +194,15 @@ export const calculateElapsedTime = (conversation: Conversation): number => {
 };
 
 export const calculateRemainingTime = (conversation: Conversation): number => {
+  if (conversation.messages.length === 0) return 0;
+  if (conversation.status === 'completed') return 0;
+
   const remainingMessages = conversation.messages.slice(conversation.currentIndex + 1);
   const remainingDuration = remainingMessages.reduce((total, message) => {
     return total + getMessageTotalAnimationTime(message);
   }, 0);
 
-  return remainingDuration / conversation.settings.playbackSpeed;
+  return Math.max(0, remainingDuration / conversation.settings.playbackSpeed);
 };
 
 export const calculateEstimatedDuration = (messages: readonly Message[]): number =>
@@ -197,7 +213,12 @@ export const playConversation = (conversation: Conversation): Conversation => {
   const now = new Date();
 
   if (conversation.status === 'completed') {
-    return resetConversation(conversation);
+    const resetConv = resetConversation(conversation);
+    return {
+      ...resetConv,
+      status: 'playing',
+      startTime: now
+    };
   }
 
   let newTotalPausedTime = conversation.totalPausedTime;
@@ -287,6 +308,14 @@ export const updateConversationSettings = (
   settings: { ...conversation.settings, ...updates }
 });
 
+/**
+ * Adds a new message to the conversation, updating metadata and estimated duration
+ *
+ * @param {Conversation} conversation - The current conversation instance
+ * @param {Message} message - The message to be added
+ * @returns {Conversation} A new conversation instance with the added message
+ * @throws {Error} If the new message fails validation
+ */
 export const addMessage = (conversation: Conversation, message: Message): Conversation => {
   const newMessages = [...conversation.messages, message];
   const newEstimatedDuration = calculateEstimatedDuration(newMessages);
@@ -388,6 +417,13 @@ export const conversationToJSON = (conversation: Conversation): Record<string, a
 });
 
 
+/**
+ * Validates an array of messages for structural integrity and timing consistency
+ *
+ * @param {readonly Message[]} messages - The array of messages to validate
+ * @throws {Error} If duplicate message IDs are found
+ * @throws {Error} If message timing is inconsistent
+ */
 export const validateMessages = (messages: readonly Message[]): void => {
   // Check for duplicate IDs
   const ids = new Set();

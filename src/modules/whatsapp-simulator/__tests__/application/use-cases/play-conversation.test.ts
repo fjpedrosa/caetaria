@@ -7,7 +7,7 @@ import { firstValueFrom, take } from 'rxjs';
 
 import { ConversationEngine } from '../../../application/engines/conversation-engine';
 import { createPlayConversationUseCase, PlayConversationUseCase } from '../../../application/use-cases/play-conversation';
-import { Conversation, Message } from '../../../domain/entities';
+import { Conversation, createConversation, createMessage,Message } from '../../../domain/entities';
 import { ConversationEventFactory } from '../../../domain/events';
 
 // Mock the ConversationEngine
@@ -62,7 +62,7 @@ describe('PlayConversationUseCase', () => {
     };
 
     const messages = [
-      new Message({
+      createMessage({
         id: 'msg-1',
         type: 'text',
         sender: 'user',
@@ -73,7 +73,7 @@ describe('PlayConversationUseCase', () => {
           delayBeforeTyping: 500,
         },
       }),
-      new Message({
+      createMessage({
         id: 'msg-2',
         type: 'text',
         sender: 'business',
@@ -86,7 +86,7 @@ describe('PlayConversationUseCase', () => {
       }),
     ];
 
-    testConversation = new Conversation(metadata, messages);
+    testConversation = createConversation(metadata, messages);
   });
 
   describe('Basic Execution', () => {
@@ -214,7 +214,7 @@ describe('PlayConversationUseCase', () => {
 
   describe('Integration Scenarios', () => {
     it('should handle conversation with no messages', async () => {
-      const emptyConversation = new Conversation({
+      const emptyConversation = createConversation({
         id: 'empty-conv',
         title: 'Empty Conversation',
         tags: [],
@@ -239,7 +239,7 @@ describe('PlayConversationUseCase', () => {
 
     it('should handle conversation with complex message types', async () => {
       const complexMessages = [
-        new Message({
+        createMessage({
           id: 'interactive-msg',
           type: 'interactive',
           sender: 'business',
@@ -261,7 +261,7 @@ describe('PlayConversationUseCase', () => {
             delayBeforeTyping: 500,
           },
         }),
-        new Message({
+        createMessage({
           id: 'flow-msg',
           type: 'flow',
           sender: 'business',
@@ -280,7 +280,7 @@ describe('PlayConversationUseCase', () => {
         }),
       ];
 
-      const complexConversation = new Conversation(
+      const complexConversation = createConversation(
         testConversation.metadata,
         complexMessages
       );
@@ -303,7 +303,7 @@ describe('PlayConversationUseCase', () => {
         debugMode: true,
       };
 
-      const customConversation = new Conversation(
+      const customConversation = createConversation(
         testConversation.metadata,
         testConversation.messages,
         customSettings
@@ -377,7 +377,7 @@ describe('PlayConversationUseCase', () => {
     it('should handle large conversations efficiently', async () => {
       // Create conversation with many messages
       const largeMessages = Array.from({ length: 100 }, (_, i) =>
-        new Message({
+        createMessage({
           id: `msg-${i}`,
           type: 'text',
           sender: i % 2 === 0 ? 'user' : 'business',
@@ -390,7 +390,7 @@ describe('PlayConversationUseCase', () => {
         })
       );
 
-      const largeConversation = new Conversation(
+      const largeConversation = createConversation(
         testConversation.metadata,
         largeMessages
       );

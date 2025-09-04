@@ -155,54 +155,54 @@ export const {
   useLazyGetAnalyticsEventsQuery,
 } = realtimeApi;
 
-// Real-time integration utilities
-class RTKQueryRealtimeIntegration {
-  private subscriptions = new Map<string, () => void>();
+// Real-time integration utilities - Functional implementation
+const createRTKQueryRealtimeIntegration = () => {
+  const subscriptions = new Map<string, () => void>();
 
   /**
    * Initialize real-time integration with RTK Query
    */
-  public initialize(dispatch: any) {
-    console.log('= Initializing RTK Query real-time integration...');
+  const initialize = (dispatch: any) => {
+    console.log('= Initializing RTK Query real-time integration...');
 
     // Set up real-time subscriptions for automatic cache management
-    this.setupLeadsSubscription(dispatch);
-    this.setupAnalyticsSubscription(dispatch);
-    this.setupBotConfigSubscription(dispatch);
-    this.setupWhatsAppIntegrationSubscription(dispatch);
+    setupLeadsSubscription(dispatch);
+    setupAnalyticsSubscription(dispatch);
+    setupBotConfigSubscription(dispatch);
+    setupWhatsAppIntegrationSubscription(dispatch);
 
-    console.log(' RTK Query real-time integration initialized');
-  }
+    console.log(' RTK Query real-time integration initialized');
+  };
 
   /**
    * Set up leads real-time subscription
    */
-  private setupLeadsSubscription(dispatch: any) {
+  const setupLeadsSubscription = (dispatch: any) => {
     const unsubscribe = realtimeConnectionManager.subscribe({
       id: 'rtk-leads-integration',
       table: 'leads',
       event: '*',
       callback: (payload: RealtimeSubscriptionPayload<Lead>) => {
-        console.log('= RTK Query: Lead real-time update', payload.eventType);
+        console.log('= RTK Query: Lead real-time update', payload.eventType);
 
         // Invalidate leads-related cache
         dispatch(leadsApi.util.invalidateTags(['Lead', 'LeadsList', 'LeadStats']));
 
         // Optimistic updates for better UX
-        this.handleLeadOptimisticUpdate(dispatch, payload);
+        handleLeadOptimisticUpdate(dispatch, payload);
       },
       errorCallback: (error: Error) => {
         console.error('L RTK Query: Leads subscription error', error);
       }
     });
 
-    this.subscriptions.set('leads', unsubscribe);
-  }
+    subscriptions.set('leads', unsubscribe);
+  };
 
   /**
    * Set up analytics real-time subscription
    */
-  private setupAnalyticsSubscription(dispatch: any) {
+  const setupAnalyticsSubscription = (dispatch: any) => {
     const unsubscribe = realtimeConnectionManager.subscribe({
       id: 'rtk-analytics-integration',
       table: 'analytics_events',
@@ -215,7 +215,7 @@ class RTKQueryRealtimeIntegration {
 
         // Add new event to existing cache if possible
         if (payload.new) {
-          this.handleAnalyticsOptimisticUpdate(dispatch, payload.new);
+          handleAnalyticsOptimisticUpdate(dispatch, payload.new);
         }
       },
       errorCallback: (error: Error) => {
@@ -223,38 +223,38 @@ class RTKQueryRealtimeIntegration {
       }
     });
 
-    this.subscriptions.set('analytics', unsubscribe);
-  }
+    subscriptions.set('analytics', unsubscribe);
+  };
 
   /**
    * Set up bot configuration real-time subscription
    */
-  private setupBotConfigSubscription(dispatch: any) {
+  const setupBotConfigSubscription = (dispatch: any) => {
     const unsubscribe = realtimeConnectionManager.subscribe({
       id: 'rtk-bot-config-integration',
       table: 'bot_configurations',
       event: '*',
       callback: (payload: RealtimeSubscriptionPayload<BotConfiguration>) => {
-        console.log('> RTK Query: Bot config real-time update', payload.eventType);
+        console.log('> RTK Query: Bot config real-time update', payload.eventType);
 
         // Invalidate bot configuration cache
         dispatch(realtimeApi.util.invalidateTags(['BotConfiguration', 'BotConfigList']));
 
         // Optimistic updates
-        this.handleBotConfigOptimisticUpdate(dispatch, payload);
+        handleBotConfigOptimisticUpdate(dispatch, payload);
       },
       errorCallback: (error: Error) => {
         console.error('L RTK Query: Bot config subscription error', error);
       }
     });
 
-    this.subscriptions.set('bot-config', unsubscribe);
-  }
+    subscriptions.set('bot-config', unsubscribe);
+  };
 
   /**
    * Set up WhatsApp integration real-time subscription
    */
-  private setupWhatsAppIntegrationSubscription(dispatch: any) {
+  const setupWhatsAppIntegrationSubscription = (dispatch: any) => {
     const unsubscribe = realtimeConnectionManager.subscribe({
       id: 'rtk-whatsapp-integration',
       table: 'whatsapp_integrations',
@@ -266,20 +266,20 @@ class RTKQueryRealtimeIntegration {
         dispatch(realtimeApi.util.invalidateTags(['WhatsAppIntegration', 'IntegrationList']));
 
         // Optimistic updates
-        this.handleWhatsAppIntegrationOptimisticUpdate(dispatch, payload);
+        handleWhatsAppIntegrationOptimisticUpdate(dispatch, payload);
       },
       errorCallback: (error: Error) => {
         console.error('L RTK Query: WhatsApp integration subscription error', error);
       }
     });
 
-    this.subscriptions.set('whatsapp-integration', unsubscribe);
-  }
+    subscriptions.set('whatsapp-integration', unsubscribe);
+  };
 
   /**
    * Handle lead optimistic updates
    */
-  private handleLeadOptimisticUpdate(dispatch: any, payload: RealtimeSubscriptionPayload<Lead>) {
+  const handleLeadOptimisticUpdate = (dispatch: any, payload: RealtimeSubscriptionPayload<Lead>) => {
     if (payload.eventType === 'UPDATE' && payload.new) {
       // Try to update specific lead cache
       dispatch(leadsApi.util.updateQueryData('getLead', payload.new.id, (draft) => {
@@ -294,12 +294,12 @@ class RTKQueryRealtimeIntegration {
         }
       }));
     }
-  }
+  };
 
   /**
    * Handle analytics optimistic updates
    */
-  private handleAnalyticsOptimisticUpdate(dispatch: any, newEvent: AnalyticsEvent) {
+  const handleAnalyticsOptimisticUpdate = (dispatch: any, newEvent: AnalyticsEvent) => {
     // Try to add to existing analytics cache
     dispatch(realtimeApi.util.updateQueryData('getAnalyticsEvents', { limit: 50 }, (draft) => {
       // Add new event at the beginning
@@ -309,12 +309,12 @@ class RTKQueryRealtimeIntegration {
         draft.splice(50);
       }
     }));
-  }
+  };
 
   /**
    * Handle bot configuration optimistic updates
    */
-  private handleBotConfigOptimisticUpdate(dispatch: any, payload: RealtimeSubscriptionPayload<BotConfiguration>) {
+  const handleBotConfigOptimisticUpdate = (dispatch: any, payload: RealtimeSubscriptionPayload<BotConfiguration>) => {
     if (payload.new) {
       const userId = payload.new.user_id;
 
@@ -341,12 +341,12 @@ class RTKQueryRealtimeIntegration {
         }
       }));
     }
-  }
+  };
 
   /**
    * Handle WhatsApp integration optimistic updates
    */
-  private handleWhatsAppIntegrationOptimisticUpdate(dispatch: any, payload: RealtimeSubscriptionPayload<WhatsAppIntegration>) {
+  const handleWhatsAppIntegrationOptimisticUpdate = (dispatch: any, payload: RealtimeSubscriptionPayload<WhatsAppIntegration>) => {
     if (payload.new) {
       const userId = payload.new.user_id;
 
@@ -373,26 +373,32 @@ class RTKQueryRealtimeIntegration {
         }
       }));
     }
-  }
+  };
 
   /**
    * Clean up all subscriptions
    */
-  public destroy() {
+  const destroy = () => {
     console.log('>� Cleaning up RTK Query real-time integration...');
 
-    this.subscriptions.forEach((unsubscribe, key) => {
-      console.log(`=� Unsubscribing from ${key}`);
+    subscriptions.forEach((unsubscribe, key) => {
+      console.log(`=� Unsubscribing from ${key}`);
       unsubscribe();
     });
 
-    this.subscriptions.clear();
-    console.log(' RTK Query real-time integration cleanup complete');
-  }
-}
+    subscriptions.clear();
+    console.log(' RTK Query real-time integration cleanup complete');
+  };
+
+  // Return public API
+  return {
+    initialize,
+    destroy
+  };
+};
 
 // Create singleton instance
-export const rtkQueryRealtimeIntegration = new RTKQueryRealtimeIntegration();
+export const rtkQueryRealtimeIntegration = createRTKQueryRealtimeIntegration();
 
 // Export utilities
 export { realtimeApi as default };

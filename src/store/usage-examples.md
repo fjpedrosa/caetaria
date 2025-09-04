@@ -22,7 +22,7 @@ import {
   useCreateOnboardingSessionMutation,
   useGetOnboardingSessionQuery,
   useSubmitBusinessInfoMutation,
-} from '@/modules/onboarding/infra/services/onboarding-api.service'
+} from '@/modules/onboarding/infrastructure/services/onboarding-api.service'
 ```
 
 ## Landing Module Examples
@@ -125,7 +125,7 @@ function AnalyticsDashboard() {
 import {
   useCreateOnboardingSessionMutation,
   useGetOnboardingSessionQuery,
-} from '@/modules/onboarding/infra/services/onboarding-api.service'
+} from '@/modules/onboarding/infrastructure/services/onboarding-api.service'
 
 function OnboardingFlow({ userEmail }: { userEmail: string }) {
   const [createSession] = useCreateOnboardingSessionMutation()
@@ -157,7 +157,7 @@ function OnboardingFlow({ userEmail }: { userEmail: string }) {
 ### Business Info Step
 
 ```tsx
-import { useSubmitBusinessInfoMutation } from '@/modules/onboarding/infra/services/onboarding-api.service'
+import { useSubmitBusinessInfoMutation } from '@/modules/onboarding/infrastructure/services/onboarding-api.service'
 
 function BusinessInfoStep({ sessionId }: { sessionId: string }) {
   const [submitBusinessInfo, { isLoading }] = useSubmitBusinessInfoMutation()

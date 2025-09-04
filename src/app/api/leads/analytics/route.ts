@@ -20,7 +20,7 @@ import { LeadFilters } from '@/modules/marketing/domain/repositories/lead-reposi
 import {
   createSupabaseLeadRepository,
   LeadRepositoryError
-} from '@/modules/marketing/infra/adapters/supabase-lead-repository';
+} from '@/modules/marketing/infrastructure/adapters/supabase-lead-repository';
 
 /**
  * GET /api/leads/analytics

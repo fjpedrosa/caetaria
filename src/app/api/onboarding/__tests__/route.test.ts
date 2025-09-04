@@ -33,7 +33,7 @@ const mockOnboardingRepository = {
 };
 
 // Mock the repository constructor
-jest.mock('../../../../modules/onboarding/infra/adapters/supabase-onboarding-repository', () => ({
+jest.mock('../../../../modules/onboarding/infrastructure/adapters/supabase-onboarding-repository', () => ({
   SupabaseOnboardingRepository: jest.fn().mockImplementation(() => mockOnboardingRepository),
 }));
 
@@ -388,7 +388,7 @@ describe('POST /api/onboarding', () => {
 
     it('should return 500 when repository constructor fails', async () => {
       // This would be a rare edge case but worth testing
-      const SupabaseOnboardingRepository = require('../../../../modules/onboarding/infra/adapters/supabase-onboarding-repository').SupabaseOnboardingRepository;
+      const SupabaseOnboardingRepository = require('../../../../modules/onboarding/infrastructure/adapters/supabase-onboarding-repository').SupabaseOnboardingRepository;
       SupabaseOnboardingRepository.mockImplementationOnce(() => {
         throw new Error('Repository initialization failed');
       });

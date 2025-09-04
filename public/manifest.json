@@ -1,7 +1,7 @@
 {
-  "name": "WhatsApp Cloud API Platform",
-  "short_name": "WhatsApp API",
-  "description": "Transform your business communication with WhatsApp Cloud API. Multi-channel bot platform, AI-powered customer support, and enterprise-grade messaging solutions.",
+  "name": "Neptunik Platform",
+  "short_name": "Neptunik",
+  "description": "Transform your business communication with Neptunik. Multi-channel bot platform, AI-powered customer support, and enterprise-grade messaging solutions for WhatsApp.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

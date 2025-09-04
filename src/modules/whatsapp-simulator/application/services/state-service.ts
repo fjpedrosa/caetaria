@@ -6,7 +6,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-import { Conversation, Message } from '../../domain/entities';
+import { Conversation, getCurrentMessage, getNextMessage, jumpToMessage, Message, resetConversation, playConversation } from '../../domain/entities';
 
 // Core state type (exported from conversation-service.ts)
 export interface PlaybackState {
@@ -132,8 +132,8 @@ export const updateWithConversation = (
   ...state,
   conversation,
   currentMessageIndex: conversation.currentIndex,
-  currentMessage: conversation.currentMessage,
-  nextMessage: conversation.nextMessage,
+  currentMessage: getCurrentMessage(conversation),
+  nextMessage: getNextMessage(conversation),
   playbackSpeed: conversation.settings.playbackSpeed,
   progress: calculateProgress(
     conversation.currentIndex,
@@ -147,13 +147,19 @@ export const updateWithConversation = (
 
 export const updateWithPlaybackStart = (
   state: PlaybackState
-): PlaybackState => ({
-  ...state,
-  isPlaying: true,
-  isPaused: false,
-  hasError: false,
-  error: undefined
-});
+): PlaybackState => {
+  // Update conversation to playing status
+  const updatedConversation = state.conversation ? playConversation(state.conversation) : null;
+  
+  return {
+    ...state,
+    conversation: updatedConversation,
+    isPlaying: true,
+    isPaused: false,
+    hasError: false,
+    error: undefined
+  };
+};
 
 export const updateWithPlaybackPause = (
   state: PlaybackState
@@ -208,13 +214,13 @@ export const updateWithReset = (
 ): PlaybackState => {
   if (!state.conversation) return state;
 
-  state.conversation.reset();
+  const resetConv = resetConversation(state.conversation);
   return {
     ...createInitialState(),
-    conversation: state.conversation,
+    conversation: resetConv,
     currentMessageIndex: 0,
-    currentMessage: state.conversation.currentMessage,
-    nextMessage: state.conversation.nextMessage,
+    currentMessage: getCurrentMessage(resetConv),
+    nextMessage: getNextMessage(resetConv),
     playbackSpeed: state.conversation.settings.playbackSpeed
   };
 };
@@ -225,14 +231,14 @@ export const updateWithJump = (
 ): PlaybackState => {
   if (!canJumpTo(state, messageIndex)) return state;
 
-  const conversation = state.conversation!;
-  conversation.jumpTo(messageIndex);
+  const conversation = jumpToMessage(state.conversation!, messageIndex);
 
   return {
     ...state,
+    conversation,
     currentMessageIndex: messageIndex,
-    currentMessage: conversation.currentMessage,
-    nextMessage: conversation.nextMessage,
+    currentMessage: getCurrentMessage(conversation),
+    nextMessage: getNextMessage(conversation),
     progress: calculateProgress(
       messageIndex,
       conversation.messages.length,
@@ -266,14 +272,19 @@ export const updateWithMessageAdvance = (
 ): PlaybackState => {
   if (!state.conversation) return state;
 
-  const hasAdvanced = state.conversation.advanceToNext();
-  const newIndex = state.conversation.currentIndex;
+  // Increment the index manually for now
+  const newIndex = state.conversation.currentIndex + 1;
+  const hasAdvanced = newIndex < state.conversation.messages.length;
+
+  // Create new conversation state with updated index
+  const updatedConv = { ...state.conversation, currentIndex: newIndex };
 
   return {
     ...state,
+    conversation: updatedConv,
     currentMessageIndex: newIndex,
-    currentMessage: state.conversation.currentMessage,
-    nextMessage: state.conversation.nextMessage,
+    currentMessage: getCurrentMessage(updatedConv),
+    nextMessage: getNextMessage(updatedConv),
     progress: calculateProgress(
       newIndex,
       state.conversation.messages.length,

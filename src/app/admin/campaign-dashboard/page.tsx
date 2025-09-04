@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Activity,
@@ -22,18 +22,18 @@ import {
   Zap
 } from 'lucide-react';
 
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 
-import { CampaignMetricsOverview } from '../../../modules/marketing/ui/components/campaign-metrics-overview';
-import { CampaignAttributionChart } from '../../../modules/marketing/ui/components/campaign-attribution-chart';
-import { CampaignFunnelAnalysis } from '../../../modules/marketing/ui/components/campaign-funnel-analysis';
-import { CampaignLeadScoring } from '../../../modules/marketing/ui/components/campaign-lead-scoring';
-import { CampaignROIAnalysis } from '../../../modules/marketing/ui/components/campaign-roi-analysis';
-import { CampaignABTestResults } from '../../../modules/marketing/ui/components/campaign-ab-test-results';
+import { CampaignABTestResults } from '../../../modules/marketing/presentation/components/campaign-ab-test-results';
+import { CampaignAttributionChart } from '../../../modules/marketing/presentation/components/campaign-attribution-chart';
+import { CampaignFunnelAnalysis } from '../../../modules/marketing/presentation/components/campaign-funnel-analysis';
+import { CampaignLeadScoring } from '../../../modules/marketing/presentation/components/campaign-lead-scoring';
+import { CampaignMetricsOverview } from '../../../modules/marketing/presentation/components/campaign-metrics-overview';
+import { CampaignROIAnalysis } from '../../../modules/marketing/presentation/components/campaign-roi-analysis';
 
 interface CampaignPerformanceData {
   overview: {
@@ -108,7 +108,7 @@ export default function CampaignDashboard() {
       try {
         // Simulate API call - in real implementation, fetch from campaign API
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const mockData: CampaignPerformanceData = {
           overview: {
             totalSpend: 1250,
@@ -222,7 +222,7 @@ export default function CampaignDashboard() {
         timeRange,
         campaign: selectedCampaign,
       };
-      
+
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -236,7 +236,7 @@ export default function CampaignDashboard() {
   const getKPIStatus = (current: number, target: number, isLowerBetter: boolean = false) => {
     const difference = current - target;
     const isOnTarget = isLowerBetter ? current <= target : current >= target;
-    
+
     return {
       isOnTarget,
       difference: Math.abs(difference),
@@ -288,8 +288,8 @@ export default function CampaignDashboard() {
                 Export Data
               </Button>
 
-              <Button 
-                variant={autoRefresh ? "default" : "outline"}
+              <Button
+                variant={autoRefresh ? 'default' : 'outline'}
                 onClick={() => setAutoRefresh(!autoRefresh)}
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />

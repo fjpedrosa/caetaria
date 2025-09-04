@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createManageSessionUseCases } from '../../../../../modules/onboarding/application/use-cases/manage-session';
-import { SupabaseOnboardingRepository } from '../../../../../modules/onboarding/infra/adapters/supabase-onboarding-repository';
+import { SupabaseOnboardingRepository } from '../../../../../modules/onboarding/infrastructure/adapters/supabase-onboarding-repository';
 import { isSuccess } from '../../../../../modules/shared/domain/value-objects/result';
 
 // Initialize repository
@@ -14,9 +14,9 @@ const onboardingRepository = new SupabaseOnboardingRepository();
 const sessionUseCases = createManageSessionUseCases({ onboardingRepository });
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     sessionId: string;
-  };
+  }>;
 }
 
 /**
@@ -24,7 +24,7 @@ interface RouteParams {
  */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await params;
 
     const result = await sessionUseCases.getSessionSummary(sessionId as any);
 
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  */
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await params;
     const body = await request.json();
 
     // Extract device info for synchronization
@@ -179,7 +179,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
  */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const { sessionId } = params;
+    const { sessionId } = await params;
 
     const result = await onboardingRepository.delete(sessionId as any);
 

@@ -7,8 +7,8 @@
 import { Metadata } from 'next';
 import Script from 'next/script';
 
-import { CampaignTracker } from '@/modules/marketing/ui/components/campaign-tracker';
-import { CampaignProvider } from '@/modules/marketing/ui/providers/campaign-provider';
+import { CampaignTracker } from '@/modules/marketing/presentation/components/campaign-tracker';
+import { CampaignProvider } from '@/modules/marketing/presentation/providers/campaign-provider';
 
 export const metadata: Metadata = {
   title: {

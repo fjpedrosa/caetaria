@@ -278,38 +278,38 @@ export const getAnimation = (animation: Variants, lightAnimation?: Variants, min
   return animation;
 };
 
-// Animation batching utility to prevent too many concurrent animations
-class AnimationBatcher {
-  private activeAnimations = new Set<string>();
-  private maxConcurrentAnimations: number;
+// Animation batching factory using closures to prevent too many concurrent animations
+const createAnimationBatcher = () => {
+  // Private state maintained via closure
+  const activeAnimations = new Set<string>();
+  const maxConcurrentAnimations = getOptimalAnimationConfig().maxConcurrentAnimations;
 
-  constructor() {
-    this.maxConcurrentAnimations = getOptimalAnimationConfig().maxConcurrentAnimations;
-  }
+  // Public interface returned as object
+  return {
+    canAnimate: (animationId: string): boolean => {
+      return activeAnimations.size < maxConcurrentAnimations;
+    },
 
-  canAnimate(animationId: string): boolean {
-    return this.activeAnimations.size < this.maxConcurrentAnimations;
-  }
+    startAnimation: (animationId: string): boolean => {
+      if (activeAnimations.size < maxConcurrentAnimations) {
+        activeAnimations.add(animationId);
+        return true;
+      }
+      return false;
+    },
 
-  startAnimation(animationId: string): boolean {
-    if (this.canAnimate(animationId)) {
-      this.activeAnimations.add(animationId);
-      return true;
+    endAnimation: (animationId: string): void => {
+      activeAnimations.delete(animationId);
+    },
+
+    getActiveCount: (): number => {
+      return activeAnimations.size;
     }
-    return false;
-  }
-
-  endAnimation(animationId: string): void {
-    this.activeAnimations.delete(animationId);
-  }
-
-  getActiveCount(): number {
-    return this.activeAnimations.size;
-  }
-}
+  };
+};
 
 // Global animation batcher instance
-export const animationBatcher = new AnimationBatcher();
+export const animationBatcher = createAnimationBatcher();
 
 // Enhanced performance monitoring with animation batching
 export const withPerformanceMonitoring = (animationName: string) => ({

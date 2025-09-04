@@ -11,8 +11,8 @@ import React, { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight,Menu, X } from 'lucide-react';
 
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
 
 interface ResponsiveWrapperProps {
   children: React.ReactNode;
@@ -65,12 +65,12 @@ export const useResponsive = (): UseResponsiveReturn => {
   };
 };
 
-export const MobileResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
+export const MobileResponsiveWrapper = ({
   children,
   sidebar,
   header,
   mobileBreakpoint = 768,
-}) => {
+}: ResponsiveWrapperProps) => {
   const { isMobile, isTablet, screenWidth } = useResponsive();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsedSidebar, setCollapsedSidebar] = useState(false);
@@ -223,12 +223,12 @@ interface ResponsiveGridProps {
   className?: string;
 }
 
-export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
+export const ResponsiveGrid = ({
   children,
   columns = { mobile: 1, tablet: 2, desktop: 3 },
   gap = 'gap-6',
   className = '',
-}) => {
+}: ResponsiveGridProps) => {
   const { isMobile, isTablet } = useResponsive();
 
   const getGridCols = () => {
@@ -255,11 +255,11 @@ interface ResponsiveCardProps {
   compact?: boolean;
 }
 
-export const ResponsiveCard: React.FC<ResponsiveCardProps> = ({
+export const ResponsiveCard = ({
   children,
   className = '',
   compact = false,
-}) => {
+}: ResponsiveCardProps) => {
   const { isMobile } = useResponsive();
 
   const getPadding = () => {
@@ -284,10 +284,10 @@ interface ResponsiveTableProps {
   className?: string;
 }
 
-export const ResponsiveTable: React.FC<ResponsiveTableProps> = ({
+export const ResponsiveTable = ({
   children,
   className = '',
-}) => {
+}: ResponsiveTableProps) => {
   const { isMobile } = useResponsive();
 
   return (
@@ -317,12 +317,12 @@ interface ResponsiveStackProps {
   className?: string;
 }
 
-export const ResponsiveStack: React.FC<ResponsiveStackProps> = ({
+export const ResponsiveStack = ({
   children,
   direction = { mobile: 'vertical', desktop: 'horizontal' },
   spacing = 'space-y-4 lg:space-y-0 lg:space-x-4',
   className = '',
-}) => {
+}: ResponsiveStackProps) => {
   const { isMobile } = useResponsive();
 
   const getFlexDirection = () => {

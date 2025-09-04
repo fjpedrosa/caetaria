@@ -11,11 +11,11 @@ import React, { useEffect,useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Lock, LogIn,Shield, User } from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Input } from '@/modules/shared/ui/components/ui/input';
-import { LoadingSkeleton } from '@/modules/shared/ui/components/ui/loading-skeleton';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Input } from '@/modules/shared/presentation/components/ui/input';
+import { LoadingSkeleton } from '@/modules/shared/presentation/components/ui/loading-skeleton';
 
 interface User {
   id: string;
@@ -72,12 +72,12 @@ const roleDescriptions = {
   viewer: 'Read-only access to dashboards',
 };
 
-export const AuthWrapper: React.FC<AuthWrapperProps> = ({
+export const AuthWrapper = ({
   children,
   requiredRole = 'viewer',
   requiredPermissions = [],
   fallbackComponent,
-}) => {
+}: AuthWrapperProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);

@@ -41,8 +41,8 @@ class PerformanceHelper {
           const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
           
           vitals.TTFB = navigation.responseStart - navigation.requestStart;
-          vitals.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.navigationStart;
-          vitals.loadTime = navigation.loadEventEnd - navigation.navigationStart;
+          vitals.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.fetchStart;
+          vitals.loadTime = navigation.loadEventEnd - navigation.fetchStart;
           
           // Try to get LCP from Performance Observer
           try {
@@ -93,8 +93,8 @@ class PerformanceHelper {
     const navigation = await this.page.evaluate(() => {
       const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
       return {
-        domContentLoaded: nav.domContentLoadedEventEnd - nav.navigationStart,
-        loadComplete: nav.loadEventEnd - nav.navigationStart,
+        domContentLoaded: nav.domContentLoadedEventEnd - nav.fetchStart,
+        loadComplete: nav.loadEventEnd - nav.fetchStart,
         ttfb: nav.responseStart - nav.requestStart
       };
     });
@@ -308,7 +308,7 @@ test.describe('Performance Benchmarks', () => {
       
       for (let i = 0; i < Math.min(3, buttonCount); i++) {
         const button = buttons.nth(i);
-        const delay = await perfHelper.measureInteractionDelay(button);
+        const delay = await perfHelper.measureInteractionDelay(`button:visible:nth-child(${i+1})`);
         expect(delay).toBeLessThan(100); // < 100ms response time
       }
     });

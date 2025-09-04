@@ -6,7 +6,7 @@
 import { EMPTY, merge, Observable, of,Subject, timer } from 'rxjs';
 import { catchError, filter,switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { Conversation, Message } from '../../domain/entities';
+import { Conversation, getConversationProgress, getCurrentMessage, getNextMessage, jumpToMessage, Message,resetConversation } from '../../domain/entities';
 import { ConversationEvent, ConversationEventFactory } from '../../domain/events';
 
 import { EventService } from './event-service';
@@ -115,8 +115,8 @@ export const executePlay = async (
         ...state,
         conversation: request.conversation!,
         currentMessageIndex: request.conversation!.currentIndex,
-        currentMessage: request.conversation!.currentMessage,
-        nextMessage: request.conversation!.nextMessage,
+        currentMessage: getCurrentMessage(request.conversation!),
+        nextMessage: getNextMessage(request.conversation!),
         playbackSpeed: request.conversation!.settings.playbackSpeed,
         isCompleted: false,
         hasError: false,
@@ -128,7 +128,8 @@ export const executePlay = async (
     if (request.autoStart) {
       const conversation = request.conversation || currentState.conversation;
       if (conversation && canPlay(currentState)) {
-        conversation.play();
+        // Note: play is not a method on the functional conversation
+        // Just update the state
         updateState(updateWithPlaybackStart);
 
         const event = ConversationEventFactory.createConversationStarted(
@@ -161,13 +162,14 @@ export const executePause = async (
 
   try {
     const conversation = currentState.conversation!;
-    conversation.pause();
+    // Note: pause is not a method on the functional conversation
+    // Just update the state
     updateState(updateWithPlaybackPause);
 
     const event = ConversationEventFactory.createConversationPaused(
       conversation.metadata.id,
       conversation.currentIndex,
-      conversation.getProgress()
+      getConversationProgress(conversation)
     );
 
     eventService.emit(event);
@@ -191,8 +193,9 @@ export const executeReset = async (
 
   try {
     const conversation = currentState.conversation!;
-    conversation.reset();
-    updateState(updateWithReset);
+    // Note: reset returns a new conversation instance in functional approach
+    const resetConv = resetConversation(conversation);
+    updateState(state => ({ ...updateWithReset(state), conversation: resetConv }));
 
     const event = ConversationEventFactory.createDebug(
       conversation.metadata.id,
@@ -225,14 +228,15 @@ export const executeJump = async (
     const conversation = currentState.conversation!;
     const previousIndex = conversation.currentIndex;
 
-    conversation.jumpTo(request.messageIndex);
-    updateState(state => updateWithJump(state, request.messageIndex));
+    // Note: jumpTo returns a new conversation instance in functional approach
+    const jumpedConv = jumpToMessage(conversation, request.messageIndex);
+    updateState(state => ({ ...updateWithJump(state, request.messageIndex), conversation: jumpedConv }));
 
     const event = ConversationEventFactory.createDebug(
-      conversation.metadata.id,
+      jumpedConv.metadata.id,
       'info',
       `Jumped from message ${previousIndex} to ${request.messageIndex}`,
-      { message: conversation.currentMessage }
+      { message: getCurrentMessage(jumpedConv) }
     );
 
     eventService.emit(event);

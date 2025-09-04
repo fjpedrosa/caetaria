@@ -7,11 +7,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { WhatsAppSimulator } from '../../presentation/components/whatsapp-simulator';
 import { restaurantReservationScenario } from '../../scenarios/restaurant-reservation-scenario';
-import { WhatsAppSimulator } from '../../ui/components/whatsapp-simulator';
 
 // Mock hooks for consistent testing
-jest.mock('../../ui/hooks/use-conversation-flow', () => ({
+jest.mock('../../presentation/hooks/use-conversation-flow', () => ({
   useConversationFlow: () => ({
     state: {
       messages: [
@@ -46,7 +46,7 @@ jest.mock('../../ui/hooks/use-conversation-flow', () => ({
   }),
 }));
 
-jest.mock('../../ui/hooks/use-typing-indicator', () => ({
+jest.mock('../../presentation/hooks/use-typing-indicator', () => ({
   useTypingIndicatorWithEvents: () => ({
     state: {
       isAnyoneTyping: false,
@@ -55,7 +55,7 @@ jest.mock('../../ui/hooks/use-typing-indicator', () => ({
   }),
 }));
 
-jest.mock('../../ui/hooks/use-flow-execution', () => ({
+jest.mock('../../presentation/hooks/use-flow-execution', () => ({
   useFlowExecutionWithEvents: () => ({
     state: {
       activeFlow: null,
@@ -474,7 +474,7 @@ describe('WhatsApp Simulator Accessibility', () => {
         },
       };
 
-      const mockModule = require('../../ui/hooks/use-conversation-flow');
+      const mockModule = require('../../presentation/hooks/use-conversation-flow');
       mockModule.useConversationFlow = jest.fn(() => mockConversationFlow);
 
       render(<WhatsAppSimulator />);

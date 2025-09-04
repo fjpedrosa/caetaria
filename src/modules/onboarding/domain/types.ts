@@ -118,10 +118,12 @@ export interface BotConfigurationData {
 // =============================================================================
 
 export interface BusinessInfoFormProps {
-  onSubmit: (data: BusinessInfoData) => void;
+  className?: string;
+  onSuccess?: (data: BusinessInfoData) => void | Promise<void>;
+  onError?: (error: Error) => void;
   defaultValues?: Partial<BusinessInfoData>;
   isLoading?: boolean;
-  className?: string;
+  onSubmit?: (data: BusinessInfoData) => void;
 }
 
 export interface WhatsAppIntegrationFormProps {
@@ -137,6 +139,36 @@ export interface BotConfigurationFormProps {
   defaultValues?: Partial<BotConfigurationData>;
   isLoading?: boolean;
   className?: string;
+  showAdvanced?: boolean;
+}
+
+// =============================================================================
+// ENHANCED FORM COMPONENT PROPS - Advanced form components with RTK Query
+// =============================================================================
+
+export interface EnhancedBusinessInfoFormProps {
+  userId: string;
+  onSuccess?: (data: BusinessInfoData) => void;
+  onStepChange?: (step: string) => void;
+  className?: string;
+  showHeader?: boolean;
+}
+
+export interface EnhancedWhatsAppIntegrationFormProps {
+  userId: string;
+  onSuccess?: (data: WhatsAppIntegrationData) => void;
+  onStepChange?: (step: string) => void;
+  className?: string;
+  showHeader?: boolean;
+}
+
+export interface EnhancedBotConfigurationFormProps {
+  userId: string;
+  integrationId?: string;
+  onSuccess?: (data: BotConfigurationData) => void;
+  onStepChange?: (step: string) => void;
+  className?: string;
+  showHeader?: boolean;
   showAdvanced?: boolean;
 }
 
@@ -156,4 +188,72 @@ export interface OnboardingStepperProps {
   completedSteps: OnboardingStep[];
   className?: string;
   variant?: 'default' | 'minimal';
+}
+
+// =============================================================================
+// STEPPER AND NAVIGATION TYPES - UI navigation components
+// =============================================================================
+
+export interface Step {
+  number: number;
+  title: string;
+  description?: string;
+}
+
+export interface OnboardingStepperPropsV2 {
+  currentStep: number;
+  completedSteps: number[];
+  steps: Step[];
+  className?: string;
+}
+
+export interface NavigationStep {
+  id: string;
+  name: string;
+  href: string;
+  description: string;
+}
+
+// =============================================================================
+// TEST CONVERSATION TYPES - Testing and validation components
+// =============================================================================
+
+export interface Message {
+  id: string;
+  type: 'user' | 'bot' | 'system';
+  content: string;
+  timestamp: Date;
+  status?: 'sending' | 'sent' | 'delivered' | 'failed';
+}
+
+export interface TestStatus {
+  webhookConnected: boolean;
+  messageSent: boolean;
+  responseReceived: boolean;
+  allTestsPassed: boolean;
+}
+
+// =============================================================================
+// PLAN SELECTION TYPES - Pricing and subscription plans
+// =============================================================================
+
+export interface Plan {
+  id: 'starter' | 'pro' | 'enterprise';
+  name: string;
+  description: string;
+  features: string[];
+  icon: React.ReactNode;
+  popular?: boolean;
+}
+
+// =============================================================================
+// WRAPPER COMPONENT PROPS - Layout and container components
+// =============================================================================
+
+export interface OnboardingStepWrapperPropsV2 {
+  currentStep: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  showBackButton?: boolean;
 }

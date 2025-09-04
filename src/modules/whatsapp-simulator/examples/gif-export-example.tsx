@@ -13,7 +13,7 @@ import {
   useGifExport,
   useGifExportPresets
 } from '../index';
-import { conversationFactory } from '../infra/factories/conversation-factory';
+import { conversationFactory } from '../infrastructure/factories/conversation-factory';
 
 export function GifExportExample() {
   const [conversation] = useState(() =>

@@ -25,7 +25,7 @@ import {
   createSupabaseLeadRepository,
   DuplicateLeadError,
   LeadNotFoundError,
-  LeadRepositoryError} from '@/modules/marketing/infra/adapters/supabase-lead-repository';
+  LeadRepositoryError} from '@/modules/marketing/infrastructure/adapters/supabase-lead-repository';
 
 // Validation schemas
 const updateLeadSchema = z.object({

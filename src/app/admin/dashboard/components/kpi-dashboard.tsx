@@ -23,9 +23,9 @@ import {
   Users,
   Zap} from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { LoadingSkeleton } from '@/modules/shared/ui/components/ui/loading-skeleton';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { LoadingSkeleton } from '@/modules/shared/presentation/components/ui/loading-skeleton';
 
 interface KPIMetric {
   id: string;
@@ -73,11 +73,11 @@ interface Props {
   realtimeData: RealtimeData;
 }
 
-export const KPIDashboard: React.FC<Props> = ({
+export const KPIDashboard = ({
   metrics,
   loading = false,
   realtimeData
-}) => {
+}: Props) => {
   // Calculate real-time derived metrics
   const derivedMetrics = useMemo(() => {
     if (!metrics) return null;

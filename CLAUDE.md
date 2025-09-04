@@ -25,7 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**whatsapp-cloud-landing** - Landing page for WhatsApp Cloud API integration with onboarding flow.
+**Neptunik** - Platform for WhatsApp Cloud API integration with complete onboarding flow.
 
 ## Technology Stack
 

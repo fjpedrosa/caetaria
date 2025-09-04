@@ -99,277 +99,55 @@ export interface ConnectionManagerEventPayload {
 }
 
 /**
- * Centralized Real-time Connection Manager
+ * Creates a Real-time Connection Manager using functional patterns
  *
- * Singleton class that manages all real-time subscriptions,
- * connection health, and provides reconnection logic.
+ * Uses closures to maintain private state and returns an object
+ * with methods to manage real-time subscriptions and connection health.
  */
-class RealtimeConnectionManager {
-  private channels: Map<string, RealtimeChannel> = new Map();
-  private subscriptions: Map<string, SubscriptionConfig> = new Map();
-  private eventListeners: Map<ConnectionManagerEvent, Set<(payload: any) => void>> = new Map();
+const createRealtimeConnectionManager = () => {
+  // Private state maintained via closures
+  const channels = new Map<string, RealtimeChannel>();
+  const subscriptions = new Map<string, SubscriptionConfig>();
+  const eventListeners = new Map<ConnectionManagerEvent, Set<(payload: any) => void>>();
 
-  private connectionState: ConnectionState = ConnectionState.DISCONNECTED;
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 10;
-  private baseReconnectDelay = 1000; // 1 second
-  private maxReconnectDelay = 30000; // 30 seconds
-  private connectionStartTime?: Date;
-  private lastHeartbeat?: Date;
-  private heartbeatInterval?: NodeJS.Timeout;
-  private latencyCheckInterval?: NodeJS.Timeout;
-
-  constructor() {
-    this.initializeEventListeners();
-    this.startHeartbeat();
-    this.startLatencyMonitoring();
-  }
+  let connectionState: ConnectionState = ConnectionState.DISCONNECTED;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 10;
+  const baseReconnectDelay = 1000; // 1 second
+  const maxReconnectDelay = 30000; // 30 seconds
+  let connectionStartTime: Date | undefined;
+  let lastHeartbeat: Date | undefined;
+  let heartbeatInterval: NodeJS.Timeout | undefined;
+  let latencyCheckInterval: NodeJS.Timeout | undefined;
 
   /**
-   * Initialize connection event listeners
+   * Emit events to listeners
    */
-  private initializeEventListeners(): void {
-    // Listen to Supabase client events
-    supabase.realtime.onOpen(() => {
-      this.handleConnectionOpen();
-    });
-
-    supabase.realtime.onClose(() => {
-      this.handleConnectionClose();
-    });
-
-    supabase.realtime.onError((error: Error) => {
-      this.handleConnectionError(error);
-    });
-  }
-
-  /**
-   * Handle connection open event
-   */
-  private handleConnectionOpen(): void {
-    const previousState = this.connectionState;
-    this.connectionState = ConnectionState.CONNECTED;
-    this.connectionStartTime = new Date();
-    this.reconnectAttempts = 0;
-    this.lastHeartbeat = new Date();
-
-    this.emit('state_change', {
-      previousState,
-      currentState: this.connectionState,
-      timestamp: new Date(),
-    });
-
-    console.log(' Real-time connection established');
-
-    // Resubscribe to all active subscriptions
-    this.resubscribeAll();
-  }
-
-  /**
-   * Handle connection close event
-   */
-  private handleConnectionClose(): void {
-    const previousState = this.connectionState;
-    this.connectionState = ConnectionState.DISCONNECTED;
-
-    this.emit('state_change', {
-      previousState,
-      currentState: this.connectionState,
-      timestamp: new Date(),
-    });
-
-    console.log('L Real-time connection closed');
-
-    // Attempt reconnection
-    this.scheduleReconnect();
-  }
-
-  /**
-   * Handle connection error
-   */
-  private handleConnectionError(error: Error): void {
-    const previousState = this.connectionState;
-    this.connectionState = ConnectionState.ERROR;
-
-    this.emit('state_change', {
-      previousState,
-      currentState: this.connectionState,
-      timestamp: new Date(),
-    });
-
-    this.emit('error', {
-      error,
-      context: 'connection',
-      timestamp: new Date(),
-    });
-
-    console.error('=% Real-time connection error:', error);
-
-    // Attempt reconnection
-    this.scheduleReconnect();
-  }
-
-  /**
-   * Schedule reconnection with exponential backoff
-   */
-  private scheduleReconnect(): void {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error(`L Max reconnection attempts (${this.maxReconnectAttempts}) reached`);
-      return;
-    }
-
-    const delay = Math.min(
-      this.baseReconnectDelay * Math.pow(2, this.reconnectAttempts),
-      this.maxReconnectDelay
-    );
-
-    this.reconnectAttempts++;
-    this.connectionState = ConnectionState.RECONNECTING;
-
-    this.emit('reconnect_attempt', {
-      attempt: this.reconnectAttempts,
-      delay,
-      timestamp: new Date(),
-    });
-
-    console.log(`= Reconnection attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms`);
-
-    setTimeout(() => {
-      this.reconnect();
-    }, delay);
-  }
-
-  /**
-   * Attempt to reconnect
-   */
-  private reconnect(): void {
-    try {
-      // Force reconnect by creating a new connection
-      supabase.realtime.disconnect();
-
-      // Small delay before reconnecting
-      setTimeout(() => {
-        // The connection will be re-established automatically
-        // when the next subscription is made
-      }, 100);
-    } catch (error) {
-      this.handleConnectionError(error as Error);
-    }
-  }
-
-  /**
-   * Resubscribe to all active subscriptions
-   */
-  private resubscribeAll(): void {
-    const activeSubscriptions = Array.from(this.subscriptions.values())
-      .filter(sub => sub.enabled !== false);
-
-    console.log(`= Resubscribing to ${activeSubscriptions.length} subscriptions`);
-
-    activeSubscriptions.forEach(subscription => {
-      this.createSubscription(subscription);
-    });
-  }
-
-  /**
-   * Start heartbeat monitoring
-   */
-  private startHeartbeat(): void {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-    }
-
-    this.heartbeatInterval = setInterval(() => {
-      if (this.connectionState === ConnectionState.CONNECTED) {
-        this.lastHeartbeat = new Date();
-
-        // Check if connection is still alive by sending a ping
-        this.pingConnection();
-      }
-    }, 30000); // 30 seconds
-  }
-
-  /**
-   * Start latency monitoring
-   */
-  private startLatencyMonitoring(): void {
-    if (this.latencyCheckInterval) {
-      clearInterval(this.latencyCheckInterval);
-    }
-
-    this.latencyCheckInterval = setInterval(() => {
-      if (this.connectionState === ConnectionState.CONNECTED) {
-        this.measureLatency();
-      }
-    }, 60000); // 1 minute
-  }
-
-  /**
-   * Ping connection to check health
-   */
-  private pingConnection(): void {
-    try {
-      // Use a temporary channel to test connection
-      const pingChannel = supabase.channel('ping_test');
-      const startTime = Date.now();
-
-      pingChannel.subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          const latency = Date.now() - startTime;
-          console.log(`=� Connection latency: ${latency}ms`);
-
-          // Clean up ping channel
-          supabase.removeChannel(pingChannel);
+  const emit = <T extends ConnectionManagerEvent>(
+    event: T,
+    payload: ConnectionManagerEventPayload[T]
+  ): void => {
+    const listeners = eventListeners.get(event);
+    if (listeners) {
+      listeners.forEach(listener => {
+        try {
+          listener(payload);
+        } catch (error) {
+          console.error(`L Event listener error for ${event}:`, error);
         }
       });
-    } catch (error) {
-      console.error('L Ping connection failed:', error);
     }
-  }
-
-  /**
-   * Measure connection latency
-   */
-  private measureLatency(): void {
-    // This would be implemented with actual latency measurement
-    // For now, we'll simulate it
-    const simulatedLatency = Math.random() * 100 + 20; // 20-120ms
-    console.log(`=� Measured latency: ${simulatedLatency.toFixed(2)}ms`);
-  }
-
-  /**
-   * Add a real-time subscription
-   */
-  public subscribe<T = any>(config: SubscriptionConfig<T>): () => void {
-    console.log(`� Adding subscription: ${config.id} for table ${config.table}`);
-
-    // Store subscription configuration
-    this.subscriptions.set(config.id, config);
-
-    // Create the actual subscription
-    const channel = this.createSubscription(config);
-
-    this.emit('subscription_added', {
-      subscriptionId: config.id,
-      table: config.table as string,
-      timestamp: new Date(),
-    });
-
-    // Return unsubscribe function
-    return () => {
-      this.unsubscribe(config.id);
-    };
-  }
+  };
 
   /**
    * Create actual Supabase subscription
    */
-  private createSubscription<T = any>(config: SubscriptionConfig<T>): RealtimeChannel {
+  const createSubscription = <T = any>(config: SubscriptionConfig<T>): RealtimeChannel => {
     const channelName = `${config.table}_${config.id}`;
 
     // Remove existing channel if it exists
-    if (this.channels.has(config.id)) {
-      const existingChannel = this.channels.get(config.id);
+    if (channels.has(config.id)) {
+      const existingChannel = channels.get(config.id);
       if (existingChannel) {
         supabase.removeChannel(existingChannel);
       }
@@ -383,7 +161,7 @@ class RealtimeConnectionManager {
         {
           event: config.event,
           schema: config.schema || 'public',
-          table: config.table as string,
+          table: String(config.table),
           filter: config.filter,
         },
         (payload: any) => {
@@ -406,7 +184,7 @@ class RealtimeConnectionManager {
               config.errorCallback(error as Error);
             }
 
-            this.emit('error', {
+            emit('error', {
               error: error as Error,
               context: `subscription_${config.id}`,
               timestamp: new Date(),
@@ -416,7 +194,7 @@ class RealtimeConnectionManager {
       )
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
-          console.log(` Subscription active: ${config.id}`);
+          console.log(` Subscription active: ${config.id}`);
         } else if (status === 'CLOSED') {
           console.log(`L Subscription closed: ${config.id}`);
         } else if (status === 'CHANNEL_ERROR') {
@@ -428,146 +206,371 @@ class RealtimeConnectionManager {
         }
       });
 
-    this.channels.set(config.id, channel);
+    channels.set(config.id, channel);
     return channel;
-  }
+  };
 
   /**
-   * Remove a subscription
+   * Resubscribe to all active subscriptions
    */
-  public unsubscribe(subscriptionId: string, reason?: string): void {
-    console.log(`� Removing subscription: ${subscriptionId}`);
+  const resubscribeAll = (): void => {
+    const activeSubscriptions = Array.from(subscriptions.values())
+      .filter(sub => sub.enabled !== false);
 
-    const channel = this.channels.get(subscriptionId);
-    if (channel) {
-      supabase.removeChannel(channel);
-      this.channels.delete(subscriptionId);
-    }
+    console.log(`= Resubscribing to ${activeSubscriptions.length} subscriptions`);
 
-    this.subscriptions.delete(subscriptionId);
+    activeSubscriptions.forEach(subscription => {
+      createSubscription(subscription);
+    });
+  };
 
-    this.emit('subscription_removed', {
-      subscriptionId,
-      reason,
+  /**
+   * Handle connection open event
+   */
+  const handleConnectionOpen = (): void => {
+    const previousState = connectionState;
+    connectionState = ConnectionState.CONNECTED;
+    connectionStartTime = new Date();
+    reconnectAttempts = 0;
+    lastHeartbeat = new Date();
+
+    emit('state_change', {
+      previousState,
+      currentState: connectionState,
       timestamp: new Date(),
     });
-  }
+
+    console.log(' Real-time connection established');
+
+    // Resubscribe to all active subscriptions
+    resubscribeAll();
+  };
 
   /**
-   * Get connection health information
+   * Handle connection error
    */
-  public getHealth(): ConnectionHealth {
-    return {
-      state: this.connectionState,
-      connectedAt: this.connectionStartTime,
-      lastHeartbeat: this.lastHeartbeat,
-      reconnectAttempts: this.reconnectAttempts,
-      subscriptionsCount: this.subscriptions.size,
-    };
-  }
+  const handleConnectionError = (error: Error): void => {
+    const previousState = connectionState;
+    connectionState = ConnectionState.ERROR;
+
+    emit('state_change', {
+      previousState,
+      currentState: connectionState,
+      timestamp: new Date(),
+    });
+
+    emit('error', {
+      error,
+      context: 'connection',
+      timestamp: new Date(),
+    });
+
+    console.error('=% Real-time connection error:', error);
+
+    // Attempt reconnection
+    scheduleReconnect();
+  };
 
   /**
-   * Get all active subscriptions
+   * Attempt to reconnect
    */
-  public getSubscriptions(): SubscriptionConfig[] {
-    return Array.from(this.subscriptions.values());
-  }
+  const reconnect = (): void => {
+    try {
+      // Force reconnect by creating a new connection
+      supabase.realtime.disconnect();
+
+      // Small delay before reconnecting
+      setTimeout(() => {
+        // The connection will be re-established automatically
+        // when the next subscription is made
+      }, 100);
+    } catch (error) {
+      handleConnectionError(error as Error);
+    }
+  };
 
   /**
-   * Enable/disable a subscription
+   * Schedule reconnection with exponential backoff
    */
-  public toggleSubscription(subscriptionId: string, enabled: boolean): void {
-    const subscription = this.subscriptions.get(subscriptionId);
-    if (!subscription) {
-      console.error(`L Subscription not found: ${subscriptionId}`);
+  const scheduleReconnect = (): void => {
+    if (reconnectAttempts >= maxReconnectAttempts) {
+      console.error(`L Max reconnection attempts (${maxReconnectAttempts}) reached`);
       return;
     }
 
-    subscription.enabled = enabled;
+    const delay = Math.min(
+      baseReconnectDelay * Math.pow(2, reconnectAttempts),
+      maxReconnectDelay
+    );
 
-    if (enabled) {
-      // Re-create the subscription
-      this.createSubscription(subscription);
-    } else {
-      // Remove the channel
-      const channel = this.channels.get(subscriptionId);
-      if (channel) {
-        supabase.removeChannel(channel);
-        this.channels.delete(subscriptionId);
-      }
-    }
-  }
+    reconnectAttempts++;
+    connectionState = ConnectionState.RECONNECTING;
 
-  /**
-   * Event emitter functionality
-   */
-  public on<T extends ConnectionManagerEvent>(
-    event: T,
-    listener: (payload: ConnectionManagerEventPayload[T]) => void
-  ): () => void {
-    if (!this.eventListeners.has(event)) {
-      this.eventListeners.set(event, new Set());
-    }
-
-    const listeners = this.eventListeners.get(event)!;
-    listeners.add(listener);
-
-    // Return unsubscribe function
-    return () => {
-      listeners.delete(listener);
-    };
-  }
-
-  /**
-   * Emit events to listeners
-   */
-  private emit<T extends ConnectionManagerEvent>(
-    event: T,
-    payload: ConnectionManagerEventPayload[T]
-  ): void {
-    const listeners = this.eventListeners.get(event);
-    if (listeners) {
-      listeners.forEach(listener => {
-        try {
-          listener(payload);
-        } catch (error) {
-          console.error(`L Event listener error for ${event}:`, error);
-        }
-      });
-    }
-  }
-
-  /**
-   * Cleanup resources
-   */
-  public destroy(): void {
-    console.log('>� Cleaning up connection manager...');
-
-    // Clear intervals
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-    }
-    if (this.latencyCheckInterval) {
-      clearInterval(this.latencyCheckInterval);
-    }
-
-    // Remove all subscriptions
-    this.channels.forEach((channel, id) => {
-      supabase.removeChannel(channel);
+    emit('reconnect_attempt', {
+      attempt: reconnectAttempts,
+      delay,
+      timestamp: new Date(),
     });
 
-    // Clear collections
-    this.channels.clear();
-    this.subscriptions.clear();
-    this.eventListeners.clear();
+    console.log(`= Reconnection attempt ${reconnectAttempts}/${maxReconnectAttempts} in ${delay}ms`);
 
-    // Disconnect from Supabase
-    supabase.realtime.disconnect();
-  }
-}
+    setTimeout(() => {
+      reconnect();
+    }, delay);
+  };
+
+  /**
+   * Handle connection close event
+   */
+  const handleConnectionClose = (): void => {
+    const previousState = connectionState;
+    connectionState = ConnectionState.DISCONNECTED;
+
+    emit('state_change', {
+      previousState,
+      currentState: connectionState,
+      timestamp: new Date(),
+    });
+
+    console.log('L Real-time connection closed');
+
+    // Attempt reconnection
+    scheduleReconnect();
+  };
+
+  /**
+   * Ping connection to check health
+   */
+  const pingConnection = (): void => {
+    try {
+      // Use a temporary channel to test connection
+      const pingChannel = supabase.channel('ping_test');
+      const startTime = Date.now();
+
+      pingChannel.subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          const latency = Date.now() - startTime;
+          console.log(`=� Connection latency: ${latency}ms`);
+
+          // Clean up ping channel
+          supabase.removeChannel(pingChannel);
+        }
+      });
+    } catch (error) {
+      console.error('L Ping connection failed:', error);
+    }
+  };
+
+  /**
+   * Measure connection latency
+   */
+  const measureLatency = (): void => {
+    // This would be implemented with actual latency measurement
+    // For now, we'll simulate it
+    const simulatedLatency = Math.random() * 100 + 20; // 20-120ms
+    console.log(`=� Measured latency: ${simulatedLatency.toFixed(2)}ms`);
+  };
+
+  /**
+   * Start heartbeat monitoring
+   */
+  const startHeartbeat = (): void => {
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+    }
+
+    heartbeatInterval = setInterval(() => {
+      if (connectionState === ConnectionState.CONNECTED) {
+        lastHeartbeat = new Date();
+
+        // Check if connection is still alive by sending a ping
+        pingConnection();
+      }
+    }, 30000); // 30 seconds
+  };
+
+  /**
+   * Start latency monitoring
+   */
+  const startLatencyMonitoring = (): void => {
+    if (latencyCheckInterval) {
+      clearInterval(latencyCheckInterval);
+    }
+
+    latencyCheckInterval = setInterval(() => {
+      if (connectionState === ConnectionState.CONNECTED) {
+        measureLatency();
+      }
+    }, 60000); // 1 minute
+  };
+
+  /**
+   * Initialize connection event listeners
+   */
+  const initializeEventListeners = (): void => {
+    // Listen to Supabase client events
+    supabase.realtime.onOpen(() => {
+      handleConnectionOpen();
+    });
+
+    supabase.realtime.onClose(() => {
+      handleConnectionClose();
+    });
+
+    supabase.realtime.onError((error: Error) => {
+      handleConnectionError(error);
+    });
+  };
+
+  // Initialize the connection manager
+  initializeEventListeners();
+  startHeartbeat();
+  startLatencyMonitoring();
+
+  // Create the public API object
+  const api = {
+    /**
+     * Add a real-time subscription
+     */
+    subscribe<T = any>(config: SubscriptionConfig<T>): () => void {
+      console.log(`� Adding subscription: ${config.id} for table ${config.table}`);
+
+      // Store subscription configuration
+      subscriptions.set(config.id, config);
+
+      // Create the actual subscription
+      const channel = createSubscription(config);
+
+      emit('subscription_added', {
+        subscriptionId: config.id,
+        table: String(config.table),
+        timestamp: new Date(),
+      });
+
+      // Return unsubscribe function
+      return () => {
+        api.unsubscribe(config.id);
+      };
+    },
+
+    /**
+     * Remove a subscription
+     */
+    unsubscribe(subscriptionId: string, reason?: string): void {
+      console.log(`� Removing subscription: ${subscriptionId}`);
+
+      const channel = channels.get(subscriptionId);
+      if (channel) {
+        supabase.removeChannel(channel);
+        channels.delete(subscriptionId);
+      }
+
+      subscriptions.delete(subscriptionId);
+
+      emit('subscription_removed', {
+        subscriptionId,
+        reason,
+        timestamp: new Date(),
+      });
+    },
+
+    /**
+     * Get connection health information
+     */
+    getHealth(): ConnectionHealth {
+      return {
+        state: connectionState,
+        connectedAt: connectionStartTime,
+        lastHeartbeat: lastHeartbeat,
+        reconnectAttempts: reconnectAttempts,
+        subscriptionsCount: subscriptions.size,
+      };
+    },
+
+    /**
+     * Get all active subscriptions
+     */
+    getSubscriptions(): SubscriptionConfig[] {
+      return Array.from(subscriptions.values());
+    },
+
+    /**
+     * Enable/disable a subscription
+     */
+    toggleSubscription(subscriptionId: string, enabled: boolean): void {
+      const subscription = subscriptions.get(subscriptionId);
+      if (!subscription) {
+        console.error(`L Subscription not found: ${subscriptionId}`);
+        return;
+      }
+
+      subscription.enabled = enabled;
+
+      if (enabled) {
+        // Re-create the subscription
+        createSubscription(subscription);
+      } else {
+        // Remove the channel
+        const channel = channels.get(subscriptionId);
+        if (channel) {
+          supabase.removeChannel(channel);
+          channels.delete(subscriptionId);
+        }
+      }
+    },
+
+    /**
+     * Event emitter functionality
+     */
+    on<T extends ConnectionManagerEvent>(
+      event: T,
+      listener: (payload: ConnectionManagerEventPayload[T]) => void
+    ): () => void {
+      if (!eventListeners.has(event)) {
+        eventListeners.set(event, new Set());
+      }
+
+      const listeners = eventListeners.get(event)!;
+      listeners.add(listener);
+
+      // Return unsubscribe function
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+
+    /**
+     * Cleanup resources
+     */
+    destroy(): void {
+      console.log('>� Cleaning up connection manager...');
+
+      // Clear intervals
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+      }
+      if (latencyCheckInterval) {
+        clearInterval(latencyCheckInterval);
+      }
+
+      // Remove all subscriptions
+      channels.forEach((channel, id) => {
+        supabase.removeChannel(channel);
+      });
+
+      // Clear collections
+      channels.clear();
+      subscriptions.clear();
+      eventListeners.clear();
+
+      // Disconnect from Supabase
+      supabase.realtime.disconnect();
+    }
+  };
+
+  // Return the public API
+  return api;
+};
 
 // Create singleton instance
-export const realtimeConnectionManager = new RealtimeConnectionManager();
-
-// Export types and utilities
-export type { ConnectionHealth,RealtimeSubscriptionPayload, SubscriptionConfig };
+export const realtimeConnectionManager = createRealtimeConnectionManager();

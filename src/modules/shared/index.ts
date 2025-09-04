@@ -102,10 +102,10 @@ export {
   defaultErrorReporter,
   ErrorReporter,
   reportError
-} from './infra/services/error-reporter';
-export type { ErrorBoundaryProps } from './ui/components/error-boundary';
-export { default as ErrorBoundary, withErrorBoundary } from './ui/components/error-boundary';
+} from './infrastructure/services/error-reporter';
+export type { ErrorBoundaryProps } from './presentation/components/error-boundary';
+export { default as ErrorBoundary, withErrorBoundary } from './presentation/components/error-boundary';
 export {
   ErrorFallback,
   LoadingErrorFallback,
-  MinimalErrorFallback} from './ui/components/error-fallback';
+  MinimalErrorFallback} from './presentation/components/error-fallback';

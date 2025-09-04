@@ -14,11 +14,11 @@ export * from './application/use-cases/send-notification';
 export * from './application/use-cases/submit-lead-form-enhanced';
 
 // Infrastructure exports
-export * from './infra/config/notification-config';
-export * from './infra/config/notification-templates';
-export * from './infra/services/email-notification-service';
-export * from './infra/services/in-app-notification-service';
-export * from './infra/services/webhook-notification-service';
+export * from './infrastructure/config/notification-config';
+export * from './infrastructure/config/notification-templates';
+export * from './infrastructure/services/email-notification-service';
+export * from './infrastructure/services/in-app-notification-service';
+export * from './infrastructure/services/webhook-notification-service';
 
 // Legacy compatibility
 export * from './application/ports/notification-service';
@@ -29,11 +29,11 @@ export * from './application/ports/notification-service';
  */
 import { createSendNotificationUseCase } from './application/use-cases/send-notification';
 import { NotificationRepository } from './domain/repositories/notification-repository';
-import { getNotificationConfig } from './infra/config/notification-config';
-import { EMAIL_TEMPLATES, SLACK_TEMPLATES } from './infra/config/notification-templates';
-import { createEnhancedEmailService } from './infra/services/email-notification-service';
-import { createInAppNotificationService, createWebSocketRealtimeConnection } from './infra/services/in-app-notification-service';
-import { createFetchHttpClient,createWebhookService } from './infra/services/webhook-notification-service';
+import { getNotificationConfig } from './infrastructure/config/notification-config';
+import { EMAIL_TEMPLATES, SLACK_TEMPLATES } from './infrastructure/config/notification-templates';
+import { createEnhancedEmailService } from './infrastructure/services/email-notification-service';
+import { createInAppNotificationService, createWebSocketRealtimeConnection } from './infrastructure/services/in-app-notification-service';
+import { createFetchHttpClient,createWebhookService } from './infrastructure/services/webhook-notification-service';
 
 export interface NotificationSystemDependencies {
   notificationRepository: NotificationRepository;

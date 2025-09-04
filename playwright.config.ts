@@ -45,8 +45,8 @@ export default defineConfig({
     /* Ignore HTTPS errors for local development */
     ignoreHTTPSErrors: true,
     
-    /* Collect HAR files for network analysis */
-    recordHar: process.env.RECORD_HAR ? { path: 'test-results/network.har' } : undefined,
+    /* Collect HAR files for network analysis - disabled for compatibility */
+    // recordHar: process.env.RECORD_HAR ? { path: 'test-results/network.har' } : undefined,
     
     /* Additional context options */
     extraHTTPHeaders: {
@@ -226,7 +226,7 @@ export default defineConfig({
   },
   
   /* Global setup and teardown */
-  globalSetup: require.resolve('./e2e/global-setup'),
+  globalSetup: './e2e/global-setup.ts',
   
   /* Test timeout configuration */
   timeout: process.env.CI ? 45 * 1000 : 30 * 1000, // Longer timeout in CI
@@ -237,7 +237,6 @@ export default defineConfig({
     // Visual comparison threshold
     toHaveScreenshot: {
       threshold: 0.2,
-      mode: 'rgb',
     },
     toMatchSnapshot: {
       threshold: 0.2,

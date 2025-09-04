@@ -1,11 +1,12 @@
 'use client'
 
-import React, { ReactNode, useRef } from 'react'
+import React, { ReactNode, useEffect,useRef } from 'react'
 import { ThemeProvider } from 'next-themes'
+import posthog from 'posthog-js'
+import { PostHogProvider } from 'posthog-js/react'
 import { Provider as ReduxProvider } from 'react-redux'
 
-import { EventTrackerProvider, ScrollDepthTracker, TimeOnPageTracker, VisibilityTracker } from '@/modules/analytics/ui/components/event-tracker'
-import ErrorBoundary from '@/modules/shared/ui/components/error-boundary'
+import ErrorBoundary from '@/modules/shared/presentation/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
 
@@ -16,7 +17,7 @@ import { makeStore } from '@/store'
  * - ReduxProvider: State management with Redux Toolkit
  * - ThemeProvider: Theme management for dark/light mode
  * - ErrorBoundary: Error handling with graceful fallbacks
- * - EventTrackerProvider: Analytics tracking for user interactions
+ * - PostHogProvider: Analytics tracking with PostHog
  *
  * This component creates a per-request store instance for proper
  * SSR/SSG support in Next.js App Router and HMR stability.
@@ -35,6 +36,27 @@ export function Providers({ children }: { children: ReactNode }) {
   // Prevent store recreation during HMR updates
   const store = storeRef.current
 
+  // Initialize PostHog on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+        capture_pageview: false, // Handle manually in Next.js
+        capture_pageleave: true,
+        autocapture: true,
+        session_recording: {
+          maskAllInputs: false,
+          maskTextSelector: '[data-private]'
+        },
+        loaded: (posthog) => {
+          if (process.env.NODE_ENV === 'development') {
+            posthog.debug()
+          }
+        }
+      })
+    }
+  }, [])
+
   return (
     <ErrorBoundary>
       <ReduxProvider store={store}>
@@ -46,29 +68,9 @@ export function Providers({ children }: { children: ReactNode }) {
           storageKey="caetaria-theme"
           themes={['light', 'dark', 'system']}
         >
-          <EventTrackerProvider
-            enableAutoTracking={true}
-            consentLevel="analytics"
-            config={{
-              sessionTimeout: 30 * 60 * 1000, // 30 minutes
-              batchSize: 10,
-              flushInterval: 5000,
-              enableLocalStorage: true,
-            }}
-          >
+          <PostHogProvider client={posthog}>
             {children}
-
-            {/* Global analytics trackers */}
-            <ScrollDepthTracker
-              thresholds={[25, 50, 75, 100]}
-              enabled={true}
-            />
-            <TimeOnPageTracker
-              intervals={[30, 60, 120, 300]}
-              enabled={true}
-            />
-            <VisibilityTracker enabled={true} />
-          </EventTrackerProvider>
+          </PostHogProvider>
         </ThemeProvider>
       </ReduxProvider>
     </ErrorBoundary>

@@ -1,13 +1,13 @@
 import { Conversation } from '../domain/entities';
+import { createMessageFromScenarioConfig } from '../domain/entities/message';
 import {
-  ConversationFactory,
   ConversationTemplate,
   createConversationFromScenario,
   createConversationFromTemplate,
   createScenarioConfig,
   MessageTemplate,
   ScenarioConfig
-} from '../infra/factories/conversation-factory';
+} from '../infrastructure/factories/conversation-factory';
 
 /**
  * Educational badge configuration
@@ -153,7 +153,6 @@ export const heroDemoScenario = {
     flowCloseDelay: 4800 // Del hero: setTimeout(() => setShowFlow(false), 4800)
   },
 
-  // Message sequence - TEXTOS EXACTOS del hero-mobile-demo.tsx
   messages: [
     {
       sender: 'user',
@@ -193,6 +192,16 @@ export const heroDemoScenario = {
       typingDuration: 1500
     }
   ] as MessageTemplate[]
+};
+
+/**
+ * Convert scenario messages to proper Message entities
+ * This ensures all messages have the correct structure
+ */
+export const getHeroDemoMessages = () => {
+  return heroDemoScenario.messages.map((msg, index) =>
+    createMessageFromScenarioConfig(msg, index)
+  );
 };
 
 /**

@@ -52,9 +52,9 @@ import { createGetLandingAnalyticsUseCase, GetLandingAnalyticsUseCase } from './
 import { createSubmitLeadFormUseCase, SubmitLeadFormUseCase } from './application/use-cases/submit-lead-form';
 import { LeadRepository } from './domain/repositories/lead-repository';
 import { createEmail } from './domain/value-objects/email';
-import { createSupabaseLeadRepository } from './infra/adapters/supabase-lead-repository';
-import { createEmailNotificationService } from './infra/services/email-notification-service';
-import { createGoogleAnalyticsService, createMockAnalyticsService } from './infra/services/google-analytics-service';
+import { createSupabaseLeadRepository } from './infrastructure/adapters/supabase-lead-repository';
+import { createEmailNotificationService } from './infrastructure/services/email-notification-service';
+import { createGoogleAnalyticsService, createMockAnalyticsService } from './infrastructure/services/google-analytics-service';
 
 // =============================================================================
 // FUNCTIONAL CONFIGURATION TYPES
