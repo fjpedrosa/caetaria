@@ -1,16 +1,16 @@
-import { FaqSection } from '@/modules/marketing/ui/components/faq-section';
-import { FeaturesGrid } from '@/modules/marketing/ui/components/features-grid';
-import { FinalCta } from '@/modules/marketing/ui/components/final-cta';
-import { HeroSection } from '@/modules/marketing/ui/components/hero-section';
+import { FaqSection } from '@/modules/marketing/presentation/components/faq-section';
+import { FeaturesGrid } from '@/modules/marketing/presentation/components/features-grid';
+import { FinalCta } from '@/modules/marketing/presentation/components/final-cta';
+import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
 // TEMPORAL: HeroComparison disabled due to missing service exports
-// import { HeroComparison } from '@/modules/marketing/ui/components/hero-section/components/hero-comparison';
-import { HowItWorks } from '@/modules/marketing/ui/components/how-it-works';
+// import { HeroComparison } from '@/modules/marketing/presentation/components/hero-section/components/hero-comparison';
+import { HowItWorks } from '@/modules/marketing/presentation/components/how-it-works';
 // Footer removed - now handled in layout.tsx
 // Navbar removed - now handled in layout.tsx
-import { PricingTeaserAB } from '@/modules/marketing/ui/components/pricing-teaser-ab';
-import { Testimonials } from '@/modules/marketing/ui/components/testimonials';
-import { UseCasesSection } from '@/modules/marketing/ui/components/use-cases-section';
-import { ValueProps } from '@/modules/marketing/ui/components/value-props';
+import { PricingTeaserAB } from '@/modules/marketing/presentation/components/pricing-teaser-ab';
+import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
+import { UseCasesSection } from '@/modules/marketing/presentation/components/use-cases-section';
+import { ValueProps } from '@/modules/marketing/presentation/components/value-props';
 
 /**
  * Landing Page

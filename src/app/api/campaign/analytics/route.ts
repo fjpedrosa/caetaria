@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
     // Calculate date range
     const endDate = new Date();
     const startDate = new Date();
-    
+
     switch (timeRange) {
       case '1d':
         startDate.setDate(startDate.getDate() - 1);
@@ -75,14 +76,14 @@ export async function GET(request: NextRequest) {
       overview: {
         totalVisitors: events?.filter(e => e.event_name === 'campaign_page_view').length || 0,
         totalLeads: leads?.length || 0,
-        conversionRate: leads?.length && events?.length 
+        conversionRate: leads?.length && events?.length
           ? ((leads.length / events.filter(e => e.event_name === 'campaign_page_view').length) * 100)
           : 0,
-        averageLeadScore: leads?.length 
+        averageLeadScore: leads?.length
           ? (leads.reduce((sum, lead) => sum + (lead.lead_score || 0), 0) / leads.length)
           : 0,
       },
-      
+
       attribution: {
         sources: processAttributionData(events, leads),
         channels: processChannelData(events, leads),
@@ -132,12 +133,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      eventName, 
-      properties, 
-      campaignData, 
+    const {
+      eventName,
+      properties,
+      campaignData,
       sessionId,
-      leadScore 
+      leadScore
     } = body;
 
     const supabase = createClient();
@@ -193,14 +194,14 @@ export async function POST(request: NextRequest) {
 // Helper functions
 function processAttributionData(events: any[], leads: any[]) {
   const attribution = new Map();
-  
+
   leads.forEach(lead => {
     const source = lead.attribution_data?.utm_source || 'direct';
     const medium = lead.attribution_data?.utm_medium || 'organic';
     const campaign = lead.attribution_data?.utm_campaign || 'unknown';
-    
+
     const key = `${source}-${medium}-${campaign}`;
-    
+
     if (!attribution.has(key)) {
       attribution.set(key, {
         source,
@@ -211,16 +212,16 @@ function processAttributionData(events: any[], leads: any[]) {
         totalLeadScore: 0,
       });
     }
-    
+
     const data = attribution.get(key);
     data.leads++;
     data.totalLeadScore += lead.lead_score || 0;
-    
+
     if (lead.status === 'converted' || lead.onboarding_status === 'completed') {
       data.conversions++;
     }
   });
-  
+
   return Array.from(attribution.values()).map(item => ({
     ...item,
     averageLeadScore: item.totalLeadScore / item.leads,
@@ -230,10 +231,10 @@ function processAttributionData(events: any[], leads: any[]) {
 
 function processChannelData(events: any[], leads: any[]) {
   const channels = new Map();
-  
+
   events.forEach(event => {
     const source = event.utm_source || 'direct';
-    
+
     if (!channels.has(source)) {
       channels.set(source, {
         source,
@@ -243,15 +244,15 @@ function processChannelData(events: any[], leads: any[]) {
         avgTimeOnSite: 0,
       });
     }
-    
+
     const data = channels.get(source);
-    
+
     if (event.event_name === 'campaign_page_view') {
       data.pageViews++;
       data.uniqueSessions.add(event.session_id);
     }
   });
-  
+
   // Count leads by channel
   leads.forEach(lead => {
     const source = lead.attribution_data?.utm_source || 'direct';
@@ -259,7 +260,7 @@ function processChannelData(events: any[], leads: any[]) {
       channels.get(source).leads++;
     }
   });
-  
+
   return Array.from(channels.values()).map(item => ({
     ...item,
     uniqueVisitors: item.uniqueSessions.size,
@@ -269,10 +270,10 @@ function processChannelData(events: any[], leads: any[]) {
 
 function processTouchpointData(events: any[]) {
   const touchpoints = new Map();
-  
+
   events.forEach(event => {
     const eventType = event.event_name;
-    
+
     if (!touchpoints.has(eventType)) {
       touchpoints.set(eventType, {
         eventType,
@@ -282,13 +283,13 @@ function processTouchpointData(events: any[]) {
         totalLeadScore: 0,
       });
     }
-    
+
     const data = touchpoints.get(eventType);
     data.count++;
     data.uniqueSessions.add(event.session_id);
     data.totalLeadScore += event.lead_score || 0;
   });
-  
+
   return Array.from(touchpoints.values()).map(item => ({
     ...item,
     uniqueParticipants: item.uniqueSessions.size,
@@ -305,9 +306,9 @@ function processFunnelData(events: any[]) {
     { name: 'Form Start', eventName: 'campaign_form_start' },
     { name: 'Form Submit', eventName: 'campaign_form_submit' },
   ];
-  
+
   const sessionCounts = new Map();
-  
+
   // Count unique sessions for each funnel step
   events.forEach(event => {
     const stepIndex = funnelSteps.findIndex(step => step.eventName === event.event_name);
@@ -321,13 +322,13 @@ function processFunnelData(events: any[]) {
       }
     }
   });
-  
+
   const totalVisitors = sessionCounts.get('Page View')?.size || 0;
-  
+
   return funnelSteps.map((step, index) => {
     const visitors = sessionCounts.get(step.name)?.size || 0;
     const previousVisitors = index > 0 ? (sessionCounts.get(funnelSteps[index - 1].name)?.size || 0) : totalVisitors;
-    
+
     return {
       step: step.name,
       visitors,
@@ -339,7 +340,7 @@ function processFunnelData(events: any[]) {
 
 function processVariantData(events: any[], leads: any[]) {
   const variants = { A: { visitors: 0, leads: 0, events: 0 }, B: { visitors: 0, leads: 0, events: 0 } };
-  
+
   events.forEach(event => {
     const variant = event.campaign_variant || 'A';
     if (variants[variant]) {
@@ -349,14 +350,14 @@ function processVariantData(events: any[], leads: any[]) {
       }
     }
   });
-  
+
   leads.forEach(lead => {
     const variant = lead.campaign_variant || 'A';
     if (variants[variant]) {
       variants[variant].leads++;
     }
   });
-  
+
   return Object.entries(variants).reduce((acc, [key, data]) => {
     acc[key] = {
       ...data,
@@ -374,17 +375,17 @@ function processLeadScoringData(leads: any[]) {
     { range: '76-100', min: 76, max: 100 },
     { range: '100+', min: 101, max: Infinity },
   ];
-  
+
   return scoreRanges.map(range => {
     const rangeLeads = leads.filter(lead => {
       const score = lead.lead_score || 0;
       return score >= range.min && score <= range.max;
     });
-    
-    const conversions = rangeLeads.filter(lead => 
+
+    const conversions = rangeLeads.filter(lead =>
       lead.status === 'converted' || lead.onboarding_status === 'completed'
     ).length;
-    
+
     return {
       scoreRange: range.range,
       count: rangeLeads.length,
@@ -395,10 +396,10 @@ function processLeadScoringData(leads: any[]) {
 
 function processLeadScoringBySource(leads: any[]) {
   const sourceScores = new Map();
-  
+
   leads.forEach(lead => {
     const source = lead.attribution_data?.utm_source || 'direct';
-    
+
     if (!sourceScores.has(source)) {
       sourceScores.set(source, {
         source,
@@ -407,16 +408,16 @@ function processLeadScoringBySource(leads: any[]) {
         conversions: 0,
       });
     }
-    
+
     const data = sourceScores.get(source);
     data.totalScore += lead.lead_score || 0;
     data.count++;
-    
+
     if (lead.status === 'converted' || lead.onboarding_status === 'completed') {
       data.conversions++;
     }
   });
-  
+
   return Array.from(sourceScores.values()).map(item => ({
     ...item,
     averageScore: item.count > 0 ? item.totalScore / item.count : 0,
@@ -427,31 +428,31 @@ function processLeadScoringBySource(leads: any[]) {
 function processTimeSeriesData(events: any[], leads: any[], startDate: Date, endDate: Date) {
   const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
   const timeSeries = [];
-  
+
   for (let i = 0; i < days; i++) {
     const date = new Date(startDate);
     date.setDate(date.getDate() + i);
     const dateStr = date.toISOString().split('T')[0];
-    
-    const dayEvents = events.filter(event => 
+
+    const dayEvents = events.filter(event =>
       event.created_at.startsWith(dateStr)
     );
-    
-    const dayLeads = leads.filter(lead => 
+
+    const dayLeads = leads.filter(lead =>
       lead.created_at.startsWith(dateStr)
     );
-    
+
     timeSeries.push({
       date: dateStr,
       pageViews: dayEvents.filter(e => e.event_name === 'campaign_page_view').length,
       leads: dayLeads.length,
       events: dayEvents.length,
-      averageLeadScore: dayLeads.length > 0 
+      averageLeadScore: dayLeads.length > 0
         ? dayLeads.reduce((sum, lead) => sum + (lead.lead_score || 0), 0) / dayLeads.length
         : 0,
     });
   }
-  
+
   return timeSeries;
 }
 
@@ -467,7 +468,7 @@ async function updateLeadScore(supabase: any, sessionId: string, leadScore: numb
     // Update existing lead score
     await supabase
       .from('leads')
-      .update({ 
+      .update({
         lead_score: leadScore,
         updated_at: new Date().toISOString()
       })

@@ -151,30 +151,46 @@ export const createConversationOrchestrator = (config: Partial<OrchestratorConfi
 
   const play = async (request: PlayRequest = { autoStart: true }): Promise<ConversationOrchestratorResult> => {
     const currentState = stateManager.getCurrentState();
+    console.log('[ConversationOrchestrator] 🎮 Play called with state:', {
+      hasConversation: !!currentState.conversation,
+      messageCount: currentState.conversation?.messages?.length || 0,
+      currentIndex: currentState.currentMessageIndex
+    });
+
     const result = await playbackService.play(request, currentState, stateManager.updateState, eventService);
 
-    if (result.success && currentState.conversation && result.event) {
-      // Start message processing stream
-      const messageStream = messageProcessingService.createPlaybackStream(
-        currentState.conversation,
-        eventService,
-        stateManager.updateState,
-        stopSubject.asObservable()
-      );
-
-      messageStream.subscribe({
-        next: (event) => eventService.emit(event),
-        error: (error) => {
-          stateManager.updateState(state => ({
-            ...state,
-            hasError: true,
-            error: error instanceof Error ? error : new Error(String(error))
-          }));
-        },
-        complete: () => {
-          // Message stream completed
-        }
+    if (result.success && result.event) {
+      // Get the updated state after play() which has the conversation with status: 'playing'
+      const updatedState = stateManager.getCurrentState();
+      console.log('[ConversationOrchestrator] 🚀 Starting message processing stream with updated conversation:', {
+        status: updatedState.conversation?.status,
+        currentIndex: updatedState.conversation?.currentIndex,
+        messageCount: updatedState.conversation?.messages?.length
       });
+      
+      if (updatedState.conversation) {
+        // Start message processing stream with the updated conversation
+        const messageStream = messageProcessingService.createPlaybackStream(
+          updatedState.conversation,
+          eventService,
+          stateManager.updateState,
+          stopSubject.asObservable()
+        );
+
+        messageStream.subscribe({
+          next: (event) => eventService.emit(event),
+          error: (error) => {
+            stateManager.updateState(state => ({
+              ...state,
+              hasError: true,
+              error: error instanceof Error ? error : new Error(String(error))
+            }));
+          },
+          complete: () => {
+            // Message stream completed
+          }
+        });
+      }
     }
 
     return result;

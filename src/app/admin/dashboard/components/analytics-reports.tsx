@@ -31,12 +31,12 @@ import {
   Users,
   Zap} from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { LoadingSkeleton } from '@/modules/shared/ui/components/ui/loading-skeleton';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { LoadingSkeleton } from '@/modules/shared/presentation/components/ui/loading-skeleton';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 // Import API hooks
 import {
   useGetConversionFunnelQuery,
@@ -136,7 +136,7 @@ const mockAnalyticsData: AnalyticsData = {
   })),
 };
 
-export const AnalyticsReports: React.FC = () => {
+export const AnalyticsReports = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'24h' | '7d' | '30d' | '90d'>('30d');
   const [selectedMetric, setSelectedMetric] = useState<'pageViews' | 'visitors' | 'conversions'>('pageViews');
   const [activeTab, setActiveTab] = useState<'overview' | 'funnel' | 'behavior' | 'sources'>('overview');

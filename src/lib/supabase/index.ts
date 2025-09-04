@@ -61,7 +61,7 @@ export type {
 } from './types';
 
 // Repository factories
-export { createSupabaseLeadRepository } from '../../modules/marketing/infra/adapters/supabase-lead-repository';
+export { createSupabaseLeadRepository } from '../../modules/marketing/infrastructure/adapters/supabase-lead-repository';
 
 // React hooks for client-side usage
 export {

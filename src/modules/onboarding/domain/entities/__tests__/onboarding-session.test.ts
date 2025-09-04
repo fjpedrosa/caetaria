@@ -4,7 +4,7 @@
  * Coverage requirement: 95%
  */
 
-import { createEmail } from '../../../../marketing/domain/value-objects/email';
+import { createEmail } from '../../../../shared/domain/value-objects/email';
 import {
   abandonOnboarding,
   advanceOnboardingStep,

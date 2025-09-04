@@ -1,9 +1,10 @@
 /**
- * Campaign Feedback API Route  
+ * Campaign Feedback API Route
  * Handles feedback collection and NPS tracking for validation campaigns
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
@@ -40,20 +41,20 @@ export async function GET(request: NextRequest) {
     const analytics = {
       overview: {
         totalResponses: feedback?.length || 0,
-        averageRating: feedback?.length ? 
+        averageRating: feedback?.length ?
           feedback.reduce((sum, item) => sum + (item.rating || 0), 0) / feedback.length : 0,
         npsScore: calculateNPS(feedback || []),
         responseRate: calculateResponseRate(feedback || []),
       },
-      
+
       byVariant: variant ? {} : processVariantFeedback(feedback || []),
-      
+
       byType: processFeedbackByType(feedback || []),
-      
+
       sentimentAnalysis: processSentimentData(feedback || []),
-      
+
       commonThemes: extractCommonThemes(feedback || []),
-      
+
       recommendations: generateRecommendations(feedback || []),
     };
 
@@ -160,7 +161,7 @@ export async function POST(request: NextRequest) {
 
 // Analytics processing functions
 function calculateNPS(feedback: any[]): number {
-  const npsResponses = feedback.filter(item => 
+  const npsResponses = feedback.filter(item =>
     item.likelihood_to_recommend !== null && item.likelihood_to_recommend !== undefined
   );
 
@@ -168,7 +169,7 @@ function calculateNPS(feedback: any[]): number {
 
   const promoters = npsResponses.filter(item => item.likelihood_to_recommend >= 9).length;
   const detractors = npsResponses.filter(item => item.likelihood_to_recommend <= 6).length;
-  
+
   return Math.round(((promoters - detractors) / npsResponses.length) * 100);
 }
 
@@ -181,7 +182,7 @@ function calculateResponseRate(feedback: any[]): number {
 
 function processVariantFeedback(feedback: any[]): Record<string, any> {
   const variants = { A: [], B: [] };
-  
+
   feedback.forEach(item => {
     if (variants[item.variant]) {
       variants[item.variant].push(item);
@@ -191,13 +192,13 @@ function processVariantFeedback(feedback: any[]): Record<string, any> {
   return Object.entries(variants).reduce((acc, [variant, items]) => {
     acc[variant] = {
       totalResponses: items.length,
-      averageRating: items.length ? 
+      averageRating: items.length ?
         items.reduce((sum: number, item: any) => sum + (item.rating || 0), 0) / items.length : 0,
       npsScore: calculateNPS(items),
-      positiveComments: items.filter((item: any) => 
+      positiveComments: items.filter((item: any) =>
         item.rating && item.rating >= 4
       ).length,
-      negativeComments: items.filter((item: any) => 
+      negativeComments: items.filter((item: any) =>
         item.rating && item.rating <= 2
       ).length,
     };
@@ -207,7 +208,7 @@ function processVariantFeedback(feedback: any[]): Record<string, any> {
 
 function processFeedbackByType(feedback: any[]): Record<string, any> {
   const types = new Map();
-  
+
   feedback.forEach(item => {
     const type = item.feedback_type;
     if (!types.has(type)) {
@@ -217,7 +218,7 @@ function processFeedbackByType(feedback: any[]): Record<string, any> {
   });
 
   const result: Record<string, any> = {};
-  
+
   types.forEach((items, type) => {
     result[type] = {
       count: items.length,
@@ -236,7 +237,7 @@ function processFeedbackByType(feedback: any[]): Record<string, any> {
 function processSentimentData(feedback: any[]): Record<string, any> {
   // Simple sentiment analysis based on rating and keywords
   const sentiments = { positive: 0, neutral: 0, negative: 0 };
-  
+
   feedback.forEach(item => {
     if (item.rating) {
       if (item.rating >= 4) sentiments.positive++;
@@ -247,10 +248,10 @@ function processSentimentData(feedback: any[]): Record<string, any> {
       const comment = (item.comments || '').toLowerCase();
       const positiveKeywords = ['good', 'great', 'excellent', 'love', 'amazing', 'perfect'];
       const negativeKeywords = ['bad', 'terrible', 'awful', 'hate', 'confusing', 'difficult'];
-      
+
       const positiveCount = positiveKeywords.filter(word => comment.includes(word)).length;
       const negativeCount = negativeKeywords.filter(word => comment.includes(word)).length;
-      
+
       if (positiveCount > negativeCount) sentiments.positive++;
       else if (negativeCount > positiveCount) sentiments.negative++;
       else sentiments.neutral++;
@@ -258,7 +259,7 @@ function processSentimentData(feedback: any[]): Record<string, any> {
   });
 
   const total = sentiments.positive + sentiments.neutral + sentiments.negative;
-  
+
   return {
     distribution: sentiments,
     percentages: total > 0 ? {
@@ -266,18 +267,18 @@ function processSentimentData(feedback: any[]): Record<string, any> {
       neutral: (sentiments.neutral / total) * 100,
       negative: (sentiments.negative / total) * 100,
     } : { positive: 0, neutral: 0, negative: 0 },
-    overallSentiment: sentiments.positive > sentiments.negative ? 'positive' : 
+    overallSentiment: sentiments.positive > sentiments.negative ? 'positive' :
                       sentiments.negative > sentiments.positive ? 'negative' : 'neutral',
   };
 }
 
 function extractCommonThemes(feedback: any[]): string[] {
   const themes = new Map();
-  
+
   // Extract themes from comments and pain points
   feedback.forEach(item => {
     const text = `${item.comments || ''} ${(item.pain_points || []).join(' ')}`.toLowerCase();
-    
+
     // Common theme keywords
     const themeKeywords = [
       'price', 'cost', 'expensive', 'cheap',
@@ -290,14 +291,14 @@ function extractCommonThemes(feedback: any[]): string[] {
       'design', 'interface', 'user experience',
       'reliability', 'stable', 'bugs', 'errors'
     ];
-    
+
     themeKeywords.forEach(keyword => {
       if (text.includes(keyword)) {
         themes.set(keyword, (themes.get(keyword) || 0) + 1);
       }
     });
   });
-  
+
   // Return top 10 themes
   return Array.from(themes.entries())
     .sort((a, b) => b[1] - a[1])
@@ -310,17 +311,17 @@ function extractThemes(comments: string[]): string[] {
   const allText = comments.join(' ').toLowerCase();
   const words = allText.split(/\s+/);
   const wordCount = new Map();
-  
+
   // Filter out common words and count meaningful terms
   const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'can', 'may', 'might', 'must']);
-  
+
   words.forEach(word => {
     const cleanWord = word.replace(/[^\w]/g, '');
     if (cleanWord.length > 3 && !stopWords.has(cleanWord)) {
       wordCount.set(cleanWord, (wordCount.get(cleanWord) || 0) + 1);
     }
   });
-  
+
   return Array.from(wordCount.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
@@ -329,11 +330,11 @@ function extractThemes(comments: string[]): string[] {
 
 function generateRecommendations(feedback: any[]): string[] {
   const recommendations = [];
-  
+
   // Analyze feedback patterns and generate recommendations
-  const avgRating = feedback.length ? 
+  const avgRating = feedback.length ?
     feedback.reduce((sum, item) => sum + (item.rating || 0), 0) / feedback.length : 0;
-  
+
   if (avgRating < 3) {
     recommendations.push('Consider major improvements to address user dissatisfaction');
   } else if (avgRating < 4) {
@@ -341,7 +342,7 @@ function generateRecommendations(feedback: any[]): string[] {
   } else {
     recommendations.push('Leverage positive feedback for testimonials and case studies');
   }
-  
+
   // Check for common themes
   const themes = extractCommonThemes(feedback);
   if (themes.includes('price') || themes.includes('expensive')) {
@@ -353,7 +354,7 @@ function generateRecommendations(feedback: any[]): string[] {
   if (themes.includes('slow') || themes.includes('speed')) {
     recommendations.push('Optimize performance and loading times');
   }
-  
+
   // NPS-based recommendations
   const nps = calculateNPS(feedback);
   if (nps < 0) {
@@ -363,35 +364,35 @@ function generateRecommendations(feedback: any[]): string[] {
   } else {
     recommendations.push('Implement referral program to leverage promoter enthusiasm');
   }
-  
+
   return recommendations;
 }
 
 async function updateLeadScoreFromFeedback(
-  supabase: any, 
-  sessionId: string, 
-  feedbackType: string, 
+  supabase: any,
+  sessionId: string,
+  feedbackType: string,
   rating: number | null
 ) {
   // Assign points based on feedback engagement
   let scoreIncrease = 5; // Base score for providing feedback
-  
+
   if (feedbackType === 'nps' && rating !== null) {
     if (rating >= 9) scoreIncrease += 20; // Promoter
     else if (rating >= 7) scoreIncrease += 10; // Passive
     else scoreIncrease += 5; // Detractor (still engaged)
   }
-  
+
   if (feedbackType === 'campaign_experience' && rating !== null) {
     scoreIncrease += Math.max(0, (rating - 3) * 5); // Higher ratings = more points
   }
-  
+
   // Update lead score
   const { error } = await supabase.rpc('increment_lead_score', {
     p_session_id: sessionId,
     p_score_increase: scoreIncrease
   });
-  
+
   if (error) {
     console.error('Failed to update lead score:', error);
   }

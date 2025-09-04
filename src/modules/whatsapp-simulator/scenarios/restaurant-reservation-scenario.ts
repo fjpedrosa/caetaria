@@ -12,7 +12,7 @@ import {
   createScenarioConfig,
   MessageTemplate,
   ScenarioConfig
-} from '../infra/factories/conversation-factory';
+} from '../infrastructure/factories/conversation-factory';
 
 /**
  * Educational badge configuration

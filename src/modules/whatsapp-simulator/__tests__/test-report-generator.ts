@@ -65,7 +65,7 @@ class TestReportGenerator {
       const suites = [
         { name: 'Domain Layer', pattern: 'src/modules/whatsapp-simulator/__tests__/domain/**/*.test.ts' },
         { name: 'Application Layer', pattern: 'src/modules/whatsapp-simulator/__tests__/application/**/*.test.ts' },
-        { name: 'UI Components', pattern: 'src/modules/whatsapp-simulator/__tests__/ui/**/*.test.tsx' },
+        { name: 'UI Components', pattern: 'src/modules/whatsapp-simulator/__tests__/presentation/**/*.test.tsx' },
         { name: 'Integration', pattern: 'src/modules/whatsapp-simulator/__tests__/integration/**/*.test.ts' },
         { name: 'Performance', pattern: 'src/modules/whatsapp-simulator/__tests__/performance/**/*.test.ts' },
         { name: 'Accessibility', pattern: 'src/modules/whatsapp-simulator/__tests__/accessibility/**/*.test.tsx' },

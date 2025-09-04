@@ -32,15 +32,15 @@ import {
 
 // Import real-time hooks
 import { useRealtimeLeads } from '@/lib/supabase/realtime';
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Checkbox } from '@/modules/shared/ui/components/ui/checkbox';
-import { Dialog } from '@/modules/shared/ui/components/ui/dialog';
-import { Input } from '@/modules/shared/ui/components/ui/input';
-import { LoadingSkeleton } from '@/modules/shared/ui/components/ui/loading-skeleton';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Checkbox } from '@/modules/shared/presentation/components/ui/checkbox';
+import { Dialog } from '@/modules/shared/presentation/components/ui/dialog';
+import { Input } from '@/modules/shared/presentation/components/ui/input';
+import { LoadingSkeleton } from '@/modules/shared/presentation/components/ui/loading-skeleton';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 // Import API hooks
 import {
   useBulkUpdateLeadsMutation,
@@ -82,7 +82,7 @@ const sourceColors = {
   organic: 'bg-teal-100 text-teal-800',
 };
 
-export const LeadManagement: React.FC = () => {
+export const LeadManagement = () => {
   // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');

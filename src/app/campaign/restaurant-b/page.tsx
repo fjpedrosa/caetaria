@@ -6,15 +6,15 @@
 
 import { Metadata } from 'next';
 
-import { CampaignCTASection } from '@/modules/marketing/ui/components/campaign-cta-section';
-import { CampaignFooter } from '@/modules/marketing/ui/components/campaign-footer';
-import { CampaignHeroSection } from '@/modules/marketing/ui/components/campaign-hero-section';
-import { CampaignPricing } from '@/modules/marketing/ui/components/campaign-pricing';
-import { CampaignSimplicity } from '@/modules/marketing/ui/components/campaign-simplicity';
-import { CampaignTestimonials } from '@/modules/marketing/ui/components/campaign-testimonials';
-import { FeedbackWidget } from '@/modules/marketing/ui/components/feedback-widget';
-import { RestaurantUseCases } from '@/modules/marketing/ui/components/restaurant-use-cases';
-import { UTMTracker } from '@/modules/marketing/ui/components/utm-tracker';
+import { CampaignCTASection } from '@/modules/marketing/presentation/components/campaign-cta-section';
+import { CampaignFooter } from '@/modules/marketing/presentation/components/campaign-footer';
+import { CampaignHeroSection } from '@/modules/marketing/presentation/components/campaign-hero-section';
+import { CampaignPricing } from '@/modules/marketing/presentation/components/campaign-pricing';
+import { CampaignSimplicity } from '@/modules/marketing/presentation/components/campaign-simplicity';
+import { CampaignTestimonials } from '@/modules/marketing/presentation/components/campaign-testimonials';
+import { FeedbackWidget } from '@/modules/marketing/presentation/components/feedback-widget';
+import { RestaurantUseCases } from '@/modules/marketing/presentation/components/restaurant-use-cases';
+import { UTMTracker } from '@/modules/marketing/presentation/components/utm-tracker';
 
 export const metadata: Metadata = {
   title: 'WhatsApp para tu Restaurante Listo en 5 Minutos | Sin Complicaciones',

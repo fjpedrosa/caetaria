@@ -13,5 +13,5 @@ export { baseApi } from './api/base-api'
 
 // API service exports from modules
 // NOTE: These services need to be implemented or imported from correct paths
-// export * from '../modules/marketing/infra/services/marketing-api.service'
-// export * from '../modules/onboarding/infra/services/onboarding-api.service'
+// export * from '../modules/marketing/infrastructure/services/marketing-api.service'
+// export * from '../modules/onboarding/infrastructure/services/onboarding-api.service'

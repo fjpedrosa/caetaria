@@ -6,7 +6,7 @@
 import { EMPTY, merge,Observable, Subject, timer } from 'rxjs';
 import { catchError, finalize,switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { Conversation, Message } from '../../domain/entities';
+import { advanceToNext, canGoForward, Conversation, getCurrentMessage, Message, isPlaying } from '../../domain/entities';
 import { ConversationEvent, ConversationEventFactory } from '../../domain/events';
 
 import { EventService } from './event-service';
@@ -188,7 +188,7 @@ export const processMessage = (
 
     // Start delay timer
     const delayTimer = timer(timing.delayBeforeTyping).subscribe(() => {
-      if (!conversation.isPlaying) {
+      if (!isPlaying(conversation)) {
         logDebug(config, 'Conversation stopped during delay, aborting message processing');
         subscriber.complete();
         return;
@@ -206,7 +206,7 @@ export const processMessage = (
 
       // Start typing timer
       const typingTimer = timer(timing.typingDuration).subscribe(() => {
-        if (!conversation.isPlaying) {
+        if (!isPlaying(conversation)) {
           logDebug(config, 'Conversation stopped during typing, aborting message processing');
           subscriber.complete();
           return;
@@ -247,12 +247,25 @@ export const createMessagePlaybackStream = (
   stopSignal$: Observable<void>
 ): Observable<ConversationEvent> => {
   return new Observable<ConversationEvent>(subscriber => {
+    console.log('[MessageProcessing] 🎬 Starting message playback stream', {
+      conversationId: conversation.metadata.id,
+      totalMessages: conversation.messages.length,
+      currentIndex: conversation.currentIndex
+    });
+
     const processNextMessage = () => {
-      const currentMessage = conversation.currentMessage;
+      const currentMessage = getCurrentMessage(conversation);
       const messageIndex = conversation.currentIndex;
+
+      console.log('[MessageProcessing] 📩 Processing next message:', {
+        messageIndex,
+        hasCurrentMessage: !!currentMessage,
+        currentContent: currentMessage?.content?.substring(0, 50)
+      });
 
       if (!currentMessage) {
         // Conversation completed
+        console.log('[MessageProcessing] ✅ No more messages, conversation completed');
         logDebug(config, 'No more messages, conversation completed');
 
         updateState(updateWithCompletion);
@@ -284,11 +297,24 @@ export const createMessagePlaybackStream = (
         },
         complete: () => {
           // Message processing completed, advance to next
-          const hasNext = conversation.advanceToNext();
+          // Note: advanceToNext returns a new conversation instance
+          // but we're working with a mutable reference here for simplicity
+          const hasNext = canGoForward(conversation);
+          if (hasNext) {
+            // Update the conversation's currentIndex directly
+            // This is a temporary solution - ideally should return new state
+            (conversation as any).currentIndex = conversation.currentIndex + 1;
+          }
 
           updateState(updateWithMessageAdvance);
 
-          if (hasNext && conversation.isPlaying) {
+          console.log('[MessageProcessing] 📊 Checking if should continue:', {
+            hasNext,
+            isPlaying: isPlaying(conversation),
+            conversationStatus: conversation.status
+          });
+
+          if (hasNext && isPlaying(conversation)) {
             // Schedule next message processing
             if (config.useOptimizedTiming) {
               // Use requestAnimationFrame for smoother transitions

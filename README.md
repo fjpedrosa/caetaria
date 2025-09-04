@@ -1,6 +1,6 @@
-# WhatsApp Cloud API Landing Boilerplate
+# Neptunik Platform
 
-A production-ready, modern boilerplate for building WhatsApp Cloud API landing pages and onboarding flows. Built with Next.js 15, TypeScript, and clean architecture principles, this boilerplate provides a comprehensive foundation for WhatsApp bot platform marketing and user onboarding.
+A production-ready, modern platform for building WhatsApp Cloud API integrations and onboarding flows. Built with Next.js 15, TypeScript, and clean architecture principles, Neptunik provides a comprehensive foundation for WhatsApp bot platform marketing and user onboarding.
 
 ## 🎯 Key Features
 

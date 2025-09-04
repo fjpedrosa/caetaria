@@ -185,7 +185,7 @@ test.describe('Mobile Responsiveness', () => {
         const menuItems = mobileMenu.locator('a, button');
         const count = await menuItems.count();
         if (count > 0) {
-          await mobileHelper.testTouchInteraction(menuItems.first());
+          await mobileHelper.testTouchInteraction('a, button');
         }
       }
     });
@@ -227,7 +227,7 @@ test.describe('Mobile Responsiveness', () => {
       // Test primary CTA
       const primaryCta = page.locator('button, a').filter({ hasText: /get started|start free|sign up/i }).first();
       if (await primaryCta.isVisible()) {
-        await mobileHelper.testTouchInteraction(primaryCta);
+        await mobileHelper.testTouchInteraction('button:has-text("Get Started"), button:has-text("Start Free"), button:has-text("Sign Up")');
       }
     });
   });
@@ -414,7 +414,7 @@ test.describe('Mobile Responsiveness', () => {
       // Test interaction still works
       const interactiveElement = page.locator('button, a, input').first();
       if (await interactiveElement.isVisible()) {
-        await mobileHelper.testTouchInteraction(interactiveElement);
+        await mobileHelper.testTouchInteraction('button, a, input');
       }
     });
   });

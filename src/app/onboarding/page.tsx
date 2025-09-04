@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { OnboardingWizard } from '@/modules/onboarding/ui/components/onboarding-wizard'
+import { OnboardingWizard } from '@/modules/onboarding/presentation/components/onboarding-wizard'
 
 export const dynamic = 'force-dynamic'
 

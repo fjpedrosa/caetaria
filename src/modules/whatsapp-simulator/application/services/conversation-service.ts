@@ -3,7 +3,7 @@
  * Replaces the complex ConversationEngine class with pure functions
  */
 
-import { Conversation, ConversationStatus,Message } from '../../domain/entities';
+import { Conversation, ConversationStatus, getConversationProgress, getCurrentMessage, getNextMessage, jumpToMessage, Message } from '../../domain/entities';
 import {
   ConversationEvent,
   ConversationEventFactory,
@@ -157,7 +157,7 @@ export const createPlaybackPausedEvent = (
   return ConversationEventFactory.createConversationPaused(
     conversation.metadata.id,
     currentIndex,
-    conversation.getProgress()
+    getConversationProgress(conversation)
   );
 };
 
@@ -197,7 +197,7 @@ export const createProgressEvent = (
   conversationId: conversation.metadata.id,
   payload: {
     progress,
-    currentMessage: conversation.currentMessage
+    currentMessage: getCurrentMessage(conversation)
   }
 });
 
@@ -236,8 +236,8 @@ export const updatePlaybackStateWithConversation = (
   ...state,
   conversation,
   currentMessageIndex: conversation.currentIndex,
-  currentMessage: conversation.currentMessage,
-  nextMessage: conversation.nextMessage,
+  currentMessage: getCurrentMessage(conversation),
+  nextMessage: getNextMessage(conversation),
   playbackSpeed: conversation.settings.playbackSpeed,
   progress: calculateProgress(
     conversation.currentIndex,
@@ -282,14 +282,14 @@ export const updatePlaybackStateWithJump = (
     return state;
   }
 
-  const conversation = state.conversation;
-  conversation.jumpTo(messageIndex);
+  const updatedConversation = jumpToMessage(state.conversation, messageIndex);
 
   return {
     ...state,
+    conversation: updatedConversation,
     currentMessageIndex: messageIndex,
-    currentMessage: conversation.currentMessage,
-    nextMessage: conversation.nextMessage,
+    currentMessage: getCurrentMessage(updatedConversation),
+    nextMessage: getNextMessage(updatedConversation),
     progress: calculateProgress(messageIndex, conversation.messages.length)
   };
 };

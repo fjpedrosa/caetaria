@@ -133,6 +133,37 @@ export const createMessageFromJSON = (data: any): Message => ({
   isFlowTrigger: data.isFlowTrigger
 });
 
+/**
+ * Create message from scenario configuration
+ * Converts plain scenario message objects to proper Message entities
+ * Single Responsibility: Only handles scenario to entity conversion
+ */
+export const createMessageFromScenarioConfig = (config: {
+  sender: 'user' | 'business';
+  type: MessageType;
+  content: MessageContent;
+  delayBeforeTyping?: number;
+  typingDuration?: number;
+  isFlowTrigger?: boolean;
+}, index: number): Message => {
+  const now = new Date();
+
+  return createMessage({
+    id: `msg-${Date.now()}-${index}`,
+    type: config.type,
+    sender: config.sender,
+    content: config.content,
+    timing: {
+      queueAt: now,
+      typingDuration: config.typingDuration || 1000,
+      delayBeforeTyping: config.delayBeforeTyping || 500
+    },
+    status: 'sending',
+    createdAt: now,
+    isFlowTrigger: config.isFlowTrigger || false
+  });
+};
+
 // STATUS VALIDATION FUNCTIONS - Pure functions
 
 /**

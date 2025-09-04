@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { createManageSessionUseCases } from '../../../modules/onboarding/application/use-cases/manage-session';
 import { createStartOnboardingUseCase } from '../../../modules/onboarding/application/use-cases/start-onboarding';
-import { SupabaseOnboardingRepository } from '../../../modules/onboarding/infra/adapters/supabase-onboarding-repository';
+import { SupabaseOnboardingRepository } from '../../../modules/onboarding/infrastructure/adapters/supabase-onboarding-repository';
 import { isSuccess } from '../../../modules/shared/domain/value-objects/result';
 
 // Initialize repository (in production, this would use dependency injection)

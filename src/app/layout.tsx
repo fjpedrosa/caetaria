@@ -1,14 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 
-import { LandingFooter } from '@/modules/marketing/ui/components/landing-footer';
-import { ModernNavbar } from '@/modules/marketing/ui/components/modern-navbar';
-import { CursorTrail } from '@/modules/shared/ui/components/cursor-trail';
-import { FloatingWhatsAppCTA } from '@/modules/shared/ui/components/floating-whatsapp-cta';
-import { PerformanceDashboard } from '@/modules/shared/ui/components/performance-dashboard';
-import { PerformanceMonitor } from '@/modules/shared/ui/components/performance-monitor';
-import { ServiceWorkerRegister } from '@/modules/shared/ui/components/service-worker-register';
-import { ScrollToTop, SmoothScroll } from '@/modules/shared/ui/components/smooth-scroll';
+import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
+import { ModernNavbar } from '@/modules/marketing/presentation/components/modern-navbar';
+import { PerformanceDashboard } from '@/modules/shared/presentation/components/performance-dashboard';
+import { PerformanceMonitor } from '@/modules/shared/presentation/components/performance-monitor';
+import { ServiceWorkerRegister } from '@/modules/shared/presentation/components/service-worker-register';
+import { ScrollToTop, SmoothScroll } from '@/modules/shared/presentation/components/smooth-scroll';
 
 import { Providers } from './providers';
 
@@ -142,7 +140,6 @@ export default function RootLayout({
         <Providers>
           {/* Global Effects */}
           <SmoothScroll />
-          <CursorTrail />
 
           {/* Navigation */}
           <ModernNavbar hideOnScroll={false} showProgress={true} variant="default" />
@@ -154,7 +151,6 @@ export default function RootLayout({
           <LandingFooter />
 
           {/* Floating Elements */}
-          <FloatingWhatsAppCTA />
           <ScrollToTop />
 
           {/* Performance & Development Tools */}

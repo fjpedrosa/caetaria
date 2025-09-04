@@ -61,33 +61,26 @@ export interface PerformanceMetrics {
 }
 
 /**
- * Real-time Performance Optimizer
+ * Creates a Real-time Performance Optimizer using functional patterns
  *
- * Manages performance optimization for real-time subscriptions
- * with intelligent batching, filtering, and resource management.
+ * Uses closures to maintain private state and returns an object
+ * with methods for performance optimization of real-time subscriptions.
  */
-class RealtimePerformanceOptimizer {
-  private config: PerformanceConfig;
-  private messageQueue: QueuedMessage[] = [];
-  private batchTimer?: NodeJS.Timeout;
-  private throttleMap = new Map<string, number>();
-  private metrics: PerformanceMetrics;
-  private metricsHistory: PerformanceMetrics[] = [];
-  private messageRateCounter = 0;
-  private lastRateReset = Date.now();
-
-  constructor(config: Partial<PerformanceConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
-    this.metrics = this.initializeMetrics();
-
-    this.startPerformanceMonitoring();
-    this.startBatchProcessor();
-  }
+const createRealtimePerformanceOptimizer = (initialConfig: Partial<PerformanceConfig> = {}) => {
+  // Private state maintained via closures
+  let config: PerformanceConfig = { ...DEFAULT_CONFIG, ...initialConfig };
+  let messageQueue: QueuedMessage[] = [];
+  let batchTimer: NodeJS.Timeout | undefined;
+  const throttleMap = new Map<string, number>();
+  let metrics: PerformanceMetrics = initializeMetrics();
+  let metricsHistory: PerformanceMetrics[] = [];
+  let messageRateCounter = 0;
+  let lastRateReset = Date.now();
 
   /**
    * Initialize performance metrics
    */
-  private initializeMetrics(): PerformanceMetrics {
+  function initializeMetrics(): PerformanceMetrics {
     return {
       subscriptionsCount: 0,
       messagesPerSecond: 0,
@@ -101,119 +94,103 @@ class RealtimePerformanceOptimizer {
   }
 
   /**
-   * Start performance monitoring
-   */
-  private startPerformanceMonitoring(): void {
-    setInterval(() => {
-      this.updateMetrics();
-      this.checkMemoryUsage();
-      this.cleanupThrottleMap();
-    }, 1000); // Update every second
-
-    // Store metrics history
-    setInterval(() => {
-      this.metricsHistory.push({ ...this.metrics });
-      if (this.metricsHistory.length > 60) {
-        this.metricsHistory.shift(); // Keep last 60 entries (1 minute of history)
-      }
-    }, 1000);
-  }
-
-  /**
    * Update performance metrics
    */
-  private updateMetrics(): void {
+  const updateMetrics = (): void => {
     const health = realtimeConnectionManager.getHealth();
     const now = Date.now();
 
     // Calculate messages per second
-    const timeSinceReset = now - this.lastRateReset;
+    const timeSinceReset = now - lastRateReset;
     if (timeSinceReset >= 1000) {
-      this.metrics.messagesPerSecond = this.messageRateCounter;
-      this.messageRateCounter = 0;
-      this.lastRateReset = now;
+      metrics.messagesPerSecond = messageRateCounter;
+      messageRateCounter = 0;
+      lastRateReset = now;
     }
 
     // Update other metrics
-    this.metrics.subscriptionsCount = health.subscriptionsCount;
-    this.metrics.averageLatency = health.latency || 0;
-    this.metrics.connectionUptime = health.connectedAt
+    metrics.subscriptionsCount = health.subscriptionsCount;
+    metrics.averageLatency = health.latency || 0;
+    metrics.connectionUptime = health.connectedAt
       ? now - health.connectedAt.getTime()
       : 0;
-  }
-
-  /**
-   * Check memory usage and cleanup if necessary
-   */
-  private checkMemoryUsage(): void {
-    const memoryUsage = this.getEstimatedMemoryUsage();
-    this.metrics.memoryUsage = memoryUsage;
-
-    if (memoryUsage > this.config.memoryLimit) {
-      console.warn(`� Memory usage (${memoryUsage}MB) exceeds limit (${this.config.memoryLimit}MB)`);
-      this.performMemoryCleanup();
-    }
-  }
+  };
 
   /**
    * Estimate memory usage
    */
-  private getEstimatedMemoryUsage(): number {
+  const getEstimatedMemoryUsage = (): number => {
     // Rough estimation based on queue size and subscription count
-    const queueSize = this.messageQueue.length * 0.001; // ~1KB per message
-    const subscriptionSize = this.metrics.subscriptionsCount * 0.01; // ~10KB per subscription
-    const historySize = this.metricsHistory.length * 0.001; // ~1KB per metrics entry
+    const queueSize = messageQueue.length * 0.001; // ~1KB per message
+    const subscriptionSize = metrics.subscriptionsCount * 0.01; // ~10KB per subscription
+    const historySize = metricsHistory.length * 0.001; // ~1KB per metrics entry
 
     return queueSize + subscriptionSize + historySize;
-  }
+  };
 
   /**
    * Perform memory cleanup
    */
-  private performMemoryCleanup(): void {
+  const performMemoryCleanup = (): void => {
     // Clear old queue messages
-    const cutoffTime = Date.now() - this.config.batchTimeout * 2;
-    this.messageQueue = this.messageQueue.filter(msg => msg.timestamp > cutoffTime);
+    const cutoffTime = Date.now() - config.batchTimeout * 2;
+    messageQueue = messageQueue.filter(msg => msg.timestamp > cutoffTime);
 
     // Limit metrics history
-    if (this.metricsHistory.length > 30) {
-      this.metricsHistory = this.metricsHistory.slice(-30);
+    if (metricsHistory.length > 30) {
+      metricsHistory = metricsHistory.slice(-30);
     }
 
     console.log('>� Performed memory cleanup');
-  }
+  };
+
+  /**
+   * Check memory usage and cleanup if necessary
+   */
+  const checkMemoryUsage = (): void => {
+    const memoryUsage = getEstimatedMemoryUsage();
+    metrics.memoryUsage = memoryUsage;
+
+    if (memoryUsage > config.memoryLimit) {
+      console.warn(`� Memory usage (${memoryUsage}MB) exceeds limit (${config.memoryLimit}MB)`);
+      performMemoryCleanup();
+    }
+  };
 
   /**
    * Cleanup throttle map
    */
-  private cleanupThrottleMap(): void {
+  const cleanupThrottleMap = (): void => {
     const now = Date.now();
-    const cutoff = now - this.config.messageThrottle * 2;
+    const cutoff = now - config.messageThrottle * 2;
 
-    for (const [key, timestamp] of this.throttleMap.entries()) {
+    for (const [key, timestamp] of throttleMap.entries()) {
       if (timestamp < cutoff) {
-        this.throttleMap.delete(key);
+        throttleMap.delete(key);
       }
     }
-  }
+  };
 
   /**
-   * Start batch message processor
+   * Process individual message
    */
-  private startBatchProcessor(): void {
-    this.batchTimer = setInterval(() => {
-      this.processBatch();
-    }, this.config.batchTimeout);
-  }
+  const processMessage = (message: QueuedMessage): void => {
+    // This would forward the message to the appropriate handler
+    // For now, we'll just log it
+    console.log(`=� Processing batched message for ${message.subscriptionId}`, {
+      priority: message.priority,
+      age: Date.now() - message.timestamp,
+    });
+  };
 
   /**
    * Process batched messages
    */
-  private processBatch(): void {
-    if (this.messageQueue.length === 0) return;
+  const processBatch = (): void => {
+    if (messageQueue.length === 0) return;
 
     // Sort by priority and timestamp
-    this.messageQueue.sort((a, b) => {
+    messageQueue.sort((a, b) => {
       if (a.priority !== b.priority) {
         return b.priority - a.priority; // Higher priority first
       }
@@ -221,114 +198,36 @@ class RealtimePerformanceOptimizer {
     });
 
     // Process in batches
-    const batchSize = Math.min(this.config.batchSize, this.messageQueue.length);
-    const batch = this.messageQueue.splice(0, batchSize);
+    const batchSize = Math.min(config.batchSize, messageQueue.length);
+    const batch = messageQueue.splice(0, batchSize);
 
     batch.forEach(message => {
-      this.processMessage(message);
+      processMessage(message);
     });
 
-    this.metrics.batchedMessages += batch.length;
-  }
-
-  /**
-   * Process individual message
-   */
-  private processMessage(message: QueuedMessage): void {
-    // This would forward the message to the appropriate handler
-    // For now, we'll just log it
-    console.log(`=� Processing batched message for ${message.subscriptionId}`, {
-      priority: message.priority,
-      age: Date.now() - message.timestamp,
-    });
-  }
-
-  /**
-   * Optimize subscription configuration
-   */
-  public optimizeSubscription<T>(config: SubscriptionConfig<T>): SubscriptionConfig<T> {
-    if (!this.config.enableFiltering) {
-      return config;
-    }
-
-    const optimizedConfig = { ...config };
-
-    // Add selective filtering for high-volume tables
-    if (this.isHighVolumeTable(config.table as string)) {
-      optimizedConfig.filter = this.addSelectiveFilter(config.filter, config.table as string);
-    }
-
-    // Add priority based on table importance
-    const priority = this.getTablePriority(config.table as string);
-
-    // Wrap callback with performance optimizations
-    const originalCallback = config.callback;
-    optimizedConfig.callback = (payload: any) => {
-      this.handleOptimizedCallback(config.id, payload, originalCallback, priority);
-    };
-
-    return optimizedConfig;
-  }
-
-  /**
-   * Handle optimized callback with throttling and batching
-   */
-  private handleOptimizedCallback<T>(
-    subscriptionId: string,
-    payload: T,
-    originalCallback: (payload: T) => void,
-    priority: number
-  ): void {
-    const now = Date.now();
-    const throttleKey = `${subscriptionId}_${JSON.stringify(payload).slice(0, 50)}`;
-
-    // Check throttling
-    if (this.shouldThrottle(throttleKey, now)) {
-      this.metrics.throttledMessages++;
-      return;
-    }
-
-    // Update throttle map
-    this.throttleMap.set(throttleKey, now);
-
-    // Count message
-    this.messageRateCounter++;
-
-    // For high-priority messages, process immediately
-    if (priority > 8 || !this.config.enableFiltering) {
-      originalCallback(payload);
-      return;
-    }
-
-    // Queue for batch processing
-    this.messageQueue.push({
-      subscriptionId,
-      payload,
-      timestamp: now,
-      priority,
-    });
-  }
+    metrics.batchedMessages += batch.length;
+  };
 
   /**
    * Check if message should be throttled
    */
-  private shouldThrottle(throttleKey: string, now: number): boolean {
-    const lastTime = this.throttleMap.get(throttleKey);
-    return lastTime !== undefined && (now - lastTime) < this.config.messageThrottle;
-  }
+  const shouldThrottle = (throttleKey: string, now: number): boolean => {
+    const lastTime = throttleMap.get(throttleKey);
+    return lastTime !== undefined && (now - lastTime) < config.messageThrottle;
+  };
 
   /**
    * Check if table is high-volume
    */
-  private isHighVolumeTable(table: string): boolean {
+  const isHighVolumeTable = (table: string): boolean => {
     const highVolumeTables = ['analytics_events', 'user_sessions', 'page_views'];
     return highVolumeTables.includes(table);
-  }
+  };
 
   /**
    * Add selective filtering for high-volume tables
    */
-  private addSelectiveFilter(existingFilter: string | undefined, table: string): string {
+  const addSelectiveFilter = (existingFilter: string | undefined, table: string): string => {
     const filters: string[] = [];
 
     if (existingFilter) {
@@ -349,13 +248,13 @@ class RealtimePerformanceOptimizer {
     }
 
     return filters.join(',');
-  }
+  };
 
   /**
    * Get table priority
    */
-  private getTablePriority(table: string): number {
-    if (this.config.priorityTables.includes(table)) {
+  const getTablePriority = (table: string): number => {
+    if (config.priorityTables.includes(table)) {
       return 9; // High priority
     }
 
@@ -371,106 +270,204 @@ class RealtimePerformanceOptimizer {
       default:
         return 5;
     }
-  }
+  };
 
   /**
-   * Get current performance metrics
+   * Handle optimized callback with throttling and batching
    */
-  public getMetrics(): PerformanceMetrics {
-    return { ...this.metrics };
-  }
+  const handleOptimizedCallback = <T>(
+    subscriptionId: string,
+    payload: T,
+    originalCallback: (payload: T) => void,
+    priority: number
+  ): void => {
+    const now = Date.now();
+    const throttleKey = `${subscriptionId}_${JSON.stringify(payload).slice(0, 50)}`;
 
-  /**
-   * Get metrics history
-   */
-  public getMetricsHistory(): PerformanceMetrics[] {
-    return [...this.metricsHistory];
-  }
-
-  /**
-   * Update configuration
-   */
-  public updateConfig(newConfig: Partial<PerformanceConfig>): void {
-    this.config = { ...this.config, ...newConfig };
-    console.log('� Updated performance configuration', this.config);
-  }
-
-  /**
-   * Get configuration
-   */
-  public getConfig(): PerformanceConfig {
-    return { ...this.config };
-  }
-
-  /**
-   * Reset metrics
-   */
-  public resetMetrics(): void {
-    this.metrics = this.initializeMetrics();
-    this.metricsHistory = [];
-    this.messageRateCounter = 0;
-    this.lastRateReset = Date.now();
-    console.log('= Performance metrics reset');
-  }
-
-  /**
-   * Performance analysis report
-   */
-  public generateReport(): {
-    summary: string;
-    recommendations: string[];
-    metrics: PerformanceMetrics;
-    config: PerformanceConfig;
-  } {
-    const recommendations: string[] = [];
-
-    // Analyze metrics and generate recommendations
-    if (this.metrics.subscriptionsCount > this.config.maxSubscriptions * 0.8) {
-      recommendations.push('Consider reducing the number of active subscriptions');
+    // Check throttling
+    if (shouldThrottle(throttleKey, now)) {
+      metrics.throttledMessages++;
+      return;
     }
 
-    if (this.metrics.averageLatency > 200) {
-      recommendations.push('High latency detected - check network connection');
+    // Update throttle map
+    throttleMap.set(throttleKey, now);
+
+    // Count message
+    messageRateCounter++;
+
+    // For high-priority messages, process immediately
+    if (priority > 8 || !config.enableFiltering) {
+      originalCallback(payload);
+      return;
     }
 
-    if (this.metrics.memoryUsage > this.config.memoryLimit * 0.8) {
-      recommendations.push('Memory usage is high - consider increasing cleanup frequency');
-    }
-
-    if (this.metrics.throttledMessages > this.metrics.batchedMessages * 0.1) {
-      recommendations.push('High message throttling - consider increasing throttle limits');
-    }
-
-    const summary = `Real-time performance summary: ${this.metrics.subscriptionsCount} active subscriptions, ` +
-      `${this.metrics.messagesPerSecond} msg/s, ${this.metrics.averageLatency}ms latency, ` +
-      `${this.metrics.memoryUsage.toFixed(1)}MB memory usage`;
-
-    return {
-      summary,
-      recommendations,
-      metrics: this.getMetrics(),
-      config: this.getConfig(),
-    };
-  }
+    // Queue for batch processing
+    messageQueue.push({
+      subscriptionId,
+      payload,
+      timestamp: now,
+      priority,
+    });
+  };
 
   /**
-   * Cleanup resources
+   * Start performance monitoring
    */
-  public destroy(): void {
-    if (this.batchTimer) {
-      clearInterval(this.batchTimer);
+  const startPerformanceMonitoring = (): void => {
+    setInterval(() => {
+      updateMetrics();
+      checkMemoryUsage();
+      cleanupThrottleMap();
+    }, 1000); // Update every second
+
+    // Store metrics history
+    setInterval(() => {
+      metricsHistory.push({ ...metrics });
+      if (metricsHistory.length > 60) {
+        metricsHistory.shift(); // Keep last 60 entries (1 minute of history)
+      }
+    }, 1000);
+  };
+
+  /**
+   * Start batch message processor
+   */
+  const startBatchProcessor = (): void => {
+    batchTimer = setInterval(() => {
+      processBatch();
+    }, config.batchTimeout);
+  };
+
+  // Initialize monitoring and processing
+  startPerformanceMonitoring();
+  startBatchProcessor();
+
+  // Public interface
+  return {
+    /**
+     * Optimize subscription configuration
+     */
+    optimizeSubscription<T>(subscriptionConfig: SubscriptionConfig<T>): SubscriptionConfig<T> {
+      if (!config.enableFiltering) {
+        return subscriptionConfig;
+      }
+
+      const optimizedConfig = { ...subscriptionConfig };
+
+      // Add selective filtering for high-volume tables
+      if (isHighVolumeTable(subscriptionConfig.table as string)) {
+        optimizedConfig.filter = addSelectiveFilter(subscriptionConfig.filter, subscriptionConfig.table as string);
+      }
+
+      // Add priority based on table importance
+      const priority = getTablePriority(subscriptionConfig.table as string);
+
+      // Wrap callback with performance optimizations
+      const originalCallback = subscriptionConfig.callback;
+      optimizedConfig.callback = (payload: any) => {
+        handleOptimizedCallback(subscriptionConfig.id, payload, originalCallback, priority);
+      };
+
+      return optimizedConfig;
+    },
+
+    /**
+     * Get current performance metrics
+     */
+    getMetrics(): PerformanceMetrics {
+      return { ...metrics };
+    },
+
+    /**
+     * Get metrics history
+     */
+    getMetricsHistory(): PerformanceMetrics[] {
+      return [...metricsHistory];
+    },
+
+    /**
+     * Update configuration
+     */
+    updateConfig(newConfig: Partial<PerformanceConfig>): void {
+      config = { ...config, ...newConfig };
+      console.log('� Updated performance configuration', config);
+    },
+
+    /**
+     * Get configuration
+     */
+    getConfig(): PerformanceConfig {
+      return { ...config };
+    },
+
+    /**
+     * Reset metrics
+     */
+    resetMetrics(): void {
+      metrics = initializeMetrics();
+      metricsHistory = [];
+      messageRateCounter = 0;
+      lastRateReset = Date.now();
+      console.log('= Performance metrics reset');
+    },
+
+    /**
+     * Performance analysis report
+     */
+    generateReport(): {
+      summary: string;
+      recommendations: string[];
+      metrics: PerformanceMetrics;
+      config: PerformanceConfig;
+    } {
+      const recommendations: string[] = [];
+
+      // Analyze metrics and generate recommendations
+      if (metrics.subscriptionsCount > config.maxSubscriptions * 0.8) {
+        recommendations.push('Consider reducing the number of active subscriptions');
+      }
+
+      if (metrics.averageLatency > 200) {
+        recommendations.push('High latency detected - check network connection');
+      }
+
+      if (metrics.memoryUsage > config.memoryLimit * 0.8) {
+        recommendations.push('Memory usage is high - consider increasing cleanup frequency');
+      }
+
+      if (metrics.throttledMessages > metrics.batchedMessages * 0.1) {
+        recommendations.push('High message throttling - consider increasing throttle limits');
+      }
+
+      const summary = `Real-time performance summary: ${metrics.subscriptionsCount} active subscriptions, ` +
+        `${metrics.messagesPerSecond} msg/s, ${metrics.averageLatency}ms latency, ` +
+        `${metrics.memoryUsage.toFixed(1)}MB memory usage`;
+
+      return {
+        summary,
+        recommendations,
+        metrics: this.getMetrics(),
+        config: this.getConfig(),
+      };
+    },
+
+    /**
+     * Cleanup resources
+     */
+    destroy(): void {
+      if (batchTimer) {
+        clearInterval(batchTimer);
+      }
+
+      messageQueue = [];
+      throttleMap.clear();
+      metricsHistory = [];
+
+      console.log('>� Performance optimizer destroyed');
     }
-
-    this.messageQueue = [];
-    this.throttleMap.clear();
-    this.metricsHistory = [];
-
-    console.log('>� Performance optimizer destroyed');
-  }
-}
+  };
+};
 
 // Create singleton instance
-export const performanceOptimizer = new RealtimePerformanceOptimizer();
-
-// Export utilities
-export type { PerformanceConfig, PerformanceMetrics };
+export const performanceOptimizer = createRealtimePerformanceOptimizer();

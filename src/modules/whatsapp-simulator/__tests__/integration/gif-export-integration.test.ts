@@ -4,7 +4,7 @@
  */
 
 import { ExportOptions, GifExportResult } from '../../domain/types/gif-export-types';
-import { GifExportServiceImpl } from '../../infra/services/gif-export/gif-export.service';
+import { GifExportServiceImpl } from '../../infrastructure/services/gif-export/gif-export.service';
 
 // Mock HTML2Canvas
 const mockHtml2Canvas = jest.fn();

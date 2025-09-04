@@ -6,15 +6,15 @@
 
 import { Metadata } from 'next';
 
-import { CampaignCTASection } from '@/modules/marketing/ui/components/campaign-cta-section';
-import { CampaignFooter } from '@/modules/marketing/ui/components/campaign-footer';
-import { CampaignHeroSection } from '@/modules/marketing/ui/components/campaign-hero-section';
-import { CampaignPricing } from '@/modules/marketing/ui/components/campaign-pricing';
-import { CampaignROICalculator } from '@/modules/marketing/ui/components/campaign-roi-calculator';
-import { CampaignTestimonials } from '@/modules/marketing/ui/components/campaign-testimonials';
-import { FeedbackWidget } from '@/modules/marketing/ui/components/feedback-widget';
-import { RestaurantUseCases } from '@/modules/marketing/ui/components/restaurant-use-cases';
-import { UTMTracker } from '@/modules/marketing/ui/components/utm-tracker';
+import { CampaignCTASection } from '@/modules/marketing/presentation/components/campaign-cta-section';
+import { CampaignFooter } from '@/modules/marketing/presentation/components/campaign-footer';
+import { CampaignHeroSection } from '@/modules/marketing/presentation/components/campaign-hero-section';
+import { CampaignPricing } from '@/modules/marketing/presentation/components/campaign-pricing';
+import { CampaignROICalculator } from '@/modules/marketing/presentation/components/campaign-roi-calculator';
+import { CampaignTestimonials } from '@/modules/marketing/presentation/components/campaign-testimonials';
+import { FeedbackWidget } from '@/modules/marketing/presentation/components/feedback-widget';
+import { RestaurantUseCases } from '@/modules/marketing/presentation/components/restaurant-use-cases';
+import { UTMTracker } from '@/modules/marketing/presentation/components/utm-tracker';
 
 export const metadata: Metadata = {
   title: 'Aumenta las Ventas de tu Restaurante 30% con WhatsApp Automatizado',

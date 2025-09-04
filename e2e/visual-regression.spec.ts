@@ -254,14 +254,14 @@ test.describe('Visual Regression Testing', () => {
       // Test primary CTA button hover
       const primaryCta = page.locator('button').filter({ hasText: /get started|start free/i }).first();
       if (await primaryCta.isVisible()) {
-        await visualHelper.hoverElement(primaryCta);
+        await visualHelper.hoverElement('button:has-text("Get Started"), button:has-text("Start Free")');
         await expect(primaryCta).toHaveScreenshot('button-hover-primary.png');
       }
       
       // Test secondary button hover
       const secondaryButton = page.locator('button').filter({ hasText: /learn more|demo/i }).first();
       if (await secondaryButton.isVisible()) {
-        await visualHelper.hoverElement(secondaryButton);
+        await visualHelper.hoverElement('button:has-text("Learn More"), button:has-text("Demo")');
         await expect(secondaryButton).toHaveScreenshot('button-hover-secondary.png');
       }
     });
@@ -277,7 +277,7 @@ test.describe('Visual Regression Testing', () => {
       for (let i = 0; i < Math.min(3, count); i++) {
         const input = inputs.nth(i);
         if (await input.isVisible()) {
-          await visualHelper.focusElement(input);
+          await visualHelper.focusElement(`input[type="text"]:nth-child(${i+1}), input[type="email"]:nth-child(${i+1})`);
           await expect(input).toHaveScreenshot(`input-focus-${i}.png`);
         }
       }

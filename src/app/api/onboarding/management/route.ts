@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createManageSessionUseCases } from '../../../../modules/onboarding/application/use-cases/manage-session';
-import { SupabaseOnboardingRepository } from '../../../../modules/onboarding/infra/adapters/supabase-onboarding-repository';
+import { SupabaseOnboardingRepository } from '../../../../modules/onboarding/infrastructure/adapters/supabase-onboarding-repository';
 import { isSuccess } from '../../../../modules/shared/domain/value-objects/result';
 
 // Initialize repository

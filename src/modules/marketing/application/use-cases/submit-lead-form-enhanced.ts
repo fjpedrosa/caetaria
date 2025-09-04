@@ -12,8 +12,8 @@ import {
 import { LeadRepository } from '../../domain/repositories/lead-repository';
 import { createEmail, Email } from '../../domain/value-objects/email';
 import { createPhoneNumber, PhoneNumber } from '../../domain/value-objects/phone-number';
-import { getNotificationConfig } from '../../infra/config/notification-config';
 import { AnalyticsService } from '../ports/analytics-service';
+import { NotificationConfigProvider } from '../ports/notification-config';
 import { NotificationService } from '../ports/notification-service';
 
 import {
@@ -67,6 +67,7 @@ export interface EnhancedSubmitLeadFormDependencies {
   leadRepository: LeadRepository;
   analyticsService: AnalyticsService;
   notificationService: NotificationService;
+  notificationConfigProvider: NotificationConfigProvider;
   sendNotificationUseCase: ReturnType<typeof createSendNotificationUseCase>;
 }
 
@@ -75,8 +76,8 @@ export interface EnhancedSubmitLeadFormDependencies {
  * Provides comprehensive notification support, enhanced tracking, and lead scoring
  */
 export const createEnhancedSubmitLeadFormUseCase = (dependencies: EnhancedSubmitLeadFormDependencies) => {
-  const { leadRepository, analyticsService, notificationService, sendNotificationUseCase } = dependencies;
-  const notificationConfig = getNotificationConfig();
+  const { leadRepository, analyticsService, notificationService, notificationConfigProvider, sendNotificationUseCase } = dependencies;
+  const notificationConfig = notificationConfigProvider.getConfig();
 
   const execute = async (input: EnhancedSubmitLeadFormInput): Promise<EnhancedSubmitLeadFormOutput> => {
     try {

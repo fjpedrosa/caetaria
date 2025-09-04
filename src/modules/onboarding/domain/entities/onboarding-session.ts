@@ -3,7 +3,7 @@
  * Domain layer - Core business entity representing user onboarding progress
  */
 
-import { Email } from '../../../marketing/domain/value-objects/email';
+import { Email } from '../../../shared/domain/value-objects/email';
 import { OnboardingStepData } from '../value-objects/onboarding-step-data';
 
 export type OnboardingSessionId = string & { readonly __brand: unique symbol };

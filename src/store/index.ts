@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
-import { fakeOnboardingApi } from '@/modules/onboarding/infra/fake-onboarding-api'
+import { fakeOnboardingApi } from '@/modules/onboarding/infrastructure/fake-onboarding-api'
 
 import { analyticsApi } from './api/analytics-api'
 import { baseApi } from './api/base-api'

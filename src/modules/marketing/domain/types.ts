@@ -4,7 +4,7 @@
  */
 
 // Import form data types from validation schemas
-import { type LeadCaptureFormData } from '@/modules/shared/ui/validation/form-schemas';
+import { type LeadCaptureFormData } from '@/modules/shared/presentation/validation/form-schemas';
 
 // =============================================================================
 // LEAD CAPTURE TYPES
@@ -318,11 +318,29 @@ export interface TypewriterTextProps {
   className?: string;
 }
 
+// Alternative TypewriterText interface used in hero-section/components/typewriter-text.tsx
+export interface TypewriterTextComponentProps {
+  text: string;
+  speed?: number;
+  delay?: number;
+  className?: string;
+  showCursor?: boolean;
+}
+
 export interface AnimatedCounterProps {
   value: number;
   duration?: number;
   prefix?: string;
   suffix?: string;
+  className?: string;
+}
+
+// Alternative AnimatedCounter interface used in hero-section/components/animated-counter.tsx
+export interface AnimatedCounterComponentProps {
+  end: number;
+  duration?: number;
+  suffix?: string;
+  decimals?: number;
   className?: string;
 }
 
@@ -649,13 +667,13 @@ export interface CampaignEventTypes {
     page_title: string;
     referrer?: string;
   };
-  
+
   // User engagement
   'campaign_scroll_depth': {
     depth_percent: number;
     time_to_depth: number;
   };
-  
+
   'campaign_time_engagement': {
     time_spent: number;
     engaged_time: number;
@@ -789,4 +807,198 @@ export interface FeedbackWidgetProps {
   feedbackType: 'campaign_experience' | 'product_interest' | 'nps' | 'exit_intent';
   position: 'bottom-right' | 'bottom-left' | 'top-right' | 'inline';
   variant?: 'default' | 'simplicity_focused';
+}
+
+// =============================================================================
+// NAVBAR V2 TYPES - Extracted and consolidated from navbar-v2 components
+// =============================================================================
+
+// Navigation types used in navbar-v2/navigation-pill.tsx and other navbar components
+export interface NavigationPillItemProps {
+  item: NavigationItem;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+// =============================================================================
+// CHAT MESSAGE COMPONENT TYPES - From chat-messages.tsx
+// =============================================================================
+
+export interface ChatMessageProps {
+  message: string;
+  isFromBot: boolean;
+  isRead?: boolean;
+  isVisible: boolean;
+  timestamp?: string;
+  className?: string;
+}
+
+export interface TypingIndicatorProps {
+  isVisible: boolean;
+  isFromBot?: boolean;
+  className?: string;
+}
+
+export interface ChatMessagesContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface CustomerMessage1Props {
+  isVisible: boolean;
+  isRead: boolean;
+  className?: string;
+}
+
+export interface BotMessage1Props {
+  isVisible: boolean;
+  isRead: boolean;
+  className?: string;
+}
+
+export interface CustomerMessage2Props {
+  isVisible: boolean;
+  isRead: boolean;
+  className?: string;
+}
+
+export interface BotMessage2Props {
+  isVisible: boolean;
+  isRead: boolean;
+  className?: string;
+}
+
+export interface HeroChatMessagesProps {
+  // Message visibility states
+  showMessage1: boolean;
+  showMessage2: boolean;
+  showBotMessage1: boolean;
+  showBotMessage2: boolean;
+
+  // Read states
+  message1Read: boolean;
+  message2Read: boolean;
+
+  // Typing states
+  isCustomerTyping: boolean;
+  isBotTyping: boolean;
+
+  // Optional customization
+  className?: string;
+}
+
+// =============================================================================
+// EDUCATIONAL BADGE COMPONENT TYPES - From educational-badge.tsx
+// =============================================================================
+
+export interface EducationalBadgeProps {
+  badge: DynamicBadge;
+  isVisible: boolean;
+  className?: string;
+  onBadgeClick?: (badge: DynamicBadge) => void;
+}
+
+export interface BadgeIconProps {
+  icon: React.ComponentType<any>;
+  className?: string;
+}
+
+export interface BadgeContentProps {
+  title: string;
+  subtitle: string;
+  className?: string;
+}
+
+export interface BadgeArrowProps {
+  direction: ArrowDirection;
+  color: string;
+  className?: string;
+}
+
+export interface AIBadgeProps {
+  isVisible: boolean;
+  className?: string;
+  onBadgeClick?: () => void;
+}
+
+export interface BadgeContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface MultipleBadgesProps {
+  badges: DynamicBadge[];
+  activeBadgeId: string | null;
+  className?: string;
+  onBadgeClick?: (badge: DynamicBadge) => void;
+}
+
+// =============================================================================
+// FEATURES GRID COMPONENT TYPES - From features-grid.tsx
+// =============================================================================
+
+export interface Feature {
+  title: string;
+  description: string;
+  icon: string; // keyof typeof featureIcons from lib/icons
+  benefits: string[];
+  badge?: string;
+}
+
+export interface FeaturesGridComponentProps {
+  features?: Feature[];
+}
+
+// =============================================================================
+// HERO SECTION COMPONENT TYPES - From hero-section/components
+// =============================================================================
+
+export interface HeroComparisonProps {
+  isInView: boolean;
+  className?: string;
+}
+
+export interface ComparisonStats {
+  originalLoops: number;
+  v2Loops: number;
+  startTime: number;
+  isRunning: boolean;
+}
+
+// =============================================================================
+// OPTIMIZED MOBILE MENU TYPES - From navbar-v2/optimized-mobile-menu.tsx
+// =============================================================================
+
+export interface OptimizedNavigationItem {
+  label: string;
+  href: string;
+  hasDropdown?: boolean;
+  badge?: string;
+  icon?: React.ComponentType<any>;
+  description?: string;
+}
+
+export interface CTAConfig {
+  signIn: {
+    text: string;
+    href: string;
+  };
+  primary: {
+    text: string;
+    href: string;
+    icon?: React.ComponentType<any>;
+  };
+}
+
+export interface OptimizedMobileMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  navigationItems: OptimizedNavigationItem[];
+  ctaConfig: CTAConfig;
+  className?: string;
+  logoText?: string;
+  // Accessibility props
+  reducedMotion?: boolean;
+  highContrast?: boolean;
+  screenReaderActive?: boolean;
 }

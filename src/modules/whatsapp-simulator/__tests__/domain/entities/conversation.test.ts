@@ -4,12 +4,37 @@
  */
 
 import {
+  addMessage,
+  addMessages,
+  advanceToNext,
+  canGoBack,
+  canGoForward,
+  cloneConversation,
   Conversation,
   ConversationMetadata,
   ConversationSettings,
-  ConversationStatus
-} from '../../../domain/entities/conversation';
-import { Message, MessageTiming } from '../../../domain/entities/message';
+  ConversationStatus,
+  conversationToJSON,
+  createConversation,
+  createConversationFromJSON,
+  getConversationProgress,
+  getCurrentMessage,
+  getMessagesBySender,
+  getMessagesByType,
+  getMessagesUpTo,
+  getNextMessage,
+  getPreviousMessage,
+  goToPrevious,
+  hasError,  isPaused,
+  isPlaying,
+  jumpToMessage,
+  pauseConversation,
+  playConversation,
+  removeMessage,
+  resetConversation,
+  setConversationError,
+  updateConversationSettings} from '../../../domain/entities/conversation';
+import { createMessage,Message, MessageTiming } from '../../../domain/entities/message';
 
 describe('Conversation Entity', () => {
   const createTestMetadata = (overrides: Partial<ConversationMetadata> = {}): ConversationMetadata => ({
@@ -35,7 +60,7 @@ describe('Conversation Entity', () => {
       delayBeforeTyping: 1000,
     };
 
-    return new Message({
+    return createMessage({
       id,
       type: 'text',
       sender: 'user',
@@ -48,7 +73,7 @@ describe('Conversation Entity', () => {
   describe('Construction', () => {
     it('should create conversation with metadata only', () => {
       const metadata = createTestMetadata();
-      const conversation = new Conversation(metadata);
+      const conversation = createConversation(metadata);
 
       expect(conversation.metadata.id).toBe('conv-1');
       expect(conversation.messages).toHaveLength(0);
@@ -64,7 +89,7 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-1'),
         createTestMessage('msg-2'),
       ];
-      const conversation = new Conversation(metadata, messages);
+      const conversation = createConversation(metadata, messages);
 
       expect(conversation.messages).toHaveLength(2);
       expect(conversation.messages[0].id).toBe('msg-1');
@@ -79,7 +104,7 @@ describe('Conversation Entity', () => {
         showTypingIndicators: false,
         debugMode: true,
       };
-      const conversation = new Conversation(metadata, [], settings);
+      const conversation = createConversation(metadata, [], settings);
 
       expect(conversation.settings.playbackSpeed).toBe(2.0);
       expect(conversation.settings.autoAdvance).toBe(false);
@@ -95,7 +120,7 @@ describe('Conversation Entity', () => {
         createTestMessage('duplicate-id'), // Same ID
       ];
 
-      expect(() => new Conversation(metadata, messages)).toThrow(
+      expect(() => createConversation(metadata, messages)).toThrow(
         'Duplicate message ID found: duplicate-id'
       );
     });
@@ -106,12 +131,12 @@ describe('Conversation Entity', () => {
 
     beforeEach(() => {
       const metadata = createTestMetadata();
-      conversation = new Conversation(metadata);
+      conversation = createConversation(metadata);
     });
 
     it('should add single message', () => {
       const message = createTestMessage('msg-1');
-      conversation.addMessage(message);
+      conversation = addMessage(conversation, message);
 
       expect(conversation.messages).toHaveLength(1);
       expect(conversation.messages[0]).toBe(message);
@@ -125,7 +150,7 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-1'),
         createTestMessage('msg-2'),
       ];
-      conversation.addMessages(messages);
+      conversation = addMessages(conversation, messages);
 
       expect(conversation.messages).toHaveLength(2);
       expect(conversation.messages[0].id).toBe('msg-1');
@@ -136,9 +161,9 @@ describe('Conversation Entity', () => {
       const message1 = createTestMessage('msg-1');
       const message2 = createTestMessage('msg-1'); // Same ID
 
-      conversation.addMessage(message1);
+      conversation = addMessage(conversation, message1);
 
-      expect(() => conversation.addMessages([message2])).toThrow(
+      expect(() => addMessages(conversation, [message2])).toThrow(
         'Duplicate message ID found: msg-1'
       );
     });
@@ -149,17 +174,21 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2'),
         createTestMessage('msg-3'),
       ];
-      conversation.addMessages(messages);
+      conversation = addMessages(conversation, messages);
 
-      const removed = conversation.removeMessage('msg-2');
+      const updatedConversation = removeMessage(conversation, 'msg-2');
+      const removed = updatedConversation.messages.length < conversation.messages.length;
 
       expect(removed).toBe(true);
-      expect(conversation.messages).toHaveLength(2);
-      expect(conversation.messages.find(m => m.id === 'msg-2')).toBeUndefined();
+      expect(updatedConversation.messages).toHaveLength(2);
+      expect(updatedConversation.messages.find(m => m.id === 'msg-2')).toBeUndefined();
+      conversation = updatedConversation;
     });
 
     it('should return false when removing non-existent message', () => {
-      const removed = conversation.removeMessage('non-existent');
+      const originalLength = conversation.messages.length;
+      const updatedConversation = removeMessage(conversation, 'non-existent');
+      const removed = updatedConversation.messages.length < originalLength;
       expect(removed).toBe(false);
     });
 
@@ -169,10 +198,10 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2'),
         createTestMessage('msg-3'),
       ];
-      conversation.addMessages(messages);
-      conversation.jumpTo(2); // Point to msg-3
+      conversation = addMessages(conversation, messages);
+      conversation = jumpToMessage(conversation, 2); // Point to msg-3
 
-      conversation.removeMessage('msg-3'); // Remove current message
+      conversation = removeMessage(conversation, 'msg-3'); // Remove current message
 
       expect(conversation.currentIndex).toBe(1); // Adjusted to msg-2
     });
@@ -188,10 +217,10 @@ describe('Conversation Entity', () => {
         }
       });
 
-      conversation.addMessage(message);
+      conversation = addMessage(conversation, message);
       expect(conversation.metadata.estimatedDuration).toBe(8000); // 5000 + 3000
 
-      conversation.removeMessage('msg-1');
+      conversation = removeMessage(conversation, 'msg-1');
       expect(conversation.metadata.estimatedDuration).toBe(0);
     });
   });
@@ -206,53 +235,53 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2'),
         createTestMessage('msg-3'),
       ];
-      conversation = new Conversation(metadata, messages);
+      conversation = createConversation(metadata, messages);
     });
 
     it('should start playback from idle', () => {
       expect(conversation.status).toBe('idle');
-      conversation.play();
+      conversation = playConversation(conversation);
       expect(conversation.status).toBe('playing');
-      expect(conversation.isPlaying).toBe(true);
+      expect(isPlaying(conversation)).toBe(true);
     });
 
     it('should resume from completed state', () => {
-      conversation.jumpTo(3); // Beyond last message
-      // Simulate completion
-      (conversation as any)._status = 'completed';
+      conversation = jumpToMessage(conversation, 2); // Last message (index 2)
+      conversation = advanceToNext(conversation); // This should complete it
+      expect(conversation.status).toBe('completed');
 
-      conversation.play();
+      conversation = playConversation(conversation);
 
       expect(conversation.status).toBe('playing');
       expect(conversation.currentIndex).toBe(0); // Reset to beginning
     });
 
     it('should pause during playback', () => {
-      conversation.play();
-      conversation.pause();
+      conversation = playConversation(conversation);
+      conversation = pauseConversation(conversation);
 
       expect(conversation.status).toBe('paused');
-      expect(conversation.isPaused).toBe(true);
-      expect(conversation.isPlaying).toBe(false);
+      expect(isPaused(conversation)).toBe(true);
+      expect(isPlaying(conversation)).toBe(false);
     });
 
     it('should not pause when not playing', () => {
       expect(conversation.status).toBe('idle');
-      conversation.pause();
+      conversation = pauseConversation(conversation);
       expect(conversation.status).toBe('idle'); // Unchanged
     });
 
     it('should reset conversation state', () => {
-      conversation.play();
-      conversation.jumpTo(1);
-      conversation.pause();
+      conversation = playConversation(conversation);
+      conversation = jumpToMessage(conversation, 1);
+      conversation = pauseConversation(conversation);
 
-      conversation.reset();
+      conversation = resetConversation(conversation);
 
       expect(conversation.status).toBe('idle');
       expect(conversation.currentIndex).toBe(0);
-      expect(conversation.isPlaying).toBe(false);
-      expect(conversation.isPaused).toBe(false);
+      expect(isPlaying(conversation)).toBe(false);
+      expect(isPaused(conversation)).toBe(false);
     });
   });
 
@@ -266,70 +295,77 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2'),
         createTestMessage('msg-3'),
       ];
-      conversation = new Conversation(metadata, messages);
+      conversation = createConversation(metadata, messages);
     });
 
     it('should jump to valid message index', () => {
-      conversation.jumpTo(1);
+      conversation = jumpToMessage(conversation, 1);
       expect(conversation.currentIndex).toBe(1);
-      expect(conversation.currentMessage?.id).toBe('msg-2');
+      expect(getCurrentMessage(conversation)?.id).toBe('msg-2');
     });
 
     it('should throw error for invalid jump index', () => {
-      expect(() => conversation.jumpTo(-1)).toThrow('Invalid message index: -1');
-      expect(() => conversation.jumpTo(3)).toThrow('Invalid message index: 3');
+      expect(() => jumpToMessage(conversation, -1)).toThrow('Invalid message index: -1');
+      expect(() => jumpToMessage(conversation, 3)).toThrow('Invalid message index: 3');
     });
 
     it('should advance to next message', () => {
       expect(conversation.currentIndex).toBe(0);
 
-      const advanced = conversation.advanceToNext();
+      const newConversation = advanceToNext(conversation);
+      const advanced = newConversation.currentIndex > conversation.currentIndex;
 
       expect(advanced).toBe(true);
-      expect(conversation.currentIndex).toBe(1);
+      expect(newConversation.currentIndex).toBe(1);
+      conversation = newConversation;
     });
 
     it('should complete when advancing beyond last message', () => {
-      conversation.jumpTo(2); // Last message
+      conversation = jumpToMessage(conversation, 2); // Last message
 
-      const advanced = conversation.advanceToNext();
+      const newConversation = advanceToNext(conversation);
+      const advanced = newConversation.currentIndex > conversation.currentIndex;
 
       expect(advanced).toBe(false);
-      expect(conversation.status).toBe('completed');
+      expect(newConversation.status).toBe('completed');
+      conversation = newConversation;
     });
 
     it('should go to previous message', () => {
-      conversation.jumpTo(2);
+      conversation = jumpToMessage(conversation, 2);
 
-      const went = conversation.goToPrevious();
+      const newConversation = goToPrevious(conversation);
+      const went = newConversation.currentIndex < conversation.currentIndex;
 
       expect(went).toBe(true);
-      expect(conversation.currentIndex).toBe(1);
+      expect(newConversation.currentIndex).toBe(1);
+      conversation = newConversation;
     });
 
     it('should not go before first message', () => {
       expect(conversation.currentIndex).toBe(0);
 
-      const went = conversation.goToPrevious();
+      const newConversation = goToPrevious(conversation);
+      const went = newConversation.currentIndex !== conversation.currentIndex;
 
       expect(went).toBe(false);
-      expect(conversation.currentIndex).toBe(0);
+      expect(newConversation.currentIndex).toBe(0);
     });
 
     it('should provide correct navigation state', () => {
       // At beginning
-      expect(conversation.canGoBack).toBe(false);
-      expect(conversation.canGoForward).toBe(true);
+      expect(canGoBack(conversation)).toBe(false);
+      expect(canGoForward(conversation)).toBe(true);
 
       // In middle
-      conversation.jumpTo(1);
-      expect(conversation.canGoBack).toBe(true);
-      expect(conversation.canGoForward).toBe(true);
+      conversation = jumpToMessage(conversation, 1);
+      expect(canGoBack(conversation)).toBe(true);
+      expect(canGoForward(conversation)).toBe(true);
 
       // At end
-      conversation.jumpTo(2);
-      expect(conversation.canGoBack).toBe(true);
-      expect(conversation.canGoForward).toBe(false);
+      conversation = jumpToMessage(conversation, 2);
+      expect(canGoBack(conversation)).toBe(true);
+      expect(canGoForward(conversation)).toBe(false);
     });
   });
 
@@ -343,46 +379,46 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2', { sender: 'business', type: 'image' }),
         createTestMessage('msg-3', { sender: 'user', type: 'text' }),
       ];
-      conversation = new Conversation(metadata, messages);
-      conversation.jumpTo(1); // Point to middle message
+      conversation = createConversation(metadata, messages);
+      conversation = jumpToMessage(conversation, 1); // Point to middle message
     });
 
     it('should provide current message', () => {
-      expect(conversation.currentMessage?.id).toBe('msg-2');
+      expect(getCurrentMessage(conversation)?.id).toBe('msg-2');
     });
 
     it('should provide next message', () => {
-      expect(conversation.nextMessage?.id).toBe('msg-3');
+      expect(getNextMessage(conversation)?.id).toBe('msg-3');
     });
 
     it('should provide previous message', () => {
-      expect(conversation.previousMessage?.id).toBe('msg-1');
+      expect(getPreviousMessage(conversation)?.id).toBe('msg-1');
     });
 
     it('should handle edge cases for message access', () => {
-      conversation.jumpTo(0); // First message
-      expect(conversation.previousMessage).toBeNull();
+      conversation = jumpToMessage(conversation, 0); // First message
+      expect(getPreviousMessage(conversation)).toBeNull();
 
-      conversation.jumpTo(2); // Last message
-      expect(conversation.nextMessage).toBeNull();
+      conversation = jumpToMessage(conversation, 2); // Last message
+      expect(getNextMessage(conversation)).toBeNull();
     });
 
     it('should get messages up to current index', () => {
-      const messagesUpTo = conversation.getMessagesUpTo();
+      const messagesUpTo = getMessagesUpTo(conversation);
       expect(messagesUpTo).toHaveLength(2); // msg-1 and msg-2
       expect(messagesUpTo[0].id).toBe('msg-1');
       expect(messagesUpTo[1].id).toBe('msg-2');
     });
 
     it('should get messages up to specific index', () => {
-      const messagesUpTo = conversation.getMessagesUpTo(1);
+      const messagesUpTo = getMessagesUpTo(conversation, 1);
       expect(messagesUpTo).toHaveLength(1);
       expect(messagesUpTo[0].id).toBe('msg-1');
     });
 
     it('should get messages by sender type', () => {
-      const userMessages = conversation.getMessagesBySender('user');
-      const businessMessages = conversation.getMessagesBySender('business');
+      const userMessages = getMessagesBySender(conversation, 'user');
+      const businessMessages = getMessagesBySender(conversation, 'business');
 
       expect(userMessages).toHaveLength(2);
       expect(businessMessages).toHaveLength(1);
@@ -391,8 +427,8 @@ describe('Conversation Entity', () => {
     });
 
     it('should get messages by type', () => {
-      const textMessages = conversation.getMessagesByType('text');
-      const imageMessages = conversation.getMessagesByType('image');
+      const textMessages = getMessagesByType(conversation, 'text');
+      const imageMessages = getMessagesByType(conversation, 'image');
 
       expect(textMessages).toHaveLength(2);
       expect(imageMessages).toHaveLength(1);
@@ -409,11 +445,11 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-2'),
         createTestMessage('msg-3'),
       ];
-      conversation = new Conversation(metadata, messages);
+      conversation = createConversation(metadata, messages);
     });
 
     it('should calculate progress correctly', () => {
-      const progress = conversation.getProgress();
+      const progress = getConversationProgress(conversation);
 
       expect(progress.currentMessageIndex).toBe(0);
       expect(progress.totalMessages).toBe(3);
@@ -423,24 +459,24 @@ describe('Conversation Entity', () => {
     });
 
     it('should update progress when advancing', () => {
-      conversation.advanceToNext();
-      const progress = conversation.getProgress();
+      conversation = advanceToNext(conversation);
+      const progress = getConversationProgress(conversation);
 
       expect(progress.currentMessageIndex).toBe(1);
       expect(progress.completionPercentage).toBeCloseTo(33.33, 2);
     });
 
     it('should handle completion progress', () => {
-      conversation.jumpTo(2);
-      conversation.advanceToNext(); // Complete
-      const progress = conversation.getProgress();
+      conversation = jumpToMessage(conversation, 2);
+      conversation = advanceToNext(conversation); // Complete
+      const progress = getConversationProgress(conversation);
 
       expect(progress.completionPercentage).toBe(100);
     });
 
     it('should handle empty conversation progress', () => {
-      const emptyConversation = new Conversation(createTestMetadata());
-      const progress = emptyConversation.getProgress();
+      const emptyConversation = createConversation(createTestMetadata());
+      const progress = getConversationProgress(emptyConversation);
 
       expect(progress.completionPercentage).toBe(0);
       expect(progress.totalMessages).toBe(0);
@@ -453,7 +489,7 @@ describe('Conversation Entity', () => {
 
     beforeEach(() => {
       const metadata = createTestMetadata();
-      conversation = new Conversation(metadata);
+      conversation = createConversation(metadata);
     });
 
     it('should update settings', () => {
@@ -463,7 +499,7 @@ describe('Conversation Entity', () => {
         enableSounds: true,
       };
 
-      conversation.updateSettings(updates);
+      conversation = updateConversationSettings(conversation, updates);
       const settings = conversation.settings;
 
       expect(settings.playbackSpeed).toBe(1.5);
@@ -476,7 +512,7 @@ describe('Conversation Entity', () => {
       const settings1 = conversation.settings;
       const settings2 = conversation.settings;
 
-      expect(settings1).not.toBe(settings2); // Different objects
+      expect(settings1).toBe(settings2); // Same object for immutable data
       expect(settings1).toEqual(settings2); // Same content
     });
   });
@@ -486,15 +522,15 @@ describe('Conversation Entity', () => {
 
     beforeEach(() => {
       const metadata = createTestMetadata();
-      conversation = new Conversation(metadata);
+      conversation = createConversation(metadata);
     });
 
     it('should set error status', () => {
       const error = new Error('Test error');
-      conversation.setError(error);
+      conversation = setConversationError(conversation, error);
 
       expect(conversation.status).toBe('error');
-      expect(conversation.hasError).toBe(true);
+      expect(hasError(conversation)).toBe(true);
     });
   });
 
@@ -505,11 +541,11 @@ describe('Conversation Entity', () => {
       const metadata = createTestMetadata();
       const messages = [createTestMessage('msg-1')];
       const settings: Partial<ConversationSettings> = { playbackSpeed: 2.0 };
-      conversation = new Conversation(metadata, messages, settings);
+      conversation = createConversation(metadata, messages, settings);
     });
 
     it('should clone conversation with same data', () => {
-      const cloned = conversation.clone();
+      const cloned = cloneConversation(conversation);
 
       expect(cloned).not.toBe(conversation);
       expect(cloned.metadata).toBe(conversation.metadata); // Reference
@@ -521,7 +557,7 @@ describe('Conversation Entity', () => {
       const updates = {
         metadata: { title: 'Updated Title' }
       };
-      const cloned = conversation.clone(updates);
+      const cloned = cloneConversation(conversation, updates);
 
       expect(cloned.metadata.title).toBe('Updated Title');
       expect(cloned.metadata.id).toBe(conversation.metadata.id);
@@ -530,7 +566,7 @@ describe('Conversation Entity', () => {
     it('should clone with different messages', () => {
       const newMessages = [createTestMessage('new-msg')];
       const updates = { messages: newMessages };
-      const cloned = conversation.clone(updates);
+      const cloned = cloneConversation(conversation, updates);
 
       expect(cloned.messages).toBe(newMessages);
       expect(cloned.messages[0].id).toBe('new-msg');
@@ -547,13 +583,13 @@ describe('Conversation Entity', () => {
         createTestMessage('msg-1'),
         createTestMessage('msg-2'),
       ];
-      conversation = new Conversation(metadata, messages, { playbackSpeed: 1.5 });
-      conversation.play();
-      conversation.jumpTo(1);
+      conversation = createConversation(metadata, messages, { playbackSpeed: 1.5 });
+      conversation = playConversation(conversation);
+      conversation = jumpToMessage(conversation, 1);
     });
 
     it('should serialize to JSON', () => {
-      const json = conversation.toJSON();
+      const json = conversationToJSON(conversation);
 
       expect(json.metadata.id).toBe('conv-1');
       expect(json.metadata.createdAt).toBe('2024-01-01T10:00:00.000Z');
@@ -564,8 +600,8 @@ describe('Conversation Entity', () => {
     });
 
     it('should deserialize from JSON', () => {
-      const json = conversation.toJSON();
-      const deserialized = Conversation.fromJSON(json);
+      const json = conversationToJSON(conversation);
+      const deserialized = createConversationFromJSON(json);
 
       expect(deserialized.metadata.id).toBe(conversation.metadata.id);
       expect(deserialized.messages).toHaveLength(conversation.messages.length);
@@ -575,9 +611,9 @@ describe('Conversation Entity', () => {
     });
 
     it('should handle round-trip serialization', () => {
-      const json1 = conversation.toJSON();
-      const deserialized = Conversation.fromJSON(json1);
-      const json2 = deserialized.toJSON();
+      const json1 = conversationToJSON(conversation);
+      const deserialized = createConversationFromJSON(json1);
+      const json2 = conversationToJSON(deserialized);
 
       // Compare serialized data (excluding timestamps that might differ slightly)
       expect(json2.metadata.id).toBe(json1.metadata.id);
@@ -590,12 +626,12 @@ describe('Conversation Entity', () => {
   describe('Edge Cases and Validation', () => {
     it('should handle empty message list gracefully', () => {
       const metadata = createTestMetadata();
-      const conversation = new Conversation(metadata);
+      const conversation = createConversation(metadata);
 
-      expect(conversation.currentMessage).toBeNull();
-      expect(conversation.nextMessage).toBeNull();
-      expect(conversation.previousMessage).toBeNull();
-      expect(() => conversation.advanceToNext()).not.toThrow();
+      expect(getCurrentMessage(conversation)).toBeNull();
+      expect(getNextMessage(conversation)).toBeNull();
+      expect(getPreviousMessage(conversation)).toBeNull();
+      expect(() => advanceToNext(conversation)).not.toThrow();
     });
 
     it('should validate timing sequence warnings', () => {
@@ -620,7 +656,7 @@ describe('Conversation Entity', () => {
       ];
 
       // Should warn about timing inconsistency
-      new Conversation(metadata, messages);
+      createConversation(metadata, messages);
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'Message timing inconsistency at index 1'
@@ -631,10 +667,13 @@ describe('Conversation Entity', () => {
 
     it('should handle extreme playback speeds in progress calculation', () => {
       const metadata = createTestMetadata();
-      const messages = [createTestMessage('msg-1')];
-      const conversation = new Conversation(metadata, messages, { playbackSpeed: 0.1 });
+      const messages = [
+        createTestMessage('msg-1'),
+        createTestMessage('msg-2')
+      ];
+      const conversation = createConversation(metadata, messages, { playbackSpeed: 0.1 });
 
-      const progress = conversation.getProgress();
+      const progress = getConversationProgress(conversation);
       expect(progress.remainingTime).toBeGreaterThan(0);
       expect(isFinite(progress.remainingTime)).toBe(true);
     });

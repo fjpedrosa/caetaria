@@ -13,7 +13,7 @@ import {
   performanceMonitor,
   setupPerformanceMonitoring
 } from '../../../__mocks__/test-utils/performance-monitor';
-import { SupabaseLeadRepository } from '../../infra/adapters/supabase-lead-repository';
+import { SupabaseLeadRepository } from '../../infrastructure/adapters/supabase-lead-repository';
 
 // =============================================================================
 // TEST SETUP

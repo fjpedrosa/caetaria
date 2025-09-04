@@ -30,12 +30,12 @@ import {
   User,
   X} from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Input } from '@/modules/shared/ui/components/ui/input';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Input } from '@/modules/shared/presentation/components/ui/input';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 
 interface Notification {
   id: string | number;
@@ -89,11 +89,11 @@ const typeColors = {
   success: 'bg-emerald-100 text-emerald-800',
 };
 
-export const NotificationCenter: React.FC<Props> = ({
+export const NotificationCenter = ({
   notifications,
   onMarkAsRead,
   onClearAll,
-}) => {
+}: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');

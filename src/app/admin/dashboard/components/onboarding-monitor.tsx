@@ -32,12 +32,12 @@ import {
   Users,
   XCircle} from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { LoadingSkeleton } from '@/modules/shared/ui/components/ui/loading-skeleton';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { LoadingSkeleton } from '@/modules/shared/presentation/components/ui/loading-skeleton';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
 // Import API hooks
 import {
   useGetDashboardMetricsQuery,
@@ -86,7 +86,7 @@ const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
 };
 
-export const OnboardingMonitor: React.FC = () => {
+export const OnboardingMonitor = () => {
   const [activeView, setActiveView] = useState<'sessions' | 'analytics'>('sessions');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedSession, setSelectedSession] = useState<string | null>(null);

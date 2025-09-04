@@ -34,15 +34,15 @@ import {
   XCircle,
   Zap} from 'lucide-react';
 
-import { Badge } from '@/modules/shared/ui/components/ui/badge';
-import { Button } from '@/modules/shared/ui/components/ui/button';
-import { Card } from '@/modules/shared/ui/components/ui/card';
-import { Checkbox } from '@/modules/shared/ui/components/ui/checkbox';
-import { Dialog } from '@/modules/shared/ui/components/ui/dialog';
-import { Input } from '@/modules/shared/ui/components/ui/input';
-import { Select } from '@/modules/shared/ui/components/ui/select';
-import { Tabs } from '@/modules/shared/ui/components/ui/tabs';
-import { Textarea } from '@/modules/shared/ui/components/ui/textarea';
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
+import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Card } from '@/modules/shared/presentation/components/ui/card';
+import { Checkbox } from '@/modules/shared/presentation/components/ui/checkbox';
+import { Dialog } from '@/modules/shared/presentation/components/ui/dialog';
+import { Input } from '@/modules/shared/presentation/components/ui/input';
+import { Select } from '@/modules/shared/presentation/components/ui/select';
+import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
+import { Textarea } from '@/modules/shared/presentation/components/ui/textarea';
 
 interface ExportJob {
   id: string;
@@ -133,7 +133,7 @@ const formatTypes = {
   json: { label: 'JSON', icon: Settings, description: 'JavaScript Object Notation' },
 };
 
-export const ExportManager: React.FC = () => {
+export const ExportManager = () => {
   const [activeTab, setActiveTab] = useState<'exports' | 'scheduled' | 'create'>('exports');
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set());
   const [showCreateDialog, setShowCreateDialog] = useState(false);

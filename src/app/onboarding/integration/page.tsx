@@ -7,9 +7,9 @@ import { Suspense } from 'react';
 import { AlertCircle,ExternalLink, MessageCircle, Shield } from 'lucide-react';
 import Link from 'next/link';
 
-import { OnboardingStepWrapper } from '@/modules/onboarding/ui/components/onboarding-step-wrapper';
-import { WhatsAppIntegrationForm } from '@/modules/onboarding/ui/components/whatsapp-integration-form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/ui/components/ui/card';
+import { OnboardingStepWrapper } from '@/modules/onboarding/presentation/components/onboarding-step-wrapper';
+import { WhatsAppIntegrationForm } from '@/modules/onboarding/presentation/components/whatsapp-integration-form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/shared/presentation/components/ui/card';
 
 export default async function WhatsAppIntegrationPage() {
   return (

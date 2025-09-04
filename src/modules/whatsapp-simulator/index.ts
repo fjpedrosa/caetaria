@@ -11,14 +11,14 @@ export * from './application/engines/conversation-engine';
 export * from './application/use-cases';
 
 // UI Layer
-export * from './ui/components/conversation-simulator';
-export * from './ui/components/export-controls';
-export * from './ui/components/whatsapp-simulator';
-export * from './ui/hooks';
+export * from './presentation/components/conversation-simulator';
+export * from './presentation/components/export-controls';
+export * from './presentation/components/whatsapp-simulator';
+export * from './presentation/hooks';
 
 // Infrastructure
-export * from './infra/factories/conversation-factory';
-export * from './infra/services/gif-export';
+export * from './infrastructure/factories/conversation-factory';
+export * from './infrastructure/services/gif-export';
 
 // Scenarios
 export * from './scenarios/restaurant-reservation-scenario';

@@ -431,11 +431,11 @@ test.describe('Lead Capture Journey', () => {
       
       // Mock analytics tracking
       await page.addInitScript(() => {
-        window.gtag = (...args: any[]) => {
+        (window as any).gtag = (...args: any[]) => {
           (window as any).trackEvent({ type: 'gtag', args });
         };
         
-        window.posthog = {
+        (window as any).posthog = {
           capture: (event: string, properties: any) => {
             (window as any).trackEvent({ type: 'posthog', event, properties });
           }

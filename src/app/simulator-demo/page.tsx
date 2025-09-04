@@ -8,7 +8,7 @@
 import React from 'react';
 
 import { ConversationSimulator } from '@/modules/whatsapp-simulator';
-import { conversationFactory } from '@/modules/whatsapp-simulator/infra/factories/conversation-factory';
+import { conversationFactory } from '@/modules/whatsapp-simulator/infrastructure/factories/conversation-factory';
 
 export default function SimulatorDemoPage() {
   const [conversation] = React.useState(() =>
@@ -202,7 +202,7 @@ export default function SimulatorDemoPage() {
               <h3 className="font-medium mb-2">Basic Implementation</h3>
               <pre className="bg-gray-800 text-green-400 p-4 rounded text-sm overflow-x-auto">
 {`import { ConversationSimulator } from '@/modules/whatsapp-simulator';
-import { conversationFactory } from '@/modules/whatsapp-simulator/infra/factories/conversation-factory';
+import { conversationFactory } from '@/modules/whatsapp-simulator/infrastructure/factories/conversation-factory';
 
 const conversation = conversationFactory.createSampleConversation({
   businessName: 'Your Business',

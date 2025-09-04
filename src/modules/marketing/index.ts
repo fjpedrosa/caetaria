@@ -31,21 +31,21 @@ export type {
 export { createEnhancedSubmitLeadFormUseCase } from './application/use-cases/submit-lead-form-enhanced';
 
 // Infrastructure Layer - Adapters and services
-export { createSupabaseLeadRepository } from './infra/adapters/supabase-lead-repository';
-export { createEmailNotificationService } from './infra/services/email-notification-service';
+export { createSupabaseLeadRepository } from './infrastructure/adapters/supabase-lead-repository';
+export { createEmailNotificationService } from './infrastructure/services/email-notification-service';
 export {
   createAnalyticsConfig,
   createAnalyticsService,
   createGoogleAnalyticsService,
   createMockAnalyticsService,
-} from './infra/services/google-analytics-service';
+} from './infrastructure/services/google-analytics-service';
 
 // Comprehensive notification system exports
 export * from './notification-system';
 
 // UI Layer - React components
-export type { LeadFormData, LeadFormProps } from './ui/components/lead-form';
-export { LeadForm } from './ui/components/lead-form';
+export type { LeadFormData, LeadFormProps } from './presentation/components/lead-form';
+export { LeadForm } from './presentation/components/lead-form';
 
 // Module Configuration - Functional Implementation
 export type {

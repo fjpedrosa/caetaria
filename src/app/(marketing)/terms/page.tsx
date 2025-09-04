@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { SmoothScrollNav } from '@/modules/shared/ui/components/ui/smooth-scroll-nav';
+import { SmoothScrollNav } from '@/modules/shared/presentation/components/ui/smooth-scroll-nav';
 
 // Enable ISR with 1 hour cache for legal content
 export const revalidate = 3600;

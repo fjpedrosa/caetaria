@@ -14,20 +14,21 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { motion } from 'framer-motion';
+import { Activity, UserPlus, Users, Zap } from 'lucide-react';
 
-import { 
-  useRealtimeConnection, 
-  useRealtimeAdminDashboard,
-  useRealtimePerformance 
-} from '../hooks';
 import { ConnectionState } from '../connection-manager';
+import {
+  useRealtimeAdminDashboard,
+  useRealtimeConnection,
+  useRealtimePerformance
+} from '../hooks';
 
 // Connection status indicator
 function ConnectionStatusIndicator() {
   const connection = useRealtimeConnection();
-  
+
   const getStatusColor = () => {
     switch (connection.state) {
       case ConnectionState.CONNECTED:
@@ -59,7 +60,7 @@ function ConnectionStatusIndicator() {
 
   return (
     <div className="flex items-center space-x-2">
-      <motion.div 
+      <motion.div
         className={`w-3 h-3 rounded-full ${getStatusColor()}`}
         animate={connection.isConnecting ? { opacity: [1, 0.5, 1] } : {}}
         transition={{ repeat: Infinity, duration: 1.5 }}
@@ -79,11 +80,11 @@ function ConnectionStatusIndicator() {
 // Performance metrics card
 function PerformanceMetrics() {
   const metrics = useRealtimePerformance();
-  
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <h3 className="text-lg font-semibold mb-4">Real-time Performance</h3>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="text-center">
           <div className="text-2xl font-bold text-blue-600">
@@ -91,21 +92,21 @@ function PerformanceMetrics() {
           </div>
           <div className="text-sm text-gray-500">Active Subscriptions</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-green-600">
             {metrics.averageLatency.toFixed(0)}ms
           </div>
           <div className="text-sm text-gray-500">Avg Latency</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-purple-600">
             {metrics.errorRate.toFixed(1)}%
           </div>
           <div className="text-sm text-gray-500">Error Rate</div>
         </div>
-        
+
         <div className="text-center">
           <div className="text-2xl font-bold text-orange-600">
             {Math.floor(metrics.connectionUptime / 1000 / 60)}m
@@ -121,7 +122,7 @@ function PerformanceMetrics() {
 function LiveStatsCards({ stats }: { stats: any }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <motion.div 
+      <motion.div
         className="bg-white rounded-lg shadow-sm border p-6"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -132,12 +133,12 @@ function LiveStatsCards({ stats }: { stats: any }) {
             <p className="text-2xl font-bold text-gray-900">{stats.totalLeads}</p>
           </div>
           <div className="text-blue-500">
-            =Ê
+            <Users className="w-8 h-8" />
           </div>
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="bg-white rounded-lg shadow-sm border p-6"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -148,12 +149,12 @@ function LiveStatsCards({ stats }: { stats: any }) {
             <p className="text-2xl font-bold text-green-600">{stats.newLeadsToday}</p>
           </div>
           <div className="text-green-500">
-            <•
+            <UserPlus className="w-8 h-8" />
           </div>
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="bg-white rounded-lg shadow-sm border p-6"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -164,12 +165,12 @@ function LiveStatsCards({ stats }: { stats: any }) {
             <p className="text-2xl font-bold text-purple-600">{stats.totalEvents}</p>
           </div>
           <div className="text-purple-500">
-            =È
+            <Activity className="w-8 h-8" />
           </div>
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className="bg-white rounded-lg shadow-sm border p-6"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
@@ -180,7 +181,7 @@ function LiveStatsCards({ stats }: { stats: any }) {
             <p className="text-2xl font-bold text-orange-600">{stats.eventsToday}</p>
           </div>
           <div className="text-orange-500">
-            <¯
+            <Zap className="w-8 h-8" />
           </div>
         </div>
       </motion.div>
@@ -209,13 +210,13 @@ function ActivityFeed({ latestEvent }: { latestEvent: any }) {
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <h3 className="text-lg font-semibold mb-4">Live Activity Feed</h3>
-      
+
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {activities.length === 0 ? (
           <p className="text-gray-500 text-sm">No recent activity</p>
         ) : (
           activities.map((activity) => (
-            <motion.div 
+            <motion.div
               key={activity.id}
               className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
               initial={{ opacity: 0, x: -20 }}
@@ -253,7 +254,7 @@ export function RealtimeDashboard() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <motion.div 
+          <motion.div
             className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4"
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1 }}
@@ -272,12 +273,12 @@ export function RealtimeDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Real-time Dashboard</h1>
           <ConnectionStatusIndicator />
         </div>
-        
+
         {dashboard.hasErrors && (
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-sm text-red-600">
-              Connection issues detected. 
-              <button 
+              Connection issues detected.
+              <button
                 onClick={dashboard.reconnectAll}
                 className="ml-2 text-red-700 underline hover:no-underline"
               >
@@ -297,10 +298,10 @@ export function RealtimeDashboard() {
       {/* Activity feed and connection details */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ActivityFeed latestEvent={dashboard.analytics.latestEvent} />
-        
+
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-lg font-semibold mb-4">Connection Details</h3>
-          
+
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Connection State</span>
@@ -308,14 +309,14 @@ export function RealtimeDashboard() {
                 {dashboard.connection.state}
               </span>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Subscriptions</span>
               <span className="text-sm font-medium">
                 {dashboard.connection.subscriptionsCount}
               </span>
             </div>
-            
+
             {dashboard.connection.connectedAt && (
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Connected Since</span>
@@ -324,7 +325,7 @@ export function RealtimeDashboard() {
                 </span>
               </div>
             )}
-            
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Reconnect Attempts</span>
               <span className="text-sm font-medium">
@@ -332,9 +333,9 @@ export function RealtimeDashboard() {
               </span>
             </div>
           </div>
-          
+
           <div className="mt-6 space-x-2">
-            <button 
+            <button
               onClick={dashboard.reconnectAll}
               className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
               disabled={dashboard.connection.isConnecting}
