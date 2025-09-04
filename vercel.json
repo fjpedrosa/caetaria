@@ -3,7 +3,11 @@
   "devCommand": "npm run dev",
   "installCommand": "npm ci",
   "framework": "nextjs",
-  "regions": ["iad1", "sfo1", "fra1"],
+  "regions": [
+    "iad1",
+    "sfo1",
+    "fra1"
+  ],
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30,
@@ -157,15 +161,5 @@
       "NEXT_TELEMETRY_DISABLED": "1",
       "NODE_OPTIONS": "--max-old-space-size=8192"
     }
-  },
-  "crons": [
-    {
-      "path": "/api/crons/cleanup",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/crons/metrics",
-      "schedule": "*/5 * * * *"
-    }
-  ]
+  }
 }

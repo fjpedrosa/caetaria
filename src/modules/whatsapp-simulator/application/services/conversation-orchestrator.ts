@@ -181,7 +181,8 @@ export const createConversationOrchestrator = (config: Partial<OrchestratorConfi
           updatedState.conversation,
           eventService,
           stateManager.updateState,
-          stopSubject.asObservable()
+          stopSubject.asObservable(),
+          stateManager.getCurrentState
         );
 
         messageStream.subscribe({

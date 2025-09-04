@@ -240,22 +240,25 @@ export const processMessage = (
 };
 
 export const createMessagePlaybackStream = (
-  conversation: Conversation,
+  initialConversation: Conversation,
   config: MessageProcessingConfig,
   eventService: EventService,
   updateState: (updater: (state: PlaybackState) => PlaybackState) => void,
-  stopSignal$: Observable<void>
+  stopSignal$: Observable<void>,
+  getState?: () => PlaybackState
 ): Observable<ConversationEvent> => {
   return new Observable<ConversationEvent>(subscriber => {
     console.log('[MessageProcessing] 🎬 Starting message playback stream', {
-      conversationId: conversation.metadata.id,
-      totalMessages: conversation.messages.length,
-      currentIndex: conversation.currentIndex,
-      firstMessage: conversation.messages[0]?.content?.text?.substring(0, 30),
-      conversationStatus: conversation.status
+      conversationId: initialConversation.metadata.id,
+      totalMessages: initialConversation.messages.length,
+      currentIndex: initialConversation.currentIndex,
+      firstMessage: initialConversation.messages[0]?.content?.text?.substring(0, 30),
+      conversationStatus: initialConversation.status
     });
 
     const processNextMessage = () => {
+      // Get current conversation from state if getState is provided, otherwise use initial
+      const conversation = getState ? (getState().conversation || initialConversation) : initialConversation;
       const currentMessage = getCurrentMessage(conversation);
       const messageIndex = conversation.currentIndex;
 
@@ -298,25 +301,20 @@ export const createMessagePlaybackStream = (
           subscriber.next(event);
         },
         complete: () => {
-          // Message processing completed, advance to next
-          // Note: advanceToNext returns a new conversation instance
-          // but we're working with a mutable reference here for simplicity
+          // Message processing completed, check if we can continue
           const hasNext = canGoForward(conversation);
-          if (hasNext) {
-            // Update the conversation's currentIndex directly
-            // This is a temporary solution - ideally should return new state
-            (conversation as any).currentIndex = conversation.currentIndex + 1;
-          }
-
-          updateState(updateWithMessageAdvance);
-
-          console.log('[MessageProcessing] 📊 Checking if should continue:', {
+          
+          console.log('[MessageProcessing] 📊 Message complete, checking status:', {
+            currentIndex: conversation.currentIndex,
             hasNext,
             isPlaying: isPlaying(conversation),
-            conversationStatus: conversation.status
+            totalMessages: conversation.messages.length
           });
 
           if (hasNext && isPlaying(conversation)) {
+            // Update state to advance to next message
+            updateState(updateWithMessageAdvance);
+            
             // Schedule next message processing
             if (config.useOptimizedTiming) {
               // Use requestAnimationFrame for smoother transitions
@@ -475,8 +473,9 @@ export const createMessageProcessingService = (
       conversation: Conversation,
       eventService: EventService,
       updateState: any,
-      stopSignal$: Observable<void>
-    ) => createMessagePlaybackStream(conversation, serviceConfig, eventService, updateState, stopSignal$),
+      stopSignal$: Observable<void>,
+      getState?: () => PlaybackState
+    ) => createMessagePlaybackStream(conversation, serviceConfig, eventService, updateState, stopSignal$, getState),
 
     // Flow control
     createFlowController: () => createMessageFlowController(serviceConfig),
