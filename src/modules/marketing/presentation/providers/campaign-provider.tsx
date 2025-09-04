@@ -8,8 +8,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useAnalyticsTracking } from '@/store/api/hooks';
+
 import { CampaignData } from '../../domain/types';
-import { useAnalyticsTracking } from '../../presentation/hooks/use-analytics-tracking';
 
 interface CampaignContextValue {
   campaignData: CampaignData | null;

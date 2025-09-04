@@ -2,4 +2,6 @@ onlyBuiltDependencies:
   - '@sentry/cli'
   - '@vercel/speed-insights'
   - core-js
+  - puppeteer
+  - sharp
   - unrs-resolver

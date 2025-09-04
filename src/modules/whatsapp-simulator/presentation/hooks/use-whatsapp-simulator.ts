@@ -703,6 +703,23 @@ export const useWhatsAppSimulator = ({
   // PUBLIC API - Everything the component needs
   // =============================================================================
 
+  // CRITICAL DEBUG: Add messages logging
+  useEffect(() => {
+    console.log('🚨 [useWhatsAppSimulator] CRITICAL STATE CHECK:', {
+      timestamp: new Date().toISOString(),
+      messagesInConversationFlowState: conversationFlow.state?.messages?.length || 0,
+      messagesPreview: conversationFlow.state?.messages?.slice(0, 2)?.map(m => ({
+        sender: m.sender,
+        content: m.content?.substring(0, 30)
+      })),
+      conversationInFlowState: !!conversationFlow.state?.conversation,
+      conversationMessages: conversationFlow.state?.conversation?.messages?.length || 0,
+      localConversationMessages: conversation?.messages?.length || 0,
+      currentMessageIndex: conversationFlow.state?.currentMessageIndex,
+      isPlaying: conversationFlow.state?.isPlaying
+    });
+  }, [conversationFlow.state, conversation]);
+
   const result = {
     state,
     actions,
@@ -725,7 +742,8 @@ export const useWhatsAppSimulator = ({
     hasConversationFlow: !!result.conversationFlow,
     hasTypingIndicator: !!result.typingIndicator,
     hasFlowExecution: !!result.flowExecution,
-    stateIsInitialized: result.state?.isInitialized
+    stateIsInitialized: result.state?.isInitialized,
+    messagesInFlow: result.conversationFlow?.state?.messages?.length || 0
   });
 
   return result;

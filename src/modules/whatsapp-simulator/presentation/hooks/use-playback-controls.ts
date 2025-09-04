@@ -5,8 +5,7 @@
 
 import { useCallback, useMemo, useRef } from 'react';
 
-import { ConversationEvent } from '../../domain/events';
-import { ConversationConfig,PlaybackState } from '../services/conversation-service';
+import { ConversationConfig,PlaybackState } from '../../application/services/conversation-service';
 import {
   canJumpTo,
   canPause,
@@ -20,7 +19,9 @@ import {
   updatePlaybackStateWithJump,
   updatePlaybackStateWithPlayback,
   updatePlaybackStateWithSpeed,
-  validatePlaybackSpeed} from '../services/conversation-service';
+  validatePlaybackSpeed
+} from '../../application/services/conversation-service';
+import { ConversationEvent } from '../../domain/events';
 
 export interface PlaybackControlsOptions {
   state: PlaybackState;

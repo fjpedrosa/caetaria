@@ -155,3 +155,6 @@ export async function CtaSection() {
     </section>
   );
 }
+
+// Export with uppercase name for backward compatibility
+export { CtaSection as CTASection };

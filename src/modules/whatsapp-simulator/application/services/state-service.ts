@@ -128,22 +128,31 @@ export const calculateEstimatedRemainingTime = (
 export const updateWithConversation = (
   state: PlaybackState,
   conversation: Conversation
-): PlaybackState => ({
-  ...state,
-  conversation,
-  currentMessageIndex: conversation.currentIndex,
-  currentMessage: getCurrentMessage(conversation),
-  nextMessage: getNextMessage(conversation),
-  playbackSpeed: conversation.settings.playbackSpeed,
-  progress: calculateProgress(
-    conversation.currentIndex,
-    conversation.messages.length,
-    state.progress.elapsedTime
-  ),
-  isCompleted: false,
-  hasError: false,
-  error: undefined
-});
+): PlaybackState => {
+  console.log('[StateService] 🔄 updateWithConversation:', {
+    conversationId: conversation.metadata.id,
+    messageCount: conversation.messages.length,
+    currentIndex: conversation.currentIndex,
+    firstMessage: conversation.messages[0]?.content?.text?.substring(0, 50)
+  });
+  
+  return {
+    ...state,
+    conversation,
+    currentMessageIndex: conversation.currentIndex,
+    currentMessage: getCurrentMessage(conversation),
+    nextMessage: getNextMessage(conversation),
+    playbackSpeed: conversation.settings.playbackSpeed,
+    progress: calculateProgress(
+      conversation.currentIndex,
+      conversation.messages.length,
+      state.progress.elapsedTime
+    ),
+    isCompleted: false,
+    hasError: false,
+    error: undefined
+  };
+};
 
 export const updateWithPlaybackStart = (
   state: PlaybackState
@@ -275,6 +284,14 @@ export const updateWithMessageAdvance = (
   // Increment the index manually for now
   const newIndex = state.conversation.currentIndex + 1;
   const hasAdvanced = newIndex < state.conversation.messages.length;
+  
+  console.log('[StateService] ⏩ updateWithMessageAdvance:', {
+    oldIndex: state.conversation.currentIndex,
+    newIndex,
+    totalMessages: state.conversation.messages.length,
+    hasAdvanced,
+    nextMessage: state.conversation.messages[newIndex]?.content?.text?.substring(0, 30)
+  });
 
   // Create new conversation state with updated index
   const updatedConv = { ...state.conversation, currentIndex: newIndex };

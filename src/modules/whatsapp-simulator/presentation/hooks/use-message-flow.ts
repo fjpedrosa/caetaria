@@ -16,7 +16,7 @@ import {
   createMessageTypingEvent,
   logDebug,
   PlaybackState,
-  updatePlaybackStateWithCompletion} from '../services/conversation-service';
+  updatePlaybackStateWithCompletion} from '../../application/services/conversation-service';
 
 export interface MessageFlowOptions {
   state: PlaybackState;

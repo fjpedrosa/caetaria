@@ -12,7 +12,7 @@ import {
   logDebug,
   PlaybackState,
   updatePlaybackStateWithConversation,
-  validateConversation} from '../services/conversation-service';
+  validateConversation} from '../../application/services/conversation-service';
 
 export interface ConversationStateOptions {
   onStateChange?: (state: PlaybackState) => void;

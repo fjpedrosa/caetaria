@@ -42,6 +42,11 @@ export function CardSkeleton({ className }: { className?: string }) {
   );
 }
 
+// LoadingSkeleton component - alias for Skeleton for backward compatibility
+export function LoadingSkeleton(props: SkeletonProps) {
+  return <Skeleton {...props} />;
+}
+
 export function HeroSkeleton() {
   return (
     <motion.div

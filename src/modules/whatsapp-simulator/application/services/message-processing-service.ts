@@ -250,7 +250,9 @@ export const createMessagePlaybackStream = (
     console.log('[MessageProcessing] 🎬 Starting message playback stream', {
       conversationId: conversation.metadata.id,
       totalMessages: conversation.messages.length,
-      currentIndex: conversation.currentIndex
+      currentIndex: conversation.currentIndex,
+      firstMessage: conversation.messages[0]?.content?.text?.substring(0, 30),
+      conversationStatus: conversation.status
     });
 
     const processNextMessage = () => {
@@ -260,7 +262,7 @@ export const createMessagePlaybackStream = (
       console.log('[MessageProcessing] 📩 Processing next message:', {
         messageIndex,
         hasCurrentMessage: !!currentMessage,
-        currentContent: currentMessage?.content?.substring(0, 50)
+        currentContent: currentMessage?.content?.text?.substring(0, 50)
       });
 
       if (!currentMessage) {
