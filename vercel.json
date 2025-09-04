@@ -4,8 +4,6 @@
   "installCommand": "npm ci",
   "framework": "nextjs",
   "regions": [
-    "iad1",
-    "sfo1",
     "fra1"
   ],
   "functions": {
