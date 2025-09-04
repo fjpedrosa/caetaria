@@ -35,6 +35,32 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorPresentationalProps
   }) {
     const instanceId = React.useRef(Math.random().toString(36).substring(7)).current;
 
+    // CRITICAL DEBUG: Log raw props to understand data flow
+    React.useEffect(() => {
+      console.log('🚨 [WhatsAppSimulator] RAW PROPS RECEIVED:', {
+        timestamp: new Date().toISOString(),
+        instanceId,
+        hasConversationFlow: !!conversationFlow,
+        conversationFlowState: conversationFlow?.state ? {
+          hasMessages: !!conversationFlow.state.messages,
+          messagesLength: conversationFlow.state.messages?.length || 0,
+          messagesSample: conversationFlow.state.messages?.slice(0, 2)?.map(m => ({
+            sender: m.sender,
+            preview: m.content?.substring(0, 20)
+          })),
+          currentMessageIndex: conversationFlow.state.currentMessageIndex,
+          isPlaying: conversationFlow.state.isPlaying,
+          hasConversation: !!conversationFlow.state.conversation
+        } : 'No state in conversationFlow',
+        hasConversation: !!conversation,
+        conversationData: conversation ? {
+          id: conversation.metadata?.id,
+          messagesInConversation: conversation.messages?.length,
+          status: conversation.status
+        } : 'No conversation prop'
+      });
+    }, [conversationFlow, conversation, instanceId]);
+
     // Determine if content is ready
     const isContentReady = conversationFlow && conversation && isInitialized && typingIndicator;
     const businessName = conversation?.metadata?.businessName || 'Tu Negocio';
@@ -45,10 +71,10 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorPresentationalProps
 
     // Calculate debug info after getting messages and currentMessageIndex
     const visibleMessagesCount = messages.filter((_, idx) => idx <= currentMessageIndex).length;
-    const lastVisibleMessage = currentMessageIndex >= 0 && messages[currentMessageIndex] 
-      ? getMessageDisplayText(messages[currentMessageIndex]) 
+    const lastVisibleMessage = currentMessageIndex >= 0 && messages[currentMessageIndex]
+      ? getMessageDisplayText(messages[currentMessageIndex])
       : 'Ningún mensaje visible';
-    
+
     console.log(`[WhatsAppSimulator UI ${instanceId}] Render con estado actualizado:`, {
       isInitialized,
       hasConversation: !!conversation,
@@ -181,7 +207,7 @@ export const WhatsAppSimulator = React.memo<WhatsAppSimulatorPresentationalProps
 
                           // Debug: Log when rendering visible message
                           const messageText = getMessageDisplayText(message);
-                          console.log(`📱 [WhatsAppSimulator] Renderizando mensaje visible:`, {
+                          console.log('📱 [WhatsAppSimulator] Renderizando mensaje visible:', {
                             index,
                             isVisible,
                             sender: message.sender,

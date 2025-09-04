@@ -26,10 +26,15 @@ export {
   type ConnectionManagerEvent,
   type ConnectionManagerEventPayload,
   ConnectionState,
-  realtimeConnectionManager,
   type RealtimeSubscriptionPayload,
   type SubscriptionConfig,
   type SubscriptionEvent} from './connection-manager';
+
+// SSR-safe manager
+export { 
+  ssrSafeRealtimeManager as realtimeConnectionManager,
+  syncRealtimeManager
+} from './ssr-safe-manager';
 
 // React hooks
 export {
@@ -62,7 +67,7 @@ export const createOptimizedSubscription = <T>(
   event: SubscriptionEvent,
   callback: (payload: RealtimeSubscriptionPayload<T>) => void,
   options: Partial<SubscriptionConfig<T>> = {}
-): (() => void) => {
+): Promise<() => void> => {
   const config: SubscriptionConfig<T> = {
     id,
     table,
@@ -74,13 +79,13 @@ export const createOptimizedSubscription = <T>(
   // Apply performance optimizations
   const optimizedConfig = performanceOptimizer.optimizeSubscription(config);
 
-  // Create subscription
+  // Create subscription using SSR-safe manager
   return realtimeConnectionManager.subscribe(optimizedConfig);
 };
 
 // Health check utility
-export const checkRealtimeHealth = () => {
-  const health = realtimeConnectionManager.getHealth();
+export const checkRealtimeHealth = async () => {
+  const health = await realtimeConnectionManager.getHealth();
   const metrics = performanceOptimizer.getMetrics();
   const report = performanceOptimizer.generateReport();
 
@@ -95,10 +100,10 @@ export const checkRealtimeHealth = () => {
 };
 
 // Cleanup utility for app shutdown
-export const cleanupRealtime = () => {
+export const cleanupRealtime = async () => {
   console.log('>� Cleaning up real-time resources...');
 
-  realtimeConnectionManager.destroy();
+  await realtimeConnectionManager.destroy();
   performanceOptimizer.destroy();
 
   console.log(' Real-time cleanup complete');

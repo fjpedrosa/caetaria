@@ -11,7 +11,7 @@ import {
   ConversationConfig,
   getActiveTypingSenders,
   logDebug,
-  setTypingState} from '../services/conversation-service';
+  setTypingState} from '../../application/services/conversation-service';
 
 export interface TypingIndicatorsOptions {
   defaultTypingDuration?: number;

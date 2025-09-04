@@ -150,17 +150,17 @@ function applySecurityHeaders(response: NextResponse) {
     'Content-Security-Policy': process.env.NODE_ENV === 'production'
       ? [
           'default-src \'self\'',
-          'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://vercel.com https://*.vercel.app https://cdn.vercel-insights.com https://*.supabase.co https://*.posthog.com',
+          'script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://vercel.com https://*.vercel.app https://cdn.vercel-insights.com https://*.supabase.co https://*.posthog.com https://eu.i.posthog.com https://eu-assets.i.posthog.com',
           'style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com',
           'font-src \'self\' https://fonts.gstatic.com',
-          'img-src \'self\' data: blob: https://*.supabase.co https://*.vercel.app https://*.cloudinary.com',
-          'connect-src \'self\' https://*.supabase.co https://vercel.com https://*.vercel.app https://*.posthog.com https://*.sentry.io',
+          'img-src \'self\' data: blob: https://*.supabase.co https://*.vercel.app https://*.cloudinary.com https://eu-assets.i.posthog.com',
+          'connect-src \'self\' https://*.supabase.co https://vercel.com https://*.vercel.app https://*.posthog.com https://eu.i.posthog.com https://eu-assets.i.posthog.com https://*.sentry.io /ingest /ingest/*',
           'frame-src \'none\'',
           'object-src \'none\'',
           'base-uri \'self\'',
           'upgrade-insecure-requests'
         ].join('; ')
-      : 'default-src \'self\' \'unsafe-inline\' \'unsafe-eval\'; connect-src \'self\' http://localhost:* ws://localhost:* https://*.supabase.co;',
+      : 'default-src \'self\' \'unsafe-inline\' \'unsafe-eval\'; connect-src \'self\' http://localhost:* ws://localhost:* https://*.supabase.co https://eu.i.posthog.com https://eu-assets.i.posthog.com /ingest /ingest/*;',
 
     // HSTS for HTTPS enforcement
     ...(process.env.NODE_ENV === 'production' && {

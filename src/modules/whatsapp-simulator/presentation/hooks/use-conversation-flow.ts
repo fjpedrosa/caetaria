@@ -99,11 +99,13 @@ export function useConversationFlow(
     fastModeEnabled: config.enableDebug === false // Enable fast mode when not debugging
   }), [config.enableDebug, config.enablePerformanceTracking, config.maxRetries]);
 
-  // Orchestrator instance - Initialize synchronously
+  // Orchestrator instance and subscription tracking
   const orchestratorRef = useRef<ConversationOrchestrator | null>(null);
+  const subscriptionsRef = useRef<Subscription[]>([]);
+  const hasSubscribedRef = useRef(false);
 
   // CRITICAL FIX: Initialize orchestrator synchronously on first render
-  // This ensures the orchestrator is available immediately, not after useEffect
+  // This ensures orchestrator is ready immediately
   if (!orchestratorRef.current) {
     const initStartTime = performance.now();
     console.log('[ConversationFlow] 🔧 Synchronous orchestrator initialization', {
@@ -122,10 +124,6 @@ export function useConversationFlow(
       phase: 'sync-init-complete'
     });
   }
-
-  // Subscriptions
-  const subscriptionsRef = useRef<Subscription[]>([]);
-  const hasSubscribedRef = useRef(false);
 
   // State
   const [playbackState, setPlaybackState] = useState<PlaybackState>({
@@ -151,50 +149,53 @@ export function useConversationFlow(
   const [lastEvent, setLastEvent] = useState<ConversationEvent | null>(null);
   const [isReady, setIsReady] = useState(true); // Set to true since orchestrator is ready
 
-  // Set up subscriptions in useEffect (but orchestrator already exists)
+  // CRITICAL: Set up subscriptions immediately after state initialization
+  // This runs synchronously during render, ensuring subscriptions are ready
+  if (!hasSubscribedRef.current && orchestratorRef.current) {
+    hasSubscribedRef.current = true;
+    console.log('[ConversationFlow] 🔌 Setting up subscriptions after state init - FIXED v3');
+
+    // Subscribe to playback state changes
+    const playbackStateSubscription = orchestratorRef.current.playbackState$.subscribe(
+      (newState) => {
+        console.log('[ConversationFlow] 📬 State subscription received:', {
+          hasConversation: !!newState.conversation,
+          messageCount: newState.conversation?.messages?.length || 0,
+          currentIndex: newState.currentMessageIndex,
+          isPlaying: newState.isPlaying
+        });
+        setPlaybackState(newState);
+      }
+    );
+
+    // Subscribe to events
+    const eventsSubscription = orchestratorRef.current.events$.subscribe(
+      (event) => {
+        if (config.enableDebug || ['conversation.started', 'conversation.completed', 'message.sent', 'message.shown'].includes(event.type)) {
+          console.log('[ConversationFlow] Event:', event.type);
+        }
+        setLastEvent(event);
+        setEvents(prev => [...prev.slice(-49), event]);
+      }
+    );
+
+    subscriptionsRef.current.push(playbackStateSubscription, eventsSubscription);
+    
+    // Get initial state
+    const initialState = orchestratorRef.current.getCurrentState();
+    console.log('[ConversationFlow] ✅ Subscriptions set up. Initial state:', {
+      hasConversation: !!initialState.conversation,
+      messageCount: initialState.conversation?.messages?.length || 0,
+      currentIndex: initialState.currentMessageIndex
+    });
+  }
+
+  // Cleanup effect
   useEffect(() => {
-    // Only set up subscriptions once
-    if (!hasSubscribedRef.current && orchestratorRef.current) {
-      hasSubscribedRef.current = true;
-      console.log('[ConversationFlow] Setting up subscriptions for orchestrator');
-
-      // Subscribe to playback state changes with optimization
-      const playbackStateSubscription = orchestratorRef.current.playbackState$.pipe(
-        distinctUntilChanged((prev, curr) =>
-          prev.isPlaying === curr.isPlaying &&
-          prev.currentMessageIndex === curr.currentMessageIndex &&
-          prev.isCompleted === curr.isCompleted
-        )
-      ).subscribe(
-        (newState) => {
-          setPlaybackState(prevState => ({
-            ...newState,
-            error: newState.error || null
-          }));
-        }
-      );
-
-      // Subscribe to events with throttling
-      const eventsSubscription = orchestratorRef.current.events$.pipe(
-        throttleTime(50), // Throttle high-frequency events
-        tap(event => {
-          if (config.enableDebug || ['conversation.started', 'conversation.completed', 'message.sent'].includes(event.type)) {
-            console.log('[ConversationFlow] Event:', event.type);
-          }
-        })
-      ).subscribe(
-        (event) => {
-          setLastEvent(event);
-          setEvents(prev => {
-            const newEvents = [...prev.slice(-49), event];
-            return newEvents;
-          });
-        }
-      );
-
-      subscriptionsRef.current.push(playbackStateSubscription, eventsSubscription);
-      console.log('[ConversationFlow] ✅ Subscriptions set up successfully');
-    }
+    console.log('[ConversationFlow] 🔍 useEffect running for cleanup setup');
+    
+    // Subscriptions are now set up synchronously after state initialization
+    // This useEffect only handles cleanup
 
     // Cleanup on unmount
     return () => {
@@ -225,7 +226,7 @@ export function useConversationFlow(
         setLastEvent(null);
       }
     };
-  }, [orchestratorConfig, config.autoCleanup, config.enableDebug]);
+  }, []); // Empty dependency array to run only on mount
 
   // Action implementations with enhanced logging
   const loadConversation = useCallback(async (conversation: Conversation): Promise<boolean> => {
@@ -375,23 +376,37 @@ export function useConversationFlow(
   }, []);
 
   // Memoized state and actions
-  const state: ConversationFlowState = useMemo(() => ({
-    conversation: playbackState.conversation,
-    isPlaying: playbackState.isPlaying,
-    isPaused: playbackState.isPaused,
-    isCompleted: playbackState.isCompleted,
-    hasError: playbackState.hasError,
-    error: playbackState.error || null,
-    currentMessage: playbackState.currentMessage,
-    nextMessage: playbackState.nextMessage,
-    currentMessageIndex: playbackState.currentMessageIndex,
-    messages: [...(playbackState.conversation?.messages || [])],
-    progress: playbackState.progress,
-    typingStates: playbackState.typingStates,
-    playbackSpeed: playbackState.playbackSpeed,
-    events,
-    lastEvent
-  }), [playbackState, events, lastEvent]);
+  const state: ConversationFlowState = useMemo(() => {
+    const derivedMessages = [...(playbackState.conversation?.messages || [])];
+    
+    // Debug: Log when messages change
+    if (derivedMessages.length > 0 && config.enableDebug !== false) {
+      console.log('[ConversationFlow] 📝 State derivation:', {
+        hasConversation: !!playbackState.conversation,
+        messageCount: derivedMessages.length,
+        currentIndex: playbackState.currentMessageIndex,
+        firstMessage: derivedMessages[0]?.content?.text?.substring(0, 30)
+      });
+    }
+    
+    return {
+      conversation: playbackState.conversation,
+      isPlaying: playbackState.isPlaying,
+      isPaused: playbackState.isPaused,
+      isCompleted: playbackState.isCompleted,
+      hasError: playbackState.hasError,
+      error: playbackState.error || null,
+      currentMessage: playbackState.currentMessage,
+      nextMessage: playbackState.nextMessage,
+      currentMessageIndex: playbackState.currentMessageIndex,
+      messages: derivedMessages,
+      progress: playbackState.progress,
+      typingStates: playbackState.typingStates,
+      playbackSpeed: playbackState.playbackSpeed,
+      events,
+      lastEvent
+    };
+  }, [playbackState, events, lastEvent, config.enableDebug]);
 
   const actions: ConversationFlowActions = useMemo(() => ({
     loadConversation,

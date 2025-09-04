@@ -93,4 +93,4 @@ export {
   validateConversation,
   validateMessage,
   // Validation functions
-  validatePlaybackSpeed} from '../services/conversation-service';
+  validatePlaybackSpeed} from '../../application/services/conversation-service';

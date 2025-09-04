@@ -31,7 +31,6 @@
  * ```
  */
 
-import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
 import type { Database } from './types';
@@ -64,6 +63,7 @@ if (!supabaseAnonKey) {
  */
 export async function createClient() {
   // Get cookies from the request
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
@@ -126,6 +126,7 @@ export async function createAdminClient() {
     );
   }
 
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
 
   return createServerClient<Database>(

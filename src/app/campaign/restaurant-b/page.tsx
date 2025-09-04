@@ -6,14 +6,13 @@
 
 import { Metadata } from 'next';
 
-import { CampaignCTASection } from '@/modules/marketing/presentation/components/campaign-cta-section';
-import { CampaignFooter } from '@/modules/marketing/presentation/components/campaign-footer';
-import { CampaignHeroSection } from '@/modules/marketing/presentation/components/campaign-hero-section';
-import { CampaignPricing } from '@/modules/marketing/presentation/components/campaign-pricing';
-import { CampaignSimplicity } from '@/modules/marketing/presentation/components/campaign-simplicity';
-import { CampaignTestimonials } from '@/modules/marketing/presentation/components/campaign-testimonials';
-import { FeedbackWidget } from '@/modules/marketing/presentation/components/feedback-widget';
-import { RestaurantUseCases } from '@/modules/marketing/presentation/components/restaurant-use-cases';
+import { CTASection } from '@/modules/marketing/presentation/components/cta-section';
+import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
+import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
+import { PricingCards } from '@/modules/marketing/presentation/components/pricing-cards';
+import { ValueProps } from '@/modules/marketing/presentation/components/value-props';
+import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
+import { UseCasesSection } from '@/modules/marketing/presentation/components/use-cases-section';
 import { UTMTracker } from '@/modules/marketing/presentation/components/utm-tracker';
 
 export const metadata: Metadata = {
@@ -123,7 +122,7 @@ export default function RestaurantCampaignPageB() {
       <UTMTracker campaignData={campaignData} />
 
       {/* Hero Section with Simplicity focus */}
-      <CampaignHeroSection
+      <HeroSection
         variant="restaurant_simplicity"
         headline="Tu Restaurante en WhatsApp en Solo 5 Minutos"
         subheadline="Sin complicaciones técnicas, sin contratos eternos, sin dolor de cabeza. El WhatsApp para restaurantes más fácil del mundo."
@@ -140,7 +139,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Simplicity-focused Features */}
-      <CampaignSimplicity
+      <ValueProps
         industry="restaurant"
         features={simplicityFeatures}
         campaignData={campaignData}
@@ -152,7 +151,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Restaurant-Specific Use Cases (Simplified presentation) */}
-      <RestaurantUseCases
+      <UseCasesSection
         variant="simplified"
         useCases={[
           {
@@ -178,7 +177,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Social Proof & Testimonials (Simplicity focus) */}
-      <CampaignTestimonials
+      <Testimonials
         industry="restaurant"
         variant="simplicity_focused"
         testimonials={testimonialsB}
@@ -191,7 +190,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Campaign-Specific Pricing (Simplicity messaging) */}
-      <CampaignPricing
+      <PricingCards
         variant="restaurant_simplicity"
         industry="restaurant"
         campaignOffer={{
@@ -213,7 +212,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Final CTA Section (Urgency + Simplicity) */}
-      <CampaignCTASection
+      <CTASection
         variant="simplicity_urgency"
         headline="500+ Restaurantes ya lo Usan. Tu Turno es Ahora."
         subheadline="Ofertas especial: Setup gratuito + 25% descuento. Solo hasta fin de mes."
@@ -229,7 +228,7 @@ export default function RestaurantCampaignPageB() {
       />
 
       {/* Campaign Footer */}
-      <CampaignFooter
+      <LandingFooter
         campaignData={campaignData}
         industryLinks={[
           { label: 'Ver Demo en Vivo', href: '/demo/restaurante-live' },
@@ -239,13 +238,7 @@ export default function RestaurantCampaignPageB() {
         ]}
       />
 
-      {/* Feedback Collection Widget */}
-      <FeedbackWidget
-        campaignData={campaignData}
-        feedbackType="campaign_experience"
-        position="bottom-right"
-        variant="simplicity_focused"
-      />
+      {/* Feedback Collection Widget - Removed as component doesn't exist */}
     </>
   );
 }

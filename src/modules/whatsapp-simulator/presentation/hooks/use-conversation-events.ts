@@ -5,8 +5,8 @@
 
 import { useCallback, useEffect, useMemo,useRef, useState } from 'react';
 
+import { ConversationConfig, logDebug } from '../../application/services/conversation-service';
 import { ConversationEvent } from '../../domain/events';
-import { ConversationConfig, logDebug } from '../services/conversation-service';
 
 export interface ConversationEventsOptions {
   maxEventHistory?: number;

@@ -9,7 +9,6 @@ const nextConfig = {
 
   // Experimental features for Next.js 15
   experimental: {
-    telemetry: false,
     // Package optimization for commonly used libraries
     optimizePackageImports: [
       'lucide-react',
@@ -130,13 +129,20 @@ const nextConfig = {
     ];
   },
 
-  // PostHog rewrites
+  // PostHog rewrites - proxy to EU servers
   async rewrites() {
     return [
+      // Static assets first (more specific)
       {
         source: '/ingest/static/:path*',
         destination: 'https://eu-assets.i.posthog.com/static/:path*',
       },
+      // Session recordings
+      {
+        source: '/ingest/s/:path*',
+        destination: 'https://eu.i.posthog.com/s/:path*',
+      },
+      // Main API endpoint (most general)
       {
         source: '/ingest/:path*',
         destination: 'https://eu.i.posthog.com/:path*',
@@ -149,7 +155,7 @@ const nextConfig = {
 };
 
 if (!isTurbopack) {
-  nextConfig.webpack = (config, { isServer }) => {
+  nextConfig.webpack = (config) => {
     // Configuración específica para pdfjs-dist versión 5.x
     config.resolve.alias = {
       ...config.resolve.alias,

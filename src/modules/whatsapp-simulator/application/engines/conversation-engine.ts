@@ -15,7 +15,6 @@
 export {
   createConversationOrchestrator as ConversationEngine,
   type ConversationOrchestrator as ConversationEngineType,
-  createConversationEngine,
   type OrchestratorConfig as EngineConfig,
   type PlaybackState
 } from '../services/conversation-orchestrator';

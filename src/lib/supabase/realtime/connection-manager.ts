@@ -143,6 +143,12 @@ const createRealtimeConnectionManager = () => {
    * Create actual Supabase subscription
    */
   const createSubscription = <T = any>(config: SubscriptionConfig<T>): RealtimeChannel => {
+    // Return a mock channel if not in browser environment
+    if (typeof window === 'undefined' || !supabase.realtime) {
+      console.warn('Realtime not available, returning mock channel');
+      return {} as RealtimeChannel;
+    }
+
     const channelName = `${config.table}_${config.id}`;
 
     // Remove existing channel if it exists
@@ -275,6 +281,10 @@ const createRealtimeConnectionManager = () => {
    * Attempt to reconnect
    */
   const reconnect = (): void => {
+    if (typeof window === 'undefined' || !supabase.realtime) {
+      return;
+    }
+
     try {
       // Force reconnect by creating a new connection
       supabase.realtime.disconnect();
@@ -408,6 +418,17 @@ const createRealtimeConnectionManager = () => {
    * Initialize connection event listeners
    */
   const initializeEventListeners = (): void => {
+    // Only initialize in browser environment
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    // Check if realtime is available
+    if (!supabase.realtime || typeof supabase.realtime.onOpen !== 'function') {
+      console.warn('Supabase realtime not available, skipping initialization');
+      return;
+    }
+
     // Listen to Supabase client events
     supabase.realtime.onOpen(() => {
       handleConnectionOpen();
@@ -422,10 +443,12 @@ const createRealtimeConnectionManager = () => {
     });
   };
 
-  // Initialize the connection manager
-  initializeEventListeners();
-  startHeartbeat();
-  startLatencyMonitoring();
+  // Initialize the connection manager only in browser
+  if (typeof window !== 'undefined') {
+    initializeEventListeners();
+    startHeartbeat();
+    startLatencyMonitoring();
+  }
 
   // Create the public API object
   const api = {

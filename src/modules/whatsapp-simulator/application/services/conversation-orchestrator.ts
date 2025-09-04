@@ -167,8 +167,15 @@ export const createConversationOrchestrator = (config: Partial<OrchestratorConfi
         currentIndex: updatedState.conversation?.currentIndex,
         messageCount: updatedState.conversation?.messages?.length
       });
-      
+
       if (updatedState.conversation) {
+        console.log('[ConversationOrchestrator] 📋 Conversation before stream:', {
+          status: updatedState.conversation.status,
+          currentIndex: updatedState.conversation.currentIndex,
+          firstMessage: updatedState.conversation.messages[0]?.content?.text?.substring(0, 30),
+          messageAtIndex: updatedState.conversation.messages[updatedState.conversation.currentIndex]?.content?.text?.substring(0, 30)
+        });
+
         // Start message processing stream with the updated conversation
         const messageStream = messageProcessingService.createPlaybackStream(
           updatedState.conversation,
@@ -178,8 +185,12 @@ export const createConversationOrchestrator = (config: Partial<OrchestratorConfi
         );
 
         messageStream.subscribe({
-          next: (event) => eventService.emit(event),
+          next: (event) => {
+            console.log('[ConversationOrchestrator] 📨 Message stream event:', event.type);
+            eventService.emit(event);
+          },
           error: (error) => {
+            console.error('[ConversationOrchestrator] ❌ Message stream error:', error);
             stateManager.updateState(state => ({
               ...state,
               hasError: true,
@@ -187,6 +198,7 @@ export const createConversationOrchestrator = (config: Partial<OrchestratorConfi
             }));
           },
           complete: () => {
+            console.log('[ConversationOrchestrator] ✅ Message stream completed');
             // Message stream completed
           }
         });

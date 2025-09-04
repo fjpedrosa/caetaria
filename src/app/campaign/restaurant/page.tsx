@@ -6,14 +6,12 @@
 
 import { Metadata } from 'next';
 
-import { CampaignCTASection } from '@/modules/marketing/presentation/components/campaign-cta-section';
-import { CampaignFooter } from '@/modules/marketing/presentation/components/campaign-footer';
-import { CampaignHeroSection } from '@/modules/marketing/presentation/components/campaign-hero-section';
-import { CampaignPricing } from '@/modules/marketing/presentation/components/campaign-pricing';
-import { CampaignROICalculator } from '@/modules/marketing/presentation/components/campaign-roi-calculator';
-import { CampaignTestimonials } from '@/modules/marketing/presentation/components/campaign-testimonials';
-import { FeedbackWidget } from '@/modules/marketing/presentation/components/feedback-widget';
-import { RestaurantUseCases } from '@/modules/marketing/presentation/components/restaurant-use-cases';
+import { CTASection } from '@/modules/marketing/presentation/components/cta-section';
+import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
+import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
+import { PricingCards } from '@/modules/marketing/presentation/components/pricing-cards';
+import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
+import { UseCasesSection } from '@/modules/marketing/presentation/components/use-cases-section';
 import { UTMTracker } from '@/modules/marketing/presentation/components/utm-tracker';
 
 export const metadata: Metadata = {
@@ -108,7 +106,7 @@ export default function RestaurantCampaignPage() {
       <UTMTracker campaignData={campaignData} />
 
       {/* Hero Section with ROI focus */}
-      <CampaignHeroSection
+      <HeroSection
         variant="restaurant_roi"
         headline="Aumenta las Ventas de tu Restaurante un 30% en los Próximos 90 Días"
         subheadline="Sistema completo de automatización WhatsApp diseñado específicamente para restaurantes. ROI garantizado desde el primer mes."
@@ -124,26 +122,16 @@ export default function RestaurantCampaignPage() {
         campaignData={campaignData}
       />
 
-      {/* ROI Calculator Section */}
-      <CampaignROICalculator
-        industry="restaurant"
-        defaultValues={restaurantROIData}
-        conversionGoals={{
-          increaseOrders: 30,
-          reduceResponseTime: 95,
-          improveRetention: 50
-        }}
-        campaignData={campaignData}
-      />
+      {/* ROI Calculator Section - Removed as component doesn't exist */}
 
       {/* Restaurant-Specific Use Cases */}
-      <RestaurantUseCases
+      <UseCasesSection
         useCases={restaurantUseCases}
         campaignData={campaignData}
       />
 
       {/* Social Proof & Testimonials */}
-      <CampaignTestimonials
+      <Testimonials
         industry="restaurant"
         testimonials={[
           {
@@ -181,7 +169,7 @@ export default function RestaurantCampaignPage() {
       />
 
       {/* Campaign-Specific Pricing */}
-      <CampaignPricing
+      <PricingCards
         variant="restaurant_campaign"
         industry="restaurant"
         campaignOffer={{
@@ -203,7 +191,7 @@ export default function RestaurantCampaignPage() {
       />
 
       {/* Final CTA Section */}
-      <CampaignCTASection
+      <CTASection
         variant="urgency"
         headline="Únete a los 500+ Restaurantes que ya Aumentaron sus Ventas"
         subheadline="Oferta limitada: 25% descuento + setup gratuito. Solo disponible hasta fin de mes."
@@ -219,7 +207,7 @@ export default function RestaurantCampaignPage() {
       />
 
       {/* Campaign Footer */}
-      <CampaignFooter
+      <LandingFooter
         campaignData={campaignData}
         industryLinks={[
           { label: 'Casos de Éxito Restaurantes', href: '/casos-exito/restaurantes' },
@@ -229,12 +217,7 @@ export default function RestaurantCampaignPage() {
         ]}
       />
 
-      {/* Feedback Collection Widget */}
-      <FeedbackWidget
-        campaignData={campaignData}
-        feedbackType="campaign_experience"
-        position="bottom-right"
-      />
+      {/* Feedback Collection Widget - Removed as component doesn't exist */}
     </>
   );
 }

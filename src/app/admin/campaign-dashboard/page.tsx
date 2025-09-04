@@ -6,20 +6,15 @@
 
 'use client';
 
-import React, { useEffect,useState } from 'react';
+import  { useEffect,useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Activity,
-  BarChart3,
-  Calendar,
   DollarSign,
   Download,
-  Filter,
   RefreshCw,
   Target,
   TrendingUp,
   Users,
-  Zap
 } from 'lucide-react';
 
 import { Badge } from '@/modules/shared/presentation/components/ui/badge';
@@ -27,13 +22,6 @@ import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Card } from '@/modules/shared/presentation/components/ui/card';
 import { Select } from '@/modules/shared/presentation/components/ui/select';
 import { Tabs } from '@/modules/shared/presentation/components/ui/tabs';
-
-import { CampaignABTestResults } from '../../../modules/marketing/presentation/components/campaign-ab-test-results';
-import { CampaignAttributionChart } from '../../../modules/marketing/presentation/components/campaign-attribution-chart';
-import { CampaignFunnelAnalysis } from '../../../modules/marketing/presentation/components/campaign-funnel-analysis';
-import { CampaignLeadScoring } from '../../../modules/marketing/presentation/components/campaign-lead-scoring';
-import { CampaignMetricsOverview } from '../../../modules/marketing/presentation/components/campaign-metrics-overview';
-import { CampaignROIAnalysis } from '../../../modules/marketing/presentation/components/campaign-roi-analysis';
 
 interface CampaignPerformanceData {
   overview: {
@@ -444,14 +432,6 @@ export default function CampaignDashboard() {
             </nav>
           </div>
 
-          <div className="mt-6 space-y-6">
-            <CampaignMetricsOverview data={performanceData} />
-            <CampaignABTestResults data={performanceData.variants} />
-            <CampaignAttributionChart data={performanceData.attribution} />
-            <CampaignFunnelAnalysis data={performanceData.funnel} />
-            <CampaignLeadScoring data={performanceData.leadScoring} />
-            <CampaignROIAnalysis data={performanceData} />
-          </div>
         </Tabs>
       </div>
     </div>
