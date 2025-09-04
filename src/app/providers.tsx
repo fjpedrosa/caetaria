@@ -6,15 +6,10 @@ import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { Provider as ReduxProvider } from 'react-redux'
 
+import { clientConfig, shouldEnableAnalytics, debugLog } from '@/lib/config/client-config'
 import ErrorBoundary from '@/modules/shared/presentation/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
-
-// Extract environment variables at module level to avoid HMR issues with Turbopack
-// This prevents process.env access issues during hot module replacement
-const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY
-const NODE_ENV = process.env.NODE_ENV
-const ENABLE_POSTHOG_DEV = process.env.NEXT_PUBLIC_ENABLE_POSTHOG_DEV
 
 /**
  * Root Providers Component
@@ -28,8 +23,9 @@ const ENABLE_POSTHOG_DEV = process.env.NEXT_PUBLIC_ENABLE_POSTHOG_DEV
  * This component creates a per-request store instance for proper
  * SSR/SSG support in Next.js App Router and HMR stability.
  *
- * Environment variables are extracted at module level to prevent
- * HMR module instantiation issues with Turbopack in Next.js 15.
+ * Uses centralized client configuration to avoid HMR module instantiation 
+ * issues with Turbopack in Next.js 15.5.2. All process.env access is
+ * isolated in the client-config module.
  *
  * Optimized for React 19 compatibility with Turbopack and hydration fixes.
  */
@@ -47,37 +43,38 @@ export function Providers({ children }: { children: ReactNode }) {
 
   // Initialize PostHog on client side
   useEffect(() => {
-    // Only initialize if we have a key and we're on the client
-    if (typeof window !== 'undefined' && POSTHOG_KEY) {
+    // Only initialize if we have a key and analytics should be enabled
+    if (typeof window !== 'undefined' && clientConfig.posthog.key && shouldEnableAnalytics()) {
       try {
         // Check if already initialized to prevent duplicate initialization
         if (!posthog.__loaded) {
-          posthog.init(POSTHOG_KEY, {
+          posthog.init(clientConfig.posthog.key, {
             // Use proxy endpoint to avoid CORS and CSP issues
             api_host: '/ingest',
             // UI host for dashboard links
-            ui_host: 'https://eu.posthog.com',
-            // Disable in development if needed
-            opt_out_capturing_by_default: NODE_ENV === 'development' && !ENABLE_POSTHOG_DEV,
+            ui_host: clientConfig.posthog.host,
+            // Disable in development if not explicitly enabled
+            opt_out_capturing_by_default: !shouldEnableAnalytics(),
             // Manual pageview handling for Next.js
             capture_pageview: false,
             capture_pageleave: true,
-            // Auto-capture user interactions
-            autocapture: NODE_ENV === 'production',
+            // Auto-capture user interactions in production only
+            autocapture: clientConfig.app.isProduction,
             // Session recording configuration
             session_recording: {
               maskAllInputs: false,
               maskTextSelector: '[data-private]'
             },
             // Performance tracking
-            capture_performance: NODE_ENV === 'production',
+            capture_performance: clientConfig.features.performanceMonitoring,
             // Person profiles
             person_profiles: 'identified_only',
             // Loaded callback
             loaded: (posthog) => {
-              if (NODE_ENV === 'development') {
-                console.log('[PostHog] Initialized successfully')
-              }
+              debugLog('PostHog initialized successfully', {
+                env: clientConfig.app.env,
+                analyticsEnabled: shouldEnableAnalytics()
+              })
             },
             // Bootstrap to avoid waiting for initial load
             bootstrap: {
@@ -90,6 +87,8 @@ export function Providers({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error('[PostHog] Initialization error:', error)
       }
+    } else if (clientConfig.app.isDevelopment && !clientConfig.posthog.enableInDev) {
+      debugLog('PostHog disabled in development. Set NEXT_PUBLIC_ENABLE_POSTHOG_DEV=true to enable.')
     }
   }, [])
 
