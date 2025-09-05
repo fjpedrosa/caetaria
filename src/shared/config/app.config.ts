@@ -73,7 +73,7 @@ export const i18nConfig = {
 export const seoConfig = {
   defaultTitle: 'Neptunik - Automatiza WhatsApp para tu negocio',
   titleTemplate: '%s | Neptunik',
-  defaultDescription: 'Aumenta tus ventas 30% automatizando WhatsApp. Neptunik te permite gestionar clientes, automatizar respuestas y cerrar más ventas. Configuración en 5 minutos.',
+  defaultDescription: 'Aumenta tus ventas automatizando WhatsApp. Neptunik te permite gestionar clientes, automatizar respuestas y cerrar más ventas. Configuración en 5 minutos.',
   defaultKeywords: ['whatsapp', 'business', 'api', 'messaging', 'cloud', 'integration'],
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://neptunik.com',
   defaultImage: '/images/og-image.jpg',

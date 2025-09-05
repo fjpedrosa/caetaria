@@ -119,15 +119,6 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    },
-    {
-      "source": "/.*\\.(js|css|woff|woff2|ttf|eot|ico|png|jpg|jpeg|gif|svg|webp|avif)$",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
     }
   ],
   "redirects": [
@@ -140,12 +131,6 @@
       "source": "/dashboard",
       "destination": "/onboarding/business",
       "permanent": false
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/webhooks/whatsapp",
-      "destination": "/api/webhooks/whatsapp"
     }
   ],
   "build": {
