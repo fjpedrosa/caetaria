@@ -25,7 +25,7 @@ export function HeroMobileDemoV2({ isInView }: HeroMobileDemoV2Props) {
             <div className="w-full h-full bg-white rounded-[1.8rem] p-4 flex flex-col">
               {/* Status bar */}
               <div className="h-6 bg-gray-100 rounded mb-4"></div>
-              
+
               {/* Chat header */}
               <div className="h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-lg mb-4 flex items-center px-4">
                 <div className="w-10 h-10 bg-white/20 rounded-full mr-3"></div>
@@ -34,7 +34,7 @@ export function HeroMobileDemoV2({ isInView }: HeroMobileDemoV2Props) {
                   <div className="h-2 bg-white/30 rounded w-16"></div>
                 </div>
               </div>
-              
+
               {/* Messages placeholder */}
               <div className="flex-1 space-y-3 p-2">
                 <div className="h-10 bg-gray-100 rounded-lg w-3/4 animate-pulse"></div>
@@ -42,7 +42,7 @@ export function HeroMobileDemoV2({ isInView }: HeroMobileDemoV2Props) {
                 <div className="h-10 bg-gray-100 rounded-lg w-2/3 animate-pulse delay-150"></div>
                 <div className="h-10 bg-green-100 rounded-lg w-1/3 ml-auto animate-pulse delay-200"></div>
               </div>
-              
+
               {/* Input bar */}
               <div className="h-12 bg-gray-100 rounded-full flex items-center px-4">
                 <div className="flex-1 h-6 bg-white rounded-full mr-2"></div>
@@ -50,7 +50,7 @@ export function HeroMobileDemoV2({ isInView }: HeroMobileDemoV2Props) {
               </div>
             </div>
           </div>
-          
+
           {/* Floating badge */}
           <motion.div
             className="absolute -top-2 -right-2 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg"

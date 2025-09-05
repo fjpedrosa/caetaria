@@ -31,7 +31,7 @@ export {
   type SubscriptionEvent} from './connection-manager';
 
 // SSR-safe manager
-export { 
+export {
   ssrSafeRealtimeManager as realtimeConnectionManager,
   syncRealtimeManager
 } from './ssr-safe-manager';

@@ -53,10 +53,6 @@ export function BusinessInfoForm({
     defaultValues
   });
 
-  // =============================================================================
-  // PURE JSX RENDERING - No business logic
-  // =============================================================================
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={`space-y-6 ${className || ''}`}>
@@ -68,17 +64,17 @@ export function BusinessInfoForm({
             <FormItem>
               <FormLabel className="flex items-center space-x-2">
                 <Building2 className="w-4 h-4" />
-                <span>Company Name *</span>
+                <span>Nombre de la Empresa *</span>
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your company name"
+                  placeholder="Ingresa el nombre de tu empresa"
                   {...field}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </FormControl>
               <FormDescription>
-                Use your official business name as it appears on registration documents.
+                Usa el nombre oficial de tu negocio tal como aparece en los documentos de registro.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -92,11 +88,11 @@ export function BusinessInfoForm({
             name="businessType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Business Type *</FormLabel>
+                <FormLabel>Tipo de Negocio *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select business type" />
+                      <SelectValue placeholder="Selecciona el tipo de negocio" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -117,11 +113,11 @@ export function BusinessInfoForm({
             name="industry"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Industry *</FormLabel>
+                <FormLabel>Industria *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select your industry" />
+                      <SelectValue placeholder="Selecciona tu industria" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -145,18 +141,18 @@ export function BusinessInfoForm({
             name="employeeCount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Number of Employees *</FormLabel>
+                <FormLabel>Número de Empleados *</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
-                    placeholder="e.g., 25"
+                    placeholder="ej., 25"
                     {...field}
                     onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                     className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                   />
                 </FormControl>
                 <FormDescription>
-                  This helps us recommend the right plan for your needs.
+                  Esto nos ayuda a recomendar el plan adecuado para tus necesidades.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -168,17 +164,17 @@ export function BusinessInfoForm({
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website URL</FormLabel>
+                <FormLabel>URL del Sitio Web</FormLabel>
                 <FormControl>
                   <Input
                     type="url"
-                    placeholder="https://yourcompany.com"
+                    placeholder="https://tuempresa.com"
                     {...field}
                     className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                   />
                 </FormControl>
                 <FormDescription>
-                  Optional. Used for verification if available.
+                  Opcional. Se usa para verificación si está disponible.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -192,7 +188,7 @@ export function BusinessInfoForm({
           name="expectedVolume"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Expected Message Volume *</FormLabel>
+              <FormLabel>Volumen de Mensajes Esperado *</FormLabel>
               <FormControl>
                 <div className="space-y-3">
                   {volumeOptions.map((option) => (
@@ -213,7 +209,7 @@ export function BusinessInfoForm({
                 </div>
               </FormControl>
               <FormDescription>
-                This helps us suggest the most suitable plan and configuration.
+                Esto nos ayuda a sugerir el plan y configuración más adecuados.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -226,16 +222,16 @@ export function BusinessInfoForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Business Description</FormLabel>
+              <FormLabel>Descripción del Negocio</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Tell us about your business and how you plan to use WhatsApp..."
+                  placeholder="Cuéntanos sobre tu negocio y cómo planeas usar WhatsApp..."
                   className="min-h-[100px] resize-none transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                Optional. Help us understand your use case to provide better recommendations.
+                Opcional. Ayúdanos a entender tu caso de uso para brindar mejores recomendaciones.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -253,11 +249,11 @@ export function BusinessInfoForm({
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving Information...
+                Guardando Información...
               </>
             ) : (
               <>
-                Continue to WhatsApp Integration
+                Continuar a Integración de WhatsApp
                 <ArrowRight className="w-4 h-4 ml-2" />
               </>
             )}

@@ -5,20 +5,13 @@ import { motion, useInView } from 'framer-motion';
 
 import { HeroContent } from './components/hero-content';
 import { HeroMobileDemo } from './components/hero-mobile-demo';
-import { HeroMobileDemoV2 } from './components/hero-mobile-demo-v2';
 
 export function HeroSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
-  // Debug logging for isInView
-  useEffect(() => {
-    console.log('[HeroSection] isInView changed:', isInView);
-  }, [isInView]);
-
-  // Check for reduced motion preference
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [animationsReady, setAnimationsReady] = useState(false);
+
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -35,7 +28,7 @@ export function HeroSection() {
     if (isInView && !prefersReducedMotion) {
       const delay = setTimeout(() => {
         setAnimationsReady(true);
-      }, 1000); // Wait 1 second after section is in view
+      }, 1000);
 
       return () => clearTimeout(delay);
     }
@@ -106,14 +99,14 @@ export function HeroSection() {
       <div className="relative container mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh]">
           {/* Left: Content */}
-          {/* <HeroContent
+          <HeroContent
             isInView={isInView}
             prefersReducedMotion={prefersReducedMotion}
-          /> */}
-          <HeroMobileDemo isInView={isInView} />
+          />
 
-          {/* Right: Mobile Mockup - Using V2 with Clean Architecture */}
-          <HeroMobileDemoV2 isInView={true} />
+          {/* Right: Mobile Mockup */}
+          <HeroMobileDemo isInView={isInView} />
+          {/* <HeroMobileDemoV2 isInView={true} /> */}
         </div>
       </div>
     </section>

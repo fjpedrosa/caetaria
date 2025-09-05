@@ -6,11 +6,11 @@ import { SmoothScrollNav } from '@/modules/shared/presentation/components/ui/smo
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - WhatsApp Cloud API Platform',
-  description: 'Terms and conditions for using our enterprise WhatsApp Cloud API platform. API usage terms, pricing, billing, and service agreements.',
+  title: 'Términos de Servicio - Plataforma WhatsApp Cloud API',
+  description: 'Términos y condiciones para usar nuestra plataforma empresarial WhatsApp Cloud API. Términos de uso de API, precios, facturación y acuerdos de servicio.',
   openGraph: {
-    title: 'Terms of Service - WhatsApp Cloud API Platform',
-    description: 'Service terms and conditions for our enterprise messaging platform.',
+    title: 'Términos de Servicio - Plataforma WhatsApp Cloud API',
+    description: 'Términos y condiciones de servicio para nuestra plataforma de mensajería empresarial.',
     type: 'website',
   },
   robots: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = 'January 15, 2025';
+const LAST_UPDATED = '15 de enero de 2025';
 
 interface TableOfContentsItem {
   id: string;
@@ -28,24 +28,24 @@ interface TableOfContentsItem {
 }
 
 const tableOfContents: TableOfContentsItem[] = [
-  { id: 'introduction', title: 'Introduction and Acceptance' },
-  { id: 'service-description', title: 'Service Description' },
-  { id: 'account-registration', title: 'Account Registration' },
-  { id: 'acceptable-use', title: 'Acceptable Use Policy' },
-  { id: 'api-usage-terms', title: 'API Usage Terms' },
-  { id: 'whatsapp-compliance', title: 'WhatsApp Business Policy Compliance' },
-  { id: 'pricing-billing', title: 'Pricing and Billing Terms' },
-  { id: 'data-processing', title: 'Data Processing and Privacy' },
-  { id: 'service-availability', title: 'Service Availability and SLA' },
-  { id: 'intellectual-property', title: 'Intellectual Property Rights' },
-  { id: 'user-responsibilities', title: 'User Responsibilities' },
-  { id: 'prohibited-activities', title: 'Prohibited Activities' },
-  { id: 'termination', title: 'Account Termination' },
-  { id: 'limitation-liability', title: 'Limitation of Liability' },
-  { id: 'indemnification', title: 'Indemnification' },
-  { id: 'governing-law', title: 'Governing Law and Jurisdiction' },
-  { id: 'changes-to-terms', title: 'Changes to Terms' },
-  { id: 'contact-information', title: 'Contact Information' },
+  { id: 'introduction', title: 'Introducción y Aceptación' },
+  { id: 'service-description', title: 'Descripción del Servicio' },
+  { id: 'account-registration', title: 'Registro de Cuenta' },
+  { id: 'acceptable-use', title: 'Política de Uso Aceptable' },
+  { id: 'api-usage-terms', title: 'Términos de Uso de API' },
+  { id: 'whatsapp-compliance', title: 'Cumplimiento de Políticas de WhatsApp Business' },
+  { id: 'pricing-billing', title: 'Términos de Precios y Facturación' },
+  { id: 'data-processing', title: 'Procesamiento de Datos y Privacidad' },
+  { id: 'service-availability', title: 'Disponibilidad del Servicio y SLA' },
+  { id: 'intellectual-property', title: 'Derechos de Propiedad Intelectual' },
+  { id: 'user-responsibilities', title: 'Responsabilidades del Usuario' },
+  { id: 'prohibited-activities', title: 'Actividades Prohibidas' },
+  { id: 'termination', title: 'Terminación de Cuenta' },
+  { id: 'limitation-liability', title: 'Limitación de Responsabilidad' },
+  { id: 'indemnification', title: 'Indemnización' },
+  { id: 'governing-law', title: 'Ley Aplicable y Jurisdicción' },
+  { id: 'changes-to-terms', title: 'Cambios a los Términos' },
+  { id: 'contact-information', title: 'Información de Contacto' },
 ];
 
 export default function TermsOfServicePage() {
@@ -56,13 +56,13 @@ export default function TermsOfServicePage() {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Terms of Service
+              Términos de Servicio
             </h1>
             <p className="text-xl text-gray-600 mb-4">
-              Please read these terms carefully before using our WhatsApp Cloud API Platform.
+              Por favor, lee estos términos cuidadosamente antes de usar nuestra Plataforma WhatsApp Cloud API.
             </p>
             <p className="text-sm text-gray-500">
-              Last updated: <time dateTime="2025-01-15">{LAST_UPDATED}</time>
+              Última actualización: <time dateTime="2025-01-15">{LAST_UPDATED}</time>
             </p>
           </div>
         </div>
@@ -84,340 +84,340 @@ export default function TermsOfServicePage() {
 
                   {/* Introduction */}
                   <section id="introduction" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction and Acceptance</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Introducción y Aceptación</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to the WhatsApp Cloud API Platform operated by The Kroko Company ("Company," "we," "us," or "our").
-                      These Terms of Service ("Terms") govern your access to and use of our platform, including our website,
-                      APIs, and related services (collectively, the "Service").
+                      Bienvenido a la Plataforma WhatsApp Cloud API operada por The Kroko Company ("Compañía", "nosotros", o "nuestro").
+                      Estos Términos de Servicio ("Términos") rigen tu acceso y uso de nuestra plataforma, incluyendo nuestro sitio web,
+                      APIs, y servicios relacionados (colectivamente, el "Servicio").
                     </p>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      By accessing or using our Service, you agree to be bound by these Terms and our Privacy Policy.
-                      If you disagree with any part of these terms, you may not access the Service.
+                      Al acceder o usar nuestro Servicio, aceptas estar sujeto a estos Términos y nuestra Política de Privacidad.
+                      Si no estás de acuerdo con alguna parte de estos términos, no puedes acceder al Servicio.
                     </p>
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                       <p className="text-amber-800 font-medium">
-                        Important: These terms constitute a legally binding agreement between you and The Kroko Company.
+                        Importante: Estos términos constituyen un acuerdo legalmente vinculante entre tú y The Kroko Company.
                       </p>
                     </div>
                   </section>
 
                   {/* Service Description */}
                   <section id="service-description" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Service Description</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Descripción del Servicio</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Our platform provides enterprise-grade WhatsApp Business API integration services, including:
+                      Nuestra plataforma proporciona servicios de integración WhatsApp Business API de grado empresarial, incluyendo:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                      <li>WhatsApp Business API access and message routing</li>
-                      <li>Multi-channel messaging platform (WhatsApp, Telegram, Instagram, Facebook)</li>
-                      <li>AI-powered chatbot development and management</li>
-                      <li>Advanced analytics and reporting tools</li>
-                      <li>Webhook management and API integrations</li>
-                      <li>Template message creation and approval services</li>
-                      <li>Customer support and technical assistance</li>
+                      <li>Acceso a WhatsApp Business API y enrutamiento de mensajes</li>
+                      <li>Plataforma de mensajería multicanal (WhatsApp, Telegram, Instagram, Facebook)</li>
+                      <li>Desarrollo y gestión de chatbots con IA</li>
+                      <li>Herramientas avanzadas de análisis y reportes</li>
+                      <li>Gestión de webhooks e integraciones API</li>
+                      <li>Creación y aprobación de plantillas de mensajes</li>
+                      <li>Soporte al cliente y asistencia técnica</li>
                     </ul>
                     <p className="text-gray-700 leading-relaxed">
-                      The Service is provided "as is" and may be modified, updated, or discontinued at our discretion
-                      with appropriate notice to users.
+                      El Servicio se proporciona "tal cual" y puede ser modificado, actualizado o descontinuado a nuestra discreción
+                      con notificación apropiada a los usuarios.
                     </p>
                   </section>
 
                   {/* Account Registration */}
                   <section id="account-registration" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Registration</h2>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Eligibility</h3>
-                    <p className="text-gray-700 mb-4">To use our Service, you must:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Registro de Cuenta</h2>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Elegibilidad</h3>
+                    <p className="text-gray-700 mb-4">Para usar nuestro Servicio, debes:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 mb-6">
-                      <li>Be at least 18 years old or the age of majority in your jurisdiction</li>
-                      <li>Have the legal authority to enter into this agreement</li>
-                      <li>Represent a legitimate business entity</li>
-                      <li>Comply with all applicable laws and regulations</li>
+                      <li>Tener al menos 18 años o la mayoría de edad en tu jurisdicción</li>
+                      <li>Tener la autoridad legal para celebrar este acuerdo</li>
+                      <li>Representar una entidad empresarial legítima</li>
+                      <li>Cumplir con todas las leyes y regulaciones aplicables</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Account Security</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Seguridad de la Cuenta</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>You are responsible for maintaining the security of your account credentials</li>
-                      <li>Notify us immediately of any unauthorized access or security breaches</li>
-                      <li>Use strong passwords and enable two-factor authentication when available</li>
-                      <li>Do not share your account credentials with unauthorized parties</li>
+                      <li>Eres responsable de mantener la seguridad de las credenciales de tu cuenta</li>
+                      <li>Notifícanos inmediatamente sobre cualquier acceso no autorizado o violación de seguridad</li>
+                      <li>Usa contraseñas seguras y habilita la autenticación de dos factores cuando esté disponible</li>
+                      <li>No compartas las credenciales de tu cuenta con partes no autorizadas</li>
                     </ul>
                   </section>
 
                   {/* Acceptable Use Policy */}
                   <section id="acceptable-use" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Acceptable Use Policy</h2>
-                    <p className="text-gray-700 mb-4">You agree to use our Service only for lawful purposes and in accordance with:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Política de Uso Aceptable</h2>
+                    <p className="text-gray-700 mb-4">Aceptas usar nuestro Servicio solo para fines legales y de acuerdo con:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>All applicable local, national, and international laws</li>
-                      <li>WhatsApp's Business Policy and Terms of Service</li>
-                      <li>Meta's Community Standards and Platform Policies</li>
-                      <li>Industry best practices for business communications</li>
-                      <li>Applicable data protection and privacy regulations</li>
+                      <li>Todas las leyes locales, nacionales e internacionales aplicables</li>
+                      <li>La Política Empresarial y los Términos de Servicio de WhatsApp</li>
+                      <li>Los Estándares de la Comunidad y las Políticas de Plataforma de Meta</li>
+                      <li>Las mejores prácticas de la industria para comunicaciones empresariales</li>
+                      <li>Las regulaciones de protección de datos y privacidad aplicables</li>
                     </ul>
                   </section>
 
                   {/* API Usage Terms */}
                   <section id="api-usage-terms" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">API Usage Terms</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Términos de Uso de API</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Rate Limits and Quotas</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Límites de Velocidad y Cuotas</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>API usage is subject to rate limits based on your subscription plan</li>
-                      <li>Excessive usage may result in temporary throttling or suspension</li>
-                      <li>Contact us to discuss higher limits for enterprise needs</li>
-                      <li>Fair usage policies apply to prevent service abuse</li>
+                      <li>El uso de la API está sujeto a límites de velocidad según tu plan de suscripción</li>
+                      <li>El uso excesivo puede resultar en limitación temporal o suspensión</li>
+                      <li>Contáctanos para discutir límites más altos para necesidades empresariales</li>
+                      <li>Se aplican políticas de uso justo para prevenir el abuso del servicio</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">API Security</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Seguridad de la API</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Protect your API keys and authentication credentials</li>
-                      <li>Implement proper error handling and retry mechanisms</li>
-                      <li>Use HTTPS for all API communications</li>
-                      <li>Report security vulnerabilities responsibly</li>
+                      <li>Protege tus claves API y credenciales de autenticación</li>
+                      <li>Implementa manejo adecuado de errores y mecanismos de reintento</li>
+                      <li>Usa HTTPS para todas las comunicaciones API</li>
+                      <li>Reporta vulnerabilidades de seguridad de manera responsable</li>
                     </ul>
                   </section>
 
                   {/* WhatsApp Compliance */}
                   <section id="whatsapp-compliance" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">WhatsApp Business Policy Compliance</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cumplimiento de Políticas de WhatsApp Business</h2>
                     <p className="text-gray-700 mb-4">
-                      As a WhatsApp Business Solution Provider, you must comply with all WhatsApp policies:
+                      Como Proveedor de Soluciones WhatsApp Business, debes cumplir con todas las políticas de WhatsApp:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Obtain proper consent before initiating conversations with users</li>
-                      <li>Respect user privacy and opt-out requests</li>
-                      <li>Use approved message templates for business communications</li>
-                      <li>Maintain accurate business information and verification</li>
-                      <li>Follow WhatsApp's messaging guidelines and content policies</li>
-                      <li>Implement proper customer support and dispute resolution</li>
+                      <li>Obtener el consentimiento adecuado antes de iniciar conversaciones con usuarios</li>
+                      <li>Respetar la privacidad del usuario y las solicitudes de exclusión</li>
+                      <li>Usar plantillas de mensajes aprobadas para comunicaciones empresariales</li>
+                      <li>Mantener información empresarial precisa y verificación</li>
+                      <li>Seguir las pautas de mensajería y políticas de contenido de WhatsApp</li>
+                      <li>Implementar soporte al cliente adecuado y resolución de disputas</li>
                     </ul>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
                       <p className="text-blue-800">
-                        <strong>Notice:</strong> Violations of WhatsApp's policies may result in account suspension
-                        or termination by WhatsApp, which is beyond our control.
+                        <strong>Aviso:</strong> Las violaciones de las políticas de WhatsApp pueden resultar en suspensión
+                        o terminación de cuenta por parte de WhatsApp, lo cual está fuera de nuestro control.
                       </p>
                     </div>
                   </section>
 
                   {/* Pricing and Billing */}
                   <section id="pricing-billing" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Pricing and Billing Terms</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Términos de Precios y Facturación</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Subscription Plans</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Planes de Suscripción</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>Subscription fees are billed monthly or annually in advance</li>
-                      <li>All prices are in USD unless otherwise specified</li>
-                      <li>Local taxes and fees may apply based on your location</li>
-                      <li>Price changes will be communicated 30 days in advance</li>
+                      <li>Las tarifas de suscripción se facturan mensual o anualmente por adelantado</li>
+                      <li>Todos los precios están en USD a menos que se especifique lo contrario</li>
+                      <li>Pueden aplicarse impuestos y tarifas locales según tu ubicación</li>
+                      <li>Los cambios de precio se comunicarán con 30 días de anticipación</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Usage-Based Charges</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Cargos Basados en Uso</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>Message delivery fees as per WhatsApp's pricing structure</li>
-                      <li>Additional API calls beyond plan limits</li>
-                      <li>Premium feature usage and add-on services</li>
-                      <li>Professional services and custom development</li>
+                      <li>Tarifas de entrega de mensajes según la estructura de precios de WhatsApp</li>
+                      <li>Llamadas API adicionales más allá de los límites del plan</li>
+                      <li>Uso de funciones premium y servicios adicionales</li>
+                      <li>Servicios profesionales y desarrollo personalizado</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Payment Terms</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Términos de Pago</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Payment is due immediately upon invoice generation</li>
-                      <li>Late payments may incur interest charges and service suspension</li>
-                      <li>Disputed charges must be reported within 30 days</li>
-                      <li>Refunds are subject to our refund policy</li>
+                      <li>El pago es debido inmediatamente tras la generación de la factura</li>
+                      <li>Los pagos tardíos pueden incurrir en cargos por intereses y suspensión del servicio</li>
+                      <li>Los cargos disputados deben reportarse dentro de 30 días</li>
+                      <li>Los reembolsos están sujetos a nuestra política de reembolsos</li>
                     </ul>
                   </section>
 
                   {/* Data Processing */}
                   <section id="data-processing" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Processing and Privacy</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Procesamiento de Datos y Privacidad</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Our data processing practices are detailed in our Privacy Policy. By using the Service, you acknowledge:
+                      Nuestras prácticas de procesamiento de datos están detalladas en nuestra Política de Privacidad. Al usar el Servicio, reconoces:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>We process data as a controller for our own business purposes</li>
-                      <li>We act as a processor for customer message data</li>
-                      <li>Data transfers comply with applicable privacy laws</li>
-                      <li>You are responsible for obtaining necessary consents from your customers</li>
-                      <li>Data retention policies apply as outlined in our Privacy Policy</li>
+                      <li>Procesamos datos como controlador para nuestros propios fines comerciales</li>
+                      <li>Actuamos como procesador para los datos de mensajes de clientes</li>
+                      <li>Las transferencias de datos cumplen con las leyes de privacidad aplicables</li>
+                      <li>Eres responsable de obtener los consentimientos necesarios de tus clientes</li>
+                      <li>Se aplican políticas de retención de datos según se describe en nuestra Política de Privacidad</li>
                     </ul>
                   </section>
 
                   {/* Service Availability */}
                   <section id="service-availability" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Service Availability and SLA</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Disponibilidad del Servicio y SLA</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Uptime Commitment</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Compromiso de Tiempo de Actividad</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>We strive for 99.9% uptime for our core API services</li>
-                      <li>Scheduled maintenance windows will be announced in advance</li>
-                      <li>Service credits may be available for significant outages</li>
-                      <li>Third-party service dependencies may affect availability</li>
+                      <li>Nos esforzamos por un 99.9% de tiempo de actividad para nuestros servicios API principales</li>
+                      <li>Las ventanas de mantenimiento programado se anunciarán con anticipación</li>
+                      <li>Pueden estar disponibles créditos de servicio para interrupciones significativas</li>
+                      <li>Las dependencias de servicios de terceros pueden afectar la disponibilidad</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Limitations</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Limitaciones</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>WhatsApp platform availability is beyond our control</li>
-                      <li>Network connectivity issues may affect service delivery</li>
-                      <li>Force majeure events may cause service interruptions</li>
-                      <li>Emergency maintenance may be performed without notice</li>
+                      <li>La disponibilidad de la plataforma WhatsApp está fuera de nuestro control</li>
+                      <li>Los problemas de conectividad de red pueden afectar la entrega del servicio</li>
+                      <li>Los eventos de fuerza mayor pueden causar interrupciones del servicio</li>
+                      <li>El mantenimiento de emergencia puede realizarse sin previo aviso</li>
                     </ul>
                   </section>
 
                   {/* Intellectual Property */}
                   <section id="intellectual-property" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Intellectual Property Rights</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Derechos de Propiedad Intelectual</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Our Rights</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Nuestros Derechos</h3>
                     <p className="text-gray-700 mb-4">
-                      All rights, title, and interest in our platform, including software, documentation,
-                      and related materials, remain our exclusive property.
+                      Todos los derechos, título e interés en nuestra plataforma, incluyendo software, documentación,
+                      y materiales relacionados, permanecen como nuestra propiedad exclusiva.
                     </p>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Your Rights</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Tus Derechos</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>You retain ownership of your content and data</li>
-                      <li>Limited license to use our platform per these Terms</li>
-                      <li>Right to export your data upon reasonable request</li>
-                      <li>License to any feedback provided to us for service improvement</li>
+                      <li>Retienes la propiedad de tu contenido y datos</li>
+                      <li>Licencia limitada para usar nuestra plataforma según estos Términos</li>
+                      <li>Derecho a exportar tus datos ante solicitud razonable</li>
+                      <li>Licencia para cualquier comentario proporcionado a nosotros para mejora del servicio</li>
                     </ul>
                   </section>
 
                   {/* User Responsibilities */}
                   <section id="user-responsibilities" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">User Responsibilities</h2>
-                    <p className="text-gray-700 mb-4">As a user of our Service, you are responsible for:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Responsabilidades del Usuario</h2>
+                    <p className="text-gray-700 mb-4">Como usuario de nuestro Servicio, eres responsable de:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Compliance with all applicable laws and regulations</li>
-                      <li>Obtaining necessary permissions for customer communications</li>
-                      <li>Maintaining accurate account and business information</li>
-                      <li>Implementing appropriate data security measures</li>
-                      <li>Monitoring and managing your API usage and costs</li>
-                      <li>Providing timely customer support for your end users</li>
-                      <li>Reporting any platform abuse or security issues</li>
+                      <li>Cumplimiento con todas las leyes y regulaciones aplicables</li>
+                      <li>Obtener los permisos necesarios para comunicaciones con clientes</li>
+                      <li>Mantener información de cuenta y negocio precisa</li>
+                      <li>Implementar medidas de seguridad de datos apropiadas</li>
+                      <li>Monitorear y gestionar tu uso de API y costos</li>
+                      <li>Proporcionar soporte al cliente oportuno para tus usuarios finales</li>
+                      <li>Reportar cualquier abuso de la plataforma o problemas de seguridad</li>
                     </ul>
                   </section>
 
                   {/* Prohibited Activities */}
                   <section id="prohibited-activities" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Prohibited Activities</h2>
-                    <p className="text-gray-700 mb-4">You may not use our Service for:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Actividades Prohibidas</h2>
+                    <p className="text-gray-700 mb-4">No puedes usar nuestro Servicio para:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Sending spam, unsolicited messages, or illegal content</li>
-                      <li>Impersonating others or providing false information</li>
-                      <li>Attempting to gain unauthorized access to our systems</li>
-                      <li>Violating intellectual property rights</li>
-                      <li>Engaging in fraudulent or deceptive practices</li>
-                      <li>Distributing malware or harmful code</li>
-                      <li>Interfering with the normal operation of our Service</li>
-                      <li>Any activities that violate applicable laws</li>
+                      <li>Enviar spam, mensajes no solicitados o contenido ilegal</li>
+                      <li>Hacerse pasar por otros o proporcionar información falsa</li>
+                      <li>Intentar obtener acceso no autorizado a nuestros sistemas</li>
+                      <li>Violar derechos de propiedad intelectual</li>
+                      <li>Participar en prácticas fraudulentas o engañosas</li>
+                      <li>Distribuir malware o código dañino</li>
+                      <li>Interferir con el funcionamiento normal de nuestro Servicio</li>
+                      <li>Cualquier actividad que viole las leyes aplicables</li>
                     </ul>
                   </section>
 
                   {/* Termination */}
                   <section id="termination" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Account Termination</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Terminación de Cuenta</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Termination by You</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Terminación por Tu Parte</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>You may cancel your account at any time through your dashboard</li>
-                      <li>30-day notice required for enterprise accounts</li>
-                      <li>No refunds for prepaid subscription fees</li>
-                      <li>Data export available for 30 days after cancellation</li>
+                      <li>Puedes cancelar tu cuenta en cualquier momento a través de tu panel de control</li>
+                      <li>Se requiere aviso de 30 días para cuentas empresariales</li>
+                      <li>Sin reembolsos para tarifas de suscripción prepagadas</li>
+                      <li>Exportación de datos disponible por 30 días después de la cancelación</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Termination by Us</h3>
-                    <p className="text-gray-700 mb-4">We may suspend or terminate your account for:</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Terminación por Nuestra Parte</h3>
+                    <p className="text-gray-700 mb-4">Podemos suspender o terminar tu cuenta por:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Violation of these Terms or our policies</li>
-                      <li>Non-payment of fees or charges</li>
-                      <li>Fraudulent or abusive behavior</li>
-                      <li>Legal or regulatory requirements</li>
-                      <li>Suspected security breaches</li>
+                      <li>Violación de estos Términos o nuestras políticas</li>
+                      <li>Falta de pago de tarifas o cargos</li>
+                      <li>Comportamiento fraudulento o abusivo</li>
+                      <li>Requisitos legales o regulatorios</li>
+                      <li>Sospechas de violaciones de seguridad</li>
                     </ul>
                   </section>
 
                   {/* Limitation of Liability */}
                   <section id="limitation-liability" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitation of Liability</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Limitación de Responsabilidad</h2>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                      <p className="text-red-800 font-medium mb-4">IMPORTANT LEGAL NOTICE</p>
+                      <p className="text-red-800 font-medium mb-4">AVISO LEGAL IMPORTANTE</p>
                       <p className="text-red-800 leading-relaxed mb-4">
-                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE KROKO COMPANY SHALL NOT BE LIABLE FOR ANY
-                        INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT
-                        LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.
+                        EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, THE KROKO COMPANY NO SERÁ RESPONSABLE POR NINGÚN
+                        DAÑO INDIRECTO, INCIDENTAL, ESPECIAL, CONSECUENCIAL O PUNITIVO, INCLUYENDO SIN
+                        LIMITACIÓN, PÉRDIDA DE GANANCIAS, DATOS, USO, FONDO DE COMERCIO U OTRAS PÉRDIDAS INTANGIBLES.
                       </p>
                       <p className="text-red-800 leading-relaxed">
-                        OUR TOTAL LIABILITY FOR ANY CLAIMS ARISING OUT OF OR RELATING TO THESE TERMS OR THE
-                        SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM.
+                        NUESTRA RESPONSABILIDAD TOTAL POR CUALQUIER RECLAMO QUE SURJA DE O ESTÉ RELACIONADO CON ESTOS TÉRMINOS O EL
+                        SERVICIO NO EXCEDERÁ LA CANTIDAD PAGADA POR TI EN LOS 12 MESES ANTERIORES AL RECLAMO.
                       </p>
                     </div>
                   </section>
 
                   {/* Indemnification */}
                   <section id="indemnification" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Indemnification</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Indemnización</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      You agree to indemnify, defend, and hold harmless The Kroko Company and its officers,
-                      directors, employees, and agents from and against any claims, liabilities, damages,
-                      losses, and expenses arising out of or in any way connected with:
+                      Aceptas indemnizar, defender y mantener indemne a The Kroko Company y sus funcionarios,
+                      directores, empleados y agentes de y contra cualquier reclamo, responsabilidad, daño,
+                      pérdida y gasto que surja de o esté de alguna manera conectado con:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Your use of the Service</li>
-                      <li>Your violation of these Terms</li>
-                      <li>Your violation of any third-party rights</li>
-                      <li>Any content or data you submit through the Service</li>
-                      <li>Your business operations and customer communications</li>
+                      <li>Tu uso del Servicio</li>
+                      <li>Tu violación de estos Términos</li>
+                      <li>Tu violación de cualquier derecho de terceros</li>
+                      <li>Cualquier contenido o datos que envíes a través del Servicio</li>
+                      <li>Tus operaciones comerciales y comunicaciones con clientes</li>
                     </ul>
                   </section>
 
                   {/* Governing Law */}
                   <section id="governing-law" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Governing Law and Jurisdiction</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Ley Aplicable y Jurisdicción</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      These Terms are governed by and construed in accordance with the laws of [Jurisdiction],
-                      without regard to conflict of law principles. Any disputes arising from these Terms or
-                      your use of the Service shall be resolved through:
+                      Estos Términos se rigen y se interpretan de acuerdo con las leyes de España,
+                      sin tener en cuenta los principios de conflicto de leyes. Cualquier disputa que surja de estos Términos o
+                      tu uso del Servicio se resolverá a través de:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Good faith negotiations between the parties</li>
-                      <li>Binding arbitration if negotiations fail</li>
-                      <li>Courts of [Jurisdiction] for injunctive relief</li>
+                      <li>Negociaciones de buena fe entre las partes</li>
+                      <li>Arbitraje vinculante si las negociaciones fallan</li>
+                      <li>Tribunales de España para medidas cautelares</li>
                     </ul>
                   </section>
 
                   {/* Changes to Terms */}
                   <section id="changes-to-terms" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to Terms</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cambios a los Términos</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We reserve the right to modify these Terms at any time. We will notify you of material
-                      changes through:
+                      Nos reservamos el derecho de modificar estos Términos en cualquier momento. Te notificaremos sobre cambios
+                      materiales a través de:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                      <li>Email notifications to your registered address</li>
-                      <li>Platform notifications in your dashboard</li>
-                      <li>Updates posted on our website</li>
-                      <li>30-day advance notice for significant changes</li>
+                      <li>Notificaciones por correo electrónico a tu dirección registrada</li>
+                      <li>Notificaciones de plataforma en tu panel de control</li>
+                      <li>Actualizaciones publicadas en nuestro sitio web</li>
+                      <li>Aviso con 30 días de anticipación para cambios significativos</li>
                     </ul>
                     <p className="text-gray-700 leading-relaxed">
-                      Your continued use of the Service after changes become effective constitutes acceptance
-                      of the updated Terms.
+                      Tu uso continuado del Servicio después de que los cambios entren en vigor constituye aceptación
+                      de los Términos actualizados.
                     </p>
                   </section>
 
                   {/* Contact Information */}
                   <section id="contact-information" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Information</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Información de Contacto</h2>
                     <p className="text-gray-700 mb-4">
-                      For questions about these Terms or our Service, please contact us:
+                      Para preguntas sobre estos Términos o nuestro Servicio, por favor contáctanos:
                     </p>
                     <div className="bg-gray-50 p-6 rounded-lg">
                       <p className="text-gray-700 mb-2"><strong>The Kroko Company</strong></p>
-                      <p className="text-gray-700 mb-2">Legal Department</p>
+                      <p className="text-gray-700 mb-2">Departamento Legal</p>
                       <p className="text-gray-700 mb-2">Email: legal@thekrokocompany.com</p>
-                      <p className="text-gray-700 mb-2">Address: [Business Address]</p>
-                      <p className="text-gray-700">Phone: [Contact Number]</p>
+                      <p className="text-gray-700 mb-2">Dirección: Madrid, España</p>
+                      <p className="text-gray-700">Teléfono: +34 900 123 456</p>
                     </div>
                   </section>
 

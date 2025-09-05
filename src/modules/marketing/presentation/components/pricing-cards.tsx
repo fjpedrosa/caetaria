@@ -1,79 +1,61 @@
 'use client';
 
-import { useRef,useState } from 'react';
-import { AnimatePresence,motion, useInView } from 'framer-motion';
-import { ArrowRight, Check, Crown, Loader2,Sparkles, Star, Zap } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { ArrowRight, Check, Crown, Loader2, Sparkles, Zap } from 'lucide-react';
 
+import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import type { PricingCardsProps } from '@/modules/marketing/domain/types';
 import { Badge } from '@/modules/shared/presentation/components/ui/badge';
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Card } from '@/modules/shared/presentation/components/ui/card';
 import { Switch } from '@/modules/shared/presentation/components/ui/switch';
 
-interface PricingPlan {
-  name: string;
-  price: number;
-  period: string;
-  description: string;
-  features: string[];
-  popular: boolean;
-}
+const { pricingCards } = MARKETING_COPY;
 
-// Default pricing plans data
-const defaultPlans: PricingPlan[] = [
+// Default pricing plans data using translated content
+const defaultPlans = [
   {
-    name: 'Starter',
-    price: 49,
-    period: 'month',
-    description: 'Perfect for small businesses',
-    features: [
-      'Up to 1,000 conversations/month',
-      'AI-powered chatbot',
-      'Pre-designed templates',
-      'Email support',
-      'Verified green badge',
-      'Basic analytics dashboard'
-    ],
-    popular: false
+    id: 'basic',
+    name: pricingCards.plans.basic.name,
+    description: pricingCards.plans.basic.description,
+    price: {
+      monthly: 49,
+      yearly: 490,
+      currency: '€'
+    },
+    features: pricingCards.plans.basic.features,
+    highlighted: false,
+    ctaText: pricingCards.cta.basic
   },
   {
-    name: 'Pro',
-    price: 149,
-    period: 'month',
-    description: 'For growing businesses',
-    features: [
-      'Unlimited conversations',
-      'IA avanzada + conecta con tu sistema',
-      'Custom templates',
-      '24/7 priority support',
-      'Reportes detallados de ventas',
-      'Conexiones personalizadas',
-      'Multi-agent support',
-      'Data export'
-    ],
-    popular: true
+    id: 'professional',
+    name: pricingCards.plans.professional.name,
+    description: pricingCards.plans.professional.description,
+    price: {
+      monthly: 149,
+      yearly: 1490,
+      currency: '€'
+    },
+    features: pricingCards.plans.professional.features,
+    highlighted: true,
+    ctaText: pricingCards.cta.professional,
+    badge: pricingCards.plans.professional.badge
   },
   {
-    name: 'Empresarial',
-    price: 499,
-    period: 'month',
-    description: 'For large organizations',
-    features: [
-      'Everything in Pro',
-      'Dedicated account manager',
-      'Custom AI training',
-      'Garantía de servicio',
-      'White-label options',
-      'Multiple workspaces',
-      'Advanced security features',
-      'Custom integrations'
-    ],
-    popular: false
+    id: 'enterprise',
+    name: pricingCards.plans.enterprise.name,
+    description: pricingCards.plans.enterprise.description,
+    price: {
+      monthly: 499,
+      yearly: 4990,
+      currency: '€'
+    },
+    features: pricingCards.plans.enterprise.features,
+    highlighted: false,
+    ctaText: pricingCards.cta.enterprise
   }
 ];
-
-interface PricingCardsProps {
-  plans?: PricingPlan[];
-}
 
 /**
  * Pricing Cards Component - Client Component
@@ -278,7 +260,7 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                       : 'border-2 border-gray-300 hover:border-green-500 active:border-green-600 bg-white hover:bg-green-50 active:bg-green-100 text-gray-900'
                   }`}
                 >
-                  {plan.name === 'Empresarial' ? 'Contactar Ventas' : 'Prueba Gratis'}
+                  {plan.ctaText || plan.name}
                   {isPopular ? (
                     <Zap className="ml-2 w-5 h-5 group-hover:animate-pulse" />
                   ) : (
@@ -289,13 +271,13 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                 {/* Trust Indicator - Mobile responsive */}
                 <div className="text-center mt-3 sm:mt-4">
                   <div className="text-xs sm:text-sm text-gray-500">
-                    {plan.name === 'Empresarial' ? (
-                      'Custom pricing available'
+                    {plan.id === 'enterprise' ? (
+                      'Precio personalizado disponible'
                     ) : (
                       <>
-                        <span className="block sm:inline">14-day free trial</span>
+                        <span className="block sm:inline">Prueba de 14 días</span>
                         <span className="hidden sm:inline"> • </span>
-                        <span className="block sm:inline">No credit card required</span>
+                        <span className="block sm:inline">Sin tarjeta de crédito</span>
                       </>
                     )}
                   </div>
@@ -314,14 +296,14 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
           </div>
 
           <p className="text-gray-600 mb-6">
-            Need a custom plan for your enterprise? We offer tailored solutions for large-scale deployments.
+            {pricingCards.cta.custom}
           </p>
 
           <Button
             variant="outline"
             className="border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600 px-8 py-3 font-semibold"
           >
-            Compare All Features
+            Comparar Todas las Características
           </Button>
         </div>
 
@@ -332,8 +314,8 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
               <Check className="w-6 h-6 text-green-600" />
             </div>
             <div className="text-left">
-              <div className="font-bold text-green-900">30-day money-back guarantee</div>
-              <div className="text-green-700">Not satisfied? Get a full refund, no questions asked.</div>
+              <div className="font-bold text-green-900">Garantía de devolución de 30 días</div>
+              <div className="text-green-700">¿No estás satisfecho? Recibe un reembolso completo, sin preguntas.</div>
             </div>
           </div>
         </div>

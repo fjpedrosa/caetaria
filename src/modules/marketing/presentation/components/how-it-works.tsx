@@ -1,5 +1,3 @@
-'use client';
-
 import { MessageCircle, Settings, UserPlus } from '@/lib/icons';
 
 const steps = [

@@ -1,17 +1,16 @@
 /**
  * SSR-Safe Realtime Connection Manager
- * 
+ *
  * This wrapper ensures that realtime functionality only executes
  * in browser environments, preventing SSR build errors.
  */
 
-import type { 
-  ConnectionHealth, 
-  SubscriptionConfig,
-  RealtimeSubscriptionPayload,
+import type {
+  ConnectionHealth,
   ConnectionManagerEvent,
-  ConnectionManagerEventPayload
-} from './connection-manager';
+  ConnectionManagerEventPayload,
+  RealtimeSubscriptionPayload,
+  SubscriptionConfig} from './connection-manager';
 
 // Mock implementations for SSR
 const createMockManager = () => ({

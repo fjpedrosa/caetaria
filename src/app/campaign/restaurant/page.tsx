@@ -7,8 +7,8 @@
 import { Metadata } from 'next';
 
 import { CTASection } from '@/modules/marketing/presentation/components/cta-section';
-import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
 import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
+import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
 import { PricingCards } from '@/modules/marketing/presentation/components/pricing-cards';
 import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
 import { UseCasesSection } from '@/modules/marketing/presentation/components/use-cases-section';
