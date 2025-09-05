@@ -19,7 +19,9 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/projects, /Desktop, /Documents, /Downloads, /Music, /Pictures, /Videos"
+        "/Users/javi/projects",
+        "/Users/javi/projects/thekrokocompany",
+        "/Users/javi/projects/thekrokocompany/neptunik"
       ]
     },
     "memory": {
@@ -104,10 +106,9 @@
       ]
     },
     "fetch": {
-      "command": "npx",
+      "command": "uvx",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-fetch"
+        "mcp-server-fetch"
       ]
     }
   }
