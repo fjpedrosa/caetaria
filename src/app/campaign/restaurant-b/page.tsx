@@ -7,13 +7,13 @@
 import { Metadata } from 'next';
 
 import { CTASection } from '@/modules/marketing/presentation/components/cta-section';
-import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
 import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
+import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
 import { PricingCards } from '@/modules/marketing/presentation/components/pricing-cards';
-import { ValueProps } from '@/modules/marketing/presentation/components/value-props';
 import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
 import { UseCasesSection } from '@/modules/marketing/presentation/components/use-cases-section';
 import { UTMTracker } from '@/modules/marketing/presentation/components/utm-tracker';
+import { ValueProps } from '@/modules/marketing/presentation/components/value-props';
 
 export const metadata: Metadata = {
   title: 'WhatsApp para tu Restaurante Listo en 5 Minutos | Sin Complicaciones',

@@ -1,3 +1,5 @@
+// This component doesn't need 'use client' as it has no hooks or state
+
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -5,12 +7,9 @@ import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import { Badge } from '@/modules/shared/presentation/components/ui/badge';
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 
-/**
- * Final CTA Component - Server Component
- * Final call to action section
- */
+const { title, subtitle, description, buttons, guarantee } = MARKETING_COPY.finalCta;
+
 export function FinalCta() {
-  const { title, subtitle, description, buttons, guarantee } = MARKETING_COPY.finalCta;
 
   return (
     <section className="py-20 bg-gradient-brand">

@@ -6,11 +6,11 @@ import { SmoothScrollNav } from '@/modules/shared/presentation/components/ui/smo
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - WhatsApp Cloud API Platform',
-  description: 'Learn how we collect, use, and protect your data on our WhatsApp Cloud API platform. GDPR, POPIA, and NDPR compliant privacy practices.',
+  title: 'Política de Privacidad - Plataforma WhatsApp Cloud API',
+  description: 'Conoce cómo recopilamos, usamos y protegemos tus datos en nuestra plataforma WhatsApp Cloud API. Prácticas de privacidad conformes con RGPD.',
   openGraph: {
-    title: 'Privacy Policy - WhatsApp Cloud API Platform',
-    description: 'Transparent privacy practices for our enterprise messaging platform.',
+    title: 'Política de Privacidad - Plataforma WhatsApp Cloud API',
+    description: 'Prácticas transparentes de privacidad para nuestra plataforma de mensajería empresarial.',
     type: 'website',
   },
   robots: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = 'January 15, 2025';
+const LAST_UPDATED = '15 de enero de 2025';
 
 interface TableOfContentsItem {
   id: string;
@@ -28,22 +28,20 @@ interface TableOfContentsItem {
 }
 
 const tableOfContents: TableOfContentsItem[] = [
-  { id: 'introduction', title: 'Introduction' },
-  { id: 'information-we-collect', title: 'Information We Collect' },
-  { id: 'how-we-use-information', title: 'How We Use Your Information' },
-  { id: 'whatsapp-compliance', title: 'WhatsApp Business API Compliance' },
-  { id: 'data-sharing', title: 'Data Sharing and Disclosure' },
-  { id: 'international-transfers', title: 'International Data Transfers' },
-  { id: 'gdpr-compliance', title: 'GDPR Compliance (European Users)' },
-  { id: 'popia-compliance', title: 'POPIA Compliance (South African Users)' },
-  { id: 'ndpr-compliance', title: 'NDPR Compliance (Nigerian Users)' },
-  { id: 'data-security', title: 'Data Security' },
-  { id: 'data-retention', title: 'Data Retention' },
-  { id: 'your-rights', title: 'Your Rights and Choices' },
-  { id: 'cookies', title: 'Cookies and Tracking Technologies' },
-  { id: 'children-privacy', title: 'Children\'s Privacy' },
-  { id: 'changes-to-policy', title: 'Changes to This Policy' },
-  { id: 'contact-us', title: 'Contact Us' },
+  { id: 'introduction', title: 'Introducción' },
+  { id: 'information-we-collect', title: 'Información que Recopilamos' },
+  { id: 'how-we-use-information', title: 'Cómo Usamos tu Información' },
+  { id: 'whatsapp-compliance', title: 'Cumplimiento de WhatsApp Business API' },
+  { id: 'data-sharing', title: 'Compartir y Divulgar Datos' },
+  { id: 'international-transfers', title: 'Transferencias Internacionales de Datos' },
+  { id: 'gdpr-compliance', title: 'Cumplimiento RGPD (Usuarios Europeos)' },
+  { id: 'data-security', title: 'Seguridad de Datos' },
+  { id: 'data-retention', title: 'Retención de Datos' },
+  { id: 'your-rights', title: 'Tus Derechos y Opciones' },
+  { id: 'cookies', title: 'Cookies y Tecnologías de Seguimiento' },
+  { id: 'children-privacy', title: 'Privacidad de Menores' },
+  { id: 'changes-to-policy', title: 'Cambios a esta Política' },
+  { id: 'contact-us', title: 'Contáctanos' },
 ];
 
 export default function PrivacyPolicyPage() {
@@ -54,13 +52,13 @@ export default function PrivacyPolicyPage() {
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Privacy Policy
+              Política de Privacidad
             </h1>
             <p className="text-xl text-gray-600 mb-4">
-              We are committed to protecting your privacy and ensuring transparency in how we handle your data.
+              Estamos comprometidos a proteger tu privacidad y garantizar transparencia en cómo manejamos tus datos.
             </p>
             <p className="text-sm text-gray-500">
-              Last updated: <time dateTime="2025-01-15">{LAST_UPDATED}</time>
+              Última actualización: <time dateTime="2025-01-15">{LAST_UPDATED}</time>
             </p>
           </div>
         </div>
@@ -82,238 +80,208 @@ export default function PrivacyPolicyPage() {
 
                   {/* Introduction */}
                   <section id="introduction" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Introducción</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to the WhatsApp Cloud API Platform ("Platform," "Service," "we," "us," or "our").
-                      This Privacy Policy explains how The Kroko Company and its affiliates collect, use, disclose,
-                      and safeguard your information when you use our WhatsApp Cloud API Platform and related services.
+                      Bienvenido a la Plataforma WhatsApp Cloud API ("Plataforma", "Servicio", "nosotros", o "nuestro").
+                      Esta Política de Privacidad explica cómo The Kroko Company y sus afiliadas recopilan, usan, divulgan,
+                      y protegen tu información cuando usas nuestra Plataforma WhatsApp Cloud API y servicios relacionados.
                     </p>
                     <p className="text-gray-700 leading-relaxed">
-                      We are committed to compliance with applicable data protection laws, including the General Data
-                      Protection Regulation (GDPR), South Africa's Protection of Personal Information Act (POPIA),
-                      and Nigeria's National Data Protection Regulation (NDPR).
+                      Estamos comprometidos con el cumplimiento de las leyes de protección de datos aplicables, incluyendo el
+                      Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica de Protección de Datos (LOPD) española.
                     </p>
                   </section>
 
                   {/* Information We Collect */}
                   <section id="information-we-collect" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Information We Collect</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Información que Recopilamos</h2>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Account Information</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Información de Cuenta</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>Business name, contact information, and billing details</li>
-                      <li>WhatsApp Business Account credentials and phone numbers</li>
-                      <li>User account credentials and authentication data</li>
-                      <li>Payment information (processed securely through third-party providers)</li>
+                      <li>Nombre de empresa, información de contacto y detalles de facturación</li>
+                      <li>Credenciales de cuenta WhatsApp Business y números de teléfono</li>
+                      <li>Credenciales de cuenta de usuario y datos de autenticación</li>
+                      <li>Información de pago (procesada de forma segura a través de proveedores terceros)</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Message Data</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Datos de Mensajes</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>WhatsApp messages sent and received through our platform</li>
-                      <li>Message metadata (timestamps, delivery status, sender/recipient information)</li>
-                      <li>Media files shared through the messaging service</li>
-                      <li>Bot interaction logs and conversation history</li>
+                      <li>Mensajes de WhatsApp enviados y recibidos a través de nuestra plataforma</li>
+                      <li>Metadatos de mensajes (marcas de tiempo, estado de entrega, información de remitente/destinatario)</li>
+                      <li>Archivos multimedia compartidos a través del servicio de mensajería</li>
+                      <li>Registros de interacción con bots e historial de conversaciones</li>
                     </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Technical Information</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Información Técnica</h3>
                     <ul className="list-disc list-inside text-gray-700 mb-6 space-y-2">
-                      <li>IP addresses, device information, and browser types</li>
-                      <li>API usage logs and webhook event data</li>
-                      <li>Performance metrics and system analytics</li>
-                      <li>Error logs and debugging information</li>
+                      <li>Direcciones IP, información del dispositivo y tipos de navegador</li>
+                      <li>Registros de uso de API y datos de eventos webhook</li>
+                      <li>Métricas de rendimiento y análisis del sistema</li>
+                      <li>Registros de errores e información de depuración</li>
                     </ul>
                   </section>
 
                   {/* How We Use Information */}
                   <section id="how-we-use-information" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">How We Use Your Information</h2>
-                    <p className="text-gray-700 mb-4">We use the collected information for the following purposes:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cómo Usamos tu Información</h2>
+                    <p className="text-gray-700 mb-4">Usamos la información recopilada para los siguientes propósitos:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Providing and maintaining our WhatsApp Cloud API services</li>
-                      <li>Processing and routing messages between you and your customers</li>
-                      <li>Generating analytics and performance reports</li>
-                      <li>Billing and payment processing</li>
-                      <li>Customer support and technical assistance</li>
-                      <li>Improving our services and developing new features</li>
-                      <li>Ensuring platform security and preventing fraud</li>
-                      <li>Complying with legal obligations and regulatory requirements</li>
+                      <li>Proporcionar y mantener nuestros servicios de WhatsApp Cloud API</li>
+                      <li>Procesar y enrutar mensajes entre tú y tus clientes</li>
+                      <li>Generar análisis e informes de rendimiento</li>
+                      <li>Procesamiento de facturación y pagos</li>
+                      <li>Soporte al cliente y asistencia técnica</li>
+                      <li>Mejorar nuestros servicios y desarrollar nuevas funciones</li>
+                      <li>Garantizar la seguridad de la plataforma y prevenir fraudes</li>
+                      <li>Cumplir con obligaciones legales y requisitos regulatorios</li>
                     </ul>
                   </section>
 
                   {/* WhatsApp Compliance */}
                   <section id="whatsapp-compliance" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">WhatsApp Business API Compliance</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cumplimiento de WhatsApp Business API</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      As a WhatsApp Business Solution Provider, we adhere to WhatsApp's Business Policy and
-                      data handling requirements:
+                      Como Proveedor de Soluciones WhatsApp Business, cumplimos con la Política Empresarial de WhatsApp y
+                      los requisitos de manejo de datos:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Messages are processed according to WhatsApp's encryption standards</li>
-                      <li>We do not store message content longer than necessary for service delivery</li>
-                      <li>Customer opt-in consent is required before initiating conversations</li>
-                      <li>We maintain audit trails for compliance monitoring</li>
-                      <li>All message templates comply with WhatsApp's approval process</li>
+                      <li>Los mensajes se procesan según los estándares de cifrado de WhatsApp</li>
+                      <li>No almacenamos el contenido de mensajes más tiempo del necesario para la entrega del servicio</li>
+                      <li>Se requiere consentimiento opt-in del cliente antes de iniciar conversaciones</li>
+                      <li>Mantenemos registros de auditoría para monitoreo de cumplimiento</li>
+                      <li>Todas las plantillas de mensajes cumplen con el proceso de aprobación de WhatsApp</li>
                     </ul>
                   </section>
 
                   {/* Data Sharing */}
                   <section id="data-sharing" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Sharing and Disclosure</h2>
-                    <p className="text-gray-700 mb-4">We may share your information in the following circumstances:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Compartir y Divulgar Datos</h2>
+                    <p className="text-gray-700 mb-4">Podemos compartir tu información en las siguientes circunstancias:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li><strong>Service Providers:</strong> Third-party vendors who assist in service delivery</li>
-                      <li><strong>WhatsApp/Meta:</strong> As required for WhatsApp Business API functionality</li>
-                      <li><strong>Legal Compliance:</strong> When required by law or to protect our rights</li>
-                      <li><strong>Business Transfers:</strong> In connection with mergers or acquisitions</li>
-                      <li><strong>Consent:</strong> When you have given explicit consent</li>
+                      <li><strong>Proveedores de Servicios:</strong> Proveedores terceros que asisten en la entrega del servicio</li>
+                      <li><strong>WhatsApp/Meta:</strong> Según lo requerido para la funcionalidad de WhatsApp Business API</li>
+                      <li><strong>Cumplimiento Legal:</strong> Cuando lo requiera la ley o para proteger nuestros derechos</li>
+                      <li><strong>Transferencias Empresariales:</strong> En conexión con fusiones o adquisiciones</li>
+                      <li><strong>Consentimiento:</strong> Cuando hayas dado consentimiento explícito</li>
                     </ul>
                   </section>
 
                   {/* International Transfers */}
                   <section id="international-transfers" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">International Data Transfers</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Transferencias Internacionales de Datos</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Your data may be transferred to and processed in countries outside your region.
-                      We ensure appropriate safeguards are in place, including:
+                      Tus datos pueden ser transferidos y procesados en países fuera de tu región.
+                      Aseguramos que existen salvaguardas apropiadas, incluyendo:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Standard Contractual Clauses for EU data transfers</li>
-                      <li>Adequacy decisions where applicable</li>
-                      <li>Binding Corporate Rules for intra-group transfers</li>
-                      <li>Certification schemes and codes of conduct</li>
+                      <li>Cláusulas Contractuales Estándar para transferencias de datos de la UE</li>
+                      <li>Decisiones de adecuación donde sean aplicables</li>
+                      <li>Normas Corporativas Vinculantes para transferencias dentro del grupo</li>
+                      <li>Esquemas de certificación y códigos de conducta</li>
                     </ul>
                   </section>
 
                   {/* GDPR Compliance */}
                   <section id="gdpr-compliance" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">GDPR Compliance (European Users)</h2>
-                    <p className="text-gray-700 mb-4">For users in the European Economic Area, you have the following rights:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cumplimiento RGPD (Usuarios Europeos)</h2>
+                    <p className="text-gray-700 mb-4">Para usuarios en el Espacio Económico Europeo, tienes los siguientes derechos:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li><strong>Right to Access:</strong> Request copies of your personal data</li>
-                      <li><strong>Right to Rectification:</strong> Correct inaccurate information</li>
-                      <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
-                      <li><strong>Right to Restrict Processing:</strong> Limit how we use your data</li>
-                      <li><strong>Right to Data Portability:</strong> Transfer your data to another service</li>
-                      <li><strong>Right to Object:</strong> Oppose certain types of processing</li>
+                      <li><strong>Derecho de Acceso:</strong> Solicitar copias de tus datos personales</li>
+                      <li><strong>Derecho de Rectificación:</strong> Corregir información inexacta</li>
+                      <li><strong>Derecho al Olvido:</strong> Solicitar la eliminación de tus datos</li>
+                      <li><strong>Derecho a Limitar el Procesamiento:</strong> Limitar cómo usamos tus datos</li>
+                      <li><strong>Derecho a la Portabilidad de Datos:</strong> Transferir tus datos a otro servicio</li>
+                      <li><strong>Derecho de Oposición:</strong> Oponerse a ciertos tipos de procesamiento</li>
                     </ul>
                   </section>
 
-                  {/* POPIA Compliance */}
-                  <section id="popia-compliance" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">POPIA Compliance (South African Users)</h2>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      We comply with South Africa's Protection of Personal Information Act (POPIA).
-                      South African users have rights similar to GDPR, including:
-                    </p>
-                    <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Right to access and correct personal information</li>
-                      <li>Right to delete or destroy personal information</li>
-                      <li>Right to object to processing</li>
-                      <li>Right to lodge complaints with the Information Regulator</li>
-                    </ul>
-                  </section>
-
-                  {/* NDPR Compliance */}
-                  <section id="ndpr-compliance" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">NDPR Compliance (Nigerian Users)</h2>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      We adhere to Nigeria's National Data Protection Regulation (NDPR). Nigerian users have:
-                    </p>
-                    <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Right to information about data processing</li>
-                      <li>Right to access and rectify personal data</li>
-                      <li>Right to withdraw consent</li>
-                      <li>Right to data portability</li>
-                      <li>Right to lodge complaints with NITDA</li>
-                    </ul>
-                  </section>
 
                   {/* Data Security */}
                   <section id="data-security" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Security</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Seguridad de Datos</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We implement industry-standard security measures to protect your information:
+                      Implementamos medidas de seguridad estándar de la industria para proteger tu información:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>End-to-end encryption for message transmission</li>
-                      <li>Regular security audits and penetration testing</li>
-                      <li>Access controls and employee training</li>
-                      <li>Secure data centers with 24/7 monitoring</li>
-                      <li>Incident response procedures and breach notification</li>
+                      <li>Cifrado de extremo a extremo para transmisión de mensajes</li>
+                      <li>Auditorías de seguridad regulares y pruebas de penetración</li>
+                      <li>Controles de acceso y capacitación de empleados</li>
+                      <li>Centros de datos seguros con monitoreo 24/7</li>
+                      <li>Procedimientos de respuesta a incidentes y notificación de brechas</li>
                     </ul>
                   </section>
 
                   {/* Data Retention */}
                   <section id="data-retention" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Retention</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Retención de Datos</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We retain your information only as long as necessary for the purposes described in this policy:
+                      Retenemos tu información solo el tiempo necesario para los propósitos descritos en esta política:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li><strong>Account Data:</strong> Retained for the duration of your account plus 7 years for legal compliance</li>
-                      <li><strong>Message Data:</strong> Automatically deleted after 30 days unless required for dispute resolution</li>
-                      <li><strong>Analytics Data:</strong> Aggregated data retained for 2 years for service improvement</li>
-                      <li><strong>Legal Data:</strong> Retained as required by applicable laws and regulations</li>
+                      <li><strong>Datos de Cuenta:</strong> Retenidos durante la duración de tu cuenta más 7 años para cumplimiento legal</li>
+                      <li><strong>Datos de Mensajes:</strong> Eliminados automáticamente después de 30 días a menos que se requieran para resolución de disputas</li>
+                      <li><strong>Datos Analíticos:</strong> Datos agregados retenidos por 2 años para mejora del servicio</li>
+                      <li><strong>Datos Legales:</strong> Retenidos según lo requieran las leyes y regulaciones aplicables</li>
                     </ul>
                   </section>
 
                   {/* Your Rights */}
                   <section id="your-rights" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Rights and Choices</h2>
-                    <p className="text-gray-700 mb-4">You can exercise your privacy rights through:</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Tus Derechos y Opciones</h2>
+                    <p className="text-gray-700 mb-4">Puedes ejercer tus derechos de privacidad a través de:</p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li>Account settings in your dashboard</li>
-                      <li>Contacting our Data Protection Officer at privacy@thekrokocompany.com</li>
-                      <li>Using our automated data request system</li>
-                      <li>Contacting customer support for assistance</li>
+                      <li>Configuración de cuenta en tu panel de control</li>
+                      <li>Contactar a nuestro Delegado de Protección de Datos en privacy@thekrokocompany.com</li>
+                      <li>Usar nuestro sistema automatizado de solicitud de datos</li>
+                      <li>Contactar al soporte al cliente para asistencia</li>
                     </ul>
                   </section>
 
                   {/* Cookies */}
                   <section id="cookies" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cookies and Tracking Technologies</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cookies y Tecnologías de Seguimiento</h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      We use cookies and similar technologies to improve your experience:
+                      Usamos cookies y tecnologías similares para mejorar tu experiencia:
                     </p>
                     <ul className="list-disc list-inside text-gray-700 space-y-2">
-                      <li><strong>Essential Cookies:</strong> Required for platform functionality</li>
-                      <li><strong>Analytics Cookies:</strong> Help us understand platform usage</li>
-                      <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
-                      <li><strong>Marketing Cookies:</strong> Used for relevant advertising (opt-in only)</li>
+                      <li><strong>Cookies Esenciales:</strong> Requeridas para la funcionalidad de la plataforma</li>
+                      <li><strong>Cookies Analíticas:</strong> Nos ayudan a entender el uso de la plataforma</li>
+                      <li><strong>Cookies de Preferencia:</strong> Recuerdan tus configuraciones y preferencias</li>
+                      <li><strong>Cookies de Marketing:</strong> Usadas para publicidad relevante (solo con consentimiento)</li>
                     </ul>
                   </section>
 
                   {/* Children's Privacy */}
                   <section id="children-privacy" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Children's Privacy</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Privacidad de Menores</h2>
                     <p className="text-gray-700 leading-relaxed">
-                      Our services are not intended for individuals under 18 years of age. We do not knowingly
-                      collect personal information from children. If you believe we have inadvertently collected
-                      information from a child, please contact us immediately.
+                      Nuestros servicios no están destinados a personas menores de 18 años. No recopilamos
+                      intencionalmente información personal de niños. Si crees que hemos recopilado inadvertidamente
+                      información de un menor, por favor contáctanos inmediatamente.
                     </p>
                   </section>
 
                   {/* Changes to Policy */}
                   <section id="changes-to-policy" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to This Policy</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Cambios a esta Política</h2>
                     <p className="text-gray-700 leading-relaxed">
-                      We may update this Privacy Policy periodically. We will notify you of material changes
-                      through email, platform notifications, or by posting the updated policy on our website.
-                      Your continued use of our services constitutes acceptance of the updated policy.
+                      Podemos actualizar esta Política de Privacidad periódicamente. Te notificaremos sobre cambios materiales
+                      a través de correo electrónico, notificaciones de plataforma, o publicando la política actualizada en nuestro sitio web.
+                      Tu uso continuado de nuestros servicios constituye aceptación de la política actualizada.
                     </p>
                   </section>
 
                   {/* Contact Us */}
                   <section id="contact-us" className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Contáctanos</h2>
                     <p className="text-gray-700 mb-4">
-                      If you have questions about this Privacy Policy or our data practices, please contact us:
+                      Si tienes preguntas sobre esta Política de Privacidad o nuestras prácticas de datos, por favor contáctanos:
                     </p>
                     <div className="bg-gray-50 p-6 rounded-lg">
-                      <p className="text-gray-700 mb-2"><strong>Data Protection Officer</strong></p>
+                      <p className="text-gray-700 mb-2"><strong>Delegado de Protección de Datos</strong></p>
                       <p className="text-gray-700 mb-2">Email: privacy@thekrokocompany.com</p>
-                      <p className="text-gray-700 mb-2">Address: [Business Address]</p>
-                      <p className="text-gray-700">Phone: [Contact Number]</p>
+                      <p className="text-gray-700 mb-2">Dirección: Madrid, España</p>
+                      <p className="text-gray-700">Teléfono: +34 900 123 456</p>
                     </div>
                   </section>
 

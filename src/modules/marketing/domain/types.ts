@@ -966,6 +966,101 @@ export interface ComparisonStats {
 }
 
 // =============================================================================
+// LANDING FOOTER TYPES - From landing-footer.tsx
+// =============================================================================
+
+export interface FooterLink {
+  name: string;
+  href: string;
+}
+
+export interface FooterLinksSection {
+  product: FooterLink[];
+  solutions: FooterLink[];
+  company: FooterLink[];
+  resources: FooterLink[];
+  legal: FooterLink[];
+}
+
+export interface SocialLink {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+}
+
+export interface TrustBadge {
+  color: string;
+  text: string;
+}
+
+export interface NewsletterState {
+  email: string;
+  isNewsletterFocused: boolean;
+}
+
+// =============================================================================
+// ENHANCED LEAD CAPTURE FORM TYPES - From lead-capture-form.tsx
+// =============================================================================
+
+export interface EnhancedLeadCaptureFormProps extends LeadCaptureFormProps {
+  showFeatureSelection?: boolean;
+  showCompanyField?: boolean;
+  showPhoneField?: boolean;
+  autoFocus?: boolean;
+  redirectOnSuccess?: string;
+}
+
+// =============================================================================
+// USE CASES SECTION TYPES - From use-cases-section.tsx
+// =============================================================================
+
+export interface UseCaseCategory {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  features: string[];
+  roiData: {
+    timeSaved: string;
+    conversionIncrease: string;
+    customerSatisfaction: string;
+  };
+  examples: string[];
+  ctaText: string;
+  scenario?: any; // WhatsApp simulator scenario
+}
+
+export interface UseCasesSectionProps {
+  categories?: UseCaseCategory[];
+  className?: string;
+  showSimulator?: boolean;
+  onCategorySelect?: (categoryId: string) => void;
+}
+
+// =============================================================================
+// NAVBAR MEGA MENU TYPES - From modern-navbar.tsx
+// =============================================================================
+
+export interface MegaMenuSection {
+  title: string;
+  items: Array<{
+    title: string;
+    href: string;
+    description?: string;
+    icon?: React.ComponentType<any>;
+    badge?: string;
+  }>;
+}
+
+export interface AccessibilityState {
+  highContrast: boolean;
+  reducedMotion: boolean;
+  fontSize: 'normal' | 'large' | 'larger';
+  screenReaderActive: boolean;
+}
+
+// =============================================================================
 // OPTIMIZED MOBILE MENU TYPES - From navbar-v2/optimized-mobile-menu.tsx
 // =============================================================================
 

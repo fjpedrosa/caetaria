@@ -15,7 +15,6 @@ export default function MarketingLayout({
 }) {
   return (
     <>
-      {/* Marketing pages now use the root layout components */}
       {children}
     </>
   );

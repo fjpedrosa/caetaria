@@ -1,10 +1,10 @@
 /**
  * Client-side configuration
- * 
+ *
  * Centralizes all client-side environment variables to avoid HMR issues with Turbopack.
  * This file isolates process.env access, preventing "module factory not available" errors
  * during hot module replacement in Next.js 15.5.2 with Turbopack.
- * 
+ *
  * @see https://github.com/vercel/next.js/issues/turbopack-hmr
  */
 
@@ -103,13 +103,13 @@ export const validateClientConfig = (): { isValid: boolean; missingVars: string[
 // Helper to check if analytics should be enabled
 export const shouldEnableAnalytics = (): boolean => {
   const { app, posthog } = clientConfig;
-  
+
   // Enable in production always
   if (app.isProduction) return true;
-  
+
   // In development, only if explicitly enabled
   if (app.isDevelopment && posthog.enableInDev) return true;
-  
+
   return false;
 };
 

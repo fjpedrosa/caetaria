@@ -6,7 +6,7 @@ import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { Provider as ReduxProvider } from 'react-redux'
 
-import { clientConfig, shouldEnableAnalytics, debugLog } from '@/lib/config/client-config'
+import { clientConfig, debugLog,shouldEnableAnalytics } from '@/lib/config/client-config'
 import ErrorBoundary from '@/modules/shared/presentation/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
@@ -23,7 +23,7 @@ import { makeStore } from '@/store'
  * This component creates a per-request store instance for proper
  * SSR/SSG support in Next.js App Router and HMR stability.
  *
- * Uses centralized client configuration to avoid HMR module instantiation 
+ * Uses centralized client configuration to avoid HMR module instantiation
  * issues with Turbopack in Next.js 15.5.2. All process.env access is
  * isolated in the client-config module.
  *

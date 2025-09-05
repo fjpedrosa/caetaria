@@ -12,7 +12,6 @@ import {
   Users} from 'lucide-react';
 
 import {
-  type EnhancedLeadCaptureFormProps,
   type FeatureOption,
   type LeadCaptureFormProps} from '@/modules/marketing/domain/types';
 import { useLeadCapture } from '@/modules/marketing/presentation/hooks/use-lead-capture';
@@ -30,11 +29,12 @@ import {
 } from '@/modules/shared/presentation/components/ui/form';
 import { Input } from '@/modules/shared/presentation/components/ui/input';
 import { Label } from '@/modules/shared/presentation/components/ui/label';
+import { type LeadSource } from '@/modules/shared/presentation/validation/form-schemas';
 
 const FEATURE_OPTIONS: FeatureOption[] = [
   { id: 'whatsapp-api', label: 'WhatsApp Automático', icon: MessageSquare },
-  { id: 'multi-channel', label: 'Multi-channel Support', icon: Users },
-  { id: 'ai-chatbots', label: 'AI-powered Chatbots', icon: Sparkles },
+  { id: 'multi-channel', label: 'Soporte Multicanal', icon: Users },
+  { id: 'ai-chatbots', label: 'Chatbots con IA', icon: Sparkles },
   { id: 'analytics', label: 'Reportes de Ventas', icon: Users },
 ];
 
@@ -44,10 +44,17 @@ const FEATURE_OPTIONS: FeatureOption[] = [
  * Advanced form with validation, RTK Query integration,
  * and multiple layout variants for different use cases.
  */
+interface EnhancedLeadCaptureFormProps extends Omit<LeadCaptureFormProps, 'source'> {
+  source: LeadSource;
+  enablePersistence?: boolean;
+  enableAnalytics?: boolean;
+  showTrustBadges?: boolean;
+}
+
 export function LeadCaptureForm({
   source,
-  title = 'Empezar con WhatsApp Automático',
-  description = 'Join thousands of businesses transforming customer communication',
+  title = 'Automatiza WhatsApp y Aumenta tus Ventas 40%',
+  description = 'Únete a miles de negocios que ya venden más con WhatsApp automatizado',
   className = '',
   variant = 'default',
   onSuccess,
@@ -56,23 +63,14 @@ export function LeadCaptureForm({
   showTrustBadges = true,
 }: EnhancedLeadCaptureFormProps) {
 
-  // ===============================================
-  // BUSINESS LOGIC - Extracted to custom hook
-  // ===============================================
-
   const {
     form,
     selectedFeatures,
-    showEmailValidation,
-    emailValidationResult,
     isSubmitting,
     isSubmissionSuccessful,
     isSubmissionError,
-    submissionError,
     onSubmit,
     toggleFeature,
-    handleEmailValidation,
-    formAnalytics,
   } = useLeadCapture({
     source,
     enablePersistence,
@@ -80,11 +78,6 @@ export function LeadCaptureForm({
     onSuccess,
   });
 
-  // ===============================================
-  // PRESENTATION LOGIC - Pure rendering only
-  // ===============================================
-
-  // Success state - Mobile optimized
   if (isSubmissionSuccessful) {
     return (
       <Card className={`p-6 sm:p-8 text-center bg-gradient-to-br from-green-50 to-blue-50 border-green-200 ${className}`}>
@@ -94,15 +87,15 @@ export function LeadCaptureForm({
           </div>
         </div>
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-          Thank You!
+          ¡Gracias por tu interés!
         </h3>
         <p className="text-sm sm:text-base text-gray-600 mb-4">
-          We've received your information and will be in touch within 24 hours.
+          Hemos recibido tu información y te contactaremos en las próximas 24 horas.
         </p>
         <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-200">
           <p className="text-xs sm:text-sm text-gray-700">
-            ✨ <strong>Next steps:</strong> Check your email for our welcome guide
-            and calendar link to schedule your personalized demo.
+            ✨ <strong>Próximos pasos:</strong> Revisa tu email para recibir nuestra guía de inicio
+            y el enlace para agendar tu demostración personalizada.
           </p>
         </div>
       </Card>
@@ -119,12 +112,12 @@ export function LeadCaptureForm({
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <Badge className="bg-gradient-to-r from-green-100 to-blue-100 text-green-800 border-green-200">
-            🚀 Free Trial Available
+            🚀 Prueba Gratis Disponible
           </Badge>
           {variant === 'default' && (
             <div className="text-right">
-              <div className="text-sm text-gray-500">Trusted by</div>
-              <div className="font-bold text-green-600">10,000+ businesses</div>
+              <div className="text-sm text-gray-500">Ya confían</div>
+              <div className="font-bold text-green-600">+5,000 negocios</div>
             </div>
           )}
         </div>
@@ -152,11 +145,11 @@ export function LeadCaptureForm({
               <div className="flex items-center justify-center space-x-4 mb-6 text-sm text-gray-600">
                 <div className="flex items-center space-x-1">
                   <Shield className="w-4 h-4 text-green-600" />
-                  <span>SSL Encrypted</span>
+                  <span>SSL Encriptado</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Clock className="w-4 h-4 text-blue-600" />
-                  <span>24h Response</span>
+                  <span>Respuesta en 24h</span>
                 </div>
               </div>
             )}
@@ -164,7 +157,7 @@ export function LeadCaptureForm({
             {/* Show submission error */}
             {isSubmissionError && (
               <FormErrorMessage
-                error="Failed to submit form. Please try again or contact support."
+                error="Error al enviar el formulario. Por favor intenta de nuevo o contacta soporte."
                 className="mb-4"
               />
             )}
@@ -175,11 +168,11 @@ export function LeadCaptureForm({
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-semibold">First Name *</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Nombre *</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="John"
+                      placeholder="Juan"
                       autoComplete="given-name"
                       inputMode="text"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
@@ -196,11 +189,11 @@ export function LeadCaptureForm({
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-semibold">Last Name</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Apellido</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Doe"
+                      placeholder="Pérez"
                       autoComplete="family-name"
                       inputMode="text"
                       className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
@@ -219,12 +212,12 @@ export function LeadCaptureForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-semibold">Business Email *</FormLabel>
+                <FormLabel className="text-gray-700 font-semibold">Email Empresarial *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="email"
-                    placeholder="john@company.com"
+                    placeholder="juan@empresa.com"
                     autoComplete="email"
                     inputMode="email"
                     enterKeyHint="next"
@@ -244,12 +237,12 @@ export function LeadCaptureForm({
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-semibold">Phone Number</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Teléfono</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="+1234567890"
+                      placeholder="+34 600 123 456"
                       autoComplete="tel"
                       inputMode="tel"
                       enterKeyHint="next"
@@ -267,11 +260,11 @@ export function LeadCaptureForm({
               name="companyName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-semibold">Company Name</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Nombre de la Empresa</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Acme Corp"
+                      placeholder="Mi Empresa S.L."
                       autoComplete="organization"
                       inputMode="text"
                       enterKeyHint="done"
@@ -290,7 +283,7 @@ export function LeadCaptureForm({
           {variant === 'default' && (
             <div>
               <Label className="text-gray-700 font-semibold mb-3 block">
-                What are you most interested in?
+                ¿Qué te interesa más?
               </Label>
               <div className="grid grid-cols-1 gap-3">
                 {FEATURE_OPTIONS.map((feature) => {
@@ -308,7 +301,7 @@ export function LeadCaptureForm({
                           : 'border-gray-200 hover:border-gray-300 active:border-gray-400 hover:bg-gray-50 active:bg-gray-100'
                       }`}
                       disabled={isSubmitting}
-                      aria-label={`Select ${feature.label}`}
+                      aria-label={`Seleccionar ${feature.label}`}
                     >
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                         isSelected ? 'bg-green-100' : 'bg-gray-100'
@@ -339,34 +332,34 @@ export function LeadCaptureForm({
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 w-5 h-5 animate-spin" aria-hidden="true" />
-                Creating Your Account...
+                Creando tu Cuenta...
               </>
             ) : isSubmissionError ? (
               <>
                 <AlertCircle className="mr-2 w-5 h-5" aria-hidden="true" />
-                Try Again
+                Intentar de Nuevo
               </>
             ) : (
               <>
                 <Send className="mr-2 w-5 h-5" aria-hidden="true" />
-                Start Free Trial
+                Comenzar Prueba Gratis
               </>
             )}
           </Button>
 
           <p id="submit-help" className="sr-only">
-            Submit the form to start your free trial. All fields marked with * are required.
+            Envía el formulario para comenzar tu prueba gratis. Todos los campos marcados con * son obligatorios.
           </p>
 
           {/* Trust Indicators */}
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-3">
-              ✅ 14-day free trial • ✅ No credit card required • ✅ Cancel anytime
+              ✅ 14 días de prueba gratis • ✅ Sin tarjeta de crédito • ✅ Cancela cuando quieras
             </p>
             <p className="text-xs text-gray-400">
-              By submitting this form, you agree to our{' '}
-              <a href="/terms" className="text-green-600 hover:underline">Terms of Service</a>{' '}
-              and <a href="/privacy" className="text-green-600 hover:underline">Privacy Policy</a>.
+              Al enviar este formulario, aceptas nuestros{' '}
+              <a href="/terms" className="text-green-600 hover:underline">Términos de Servicio</a>{' '}
+              y <a href="/privacy" className="text-green-600 hover:underline">Política de Privacidad</a>.
             </p>
           </div>
           </form>
@@ -376,7 +369,6 @@ export function LeadCaptureForm({
   );
 }
 
-// Export form component wrapped with error boundary for external use
 export function LeadCaptureFormWithErrorBoundary(props: EnhancedLeadCaptureFormProps) {
   return (
     <FormErrorBoundary formName="Lead Capture Form">

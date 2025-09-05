@@ -15,14 +15,7 @@ import { Card } from '@/modules/shared/presentation/components/ui/card';
 import { FeatureIcon, Icon } from '@/modules/shared/presentation/components/ui/icon';
 
 import { MARKETING_COPY } from '../../domain/copy';
-
-interface Feature {
-  title: string;
-  description: string;
-  icon: keyof typeof featureIcons;
-  benefits: string[];
-  badge?: string;
-}
+import { type Feature } from '../../domain/types';
 
 // Features obtenidos del copy centralizado
 const defaultFeatures: Feature[] = MARKETING_COPY.features.items.map(item => ({
@@ -30,18 +23,9 @@ const defaultFeatures: Feature[] = MARKETING_COPY.features.items.map(item => ({
   benefits: [...item.benefits]
 })) as Feature[];
 
-interface FeaturesGridProps {
+export function FeaturesGrid({ features = defaultFeatures }: {
   features?: Feature[];
-}
-
-
-/**
- * Features Grid Component - Client Component with Animations
- *
- * Displays a grid of product features with icons and benefits.
- * Enhanced with viewport animations and modern interactions.
- */
-export function FeaturesGrid({ features = defaultFeatures }: FeaturesGridProps) {
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const { badge, title, titleHighlight, description } = MARKETING_COPY.features;

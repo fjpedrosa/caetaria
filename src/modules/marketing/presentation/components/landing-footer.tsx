@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  ArrowRight,
   ExternalLink,
   Github,
   Linkedin,
@@ -13,63 +12,38 @@ import {
   Phone,
   Send,
   Sparkles,
-  Twitter} from 'lucide-react';
+  Twitter
+} from 'lucide-react';
 
+import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
+import type { FooterLinksSection, SocialLink, TrustBadge } from '@/modules/marketing/domain/types';
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Input } from '@/modules/shared/presentation/components/ui/input';
 import { Separator } from '@/modules/shared/presentation/components/ui/separator';
 
-/**
- * Landing Footer Component - Client Component
- *
- * Comprehensive footer with navigation links, contact information,
- * newsletter signup, and company information with advanced animations.
- */
+
 export function LandingFooter() {
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   const [isNewsletterFocused, setIsNewsletterFocused] = useState(false);
 
-  const footerLinks = {
-    product: [
-      { name: 'Cómo Funciona', href: '/how-it-works' },
-      { name: 'Precios', href: '/precios' },
-      { name: 'Roadmap', href: '/roadmap' },
-      { name: 'Acceso Anticipado', href: '/early-access' }
-    ],
-    solutions: [
-      { name: 'E-commerce', href: '/solutions/ecommerce' },
-      { name: 'Customer Support', href: '/solutions/support' },
-      { name: 'Marketing', href: '/solutions/marketing' },
-      { name: 'Sales', href: '/solutions/sales' },
-      { name: 'Healthcare', href: '/solutions/healthcare' },
-      { name: 'Education', href: '/solutions/education' }
-    ],
-    company: [
-      { name: 'Sobre Nosotros', href: '/about' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'Contacto', href: '/contact' }
-    ],
-    resources: [
-      { name: 'FAQ', href: '/faq' },
-      { name: 'Guías', href: '/guides' },
-      { name: 'Blog', href: '/blog' }
-    ],
-    legal: [
-      { name: 'Privacy Policy', href: '/privacy' },
-      { name: 'Terms of Service', href: '/terms' },
-      { name: 'Cookie Policy', href: '/cookies' },
-      { name: 'Privacidad', href: '/gdpr' },
-      { name: 'Security', href: '/security' },
-      { name: 'Compliance', href: '/compliance' }
-    ]
+  const { footer } = MARKETING_COPY;
+
+  const footerLinks: FooterLinksSection = {
+    product: footer.sections.product.links,
+    solutions: footer.sections.solutions.links,
+    company: footer.sections.company.links,
+    resources: footer.sections.resources.links,
+    legal: footer.sections.legal.links
   };
 
-  const socialLinks = [
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/whatsappcloud' },
-    { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/whatsappcloud' },
-    { name: 'GitHub', icon: Github, href: 'https://github.com/whatsappcloud' }
+  const socialLinks: SocialLink[] = [
+    { name: 'Twitter', icon: Twitter, href: footer.social.links[0].href },
+    { name: 'LinkedIn', icon: Linkedin, href: footer.social.links[1].href },
+    { name: 'GitHub', icon: Github, href: footer.social.links[2].href }
   ];
+
+  const trustBadges: TrustBadge[] = footer.trustBadges;
 
   return (
     <footer className="bg-gray-900 text-white relative overflow-hidden">
@@ -155,9 +129,9 @@ export function LandingFooter() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h4 className="font-semibold text-white mb-3">Stay Updated</h4>
+              <h4 className="font-semibold text-white mb-3">{footer.newsletter.title}</h4>
               <p className="text-gray-400 text-sm mb-4">
-                Get the latest product updates and industry insights.
+                {footer.newsletter.description}
               </p>
               <motion.div
                 className="flex space-x-2 relative"
@@ -169,7 +143,7 @@ export function LandingFooter() {
                 <motion.div className="relative flex-1">
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={footer.newsletter.placeholder}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setIsNewsletterFocused(true)}
@@ -209,9 +183,9 @@ export function LandingFooter() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {[
-                { icon: Mail, text: 'hello@whatsappcloud.com' },
-                { icon: Phone, text: '+1 (555) 123-4567' },
-                { icon: MapPin, text: 'Nairobi, Kenya' }
+                { icon: Mail, text: footer.contact.email },
+                { icon: Phone, text: footer.contact.phone },
+                { icon: MapPin, text: footer.contact.location }
               ].map((contact, index) => (
                 <motion.div
                   key={index}
@@ -248,7 +222,7 @@ export function LandingFooter() {
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
                 <h4 className="font-semibold text-white mb-4 relative">
-                  Product
+                  {footer.sections.product.title}
                   <motion.div
                     className="absolute bottom-0 left-0 h-0.5 bg-yellow-400"
                     initial={{ width: 0 }}
@@ -294,7 +268,7 @@ export function LandingFooter() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <h4 className="font-semibold text-white mb-4 relative">
-                  Solutions
+                  {footer.sections.solutions.title}
                   <motion.div
                     className="absolute bottom-0 left-0 h-0.5 bg-blue-600"
                     initial={{ width: 0 }}
@@ -340,7 +314,7 @@ export function LandingFooter() {
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
                 <h4 className="font-semibold text-white mb-4 relative">
-                  Resources
+                  {footer.sections.resources.title}
                   <motion.div
                     className="absolute bottom-0 left-0 h-0.5 bg-yellow-400"
                     initial={{ width: 0 }}
@@ -386,7 +360,7 @@ export function LandingFooter() {
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
                 <h4 className="font-semibold text-white mb-4 relative">
-                  Company
+                  {footer.sections.company.title}
                   <motion.div
                     className="absolute bottom-0 left-0 h-0.5 bg-blue-600"
                     initial={{ width: 0 }}
@@ -445,7 +419,7 @@ export function LandingFooter() {
               className="text-gray-400 text-sm"
               whileHover={{ color: '#facc15' }}
             >
-              © {currentYear} The Kroko Company. All rights reserved.
+              © {currentYear} Neptunik. Todos los derechos reservados.
             </motion.div>
             <div className="flex space-x-6">
               {footerLinks.legal.slice(0, 3).map((link, index) => (
@@ -470,7 +444,7 @@ export function LandingFooter() {
 
           {/* Social Links */}
           <div className="flex items-center space-x-6">
-            <span className="text-gray-400 text-sm">Follow us</span>
+            <span className="text-gray-400 text-sm">{footer.social.followText}</span>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => {
                 const IconComponent = social.icon;
@@ -518,12 +492,7 @@ export function LandingFooter() {
       >
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-wrap justify-center items-center space-x-8 space-y-4">
-            {[
-              { color: 'green', text: 'Seguridad Garantizada' },
-              { color: 'blue', text: 'Privacidad Protegida' },
-              { color: 'purple', text: 'Certificado Internacional' },
-              { color: 'yellow', text: 'Funciona 24/7' }
-            ].map((badge, index) => (
+            {trustBadges.map((badge, index) => (
               <motion.div
                 key={index}
                 className="flex items-center space-x-2 text-gray-400 text-sm"
