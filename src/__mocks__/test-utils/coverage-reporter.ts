@@ -32,7 +32,7 @@ export const DEFAULT_COVERAGE_CONFIG: CoverageConfig = {
     infrastructure: { branches: 85, functions: 85, lines: 90, statements: 90 },
     ui: { branches: 80, functions: 80, lines: 85, statements: 85 },
   },
-  modules: ['marketing', 'onboarding', 'analytics', 'whatsapp-simulator'],
+  modules: ['marketing', 'onboarding', 'analytics', 'pricing'],
   generateDetailedReport: true,
 };
 

@@ -3,21 +3,18 @@
   "devCommand": "npm run dev",
   "installCommand": "npm ci",
   "framework": "nextjs",
-  "regions": [
-    "fra1"
-  ],
   "functions": {
     "src/app/api/**/*.ts": {
-      "maxDuration": 30,
-      "memory": 1024
-    },
-    "src/app/api/webhooks/**/*.ts": {
-      "maxDuration": 60,
+      "maxDuration": 10,
       "memory": 512
     },
-    "src/app/api/health/route.ts": {
+    "src/app/api/webhooks/**/*.ts": {
       "maxDuration": 10,
       "memory": 256
+    },
+    "src/app/api/health/route.ts": {
+      "maxDuration": 5,
+      "memory": 128
     }
   },
   "headers": [
@@ -151,13 +148,9 @@
       "destination": "/api/webhooks/whatsapp"
     }
   ],
-  "env": {
-    "NODE_OPTIONS": "--max-old-space-size=8192"
-  },
   "build": {
     "env": {
-      "NEXT_TELEMETRY_DISABLED": "1",
-      "NODE_OPTIONS": "--max-old-space-size=8192"
+      "NEXT_TELEMETRY_DISABLED": "1"
     }
   }
 }

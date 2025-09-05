@@ -425,7 +425,7 @@ test.describe('Mobile Responsiveness', () => {
         leadForm: 'input[name="firstName"], input[name="email"]',
         navigation: 'nav',
         cta: 'button, a[role="button"]',
-        simulator: '[role="img"], .whatsapp-simulator'
+        demoPlaceholder: '[role="img"], .demo-placeholder'
       };
       
       for (const viewport of [{ width: 375, height: 667 }, { width: 768, height: 1024 }]) {

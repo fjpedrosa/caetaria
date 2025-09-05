@@ -9,10 +9,7 @@
 import React, { useCallback, useMemo,useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-import { AVAILABLE_SCENARIOS, getPrimaryScenarioForVertical, ScenarioOption } from '@/modules/whatsapp-simulator/scenarios';
-
 import { UseCaseCard } from './use-case-card';
-import { UseCasesSimulator } from './use-cases-simulator';
 
 /**
  * Use case categories with enhanced visual design
@@ -24,13 +21,14 @@ interface UseCaseCategory {
   icon: string;
   color: string;
   bgColor: string;
-  scenario: ScenarioOption;
+  roi: {
+    metric: string;
+    value: string;
+    timeline: string;
+  };
 }
 
 // Memoized use case categories for better performance
-// Currently using only available scenario (restaurant-reservation) for all use cases
-const restaurantScenario = AVAILABLE_SCENARIOS['restaurant-reservation'];
-
 const USE_CASE_CATEGORIES: UseCaseCategory[] = [
   {
     id: 'restaurant-reservation',
@@ -39,7 +37,11 @@ const USE_CASE_CATEGORIES: UseCaseCategory[] = [
     icon: '🍽️',
     color: 'text-green-700',
     bgColor: 'bg-green-50 border-green-200 hover:bg-green-100',
-    scenario: restaurantScenario
+    roi: {
+      metric: '+40% ocupación',
+      value: '+3.200€/mes',
+      timeline: '30 días'
+    }
   },
   {
     id: 'restaurant-orders',
@@ -48,7 +50,11 @@ const USE_CASE_CATEGORIES: UseCaseCategory[] = [
     icon: '🍕',
     color: 'text-orange-700',
     bgColor: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
-    scenario: restaurantScenario // Using same scenario temporarily
+    roi: {
+      metric: '+35% pedidos',
+      value: '+2.800€/mes',
+      timeline: '30 días'
+    }
   },
   {
     id: 'medical-appointments',
@@ -57,7 +63,11 @@ const USE_CASE_CATEGORIES: UseCaseCategory[] = [
     icon: '🏥',
     color: 'text-blue-700',
     bgColor: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
-    scenario: restaurantScenario // Using same scenario temporarily
+    roi: {
+      metric: '-70% no-shows',
+      value: '8h/semana ahorradas',
+      timeline: '15 días'
+    }
   },
   {
     id: 'loyalty-program',
@@ -66,7 +76,11 @@ const USE_CASE_CATEGORIES: UseCaseCategory[] = [
     icon: '🏆',
     color: 'text-purple-700',
     bgColor: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
-    scenario: restaurantScenario // Using same scenario temporarily
+    roi: {
+      metric: '+25% retención',
+      value: '+1.500€/mes',
+      timeline: '60 días'
+    }
   }
 ];
 
@@ -177,32 +191,51 @@ export function UseCasesSection() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
                 <div className="flex items-center gap-2 px-3 py-2 bg-primary/10 text-primary rounded-lg">
                   <span className="font-semibold">📈</span>
-                  <span className="font-medium">{selectedUseCase.scenario.roi.metric}</span>
+                  <span className="font-medium">{selectedUseCase.roi.metric}</span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg">
                   <span className="font-semibold">💰</span>
-                  <span className="font-medium">{selectedUseCase.scenario.roi.value}</span>
+                  <span className="font-medium">{selectedUseCase.roi.value}</span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg">
                   <span className="font-semibold">⏱️</span>
-                  <span className="font-medium">{selectedUseCase.scenario.roi.timeline}</span>
+                  <span className="font-medium">{selectedUseCase.roi.timeline}</span>
                 </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Column - WhatsApp Simulator (60% width on desktop) */}
+          {/* Right Column - Demo Placeholder (60% width on desktop) */}
           <div className="lg:col-span-7">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
               transition={{ duration: 0.7, delay: 0.5 }}
             >
-              <UseCasesSimulator
-                scenario={selectedUseCase.scenario}
-                isTransitioning={isTransitioning}
-                isInView={isInView}
-              />
+              {/* Demo Placeholder */}
+              <div className="bg-card border border-border rounded-2xl p-8 text-center">
+                <div className="max-w-md mx-auto">
+                  <div className="w-full aspect-[9/19] bg-gradient-to-b from-gray-100 to-gray-200 rounded-[2.5rem] border-8 border-gray-300 flex items-center justify-center">
+                    <div className="text-center p-8">
+                      <div className="text-4xl mb-4">{selectedUseCase.icon}</div>
+                      <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                        {selectedUseCase.title}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Demostración interactiva próximamente
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    <div className="flex items-center gap-3 justify-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                      <span className="text-sm text-muted-foreground">
+                        Simulación en desarrollo
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </motion.div>

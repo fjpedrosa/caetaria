@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import 'jest-canvas-mock';
 
 // Mock Next.js modules
 jest.mock('next/navigation', () => ({
@@ -69,74 +68,6 @@ jest.mock('framer-motion', () => ({
   useSpring: (value) => value,
 }));
 
-// Mock HTML2Canvas
-jest.mock('html2canvas', () => ({
-  __esModule: true,
-  default: jest.fn(() =>
-    Promise.resolve({
-      toDataURL: () => 'data:image/png;base64,test',
-      getContext: () => ({
-        drawImage: jest.fn(),
-        getImageData: () => ({
-          data: new Uint8ClampedArray(4),
-          width: 1,
-          height: 1,
-        }),
-      }),
-      width: 800,
-      height: 600,
-    })
-  ),
-}));
-
-// Mock GIF.js
-jest.mock('gif.js', () => {
-  return jest.fn().mockImplementation(() => ({
-    addFrame: jest.fn(),
-    render: jest.fn(),
-    on: jest.fn((event, callback) => {
-      if (event === 'finished') {
-        setTimeout(() => callback(new Blob()), 100);
-      }
-    }),
-    abort: jest.fn(),
-    running: false,
-  }));
-});
-
-// Mock Canvas API
-Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
-  value: jest.fn(() => ({
-    fillRect: jest.fn(),
-    clearRect: jest.fn(),
-    getImageData: jest.fn(() => ({
-      data: new Uint8ClampedArray(4),
-    })),
-    putImageData: jest.fn(),
-    createImageData: jest.fn(() => ({
-      data: new Uint8ClampedArray(4),
-    })),
-    setTransform: jest.fn(),
-    drawImage: jest.fn(),
-    save: jest.fn(),
-    fillText: jest.fn(),
-    restore: jest.fn(),
-    beginPath: jest.fn(),
-    moveTo: jest.fn(),
-    lineTo: jest.fn(),
-    closePath: jest.fn(),
-    stroke: jest.fn(),
-    translate: jest.fn(),
-    scale: jest.fn(),
-    rotate: jest.fn(),
-    arc: jest.fn(),
-    fill: jest.fn(),
-    measureText: jest.fn(() => ({ width: 0 })),
-    transform: jest.fn(),
-    rect: jest.fn(),
-    clip: jest.fn(),
-  })),
-});
 
 // Mock IntersectionObserver
 global.IntersectionObserver = jest.fn(() => ({
