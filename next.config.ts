@@ -4,13 +4,8 @@ import path from 'path';
 const isTurbopack = process.env.TURBOPACK === '1';
 
 const nextConfig = {
-  // Core Next.js configuration
   reactStrictMode: true,
-  output: 'standalone',
-
-  // Experimental features for Next.js 15
   experimental: {
-    // Package optimization for commonly used libraries
     optimizePackageImports: [
       'lucide-react',
       '@radix-ui/react-*',
@@ -18,13 +13,11 @@ const nextConfig = {
     ]
   },
 
-  // Turbopack configuration
   turbopack: {
     resolveAlias: {
       '@': path.resolve(process.cwd(), 'src'),
     },
     rules: {
-      // Optimize test file exclusion
       '*.test.{js,ts,jsx,tsx}': {
         loaders: ['ignore-loader']
       },
@@ -34,9 +27,7 @@ const nextConfig = {
     }
   },
 
-  // Webpack optimizations
   webpack: (config, { dev, isServer }) => {
-    // Exclude test files from bundle and watching
     config.watchOptions = {
       ...config.watchOptions,
       ignored: [
@@ -53,7 +44,6 @@ const nextConfig = {
     return config;
   },
 
-  // Image optimization
   images: {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
