@@ -12,8 +12,8 @@ import { CampaignProvider } from '@/modules/marketing/presentation/providers/cam
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Caetaria Campaign',
-    default: 'WhatsApp Automation for Business | Caetaria',
+    template: '%s | Neptunik Campaign',
+    default: 'WhatsApp Automation for Business | Neptunik',
   },
   description: 'Transform your WhatsApp into a powerful business tool with automated conversations, AI-powered responses, and seamless customer management.',
   robots: {
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    siteName: 'Caetaria',
+    siteName: 'Neptunik',
     title: 'WhatsApp Business Automation Platform',
-    description: 'Automate WhatsApp conversations and increase your sales by 30% with Caetaria\'s AI-powered platform.',
+    description: 'Automate WhatsApp conversations and increase your sales by 30% with Neptunik\'s AI-powered platform.',
   },
   twitter: {
     card: 'summary_large_image',

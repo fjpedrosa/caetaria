@@ -8,7 +8,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Admin Dashboard | Caetaria',
+  title: 'Admin Dashboard | Neptunik',
   description: 'Administrative dashboard for monitoring and managing the onboarding platform',
   robots: 'noindex, nofollow', // Prevent indexing of admin pages
 };

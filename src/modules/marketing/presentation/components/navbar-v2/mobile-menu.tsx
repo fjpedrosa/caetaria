@@ -55,7 +55,7 @@ export function MobileMenu({
   ctaConfig,
   onClose,
   className,
-  logoText = 'Caetaria'
+  logoText = 'Neptunik'
 }: MobileMenuProps) {
   const containerVariants = {
     hidden: {
@@ -399,7 +399,7 @@ export function CompactMobileMenu({
   ctaConfig,
   onClose,
   className,
-  logoText = 'Caetaria'
+  logoText = 'Neptunik'
 }: MobileMenuProps) {
   return (
     <MobileMenu
@@ -420,7 +420,7 @@ export function MinimalMobileMenu({
   navigationItems,
   onClose,
   className,
-  logoText = 'Caetaria'
+  logoText = 'Neptunik'
 }: Omit<MobileMenuProps, 'ctaConfig'>) {
   const containerVariants = {
     hidden: { opacity: 0 },

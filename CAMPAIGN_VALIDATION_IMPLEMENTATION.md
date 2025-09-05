@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the comprehensive validation campaign launch strategy and infrastructure implementation for the Caetaria WhatsApp automation platform. The implementation focuses on data-driven market validation with target KPIs of CPL <€50, Conversion Rate >5%, and Onboarding Completion >40%.
+This document outlines the comprehensive validation campaign launch strategy and infrastructure implementation for the Neptunik WhatsApp automation platform. The implementation focuses on data-driven market validation with target KPIs of CPL <€50, Conversion Rate >5%, and Onboarding Completion >40%.
 
 ## Implementation Summary
 

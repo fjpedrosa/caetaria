@@ -193,7 +193,7 @@ status() {
         
         # Test database connection
         log "Testing database connection..."
-        if docker exec supabase_db_caetaria-whatsapp-landing psql -U postgres -c "SELECT version();" &> /dev/null; then
+        if docker exec supabase_db_neptunik-whatsapp-landing psql -U postgres -c "SELECT version();" &> /dev/null; then
             log "✅ Database connection successful"
         else
             warn "Database connection failed"
@@ -218,7 +218,7 @@ backup() {
     
     log "Creating database backup: $backup_name"
     
-    docker exec supabase_db_caetaria-whatsapp-landing pg_dump -U postgres -d postgres > "$backup_dir/$backup_name.sql"
+    docker exec supabase_db_neptunik-whatsapp-landing pg_dump -U postgres -d postgres > "$backup_dir/$backup_name.sql"
     
     if [ $? -eq 0 ]; then
         log "✅ Backup created: $backup_dir/$backup_name.sql"
@@ -255,9 +255,9 @@ restore() {
         
         # Handle compressed backups
         if [[ "$backup_file" == *.gz ]]; then
-            zcat "$backup_file" | docker exec -i supabase_db_caetaria-whatsapp-landing psql -U postgres -d postgres
+            zcat "$backup_file" | docker exec -i supabase_db_neptunik-whatsapp-landing psql -U postgres -d postgres
         else
-            docker exec -i supabase_db_caetaria-whatsapp-landing psql -U postgres -d postgres < "$backup_file"
+            docker exec -i supabase_db_neptunik-whatsapp-landing psql -U postgres -d postgres < "$backup_file"
         fi
         
         if [ $? -eq 0 ]; then
@@ -280,7 +280,7 @@ seed() {
     log "Seeding database with sample data..."
     
     if [ -f "$seed_file" ]; then
-        docker exec -i supabase_db_caetaria-whatsapp-landing psql -U postgres -d postgres < "$seed_file"
+        docker exec -i supabase_db_neptunik-whatsapp-landing psql -U postgres -d postgres < "$seed_file"
         if [ $? -eq 0 ]; then
             log "✅ Database seeded successfully"
         else

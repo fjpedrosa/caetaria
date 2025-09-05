@@ -530,7 +530,7 @@ export function MotionNavbarV2({
                   'focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2',
                   accessibilityState.highContrast && 'focus:ring-white'
                 )}
-                aria-label="Caetaria - Página principal - Plataforma WhatsApp Cloud"
+                aria-label="Neptunik - Página principal - Plataforma WhatsApp Cloud"
               >
                 <motion.div
                   whileHover={accessibilityState.reducedMotion ? {} : { scale: 1.05, rotate: 2 }}
@@ -562,7 +562,7 @@ export function MotionNavbarV2({
                       ? 'text-white'
                       : 'bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent group-hover:from-yellow-300 group-hover:to-yellow-400'
                   )}>
-                    Caetaria
+                    Neptunik
                   </span>
                   <span className={cn(
                     'text-xs -mt-0.5 transition-colors duration-200',
@@ -698,7 +698,7 @@ export function MotionNavbarV2({
         onClose={handleMobileMenuClose}
         navigationItems={navigationItems}
         ctaConfig={ctaConfig}
-        logoText="Caetaria"
+        logoText="Neptunik"
       />
     </>
   );

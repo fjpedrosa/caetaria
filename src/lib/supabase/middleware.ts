@@ -86,7 +86,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse 
         },
         global: {
           headers: {
-            'X-Client-Info': 'caetaria-middleware@1.0.0',
+            'X-Client-Info': 'neptunik-middleware@1.0.0',
           },
         },
       }

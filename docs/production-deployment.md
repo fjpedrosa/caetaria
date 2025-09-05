@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for deploying the Caetaria WhatsApp Cloud Landing platform to production with enterprise-grade security, monitoring, and operational procedures.
+This guide provides comprehensive instructions for deploying the Neptunik WhatsApp Cloud Landing platform to production with enterprise-grade security, monitoring, and operational procedures.
 
 ## Pre-Deployment Checklist
 
@@ -413,6 +413,6 @@ supabase db reset --project-ref YOUR_PROJECT_REF
 
 ## Conclusion
 
-This production deployment guide ensures enterprise-grade reliability, security, and performance for the Caetaria platform. All procedures should be tested in a staging environment before production deployment.
+This production deployment guide ensures enterprise-grade reliability, security, and performance for the Neptunik platform. All procedures should be tested in a staging environment before production deployment.
 
 For questions or issues, refer to the emergency contacts and escalation procedures outlined above.

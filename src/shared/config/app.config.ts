@@ -5,7 +5,7 @@
 import type { AppConfig, Language,Theme } from '../types'
 
 export const appConfig: AppConfig = {
-  name: process.env.NEXT_PUBLIC_APP_NAME || 'Caetaria',
+  name: process.env.NEXT_PUBLIC_APP_NAME || 'Neptunik',
   version: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
   environment: (process.env.NODE_ENV as AppConfig['environment']) || 'development',
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
@@ -71,11 +71,11 @@ export const i18nConfig = {
  * SEO configuration
  */
 export const seoConfig = {
-  defaultTitle: 'Caetaria - Automatiza WhatsApp para tu negocio',
-  titleTemplate: '%s | Caetaria',
-  defaultDescription: 'Aumenta tus ventas 30% automatizando WhatsApp. Caetaria te permite gestionar clientes, automatizar respuestas y cerrar más ventas. Configuración en 5 minutos.',
+  defaultTitle: 'Neptunik - Automatiza WhatsApp para tu negocio',
+  titleTemplate: '%s | Neptunik',
+  defaultDescription: 'Aumenta tus ventas 30% automatizando WhatsApp. Neptunik te permite gestionar clientes, automatizar respuestas y cerrar más ventas. Configuración en 5 minutos.',
   defaultKeywords: ['whatsapp', 'business', 'api', 'messaging', 'cloud', 'integration'],
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://caetaria.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://neptunik.com',
   defaultImage: '/images/og-image.jpg',
   twitterHandle: '@yourcompany',
   facebookAppId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID,
@@ -114,7 +114,7 @@ export const securityConfig = {
  * Business configuration
  */
 export const businessConfig = {
-  name: process.env.NEXT_PUBLIC_BUSINESS_NAME || 'Caetaria',
+  name: process.env.NEXT_PUBLIC_BUSINESS_NAME || 'Neptunik',
   description: 'Automatiza WhatsApp para tu negocio y aumenta tus ventas',
   email: process.env.NEXT_PUBLIC_BUSINESS_EMAIL || 'contact@yourcompany.com',
   phone: process.env.NEXT_PUBLIC_BUSINESS_PHONE || '+1-234-567-8900',

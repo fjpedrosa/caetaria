@@ -232,7 +232,7 @@ export const SUPABASE_CONSTANTS = {
 
   // Auth constants
   AUTH: {
-    STORAGE_KEY: 'caetaria-auth-token',
+    STORAGE_KEY: 'neptunik-auth-token',
     COOKIE_MAX_AGE: 30 * 24 * 60 * 60, // 30 days
   },
 } as const;

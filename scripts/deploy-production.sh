@@ -214,7 +214,7 @@ validate_deployment() {
     info "Validating deployment..."
     
     # Get deployment URL (this would be your actual domain)
-    local domain="${PRODUCTION_DOMAIN:-https://caetaria.com}"
+    local domain="${PRODUCTION_DOMAIN:-https://neptunik.com}"
     
     # Health check
     info "Testing health endpoint..."
@@ -288,7 +288,7 @@ purge_cdn_cache() {
 
 # Send notifications
 send_success_notification() {
-    local message="🚀 Production deployment successful for Caetaria platform"
+    local message="🚀 Production deployment successful for Neptunik platform"
     
     # Slack notification
     if [[ -n "${SLACK_WEBHOOK_URL:-}" ]]; then
@@ -309,7 +309,7 @@ send_success_notification() {
 
 send_failure_notification() {
     local error_message="$1"
-    local message="❌ Production deployment failed for Caetaria platform: $error_message"
+    local message="❌ Production deployment failed for Neptunik platform: $error_message"
     
     # Slack notification
     if [[ -n "${SLACK_WEBHOOK_URL:-}" ]]; then
@@ -402,8 +402,8 @@ main() {
     log "========================================"
     
     success "🎉 Production deployment completed successfully!"
-    info "Monitor the application at: ${PRODUCTION_DOMAIN:-https://caetaria.com}"
-    info "Check health at: ${PRODUCTION_DOMAIN:-https://caetaria.com}/api/health"
+    info "Monitor the application at: ${PRODUCTION_DOMAIN:-https://neptunik.com}"
+    info "Check health at: ${PRODUCTION_DOMAIN:-https://neptunik.com}/api/health"
     info "View logs at: $LOG_FILE"
 }
 

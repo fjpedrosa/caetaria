@@ -73,7 +73,7 @@ export function OptimizedMobileMenu({
   navigationItems,
   ctaConfig,
   className,
-  logoText = 'Caetaria',
+  logoText = 'Neptunik',
   reducedMotion = false,
   highContrast = false,
   screenReaderActive = false,

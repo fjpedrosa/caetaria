@@ -61,7 +61,7 @@ export const supabase = createBrowserClient<Database>(
       // Detect session changes across tabs
       detectSessionInUrl: true,
       // Storage key for session persistence
-      storageKey: 'caetaria-auth-token',
+      storageKey: 'neptunik-auth-token',
     },
     // Enable real-time features
     realtime: {
@@ -73,7 +73,7 @@ export const supabase = createBrowserClient<Database>(
     // Client-specific configurations
     global: {
       headers: {
-        'X-Client-Info': 'caetaria-browser@1.0.0',
+        'X-Client-Info': 'neptunik-browser@1.0.0',
       },
     },
   }

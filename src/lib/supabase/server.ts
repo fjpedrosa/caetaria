@@ -101,7 +101,7 @@ export async function createClient() {
       // Server-specific configurations
       global: {
         headers: {
-          'X-Client-Info': 'caetaria-server@1.0.0',
+          'X-Client-Info': 'neptunik-server@1.0.0',
         },
       },
     }
@@ -159,7 +159,7 @@ export async function createAdminClient() {
       },
       global: {
         headers: {
-          'X-Client-Info': 'caetaria-admin@1.0.0',
+          'X-Client-Info': 'neptunik-admin@1.0.0',
         },
       },
     }

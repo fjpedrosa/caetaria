@@ -156,7 +156,7 @@ export function MotionNavbarV2({
                   />
                 </div>
                 <span className="text-xl font-bold text-white group-hover:text-gray-100 transition-all duration-300 hidden sm:block">
-                  Caetaria
+                  Neptunik
                 </span>
               </Link>
             </motion.div>
@@ -377,7 +377,7 @@ function MobileMenu({
             <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
               <Icon icon={MessageCircle} size="small" iconClassName="text-white" />
             </div>
-            <span className="text-lg font-bold">Caetaria</span>
+            <span className="text-lg font-bold">Neptunik</span>
           </Link>
           <Button
             variant="ghost"
