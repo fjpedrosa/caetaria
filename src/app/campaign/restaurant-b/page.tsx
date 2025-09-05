@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description: 'Setup automático, sin programación, sin contratos. Tu restaurante conectado a WhatsApp en minutos, no meses. Prueba gratis.',
   keywords: ['WhatsApp restaurante fácil', 'setup automático', 'sin programación', 'restaurante simple', 'WhatsApp rápido'],
   openGraph: {
-    title: 'WhatsApp para Restaurantes | Listo en 5 Minutos | Caetaria',
+    title: 'WhatsApp para Restaurantes | Listo en 5 Minutos | Neptunik',
     description: 'La forma más fácil de conectar tu restaurante a WhatsApp. Sin complicaciones técnicas, sin contratos largos.',
     images: ['/images/campaign/restaurant-simplicity-og.jpg'],
   },

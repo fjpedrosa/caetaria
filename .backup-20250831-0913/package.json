@@ -1,7 +1,7 @@
 {
-  "name": "caetaria",
+  "name": "neptunik",
   "version": "1.0.0",
-  "description": "Caetaria - Automatiza WhatsApp para tu negocio",
+  "description": "Neptunik - Automatiza WhatsApp para tu negocio",
   "main": "index.js",
   "scripts": {
     "dev": "next dev --turbopack",

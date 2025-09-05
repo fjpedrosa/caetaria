@@ -100,7 +100,7 @@ export function Providers({ children }: { children: ReactNode }) {
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          storageKey="caetaria-theme"
+          storageKey="neptunik-theme"
           themes={['light', 'dark', 'system']}
         >
           <PostHogProvider client={posthog}>

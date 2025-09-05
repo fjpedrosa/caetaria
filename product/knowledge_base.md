@@ -1,4 +1,4 @@
-📚 Knowledge Base – Caetaria
+📚 Knowledge Base – Neptunik
 
 ⸻
 
@@ -223,4 +223,4 @@
  • Meta Docs: WhatsApp Cloud API – condiciones de uso.
  • Wati, Zoko, 360dialog, Respond.io – modelos y precios de mercado.
  • GDPR (cold email B2B, interés legítimo).
- • Dominio: caetaria.com
+ • Dominio: neptunik.com

@@ -1,4 +1,4 @@
-# 🚦 GO/NO-GO Decision Framework – Caetaria
+# 🚦 GO/NO-GO Decision Framework – Neptunik
 
 ## 🎯 Objetivo
 Documento maestro con todos los checkpoints de decisión objetivos para evaluar la viabilidad del proyecto en cada fase.
@@ -97,17 +97,17 @@ flowchart LR
 
 ### Acciones según Resultado
 
-| Métrica | Valor | Decisión | Acción |
-|---------|-------|----------|--------|
-| CTR | <0.5% | 🔴 CRÍTICO | Pausar campañas, revisar messaging |
-| CTR | 0.5-0.8% | 🟡 OPTIMIZAR | A/B test nuevos creativos |
-| CTR | >0.8% | 🟢 CONTINUAR | Mantener y escalar |
-| Conversión | <1% | 🔴 CRÍTICO | Rediseñar landing completo |
-| Conversión | 1-1.5% | 🟡 OPTIMIZAR | A/B test elementos landing |
-| Conversión | >1.5% | 🟢 CONTINUAR | Escalar tráfico |
-| CPL | >€100 | 🔴 CRÍTICO | Cambiar estrategia completa |
-| CPL | €80-100 | 🟡 OPTIMIZAR | Refinar targeting |
-| CPL | <€80 | 🟢 CONTINUAR | Aumentar presupuesto |
+| Métrica    | Valor    | Decisión    | Acción                             |
+| ---------- | -------- | ----------- | ---------------------------------- |
+| CTR        | <0.5%    | 🔴 CRÍTICO   | Pausar campañas, revisar messaging |
+| CTR        | 0.5-0.8% | 🟡 OPTIMIZAR | A/B test nuevos creativos          |
+| CTR        | >0.8%    | 🟢 CONTINUAR | Mantener y escalar                 |
+| Conversión | <1%      | 🔴 CRÍTICO   | Rediseñar landing completo         |
+| Conversión | 1-1.5%   | 🟡 OPTIMIZAR | A/B test elementos landing         |
+| Conversión | >1.5%    | 🟢 CONTINUAR | Escalar tráfico                    |
+| CPL        | >€100    | 🔴 CRÍTICO   | Cambiar estrategia completa        |
+| CPL        | €80-100  | 🟡 OPTIMIZAR | Refinar targeting                  |
+| CPL        | <€80     | 🟢 CONTINUAR | Aumentar presupuesto               |
 
 ---
 
@@ -150,14 +150,14 @@ flowchart TD
 
 ### Matriz de Decisión
 
-| Criterio | Peso | Mínimo | Ideal | Resultado | Score |
-|----------|------|--------|-------|-----------|-------|
-| Problem Validation | 30% | 70% | 85% | _____% | _____ |
-| Pricing Acceptance | 25% | 30% | 50% | _____% | _____ |
-| Lead Quality | 20% | 40 | 60 | _____ | _____ |
-| Demo Interest | 15% | 20% | 40% | _____% | _____ |
-| Competition Weak | 10% | Yes | Yes | _____ | _____ |
-| **TOTAL SCORE** | 100% | **60** | **80** | | _____ |
+| Criterio           | Peso | Mínimo | Ideal  | Resultado | Score |
+| ------------------ | ---- | ------ | ------ | --------- | ----- |
+| Problem Validation | 30%  | 70%    | 85%    | _____%    | _____ |
+| Pricing Acceptance | 25%  | 30%    | 50%    | _____%    | _____ |
+| Lead Quality       | 20%  | 40     | 60     | _____     | _____ |
+| Demo Interest      | 15%  | 20%    | 40%    | _____%    | _____ |
+| Competition Weak   | 10%  | Yes    | Yes    | _____     | _____ |
+| **TOTAL SCORE**    | 100% | **60** | **80** |           | _____ |
 
 **Decisión**: Score ≥60 = GO | Score 40-60 = OPTIMIZE | Score <40 = KILL
 
@@ -273,15 +273,15 @@ flowchart TD
 
 ### Beta Health Dashboard
 
-| Métrica | Red Flag | Warning | Healthy | Target |
-|---------|----------|---------|---------|---------|
-| Beta Users | <5 | 5-10 | >10 | 15 |
-| Activation Rate | <20% | 20-30% | >30% | 50% |
-| Weekly Active | <20% | 20-40% | >40% | 60% |
-| Support Tickets/User | >5 | 3-5 | <3 | <2 |
-| NPS | <20 | 20-40 | >40 | >50 |
-| Paying Customers | 0 | 1-2 | ≥3 | ≥5 |
-| Churn Rate | >20% | 10-20% | <10% | <5% |
+| Métrica              | Red Flag | Warning | Healthy | Target |
+| -------------------- | -------- | ------- | ------- | ------ |
+| Beta Users           | <5       | 5-10    | >10     | 15     |
+| Activation Rate      | <20%     | 20-30%  | >30%    | 50%    |
+| Weekly Active        | <20%     | 20-40%  | >40%    | 60%    |
+| Support Tickets/User | >5       | 3-5     | <3      | <2     |
+| NPS                  | <20      | 20-40   | >40     | >50    |
+| Paying Customers     | 0        | 1-2     | ≥3      | ≥5     |
+| Churn Rate           | >20%     | 10-20%  | <10%    | <5%    |
 
 ---
 
@@ -399,12 +399,12 @@ graph TD
 
 ### Year 1 Success Criteria
 
-| Scenario | MRR | Customers | Churn | LTV/CAC | Decision |
-|----------|-----|-----------|-------|---------|----------|
-| 🟢 **Best** | >€8k | >200 | <8% | >3 | Scale/Funding |
-| 🟡 **Good** | €3-8k | 50-200 | <12% | >2 | Bootstrap |
-| 🟠 **Marginal** | €1-3k | 20-50 | <15% | >1.5 | Optimize |
-| 🔴 **Failed** | <€1k | <20 | >15% | <1 | Kill/Exit |
+| Scenario       | MRR   | Customers | Churn | LTV/CAC | Decision      |
+| -------------- | ----- | --------- | ----- | ------- | ------------- |
+| 🟢 **Best**     | >€8k  | >200      | <8%   | >3      | Scale/Funding |
+| 🟡 **Good**     | €3-8k | 50-200    | <12%  | >2      | Bootstrap     |
+| 🟠 **Marginal** | €1-3k | 20-50     | <15%  | >1.5    | Optimize      |
+| 🔴 **Failed**   | <€1k  | <20       | >15%  | <1      | Kill/Exit     |
 
 ---
 
@@ -602,16 +602,16 @@ FROM decision_logic;
 
 ### Matriz de Decisión Rápida
 
-| Si tu... | Y tu... | Entonces... |
-|----------|---------|-------------|
-| Conversión <1% | CPL >€100 | **KILL** - No hay fit |
-| Conversión 1-2% | CPL €50-100 | **OPTIMIZE** - Hay potencial |
-| Conversión >2% | CPL <€50 | **SCALE** - Acelera |
-| NPS <20 | Churn >20% | **KILL** - No hay PMF |
-| NPS 20-40 | Churn 10-20% | **ITERATE** - Mejorar producto |
-| NPS >40 | Churn <10% | **GROW** - Tienes PMF |
-| MRR crece <10% | CAC crece >20% | **PAUSE** - Optimiza economics |
-| MRR crece >20% | CAC estable | **INVEST** - Acelera crecimiento |
+| Si tu...        | Y tu...        | Entonces...                      |
+| --------------- | -------------- | -------------------------------- |
+| Conversión <1%  | CPL >€100      | **KILL** - No hay fit            |
+| Conversión 1-2% | CPL €50-100    | **OPTIMIZE** - Hay potencial     |
+| Conversión >2%  | CPL <€50       | **SCALE** - Acelera              |
+| NPS <20         | Churn >20%     | **KILL** - No hay PMF            |
+| NPS 20-40       | Churn 10-20%   | **ITERATE** - Mejorar producto   |
+| NPS >40         | Churn <10%     | **GROW** - Tienes PMF            |
+| MRR crece <10%  | CAC crece >20% | **PAUSE** - Optimiza economics   |
+| MRR crece >20%  | CAC estable    | **INVEST** - Acelera crecimiento |
 
 ---
 

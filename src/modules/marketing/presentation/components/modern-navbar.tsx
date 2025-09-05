@@ -474,13 +474,13 @@ export function ModernNavbar({
               <Link
                 href="/"
                 className="flex items-center space-x-2 group focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg"
-                aria-label="Caetaria - Ir al inicio"
+                aria-label="Neptunik - Ir al inicio"
               >
                 <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
                   <Icon icon={MessageCircle} size="medium" iconClassName="text-primary-foreground group-hover:scale-110 transition-all" />
                 </div>
                 <span className="text-xl font-bold text-foreground group-hover:text-primary transition-all duration-300">
-                  Caetaria
+                  Neptunik
                 </span>
               </Link>
             </motion.div>
@@ -699,7 +699,7 @@ export function ModernNavbar({
                           announcements: [...prev.announcements, 'Comenzando prueba gratuita']
                         }));
                       }}
-                      aria-label="Comenzar prueba gratuita de Caetaria"
+                      aria-label="Comenzar prueba gratuita de Neptunik"
                     >
                       Prueba Gratis
                     </Link>

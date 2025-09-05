@@ -40,12 +40,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://caetaria.com'),
+  metadataBase: new URL('https://neptunik.com'),
   title: {
-    default: 'Caetaria | Automatiza WhatsApp para tu negocio',
-    template: '%s | Caetaria'
+    default: 'Neptunik | Automatiza WhatsApp para tu negocio',
+    template: '%s | Neptunik'
   },
-  description: 'Aumenta tus ventas 30% automatizando WhatsApp. Caetaria te permite gestionar clientes, automatizar respuestas y cerrar más ventas con WhatsApp Business API. Configuración en 5 minutos.',
+  description: 'Aumenta tus ventas 30% automatizando WhatsApp. Neptunik te permite gestionar clientes, automatizar respuestas y cerrar más ventas con WhatsApp Business API. Configuración en 5 minutos.',
   keywords: [
     'WhatsApp Business API',
     'Cloud messaging platform',
@@ -69,16 +69,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://caetaria.com',
-    title: 'Caetaria | Automatiza WhatsApp para tu negocio',
-    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.',
-    siteName: 'Caetaria',
+    url: 'https://neptunik.com',
+    title: 'Neptunik | Automatiza WhatsApp para tu negocio',
+    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Neptunik.',
+    siteName: 'Neptunik',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Caetaria - Dashboard de WhatsApp Business',
+        alt: 'Neptunik - Dashboard de WhatsApp Business',
         type: 'image/jpeg'
       }
     ]
@@ -87,11 +87,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@thekrokocompany',
     creator: '@thekrokocompany',
-    title: 'Caetaria | Automatiza WhatsApp para tu negocio',
-    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Caetaria.',
+    title: 'Neptunik | Automatiza WhatsApp para tu negocio',
+    description: 'Aumenta tus ventas 30% automatizando WhatsApp. Gestiona clientes, automatiza respuestas y cierra más ventas con Neptunik.',
     images: [{
       url: '/og-image.jpg',
-      alt: 'Caetaria - Dashboard de WhatsApp Business'
+      alt: 'Neptunik - Dashboard de WhatsApp Business'
     }]
   },
   robots: {
