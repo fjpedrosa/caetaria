@@ -6,6 +6,7 @@ const isTurbopack = process.env.TURBOPACK === '1';
 const nextConfig = {
   // Core Next.js configuration
   reactStrictMode: true,
+  output: 'standalone',
 
   // Experimental features for Next.js 15
   experimental: {
