@@ -229,7 +229,7 @@ export function LeadCaptureForm({
                     inputMode="email"
                     enterKeyHint="next"
                     className="border-gray-300 focus:border-green-500 focus:ring-green-500 min-h-[48px] text-base"
-                    disabled={submitStatus === 'loading'}
+                    disabled={isSubmitting}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 text-sm" />
@@ -271,7 +271,6 @@ export function LeadCaptureForm({
                   <FormControl>
                     <Input
                       {...field}
-                      {...formAnalytics.getFieldHandlers('companyName')}
                       placeholder="Acme Corp"
                       autoComplete="organization"
                       inputMode="text"

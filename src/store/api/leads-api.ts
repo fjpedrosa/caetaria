@@ -486,3 +486,6 @@ export const {
     prefetch: prefetchLeads,
   },
 } = leadsApi;
+
+// Re-export types for external usage
+export type { CreateLeadForm, UpdateLeadForm } from '@/lib/supabase/types';
