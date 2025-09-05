@@ -162,7 +162,7 @@ export const useLeadCapture = ({
       const result = await createLead(leadData).unwrap();
 
       // Success tracking and cleanup
-      formAnalytics.trackSubmissionAttempt(true);
+      formAnalytics.trackSubmit();
       formPersistence.clearPersistedData();
 
       // User feedback
@@ -185,7 +185,7 @@ export const useLeadCapture = ({
 
       // Error tracking
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      formAnalytics.trackSubmissionAttempt(false, errorMessage);
+      formAnalytics.trackError();
 
       // Error feedback with retry option
       toast.error('Failed to submit form', {
