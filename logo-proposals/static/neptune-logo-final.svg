@@ -1,0 +1,86 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient optimized for logo -->
+    <radialGradient id="neptunePlanetGradient" cx="0.35" cy="0.35" r="0.85">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#075985;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Ring gradient - purple-blue spectrum -->
+    <linearGradient id="ringGradientPurple" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.4" />
+      <stop offset="25%" style="stop-color:#6366F1;stop-opacity:0.65" />
+      <stop offset="50%" style="stop-color:#4F46E5;stop-opacity:0.75" />
+      <stop offset="75%" style="stop-color:#6366F1;stop-opacity:0.65" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <!-- Darker ring for front portion -->
+    <linearGradient id="ringFrontGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#3730A3;stop-opacity:0.3" />
+      <stop offset="30%" style="stop-color:#3730A3;stop-opacity:0.45" />
+      <stop offset="70%" style="stop-color:#3730A3;stop-opacity:0.45" />
+      <stop offset="100%" style="stop-color:#3730A3;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- Clean shadow -->
+    <filter id="logoShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Clipping path for back ring -->
+    <clipPath id="backRingClip">
+      <path d="M 0 0 L 120 0 L 120 120 L 0 120 Z 
+               M 60 37 A 23 23 0 0 1 60 83 A 23 23 0 0 1 60 37 Z"/>
+    </clipPath>
+  </defs>
+  
+  <!-- Back portion of ring - properly clipped behind planet -->
+  <g clip-path="url(#backRingClip)">
+    <ellipse cx="60" cy="60" rx="45" ry="16" 
+             fill="none" 
+             stroke="url(#ringGradientPurple)" 
+             stroke-width="3" 
+             transform="rotate(-12 60 60)"/>
+  </g>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptunePlanetGradient)"
+          filter="url(#logoShadow)"/>
+  
+  <!-- Volume enhancement areas -->
+  <!-- Light area -->
+  <ellipse cx="54" cy="52" rx="10" ry="5" 
+           fill="#60A5FA" 
+           opacity="0.3" 
+           transform="rotate(-30 54 52)"/>
+  
+  <!-- Dark area for depth -->
+  <ellipse cx="65" cy="68" rx="12" ry="4" 
+           fill="#075985" 
+           opacity="0.25" 
+           transform="rotate(35 65 68)"/>
+  
+  <!-- Front portion of ring - continuous across planet -->
+  <path d="M 15 60 
+           C 15 51, 35 44, 60 44
+           S 105 51, 105 60
+           S 85 76, 60 76
+           S 15 69, 15 60 Z" 
+        fill="none" 
+        stroke="url(#ringFrontGradient)" 
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.8"/>
+  
+  <!-- Highlight for spherical effect -->
+  <ellipse cx="52" cy="50" rx="8" ry="4" 
+           fill="white" 
+           opacity="0.12" 
+           transform="rotate(-25 52 50)"/>
+</svg>

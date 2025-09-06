@@ -15,15 +15,15 @@ export function FinalCta() {
     <section className="py-20 bg-gradient-brand">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-white dark:text-white mb-4">
             {title}
           </h2>
 
-          <p className="text-xl md:text-2xl text-white/90 mb-4">
+          <p className="text-xl md:text-2xl text-white/90 dark:text-white/90 mb-4">
             {subtitle}
           </p>
 
-          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-white/90 dark:text-white/90 mb-8 max-w-2xl mx-auto">
             {description}
           </p>
 
@@ -31,7 +31,7 @@ export function FinalCta() {
             <Link href="/onboarding">
               <Button
                 size="lg"
-                className="bg-white text-secondary hover:bg-white/90 px-8 py-6 text-lg font-semibold group"
+                className="bg-white text-primary hover:bg-white/90 px-8 py-6 text-lg font-semibold group"
               >
                 {buttons.primary}
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -42,7 +42,7 @@ export function FinalCta() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-secondary px-8 py-6 text-lg font-semibold"
+                className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-6 text-lg font-semibold"
               >
                 {buttons.secondary}
               </Button>

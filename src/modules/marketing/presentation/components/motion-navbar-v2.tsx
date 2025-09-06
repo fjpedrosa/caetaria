@@ -2,17 +2,17 @@
 
 import React, { useCallback,useEffect, useRef, useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
-import Link from 'next/link';
+// Next.js Link replaced with SmartLink from prefetch system
 import { useRouter } from 'next/navigation';
 
 // Icons
 import { ArrowRight, Menu, MessageCircle } from '@/lib/icons';
+import { HoverLink, SmartLink, usePrefetch } from '@/lib/prefetch';
 import { cn } from '@/lib/utils';
 // Components
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Icon } from '@/modules/shared/presentation/components/ui/icon';
 
-import { useLinkPrefetch } from './navbar-v2/hooks/use-link-prefetch';
 import { useMicroInteractions } from './navbar-v2/hooks/use-micro-interactions';
 import { usePerformanceOptimization } from './navbar-v2/hooks/use-performance-optimization';
 import { useSmartNavigation } from './navbar-v2/hooks/use-smart-navigation';
@@ -147,12 +147,8 @@ export function MotionNavbarV2({
     return 'hero';
   }, [scrollY]);
 
-  // Link prefetch with intelligent caching
-  const { prefetchLink, cleanupPrefetch, isPrefetching } = useLinkPrefetch({
-    hoverDelay: 300,
-    prefetchTimeout: 5000,
-    maxCacheSize: 10
-  });
+  // Smart prefetch system with Next.js 15 optimization
+  const smartPrefetch = usePrefetch();
 
   // Micro-interactions and haptic feedback
   const {
@@ -320,25 +316,14 @@ export function MotionNavbarV2({
   }, [scheduleUpdate]);
 
   // Enhanced link hover handlers with accessibility
-  const handleLinkHover = useCallback(async (href: string, event: React.MouseEvent) => {
-    if (!accessibilityState.reducedMotion) {
-      addMicroInteraction(event.currentTarget as HTMLElement, 'gentle-scale');
-    }
-    await prefetchLink(href);
-    setPrefetchQueue(prev => new Set([...prev, href]));
-
-    // Focus announcement for screen readers
-    const element = event.currentTarget as HTMLElement;
+  // Enhanced accessibility handler for focus announcements
+  const handleAccessibilityFocus = useCallback((element: HTMLElement) => {
     const linkText = element.textContent || element.getAttribute('aria-label');
     setAccessibilityState(prev => ({
       ...prev,
-      focusedElement: linkText || href
+      focusedElement: linkText || 'navigation link'
     }));
-  }, [addMicroInteraction, prefetchLink, accessibilityState.reducedMotion]);
-
-  const handleLinkLeave = useCallback((href: string) => {
-    cleanupPrefetch(href);
-  }, [cleanupPrefetch]);
+  }, []);
 
   // Smart navigation handler
   const handleNavigation = useCallback(async (href: string, sectionId?: string) => {
@@ -352,13 +337,10 @@ export function MotionNavbarV2({
   // Cleanup effect for memory leak prevention
   useEffect(() => {
     return () => {
-      // Clean up all prefetch cache
-      prefetchQueue.forEach(href => {
-        cleanupPrefetch(href);
-      });
+      // Cleanup handled automatically by SmartLink
       setPrefetchQueue(new Set());
     };
-  }, [prefetchQueue, cleanupPrefetch]);
+  }, []);
 
   // Dynamic navbar classes with accessibility support
   const navbarClasses = cn(
@@ -523,8 +505,11 @@ export function MotionNavbarV2({
 
             {/* Logo Section with full accessibility */}
             <div className="flex-shrink-0">
-              <Link
+              <SmartLink
                 href="/"
+                prefetchStrategy="immediate"
+                priority="critical"
+                highPriority={true}
                 className={cn(
                   'flex items-center space-x-3 group rounded-lg p-2 -m-2',
                   'focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2',
@@ -539,7 +524,7 @@ export function MotionNavbarV2({
                     'w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-200',
                     accessibilityState.highContrast
                       ? 'bg-white text-black'
-                      : 'bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 group-hover:shadow-yellow-500/25'
+                      : 'bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600'
                   )}
                   role="img"
                   aria-hidden="true"
@@ -573,7 +558,7 @@ export function MotionNavbarV2({
                     WhatsApp Cloud
                   </span>
                 </div>
-              </Link>
+              </SmartLink>
             </div>
 
             {/* Desktop Navigation with accessibility */}
@@ -581,8 +566,6 @@ export function MotionNavbarV2({
               <SmartNavigationPill
                 items={navigationItems}
                 activeItem={getActiveNavItem(currentSection)}
-                onItemHover={handleLinkHover}
-                onItemLeave={handleLinkLeave}
                 onItemClick={handleNavigation}
                 sectionProgress={{}} // Empty for now, can be enhanced later
                 isNavigating={isNavigating}
@@ -593,10 +576,11 @@ export function MotionNavbarV2({
 
             {/* Enhanced CTA Section with full accessibility */}
             <div className="hidden md:flex items-center space-x-4">
-              <Link
+              <SmartLink
                 href="/login"
-                onMouseEnter={(e) => handleLinkHover('/login', e)}
-                onMouseLeave={() => handleLinkLeave('/login')}
+                prefetchStrategy="hover"
+                priority="high"
+                delay={150}
                 className={cn(
                   'px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200',
                   'min-h-[44px] min-w-[44px] flex items-center justify-center',
@@ -608,23 +592,24 @@ export function MotionNavbarV2({
                 aria-label="Iniciar sesión en tu cuenta existente"
               >
                 Iniciar sesión
-              </Link>
+              </SmartLink>
               <motion.div
                 whileHover={accessibilityState.reducedMotion ? {} : { scale: 1.05 }}
                 whileTap={accessibilityState.reducedMotion ? {} : { scale: 0.95 }}
                 transition={{ duration: 0.15 }}
               >
-                <Link
+                <SmartLink
                   href="/onboarding"
-                  onMouseEnter={(e) => handleLinkHover('/onboarding', e)}
-                  onMouseLeave={() => handleLinkLeave('/onboarding')}
+                  prefetchStrategy="immediate"
+                  priority="critical"
+                  highPriority={true}
                   className={cn(
                     'relative overflow-hidden px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200',
                     'min-h-[44px] min-w-[44px] flex items-center justify-center',
                     'focus:outline-none focus:ring-2 focus:ring-offset-2',
                     accessibilityState.highContrast
                       ? 'bg-white text-black border-2 border-white hover:bg-gray-200 focus:ring-white'
-                      : 'bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 hover:shadow-lg hover:shadow-yellow-500/25 focus:ring-yellow-500/50 focus:ring-offset-slate-900 transform active:scale-[0.98]'
+                      : 'bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 hover:shadow-md focus:ring-yellow-500/50 focus:ring-offset-slate-900 transform active:scale-[0.98]'
                   )}
                   onClick={async (e) => {
                     if (!accessibilityState.reducedMotion) {
@@ -639,7 +624,7 @@ export function MotionNavbarV2({
                   aria-label="Comenzar prueba gratuita - Crear nueva cuenta"
                 >
                   <span className="relative z-10">Prueba Gratis</span>
-                </Link>
+                </SmartLink>
               </motion.div>
             </div>
 

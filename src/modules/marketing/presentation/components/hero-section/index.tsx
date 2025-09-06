@@ -96,15 +96,15 @@ export function HeroSection() {
       </div>
       )}
 
-      <div className="relative container mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh]">
-          {/* Left: Content */}
+      <div className="relative max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] xl:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 xl:gap-20 items-center min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh]">
+          {/* Left: Content - más espacio para el contenido */}
           <HeroContent
             isInView={isInView}
             prefersReducedMotion={prefersReducedMotion}
           />
 
-          {/* Right: Mobile Mockup */}
+          {/* Right: Mobile Mockup - menos espacio ya que tiene espacio vacío */}
           <HeroMobileDemo isInView={isInView} />
           {/* <HeroMobileDemoV2 isInView={true} /> */}
         </div>

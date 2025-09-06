@@ -1,0 +1,104 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient for depth -->
+    <radialGradient id="neptuneGradient" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284C7;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Ring gradient -->
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#25D366;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#25D366;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#25D366;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <!-- Ring shadow -->
+    <filter id="ringGlow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Outer orbital ring -->
+  <ellipse cx="60" cy="60" rx="50" ry="15" 
+           fill="none" 
+           stroke="url(#ringGradient)" 
+           stroke-width="2" 
+           opacity="0.6"
+           filter="url(#ringGlow)"
+           transform="rotate(-15 60 60)">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="-15 60 60"
+      to="345 60 60"
+      dur="20s"
+      repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Inner orbital ring -->
+  <ellipse cx="60" cy="60" rx="38" ry="12" 
+           fill="none" 
+           stroke="url(#ringGradient)" 
+           stroke-width="1.5" 
+           opacity="0.4"
+           transform="rotate(25 60 60)">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="25 60 60"
+      to="-335 60 60"
+      dur="15s"
+      repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="22" 
+          fill="url(#neptuneGradient)"
+          filter="drop-shadow(2px 2px 4px rgba(0,0,0,0.3))">
+    <animate attributeName="r" 
+             values="22;23;22" 
+             dur="4s" 
+             repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Planet surface details -->
+  <ellipse cx="52" cy="54" rx="8" ry="3" 
+           fill="#38BDF8" 
+           opacity="0.6" 
+           transform="rotate(-20 52 54)"/>
+  <ellipse cx="68" cy="66" rx="6" ry="2" 
+           fill="#38BDF8" 
+           opacity="0.4" 
+           transform="rotate(30 68 66)"/>
+  
+  <!-- Orbital particles -->
+  <circle cx="95" cy="50" r="1.5" fill="#25D366" opacity="0.8">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 60 60"
+      to="360 60 60"
+      dur="8s"
+      repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="25" cy="70" r="1" fill="#25D366" opacity="0.6">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 60 60"
+      to="360 60 60"
+      dur="12s"
+      repeatCount="indefinite"/>
+  </circle>
+</svg>

@@ -7,6 +7,7 @@ import { PostHogProvider } from 'posthog-js/react'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import { clientConfig, debugLog,shouldEnableAnalytics } from '@/lib/config/client-config'
+import { PrefetchProvider } from '@/lib/prefetch'
 import ErrorBoundary from '@/modules/shared/presentation/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
@@ -19,6 +20,7 @@ import { makeStore } from '@/store'
  * - ThemeProvider: Theme management for dark/light mode
  * - ErrorBoundary: Error handling with graceful fallbacks
  * - PostHogProvider: Analytics tracking with PostHog
+ * - PrefetchProvider: Smart prefetch system for Next.js 15
  *
  * This component creates a per-request store instance for proper
  * SSR/SSG support in Next.js App Router and HMR stability.
@@ -104,7 +106,21 @@ export function Providers({ children }: { children: ReactNode }) {
           themes={['light', 'dark', 'system']}
         >
           <PostHogProvider client={posthog}>
-            {children}
+            <PrefetchProvider
+              options={{
+                debug: clientConfig.app.isDevelopment,
+                analytics: shouldEnableAnalytics(),
+                constraints: {
+                  maxConcurrentPrefetch: 3,
+                  maxMemoryUsage: 50, // 50MB
+                  minConnectionSpeed: 1.5, // 1.5 Mbps
+                  maxPrefetchPerMinute: 20
+                }
+              }}
+              enableMonitoring={clientConfig.features.performanceMonitoring}
+            >
+              {children}
+            </PrefetchProvider>
           </PostHogProvider>
         </ThemeProvider>
       </ReduxProvider>

@@ -1,0 +1,70 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient with excellent depth -->
+    <radialGradient id="neptunePlanet" cx="0.35" cy="0.35" r="0.85">
+      <stop offset="0%" style="stop-color:#60A5FA" />
+      <stop offset="25%" style="stop-color:#38BDF8" />
+      <stop offset="50%" style="stop-color:#0EA5E9" />
+      <stop offset="75%" style="stop-color:#0284C7" />
+      <stop offset="100%" style="stop-color:#075985" />
+    </radialGradient>
+    
+    <!-- Ring gradient - electric purple-blue -->
+    <linearGradient id="ringColor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#818CF8;stop-opacity:0.2" />
+      <stop offset="20%" style="stop-color:#6366F1;stop-opacity:0.55" />
+      <stop offset="35%" style="stop-color:#4F46E5;stop-opacity:0.7" />
+      <stop offset="50%" style="stop-color:#4338CA;stop-opacity:0.75" />
+      <stop offset="65%" style="stop-color:#4F46E5;stop-opacity:0.7" />
+      <stop offset="80%" style="stop-color:#6366F1;stop-opacity:0.55" />
+      <stop offset="100%" style="stop-color:#818CF8;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <!-- Premium shadow -->
+    <filter id="depth">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  
+  <!-- Single ring - complete ellipse, back portion -->
+  <!-- Using lower opacity for back portion -->
+  <ellipse cx="60" cy="60" rx="45" ry="14" 
+           fill="none" 
+           stroke="url(#ringColor)" 
+           stroke-width="2.5" 
+           transform="rotate(-8 60 60)"
+           opacity="0.5"
+           stroke-dasharray="0 71 71 0"/>
+  
+  <!-- Neptune planet (covers middle of ring) -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptunePlanet)"
+          filter="url(#depth)"/>
+  
+  <!-- 3D volume effects -->
+  <!-- Light reflection -->
+  <ellipse cx="54" cy="52" rx="9" ry="4.5" 
+           fill="#60A5FA" 
+           opacity="0.32" 
+           transform="rotate(-30 54 52)"/>
+  
+  <!-- Depth shadow -->
+  <ellipse cx="64" cy="67" rx="11" ry="4" 
+           fill="#075985" 
+           opacity="0.27" 
+           transform="rotate(30 64 67)"/>
+  
+  <!-- Single ring - front portion only (using path) -->
+  <path d="M 15 61.5 Q 37.5 49, 60 49 T 105 61.5" 
+        fill="none" 
+        stroke="url(#ringColor)" 
+        stroke-width="2.5"
+        stroke-linecap="round"
+        opacity="0.9"/>
+  
+  <!-- Spherical highlight -->
+  <ellipse cx="52" cy="50" rx="7.5" ry="3.5" 
+           fill="white" 
+           opacity="0.14" 
+           transform="rotate(-26 52 50)"/>
+</svg>

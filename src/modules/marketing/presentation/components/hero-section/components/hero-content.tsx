@@ -19,7 +19,6 @@ import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { AnimatedIcon, Icon } from '@/modules/shared/presentation/components/ui/icon';
 
 import { AnimatedCounter } from './animated-counter';
-import { TypewriterText } from './typewriter-text';
 
 // Extended props for this specific implementation
 interface ExtendedHeroContentProps extends HeroContentProps {
@@ -113,17 +112,12 @@ function HeroContent({ isInView, prefersReducedMotion }: ExtendedHeroContentProp
         >
           {title}
           <motion.span
-            className="block text-primary mt-2 min-h-[3rem] md:min-h-[4rem] lg:min-h-[3rem]"
+            className="block mt-1"
             {...animationConfigs.subtitleVariants}
           >
-            {isInView && (
-              <TypewriterText
-                text={subtitle}
-                speed={120}
-                delay={800}
-                showCursor={true}
-              />
-            )}
+            <span className="inline highlight-text">
+              {subtitle}
+            </span>
           </motion.span>
         </motion.h1>
 

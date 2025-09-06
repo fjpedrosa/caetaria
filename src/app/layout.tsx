@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 
+import { EnhancedNavbar } from '@/modules/marketing/navbar/presentation/components/enhanced-navbar';
 import { LandingFooter } from '@/modules/marketing/presentation/components/landing-footer';
-import { ModernNavbar } from '@/modules/marketing/presentation/components/modern-navbar';
 import { PerformanceDashboard } from '@/modules/shared/presentation/components/performance-dashboard';
 import { PerformanceMonitor } from '@/modules/shared/presentation/components/performance-monitor';
 import { ServiceWorkerRegister } from '@/modules/shared/presentation/components/service-worker-register';
@@ -24,7 +24,7 @@ const robotoMono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-roboto-mono',
-  preload: false, // Only preload primary font
+  preload: false,
 });
 
 // Optimize viewport
@@ -142,7 +142,7 @@ export default function RootLayout({
           <SmoothScroll />
 
           {/* Navigation */}
-          <ModernNavbar hideOnScroll={false} showProgress={true} variant="default" />
+          <EnhancedNavbar hideOnScroll={false} showProgress={true} />
 
           {/* Main Content */}
           {children}
@@ -154,11 +154,11 @@ export default function RootLayout({
           <ScrollToTop />
 
           {/* Performance & Development Tools */}
-          <PerformanceMonitor />
+          {/* <PerformanceMonitor /> */}
           <ServiceWorkerRegister />
           {process.env.NODE_ENV === 'development' && (
             <>
-              <PerformanceDashboard />
+              {/* <PerformanceDashboard /> */}
               {/* <ResponsiveTestOverlay /> */}
               {/* <ResponsiveDebugInfo /> */}
             </>

@@ -15,15 +15,23 @@
 import { ArrowRight, Building2, Loader2 } from 'lucide-react';
 
 import { Button } from '@/modules/shared/presentation/components/ui/button';
+import { Combobox, type ComboboxOption } from '@/modules/shared/presentation/components/ui/combobox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/modules/shared/presentation/components/ui/form';
 import { Input } from '@/modules/shared/presentation/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/modules/shared/presentation/components/ui/select';
 import { Textarea } from '@/modules/shared/presentation/components/ui/textarea';
 
 import { useBusinessInfoForm, type UseBusinessInfoFormOptions } from '../../presentation/hooks/use-business-info-form';
 
 // Re-export BusinessInfoFormProps from domain/types.ts for backward compatibility
 export type { BusinessInfoFormProps } from '../../domain/types';
+
+// Type assertion for Combobox compatibility
+interface BusinessInfoFormProps {
+  className?: string;
+  onSuccess?: (data: any) => void;
+  onError?: (error: Error) => void;
+  defaultValues?: Partial<any>;
+}
 
 // =============================================================================
 // PRESENTATIONAL COMPONENT - Only JSX rendering
@@ -46,6 +54,7 @@ export function BusinessInfoForm({
     onSubmit,
     businessTypes,
     industries,
+    employeeRanges,
     volumeOptions
   } = useBusinessInfoForm({
     onSuccess,
@@ -89,20 +98,16 @@ export function BusinessInfoForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Negocio *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona el tipo de negocio" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Combobox
+                    options={businessTypes as ComboboxOption[]}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Buscar tipo de negocio..."
+                    searchPlaceholder="Escribir para buscar..."
+                    emptyText="No se encontraron resultados"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -114,20 +119,16 @@ export function BusinessInfoForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Industria *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona tu industria" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {industries.map((industry) => (
-                      <SelectItem key={industry.value} value={industry.value}>
-                        {industry.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <Combobox
+                    options={industries as ComboboxOption[]}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Buscar industria..."
+                    searchPlaceholder="Escribir para buscar..."
+                    emptyText="No se encontraron resultados"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -138,17 +139,18 @@ export function BusinessInfoForm({
         <div className="grid md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
-            name="employeeCount"
+            name="employeeRange"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Número de Empleados *</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="ej., 25"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
+                  <Combobox
+                    options={employeeRanges}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    placeholder="Seleccionar rango..."
+                    searchPlaceholder="Buscar rango..."
+                    emptyText="No se encontraron resultados"
                   />
                 </FormControl>
                 <FormDescription>

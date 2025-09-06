@@ -1,17 +1,95 @@
 /* @plugin "tailwindcss-animate"; - Plugin not installed, using custom animations below */
 
+/* Removed external CSS imports - Using Tailwind utilities and module.css only */
+/* Following the styling strategy: Tailwind first, module.css for components, globals.css minimal */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* WCAG 2.1 AA Accessibility Styles */
-/* @import '../styles/accessibility.css'; // Temporarily disabled */
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* SIMPLE HIGHLIGHT TEXT EFFECT */
+  /* Clean blue text for emphasis without background effects */
+  .highlight-text {
+    @apply inline font-semibold;
+    color: oklch(0.62 0.22 220); /* Neptune Electric Blue */
+    line-height: inherit;
+  }
+  
+  /* Subtle hover effect for interactivity */
+  .highlight-text:hover {
+    color: oklch(0.68 0.20 220); /* Brighter blue on hover */
+    transition: color 0.2s ease;
+  }
+
+  /* TEXT CONTRAST UTILITIES */
+  /* Primary text - 15.8:1 contrast on dark */
+  .text-wcag-primary {
+    color: #f8fafc !important; /* slate-50 */
+  }
+  
+  /* Secondary text - 4.51:1 contrast minimum */
+  .text-wcag-secondary {
+    color: #cbd5e1 !important; /* slate-300 */
+  }
+  
+  /* Link text - 4.6:1 contrast on dark */
+  .text-wcag-link {
+    color: #60a5fa !important; /* blue-400 */
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  .text-wcag-link:hover {
+    color: #93c5fd !important; /* blue-300 */
+    text-decoration-thickness: 2px;
+  }
+  
+  /* CTA links without underline */
+  .text-wcag-link.no-underline,
+  .no-underline {
+    text-decoration: none !important;
+  }
+  
+  /* BUTTON CONTRAST UTILITIES */
+  /* Primary button - 8.2:1 contrast */
+  .btn-wcag-primary {
+    @apply bg-yellow-400 
+           text-gray-900 
+           hover:bg-yellow-500 
+           active:bg-yellow-600
+           font-semibold;
+  }
+  
+  /* Secondary button - 14.1:1 contrast */
+  .btn-wcag-secondary {
+    @apply bg-transparent 
+           text-slate-100 
+           hover:text-white 
+           hover:bg-white/10 
+           border 
+           border-slate-600
+           font-medium;
+  }
+  
+  /* TOUCH TARGET UTILITIES */
+  /* Minimum 44x44px touch target */
+  .touch-target-min {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Preferred 48x48px touch target */
+  .touch-target-preferred {
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+  
+  /* Mobile touch target - removed to fix button appearance */
 
   /* Custom animations for landing page */
   .animate-fade-in {
@@ -46,8 +124,18 @@
     animation: pulseIcon 1.5s ease-in-out infinite;
   }
 
+  /* Glow animation class disabled to prevent halo effects
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
+  }
+  */
+
+  .animate-electric-pulse {
+    animation: electricPulse 2s ease-in-out infinite;
+  }
+
+  .animate-electric-glow {
+    animation: electricGlow 1.5s ease-in-out infinite alternate;
   }
 
   .animate-float {
@@ -102,7 +190,7 @@
 
   .hover-lift:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px oklch(0.87 0.15 95 / 0.25);
+    box-shadow: 0 12px 30px oklch(0.62 0.22 220 / 0.25);
   }
 
   .hover-scale {
@@ -126,7 +214,8 @@
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 20px oklch(0.87 0.15 95 / 0.4);
+    /* Reduced glow effect - was: 0 0 20px */
+    box-shadow: 0 4px 12px oklch(0.62 0.22 220 / 0.2);
   }
 
   /* Interactive states */
@@ -150,60 +239,77 @@
     -webkit-line-clamp: 3;
   }
   
-  /* Corporate Yellow button variants */
+  /* Neptune Brand Gradient for Final CTA */
+  .bg-gradient-brand {
+    background: linear-gradient(135deg, 
+      oklch(0.62 0.22 220) 0%,   /* Neptune Electric Blue */
+      oklch(0.55 0.23 225) 100%   /* Deeper Neptune Blue */
+    );
+  }
+  
+  /* Light mode version with darker gradient for better contrast */
+  .light .bg-gradient-brand {
+    background: linear-gradient(135deg, 
+      oklch(0.52 0.24 222) 0%,   /* Darker Neptune Blue for contrast */
+      oklch(0.45 0.25 227) 100%   /* Even darker for light mode */
+    );
+  }
+  
+  /* Neptune Electric Blue button variants */
   .btn-primary {
-    background: oklch(0.87 0.15 95);
-    color: oklch(0.15 0.05 60);
+    background: oklch(0.62 0.22 220);
+    color: oklch(0.98 0.005 90);
     font-weight: 600;
-    border: 1px solid oklch(0.87 0.15 95);
+    border: 1px solid oklch(0.62 0.22 220);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
   
   .btn-primary:hover {
-    background: oklch(0.83 0.17 93);
+    background: oklch(0.55 0.23 225);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px oklch(0.87 0.15 95 / 0.3);
+    /* Reduced shadow - was: 0 10px 25px */
+    box-shadow: 0 4px 12px oklch(0.62 0.22 220 / 0.2);
   }
   
   .btn-secondary {
     background: transparent;
-    color: oklch(0.87 0.15 95);
+    color: oklch(0.62 0.22 220);
     font-weight: 600;
-    border: 2px solid oklch(0.87 0.15 95);
+    border: 2px solid oklch(0.62 0.22 220);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
   
   .btn-secondary:hover {
-    background: oklch(0.87 0.15 95 / 0.1);
-    border-color: oklch(0.83 0.17 93);
+    background: oklch(0.62 0.22 220 / 0.1);
+    border-color: oklch(0.55 0.23 225);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px oklch(0.87 0.15 95 / 0.2);
+    box-shadow: 0 4px 12px oklch(0.62 0.22 220 / 0.2);
   }
   
   /* Dark mode button variants */
   .dark .btn-primary {
-    background: oklch(0.85 0.16 93);
-    color: oklch(0.12 0.02 60);
-    border-color: oklch(0.85 0.16 93);
+    background: oklch(0.68 0.20 220);
+    color: oklch(0.12 0.02 250);
+    border-color: oklch(0.68 0.20 220);
   }
   
   .dark .btn-primary:hover {
-    background: oklch(0.88 0.18 95);
-    box-shadow: 0 10px 25px oklch(0.85 0.16 93 / 0.4);
+    background: oklch(0.78 0.18 220);
+    box-shadow: 0 10px 25px oklch(0.68 0.20 220 / 0.4);
   }
   
   .dark .btn-secondary {
     background: transparent;
-    color: oklch(0.85 0.16 93);
-    border-color: oklch(0.85 0.16 93);
+    color: oklch(0.68 0.20 220);
+    border-color: oklch(0.68 0.20 220);
   }
   
   .dark .btn-secondary:hover {
-    background: oklch(0.85 0.16 93 / 0.1);
-    border-color: oklch(0.88 0.18 95);
-    box-shadow: 0 4px 12px oklch(0.85 0.16 93 / 0.3);
+    background: oklch(0.68 0.20 220 / 0.1);
+    border-color: oklch(0.78 0.18 220);
+    box-shadow: 0 4px 12px oklch(0.68 0.20 220 / 0.3);
   }
 
   /* Admin Dashboard Responsive Utilities */
@@ -216,11 +322,7 @@
     display: none;
   }
   
-  /* Touch-friendly tap targets for mobile */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
+  /* Touch-friendly tap targets - removed to fix button appearance */
   
   /* Admin layout specific styles */
   .admin-layout {
@@ -305,14 +407,16 @@
   }
 }
 
+/* Glow animation disabled to prevent halo effects
 @keyframes glow {
   from {
-    box-shadow: 0 0 20px oklch(0.87 0.15 95 / 0.4);
+    box-shadow: 0 0 20px oklch(0.62 0.22 220 / 0.4);
   }
   to {
-    box-shadow: 0 0 30px oklch(0.87 0.15 95 / 0.6), 0 0 40px oklch(0.55 0.25 255 / 0.3);
+    box-shadow: 0 0 30px oklch(0.62 0.22 220 / 0.6), 0 0 40px oklch(0.68 0.20 220 / 0.3);
   }
 }
+*/
 
 @keyframes float {
   0%, 100% {
@@ -405,6 +509,31 @@
   }
 }
 
+/* Electric animations for Neptune theme */
+@keyframes electricPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px oklch(0.62 0.22 220 / 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px oklch(0.62 0.22 220 / 0.8),
+                0 0 60px oklch(0.68 0.20 220 / 0.4);
+  }
+}
+
+@keyframes electricGlow {
+  from {
+    filter: brightness(1) saturate(1);
+    box-shadow: 0 0 25px oklch(0.62 0.22 220 / 0.5);
+  }
+  to {
+    filter: brightness(1.1) saturate(1.2);
+    box-shadow: 0 0 35px oklch(0.62 0.22 220 / 0.7),
+                0 0 50px oklch(0.68 0.20 220 / 0.3);
+  }
+}
+
 /* WhatsApp Simulator specific animations */
 @keyframes typing-dot {
   0%, 60%, 100% {
@@ -439,10 +568,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0.05 250);
   
-  /* Corporate Yellow Primary - Brand Color */
-  --primary: oklch(0.87 0.15 95); /* Corporate Yellow #F59E0B */
-  --primary-hover: oklch(0.83 0.17 93); /* Darker yellow hover */
-  --primary-foreground: oklch(0.15 0.05 60); /* Dark foreground for better contrast */
+  /* Neptune Electric Blue Primary - Brand Color */
+  --primary: oklch(0.62 0.22 220); /* Neptune Electric Blue */
+  --primary-hover: oklch(0.55 0.23 225); /* Deeper electric hover */
+  --primary-foreground: oklch(0.98 0.005 90); /* White foreground for contrast */
   
   /* WhatsApp Green - Only for WhatsApp-related elements */
   --whatsapp: oklch(0.75 0.20 150); /* WhatsApp Green #25D366 */
@@ -473,10 +602,10 @@
   /* UI elements - Subtle and professional */
   --border: oklch(0.92 0.005 250);
   --input: oklch(0.96 0.005 250);
-  --ring: oklch(0.87 0.15 95); /* Primary yellow ring */
+  --ring: oklch(0.62 0.22 220); /* Neptune electric ring */
   
   /* Chart colors - Professional palette */
-  --chart-1: oklch(0.87 0.15 95); /* Primary yellow */
+  --chart-1: oklch(0.62 0.22 220); /* Neptune electric blue */
   --chart-2: oklch(0.75 0.20 150); /* WhatsApp green */
   --chart-3: oklch(0.68 0.17 150); /* Success green */
   --chart-4: oklch(0.75 0.15 65); /* Warning amber */
@@ -485,12 +614,12 @@
   /* Sidebar */
   --sidebar: oklch(0.99 0.005 90);
   --sidebar-foreground: oklch(0.145 0.05 250);
-  --sidebar-primary: oklch(0.87 0.15 95);
-  --sidebar-primary-foreground: oklch(0.15 0.05 60);
+  --sidebar-primary: oklch(0.62 0.22 220);
+  --sidebar-primary-foreground: oklch(0.98 0.005 90);
   --sidebar-accent: oklch(0.96 0.008 250);
   --sidebar-accent-foreground: oklch(0.2 0.05 250);
   --sidebar-border: oklch(0.92 0.005 250);
-  --sidebar-ring: oklch(0.87 0.15 95);
+  --sidebar-ring: oklch(0.62 0.22 220);
 }
 
 .dark {
@@ -502,10 +631,10 @@
   --popover: oklch(0.18 0.02 250);
   --popover-foreground: oklch(0.95 0.01 90);
   
-  /* Corporate Yellow Primary - Adjusted for dark mode */
-  --primary: oklch(0.85 0.16 93); /* Slightly muted yellow for dark mode */
-  --primary-hover: oklch(0.88 0.18 95); /* Brighter on hover */
-  --primary-foreground: oklch(0.12 0.02 60); /* Dark foreground for better contrast */
+  /* Neptune Electric Blue Primary - Adjusted for dark mode */
+  --primary: oklch(0.68 0.20 220); /* Brighter electric for dark mode */
+  --primary-hover: oklch(0.78 0.18 220); /* Ultra bright on hover */
+  --primary-foreground: oklch(0.12 0.02 250); /* Dark foreground for contrast */
   
   /* WhatsApp Green - Dark mode adjusted */
   --whatsapp: oklch(0.78 0.18 150); /* Brighter green for dark mode */
@@ -536,10 +665,10 @@
   /* UI elements - Dark mode */
   --border: oklch(0.3 0.02 250);
   --input: oklch(0.22 0.02 250);
-  --ring: oklch(0.85 0.16 93); /* Primary yellow ring */
+  --ring: oklch(0.68 0.20 220); /* Neptune electric ring */
   
   /* Chart colors - Dark mode professional palette */
-  --chart-1: oklch(0.85 0.16 93); /* Primary yellow */
+  --chart-1: oklch(0.68 0.20 220); /* Neptune electric blue */
   --chart-2: oklch(0.78 0.18 150); /* WhatsApp green */
   --chart-3: oklch(0.72 0.15 150); /* Success green */
   --chart-4: oklch(0.78 0.14 65); /* Warning amber */
@@ -548,12 +677,12 @@
   /* Sidebar */
   --sidebar: oklch(0.18 0.02 250);
   --sidebar-foreground: oklch(0.95 0.01 90);
-  --sidebar-primary: oklch(0.85 0.16 93);
-  --sidebar-primary-foreground: oklch(0.12 0.02 60);
+  --sidebar-primary: oklch(0.68 0.20 220);
+  --sidebar-primary-foreground: oklch(0.12 0.02 250);
   --sidebar-accent: oklch(0.25 0.025 260);
   --sidebar-accent-foreground: oklch(0.95 0.01 90);
   --sidebar-border: oklch(0.3 0.02 250);
-  --sidebar-ring: oklch(0.85 0.16 93);
+  --sidebar-ring: oklch(0.68 0.20 220);
 }
 
 @layer base {
@@ -582,24 +711,20 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.87 0.15 95); /* Primary yellow - solid color */
+    background: oklch(0.62 0.22 220); /* Neptune electric - solid color */
     border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.83 0.17 93); /* Primary yellow hover - solid color */
+    background: oklch(0.55 0.23 225); /* Neptune electric hover - solid color */
   }
   
-  /* Focus rings - Corporate yellow */
-  :focus-visible {
-    outline: 2px solid oklch(0.87 0.15 95);
-    outline-offset: 2px;
-  }
+  /* Focus rings - removed to fix button appearance */
   
-  /* Smooth selection - Corporate yellow */
+  /* Smooth selection - Neptune electric */
   ::selection {
-    background-color: oklch(0.87 0.15 95 / 0.3);
-    color: oklch(0.12 0.02 60);
+    background-color: oklch(0.62 0.22 220 / 0.3);
+    color: oklch(0.98 0.005 90);
   }
   
   /* Disable outline on click but keep for keyboard navigation */
@@ -626,5 +751,187 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* ========================================
+   SKIP LINKS - Accesibilidad WCAG 2.1 AA
+   ======================================== */
+
+/* Contenedor principal de skip links */
+.skip-links-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10001; /* Por encima de todo, incluido el navbar */
+  pointer-events: none; /* No interfiere con otros elementos */
+}
+
+/* Skip link individual - Estado oculto por defecto */
+.skip-to-main,
+.skip-to-nav,
+.skip-to-footer {
+  /* Posicionamiento inicial fuera de vista */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  
+  /* Estilos visuales elegantes */
+  background: linear-gradient(135deg, 
+    oklch(0.62 0.22 220) 0%,   /* Neptune Electric Blue */
+    oklch(0.55 0.23 225) 100%  /* Deeper Neptune Blue */
+  );
+  color: oklch(0.98 0.005 90); /* Blanco de alto contraste */
+  
+  /* Diseño tipo "pill" moderno */
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px; /* Completamente redondeado */
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  
+  /* Sombra elegante */
+  box-shadow: 
+    0 4px 6px -1px oklch(0 0 0 / 0.1),
+    0 2px 4px -2px oklch(0 0 0 / 0.1),
+    0 0 0 3px oklch(0.62 0.22 220 / 0.1); /* Sutil halo de marca */
+  
+  /* Transición suave */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s ease,
+              background 0.2s ease;
+  
+  /* Permitir interacción cuando está visible */
+  pointer-events: auto;
+  
+  /* Oculto para todos inicialmente */
+  opacity: 0;
+}
+
+/* Estado visible cuando recibe foco del teclado */
+.skip-to-main:focus,
+.skip-to-nav:focus,
+.skip-to-footer:focus,
+.skip-to-main:focus-visible,
+.skip-to-nav:focus-visible,
+.skip-to-footer:focus-visible {
+  /* Deslizar elegantemente hacia abajo */
+  transform: translateX(-50%) translateY(20px);
+  opacity: 1;
+  
+  /* Sombra más prominente al estar activo */
+  box-shadow: 
+    0 10px 15px -3px oklch(0 0 0 / 0.2),
+    0 4px 6px -4px oklch(0 0 0 / 0.1),
+    0 0 0 3px oklch(0.62 0.22 220 / 0.2),
+    0 0 20px oklch(0.62 0.22 220 / 0.3); /* Glow sutil de marca */
+  
+  /* Anillo de enfoque accesible */
+  outline: 3px solid oklch(0.75 0.15 65); /* Amarillo de alto contraste */
+  outline-offset: 2px;
+}
+
+/* Hover para usuarios que pueden ver el elemento */
+.skip-to-main:hover,
+.skip-to-nav:hover,
+.skip-to-footer:hover {
+  background: linear-gradient(135deg, 
+    oklch(0.68 0.20 220) 0%,   /* Más brillante en hover */
+    oklch(0.62 0.22 220) 100%
+  );
+  
+  /* Efecto de elevación */
+  transform: translateX(-50%) translateY(18px) scale(1.05);
+}
+
+/* Posicionamiento específico para cada skip link */
+.skip-to-nav {
+  left: 40%; /* Ligeramente a la izquierda */
+}
+
+.skip-to-footer {
+  left: 60%; /* Ligeramente a la derecha */
+}
+
+/* Dark mode adjustments */
+.dark .skip-to-main,
+.dark .skip-to-nav,
+.dark .skip-to-footer {
+  background: linear-gradient(135deg, 
+    oklch(0.78 0.18 220) 0%,   /* Ultra bright para dark mode */
+    oklch(0.68 0.20 220) 100%
+  );
+  color: oklch(0.12 0.02 250); /* Texto oscuro para contraste */
+}
+
+.dark .skip-to-main:focus,
+.dark .skip-to-nav:focus,
+.dark .skip-to-footer:focus {
+  outline-color: oklch(0.78 0.14 65); /* Amarillo brillante en dark mode */
+  box-shadow: 
+    0 10px 15px -3px oklch(0 0 0 / 0.4),
+    0 4px 6px -4px oklch(0 0 0 / 0.2),
+    0 0 0 3px oklch(0.68 0.20 220 / 0.3),
+    0 0 25px oklch(0.68 0.20 220 / 0.5);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .skip-to-main,
+  .skip-to-nav,
+  .skip-to-footer {
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+  
+  .skip-to-main:focus,
+  .skip-to-nav:focus,
+  .skip-to-footer:focus {
+    background: #ffffff;
+    color: #000000;
+    border-color: #000000;
+    outline: 3px solid #ffff00;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .skip-to-main,
+  .skip-to-nav,
+  .skip-to-footer {
+    transition: none;
+  }
+  
+  .skip-to-main:focus,
+  .skip-to-nav:focus,
+  .skip-to-footer:focus {
+    /* Sin animación, aparición instantánea */
+    transform: translateX(-50%) translateY(20px);
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .skip-to-main,
+  .skip-to-nav,
+  .skip-to-footer {
+    font-size: 0.875rem; /* 14px en móvil */
+    padding: 0.625rem 1.25rem;
+  }
+  
+  /* Stack vertically on mobile */
+  .skip-to-main:focus {
+    transform: translateX(-50%) translateY(20px);
+  }
+  
+  .skip-to-nav:focus {
+    transform: translateX(-50%) translateY(70px);
+  }
+  
+  .skip-to-footer:focus {
+    transform: translateX(-50%) translateY(120px);
   }
 }

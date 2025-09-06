@@ -1,0 +1,74 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Clean Neptune gradient -->
+    <radialGradient id="neptuneMinimalGradient" cx="0.3" cy="0.3" r="0.9">
+      <stop offset="0%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284C7;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Minimal ring gradient -->
+    <linearGradient id="minimalRingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:0" />
+      <stop offset="20%" style="stop-color:#0EA5E9;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#38BDF8;stop-opacity:0.4" />
+      <stop offset="80%" style="stop-color:#0EA5E9;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Front ring (very subtle) -->
+    <linearGradient id="subtleFrontRing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0369A1;stop-opacity:0" />
+      <stop offset="30%" style="stop-color:#0369A1;stop-opacity:0.2" />
+      <stop offset="70%" style="stop-color:#0369A1;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#0369A1;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Soft shadow -->
+    <filter id="softShadow">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Single elegant back ring -->
+  <ellipse cx="60" cy="60" rx="42" ry="10" 
+           fill="none" 
+           stroke="url(#minimalRingGradient)" 
+           stroke-width="2" 
+           transform="rotate(-10 60 60)"/>
+  
+  <!-- Neptune planet - clean and simple -->
+  <circle cx="60" cy="60" r="22" 
+          fill="url(#neptuneMinimalGradient)"
+          filter="url(#softShadow)"/>
+  
+  <!-- Minimal surface detail - just two bands -->
+  <ellipse cx="60" cy="56" rx="18" ry="2" 
+           fill="#38BDF8" 
+           opacity="0.25" 
+           transform="rotate(-5 60 56)"/>
+  
+  <ellipse cx="60" cy="64" rx="16" ry="1.5" 
+           fill="#0284C7" 
+           opacity="0.3" 
+           transform="rotate(10 60 64)"/>
+  
+  <!-- Very subtle front ring -->
+  <ellipse cx="60" cy="60" rx="42" ry="10" 
+           fill="none" 
+           stroke="url(#subtleFrontRing)" 
+           stroke-width="1.5" 
+           transform="rotate(-10 60 60)"
+           stroke-dasharray="0 20 40 0"/>
+  
+  <!-- Single WhatsApp accent -->
+  <circle cx="85" cy="45" r="2" 
+          fill="#25D366" 
+          opacity="0.7"/>
+  
+  <!-- Minimal highlight for depth -->
+  <ellipse cx="52" cy="52" rx="6" ry="3" 
+           fill="white" 
+           opacity="0.1" 
+           transform="rotate(-25 52 52)"/>
+</svg>

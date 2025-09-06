@@ -35,7 +35,7 @@ function ConnectionStatusIndicator() {
         return 'bg-green-500';
       case ConnectionState.CONNECTING:
       case ConnectionState.RECONNECTING:
-        return 'bg-yellow-500';
+        return 'bg-blue-500';
       case ConnectionState.ERROR:
         return 'bg-red-500';
       default:

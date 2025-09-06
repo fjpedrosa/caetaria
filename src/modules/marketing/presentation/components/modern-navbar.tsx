@@ -1,33 +1,25 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import Link from 'next/link';
 
 import {
-  ArrowRight,
   BarChart3,
   Bot,
   Building2,
   ChevronDown,
   CreditCard,
-  featureIcons,
   FileText,
-  Globe2,
   HelpCircle,
   Menu,
   MessageCircle,
-  navIcons,
-  PlayCircle,
   Shield,
   Users,
-  X,
   Zap} from '@/lib/icons';
+import { HoverLink, ImmediateLink, SmartLink } from '@/lib/prefetch/smart-link';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/modules/shared/presentation/components/theme-toggle';
-import { Button, buttonVariants } from '@/modules/shared/presentation/components/ui/button';
-import { Icon, IconButton } from '@/modules/shared/presentation/components/ui/icon';
+import { Icon } from '@/modules/shared/presentation/components/ui/icon';
 // NavigationMenu temporarily disabled due to TypeScript issues
 // import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/presentation/navigation-menu';
 import {
@@ -151,46 +143,42 @@ const solutionSections: MegaMenuSection[] = [
 ];
 
 const MegaMenuContent = ({ sections }: { sections: MegaMenuSection[] }) => (
-  <div className="grid w-full max-w-4xl grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 p-6 sm:p-8">
+  <div className="grid w-full grid-cols-2 gap-4 p-4">
     {sections.map((section) => (
-      <div key={section.title} className="space-y-4">
-        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+      <div key={section.title} className="space-y-2">
+        <h4 className="text-xs font-medium text-gray-500 dark:text-gray-500 uppercase tracking-wider px-2">
           {section.title}
         </h4>
-        <div className="space-y-3">
+        <div className="space-y-1">
           {section.items.map((item) => (
-            <div key={item.title} >
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link
-                  href={item.href}
-                  className="group flex items-start space-x-3 rounded-lg p-3 min-h-[44px] hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors touch-manipulation"
-                >
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Icon icon={item.icon} size="small" iconClassName="text-primary" />
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                        {item.title}
-                      </p>
-                      {item.badge && (
-                        <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {item.description}
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            </div>
+            <HoverLink
+              key={item.title}
+              href={item.href}
+              delay={200}
+              priority="medium"
+              className="group flex items-start gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+            >
+              <Icon
+                icon={item.icon}
+                size="small"
+                iconClassName="text-gray-500 dark:text-gray-500 w-4 h-4 mt-0.5 flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {item.title}
+                  </p>
+                  {item.badge && (
+                    <span className="text-xs text-gray-500 dark:text-gray-500">
+                      • {item.badge}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+                  {item.description}
+                </p>
+              </div>
+            </HoverLink>
           ))}
         </div>
       </div>
@@ -254,10 +242,8 @@ export function ModernNavbar({
 }: ModernNavbarProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollYRef = useRef(0);
-  const scrollProgressRef = useRef(0);
 
   // Accessibility state
   const [accessibilityState, setAccessibilityState] = useState<AccessibilityState>({
@@ -269,11 +255,10 @@ export function ModernNavbar({
     screenReaderActive: false
   });
 
-  const { scrollY, scrollYProgress } = useScroll();
-
-  // Create throttled update functions using useCallback to maintain reference stability
-  const updateScrollState = useCallback(
-    throttle((scrollValue: number) => {
+  // Handle scroll events
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      const scrollValue = window.scrollY;
       const shouldBeScrolled = scrollValue > 50;
       setIsScrolled(shouldBeScrolled);
 
@@ -287,32 +272,13 @@ export function ModernNavbar({
         }
         lastScrollYRef.current = scrollValue;
       }
-    }, 50), // Throttle to 50ms (20fps)
-    [hideOnScroll]
-  );
+    }, 50);
 
-  const updateScrollProgress = useCallback(
-    throttle((progress: number) => {
-      // Only update if there's a significant change (more than 1%)
-      if (Math.abs(progress - scrollProgressRef.current) > 0.01) {
-        setScrollProgress(progress);
-        scrollProgressRef.current = progress;
-      }
-    }, 100), // Throttle to 100ms (10fps) for progress bar
-    []
-  );
-
-  useMotionValueEvent(scrollY, 'change', updateScrollState);
-
-  // Only subscribe to scroll progress if showProgress is true
-  useEffect(() => {
-    if (showProgress) {
-      const unsubscribe = scrollYProgress.on('change', updateScrollProgress);
-      return () => {
-        unsubscribe();
-      };
-    }
-  }, [showProgress, scrollYProgress, updateScrollProgress]);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [hideOnScroll]);
 
   // Store isOpen in a ref to avoid recreating handleKeyDown
   const isOpenRef = useRef(isOpen);
@@ -381,43 +347,12 @@ export function ModernNavbar({
     };
   }, []); // Remove isOpen dependency
 
-  const navbarVariants = {
-    initial: { y: -100, opacity: 0 },
-    animate: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6
-      }
-    }
-  };
-
-  const linkVariants = {
-    initial: { opacity: 0, y: -20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4
-      }
-    }
-  };
-
-  const staggeredLinks = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-
   return (
     <>
       {/* Skip Navigation Links - WCAG 2.1 AA */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg transition-all"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-gray-900 dark:focus:bg-gray-100 focus:text-white dark:focus:text-gray-900 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg transition-all"
         onFocus={() => setAccessibilityState(prev => ({ ...prev, skipLinkVisible: true }))}
         onBlur={() => setAccessibilityState(prev => ({ ...prev, skipLinkVisible: false }))}
       >
@@ -433,80 +368,62 @@ export function ModernNavbar({
         {accessibilityState.announcements.slice(-1)[0]}
       </div>
 
-      {/* Scroll Progress Indicator - Only show if showProgress is true */}
-      {showProgress && (
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-0.5 bg-primary origin-left z-50 shadow-lg"
-          style={{ scaleX: scrollProgress }}
-          initial={{ scaleX: 0 }}
-        />
-      )}
-
-      <motion.header
-        variants={navbarVariants}
-        initial="initial"
-        animate={isVisible ? 'animate' : 'initial'}
+      <header
         role="banner"
         className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-500',
+          'fixed top-0 left-0 right-0 z-40 transition-colors duration-200',
           isScrolled
-            ? 'bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg'
+            ? 'bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800'
             : variant === 'transparent'
               ? 'bg-transparent'
-              : 'bg-background/50 backdrop-blur-sm',
-          !isVisible && hideOnScroll && 'transform -translate-y-full',
-          accessibilityState.highContrast && 'border-2 border-foreground',
+              : 'bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800',
+          !isVisible && hideOnScroll && 'transform -translate-y-full transition-transform duration-150',
+          accessibilityState.highContrast && 'border-2 border-gray-900 dark:border-gray-100',
           className
         )}
       >
         <nav
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+          className="mx-auto max-w-7xl px-6"
           role="navigation"
           aria-label="Navegación principal"
         >
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex-shrink-0"
-            >
-              <Link
+            <div className="flex-shrink-0">
+              <ImmediateLink
                 href="/"
-                className="flex items-center space-x-2 group focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg"
+                priority="high"
+                className="flex items-center space-x-2 group focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:ring-offset-2 rounded-lg no-underline"
                 aria-label="Neptunik - Ir al inicio"
               >
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
-                  <Icon icon={MessageCircle} size="medium" iconClassName="text-primary-foreground group-hover:scale-110 transition-all" />
+                <div className="w-10 h-10 rounded-lg bg-gray-900 dark:bg-gray-100 flex items-center justify-center shadow-md">
+                  <Icon icon={MessageCircle} size="medium" iconClassName="text-white dark:text-gray-900" />
                 </div>
-                <span className="text-xl font-bold text-foreground group-hover:text-primary transition-all duration-300">
+                <span className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-200">
                   Neptunik
                 </span>
-              </Link>
-            </motion.div>
+              </ImmediateLink>
+            </div>
 
             {/* Desktop Navigation */}
-            <motion.div
-              variants={staggeredLinks}
-              animate="animate"
-              className="hidden md:flex items-center space-x-1"
-            >
-              <div className="flex items-center space-x-4">
-                <nav className="flex items-center space-x-1">
+            <div className="hidden md:flex items-center gap-6">
+              <nav className="flex items-center gap-6">
                   {/* Productos Mega Menu - Mobile optimized */}
                   <div className="relative group">
-                    <Link href="/productos"
-                      className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center gap-1 touch-manipulation"
+                    <ImmediateLink href="/productos"
+                      priority="high"
+                      className="nav-link text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 flex items-center gap-1 touch-manipulation no-underline focus:outline-none focus:text-primary dark:focus:text-primary py-2"
                       aria-label="Ver productos"
+                      data-text="Productos"
                     >
-                      <motion.span variants={linkVariants}>
+                      <span>
                         Productos
-                      </motion.span>
-                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180 hidden lg:block" />
-                    </Link>
+                      </span>
+                      <ChevronDown className="w-4 h-4 hidden lg:block" />
+                    </ImmediateLink>
                     {/* Desktop-only mega menu */}
-                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 hidden lg:block">
-                      <div className="bg-background border border-border rounded-lg shadow-xl max-w-[90vw] lg:max-w-[800px]">
+                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-150 hidden lg:block">
+                      <div className="bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl max-w-2xl">
                         <MegaMenuContent sections={productSections} />
                       </div>
                     </div>
@@ -514,18 +431,20 @@ export function ModernNavbar({
 
                   {/* Soluciones Mega Menu - Mobile optimized */}
                   <div className="relative group">
-                    <Link href="/soluciones"
-                      className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center gap-1 touch-manipulation"
+                    <ImmediateLink href="/soluciones"
+                      priority="high"
+                      className="nav-link text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 flex items-center gap-1 touch-manipulation no-underline focus:outline-none focus:text-primary dark:focus:text-primary py-2"
                       aria-label="Ver soluciones"
+                      data-text="Soluciones"
                     >
-                      <motion.span variants={linkVariants}>
+                      <span>
                         Soluciones
-                      </motion.span>
-                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180 hidden lg:block" />
-                    </Link>
+                      </span>
+                      <ChevronDown className="w-4 h-4 hidden lg:block" />
+                    </ImmediateLink>
                     {/* Desktop-only mega menu */}
-                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 hidden lg:block">
-                      <div className="bg-background border border-border rounded-lg shadow-xl max-w-[90vw] lg:max-w-[800px]">
+                    <div className="absolute top-full left-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-150 hidden lg:block">
+                      <div className="bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-700 rounded-lg shadow-xl max-w-2xl">
                         <MegaMenuContent sections={solutionSections} />
                       </div>
                     </div>
@@ -534,64 +453,48 @@ export function ModernNavbar({
                   {/* Simple Links */}
                   {NavigationLinks.map((link) => (
                     <div key={link.href}>
-                      <Link
+                      <SmartLink
                         href={link.href}
-                        className="px-4 py-2 min-h-[44px] rounded-md bg-transparent hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors flex items-center touch-manipulation"
+                        prefetchStrategy={link.href === '/precios' ? 'immediate' : 'hover'}
+                        priority={link.href === '/precios' ? 'high' : 'medium'}
+                        className="nav-link text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 flex items-center touch-manipulation no-underline focus:outline-none focus:text-primary dark:focus:text-primary"
+                        data-text={link.label}
                       >
-                        <motion.span
-                          variants={linkVariants}
-                          whileHover={{ y: -2 }}
-                          className="relative"
-                        >
+                        <span className="relative">
                           {link.label}
-                        </motion.span>
-                      </Link>
+                        </span>
+                      </SmartLink>
                     </div>
                   ))}
-                </nav>
-              </div>
-            </motion.div>
+              </nav>
+            </div>
 
             {/* CTA Buttons */}
-            <motion.div
-              variants={staggeredLinks}
-              animate="animate"
-              className="hidden md:flex items-center space-x-3"
-            >
+            <div className="hidden md:flex items-center gap-4">
               {/* Theme Toggle */}
-              <motion.div variants={linkVariants}>
+              <div>
                 <ThemeToggle />
-              </motion.div>
-              <motion.div variants={linkVariants}>
-                <Link
-                  href="/login"
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'sm' }),
-                    'text-sm font-medium hover:bg-accent focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-full'
-                  )}
-                >
-                  Iniciar sesión
-                </Link>
-              </motion.div>
-              <motion.div variants={linkVariants}>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="/onboarding"
-                    className={cn(
-                      buttonVariants({ size: 'sm' }),
-                      'btn-primary rounded-lg shadow-lg hover:shadow-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-all duration-200 min-h-[44px] flex items-center'
-                    )}
-                    aria-label="Comenzar prueba gratuita"
-                  >
-                    <PlayCircle className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Prueba Gratis
-                  </Link>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+              </div>
+              <HoverLink
+                href="/login"
+                priority="medium"
+                delay={150}
+                className="nav-link--button text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium no-underline transition-colors duration-200"
+                data-text="Iniciar sesión"
+              >
+                Iniciar sesión
+              </HoverLink>
+              <ImmediateLink
+                href="/onboarding"
+                priority="high"
+                highPriority={true}
+                className="nav-link--button bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 no-underline"
+                aria-label="Comenzar prueba gratuita"
+                data-text="Comenzar Gratis"
+              >
+                Comenzar Gratis
+              </ImmediateLink>
+            </div>
 
             {/* Mobile Menu Button */}
             <Sheet open={isOpen} onOpenChange={(open) => {
@@ -602,15 +505,13 @@ export function ModernNavbar({
               }));
             }}>
               <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="md:hidden focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
+                <button
+                  className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:ring-offset-2 min-h-[44px] min-w-[44px] transition-colors"
                   aria-label={isOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
                   aria-expanded={isOpen}
                 >
                   <Menu className="h-6 w-6" aria-hidden="true" />
-                </Button>
+                </button>
               </SheetTrigger>
               <SheetContent
                 side="right"
@@ -624,9 +525,10 @@ export function ModernNavbar({
                   role="navigation"
                   aria-label="Menú móvil"
                 >
-                  <Link
+                  <ImmediateLink
                     href="/productos"
-                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation"
+                    priority="high"
+                    className="px-3 py-2 min-h-[44px] rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex items-center font-medium touch-manipulation"
                     onClick={() => {
                       setIsOpen(false);
                       setAccessibilityState(prev => ({
@@ -637,10 +539,11 @@ export function ModernNavbar({
                     aria-label="Ver productos disponibles"
                   >
                     Productos
-                  </Link>
-                  <Link
+                  </ImmediateLink>
+                  <ImmediateLink
                     href="/soluciones"
-                    className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center font-medium touch-manipulation"
+                    priority="high"
+                    className="px-3 py-2 min-h-[44px] rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex items-center font-medium touch-manipulation"
                     onClick={() => {
                       setIsOpen(false);
                       setAccessibilityState(prev => ({
@@ -651,12 +554,14 @@ export function ModernNavbar({
                     aria-label="Ver soluciones disponibles"
                   >
                     Soluciones
-                  </Link>
+                  </ImmediateLink>
                   {NavigationLinks.map((link) => (
-                    <Link
+                    <SmartLink
                       key={link.href}
                       href={link.href}
-                      className="px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation"
+                      prefetchStrategy={link.href === '/precios' ? 'immediate' : 'viewport'}
+                      priority={link.href === '/precios' ? 'high' : 'medium'}
+                      className="px-3 py-2 min-h-[44px] rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex items-center touch-manipulation"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({
@@ -666,7 +571,7 @@ export function ModernNavbar({
                       }}
                     >
                       {link.label}
-                    </Link>
+                    </SmartLink>
                   ))}
 
                   {/* Theme Toggle for mobile */}
@@ -674,10 +579,12 @@ export function ModernNavbar({
                     <ThemeToggle />
                   </div>
 
-                  <div className="pt-6 border-t border-border space-y-3" role="group" aria-label="Acciones de cuenta">
-                    <Link
+                  <div className="pt-6 border-t border-gray-200 dark:border-gray-800 space-y-3" role="group" aria-label="Acciones de cuenta">
+                    <HoverLink
                       href="/login"
-                      className="block px-4 py-3 min-h-[48px] rounded-md hover:bg-accent active:bg-accent/80 focus:bg-accent focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground transition-colors flex items-center touch-manipulation"
+                      priority="medium"
+                      delay={150}
+                      className="w-full justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors duration-200 min-h-[44px] touch-manipulation flex items-center no-underline font-medium"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({
@@ -688,10 +595,12 @@ export function ModernNavbar({
                       aria-label="Iniciar sesión en tu cuenta"
                     >
                       Iniciar sesión
-                    </Link>
-                    <Link
+                    </HoverLink>
+                    <ImmediateLink
                       href="/onboarding"
-                      className="block px-4 py-3 min-h-[48px] rounded-md bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-colors font-semibold flex items-center justify-center touch-manipulation"
+                      priority="high"
+                      highPriority={true}
+                      className="w-full justify-center bg-primary text-primary-foreground px-3 py-2 text-sm font-medium rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[44px] touch-manipulation flex items-center no-underline"
                       onClick={() => {
                         setIsOpen(false);
                         setAccessibilityState(prev => ({
@@ -701,15 +610,15 @@ export function ModernNavbar({
                       }}
                       aria-label="Comenzar prueba gratuita de Neptunik"
                     >
-                      Prueba Gratis
-                    </Link>
+                      Comenzar Gratis
+                    </ImmediateLink>
                   </div>
                 </nav>
               </SheetContent>
             </Sheet>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
       {/* Spacer to prevent content from being hidden behind fixed navbar */}
       <div className="h-16" />

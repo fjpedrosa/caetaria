@@ -1,0 +1,181 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Technical Neptune gradient with more saturation -->
+    <radialGradient id="neptuneTechGradient" cx="0.35" cy="0.3" r="0.85">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#075985;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Multiple ring gradients for 6 rings -->
+    <linearGradient id="ring1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:0.15" />
+      <stop offset="50%" style="stop-color:#60A5FA;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0.15" />
+    </linearGradient>
+    
+    <linearGradient id="ring2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38BDF8;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#38BDF8;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#38BDF8;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <linearGradient id="ring3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:0.25" />
+      <stop offset="50%" style="stop-color:#0EA5E9;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:0.25" />
+    </linearGradient>
+    
+    <!-- Dark front ring gradient -->
+    <linearGradient id="darkFrontGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0C4A6E;stop-opacity:0.35" />
+      <stop offset="50%" style="stop-color:#075985;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#0C4A6E;stop-opacity:0.35" />
+    </linearGradient>
+    
+    <!-- Tech glow effect -->
+    <filter id="techGlow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Sharp shadow -->
+    <filter id="techShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- 6 Neptune rings (back) - representing actual Neptune rings -->
+  <!-- Galle Ring -->
+  <ellipse cx="60" cy="60" rx="52" ry="15" 
+           fill="none" 
+           stroke="url(#ring1Gradient)" 
+           stroke-width="0.5" 
+           opacity="0.8"
+           transform="rotate(-14 60 60)"/>
+  
+  <!-- Le Verrier Ring -->
+  <ellipse cx="60" cy="60" rx="48" ry="13.5" 
+           fill="none" 
+           stroke="url(#ring2Gradient)" 
+           stroke-width="0.6" 
+           opacity="0.7"
+           transform="rotate(-12 60 60)"/>
+  
+  <!-- Lassell Ring -->
+  <ellipse cx="60" cy="60" rx="44" ry="12" 
+           fill="none" 
+           stroke="url(#ring3Gradient)" 
+           stroke-width="0.7" 
+           opacity="0.6"
+           transform="rotate(-10 60 60)"/>
+  
+  <!-- Arago Ring -->
+  <ellipse cx="60" cy="60" rx="40" ry="10.5" 
+           fill="none" 
+           stroke="url(#ring2Gradient)" 
+           stroke-width="0.5" 
+           opacity="0.5"
+           transform="rotate(-8 60 60)"/>
+  
+  <!-- Adams Ring (partial, behind) -->
+  <path d="M 22 56 Q 60 44, 98 56" 
+        stroke="url(#ring3Gradient)" 
+        stroke-width="0.8" 
+        fill="none" 
+        opacity="0.4"/>
+  
+  <!-- Neptune planet with technical details -->
+  <circle cx="60" cy="60" r="26" 
+          fill="url(#neptuneTechGradient)"
+          filter="url(#techShadow)"/>
+  
+  <!-- Technical surface patterns -->
+  <!-- Grid-like bands -->
+  <ellipse cx="60" cy="50" rx="22" ry="2" 
+           fill="#60A5FA" 
+           opacity="0.4" 
+           transform="rotate(-3 60 50)"/>
+  
+  <ellipse cx="60" cy="55" rx="24" ry="1.8" 
+           fill="#38BDF8" 
+           opacity="0.35" 
+           transform="rotate(5 60 55)"/>
+  
+  <ellipse cx="60" cy="60" rx="23" ry="1.5" 
+           fill="#0EA5E9" 
+           opacity="0.45" 
+           transform="rotate(-8 60 60)"/>
+  
+  <ellipse cx="60" cy="65" rx="21" ry="1.8" 
+           fill="#0284C7" 
+           opacity="0.5" 
+           transform="rotate(10 60 65)"/>
+  
+  <ellipse cx="60" cy="70" rx="18" ry="1.5" 
+           fill="#075985" 
+           opacity="0.4" 
+           transform="rotate(-6 60 70)"/>
+  
+  <!-- Technical detail spots -->
+  <circle cx="52" cy="58" r="1.5" fill="#0369A1" opacity="0.6"/>
+  <circle cx="68" cy="54" r="2" fill="#075985" opacity="0.7"/>
+  <circle cx="64" cy="64" r="1" fill="#0C4A6E" opacity="0.5"/>
+  
+  <!-- Dark front ring (subtle Adams Ring continuation) -->
+  <path d="M 28 64 Q 60 71, 92 64" 
+        stroke="url(#darkFrontGradient)" 
+        stroke-width="1.2" 
+        fill="none" 
+        opacity="0.7"/>
+  
+  <!-- API connection points -->
+  <g filter="url(#techGlow)">
+    <!-- Top connection -->
+    <circle cx="60" cy="30" r="2" fill="#25D366" opacity="0.8"/>
+    <line x1="60" y1="32" x2="60" y2="34" stroke="#25D366" stroke-width="0.5" opacity="0.6"/>
+    
+    <!-- Right connection -->
+    <circle cx="90" cy="60" r="2" fill="#F59E0B" opacity="0.8"/>
+    <line x1="88" y1="60" x2="86" y2="60" stroke="#F59E0B" stroke-width="0.5" opacity="0.6"/>
+    
+    <!-- Bottom connection -->
+    <circle cx="60" cy="90" r="2" fill="#25D366" opacity="0.8"/>
+    <line x1="60" y1="88" x2="60" y2="86" stroke="#25D366" stroke-width="0.5" opacity="0.6"/>
+    
+    <!-- Left connection -->
+    <circle cx="30" cy="60" r="2" fill="#38BDF8" opacity="0.8"/>
+    <line x1="32" y1="60" x2="34" y2="60" stroke="#38BDF8" stroke-width="0.5" opacity="0.6"/>
+  </g>
+  
+  <!-- Technical particles -->
+  <circle cx="85" cy="35" r="0.8" fill="#0EA5E9" opacity="0.6"/>
+  <circle cx="35" cy="85" r="0.6" fill="#38BDF8" opacity="0.5"/>
+  <circle cx="25" cy="35" r="0.5" fill="#60A5FA" opacity="0.4"/>
+  <circle cx="95" cy="85" r="0.7" fill="#0284C7" opacity="0.5"/>
+  
+  <!-- Highlight for technical precision -->
+  <ellipse cx="50" cy="48" rx="10" ry="6" 
+           fill="white" 
+           opacity="0.08" 
+           transform="rotate(-30 50 48)"/>
+  
+  <!-- Small "API" text indicator -->
+  <g transform="translate(88, 18)">
+    <rect x="-6" y="-3" width="12" height="6" 
+          rx="2" 
+          fill="#0EA5E9" 
+          opacity="0.6"/>
+    <text x="0" y="1" 
+          font-family="monospace" 
+          font-size="4" 
+          fill="white" 
+          text-anchor="middle" 
+          font-weight="bold">API</text>
+  </g>
+</svg>

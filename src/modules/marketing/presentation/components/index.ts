@@ -1,6 +1,6 @@
 export { CtaSection } from './cta-section';
 export { FaqSection } from './faq-section';
-export { FeaturesGrid } from './features-grid';
+export { FeaturesGridContainer as FeaturesGrid } from './features-grid';
 export { FinalCta } from './final-cta';
 export { HeroSection } from './hero-section';
 export { HowItWorks } from './how-it-works';

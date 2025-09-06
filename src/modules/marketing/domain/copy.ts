@@ -6,8 +6,8 @@
 export const MARKETING_COPY = {
   hero: {
     badge: 'Aumenta tus ventas 40% en 30 días',
-    title: 'Convierte WhatsApp en tu',
-    subtitle: 'sistema de ventas automático',
+    title: 'Convierte WhatsApp en',
+    subtitle: 'la app de tu negocio',
     description: 'El 87% de tus clientes usan WhatsApp a diario. Automatiza reservas, pedidos y pagos para vender 24/7. ROI promedio: 12x en 60 días.',
     cta: {
       primary: 'Quiero Vender 40% Más',
@@ -147,37 +147,40 @@ export const MARKETING_COPY = {
     badge: 'Digitalización Completa',
     title: 'Todo lo que necesitas para',
     titleHighlight: 'gestionar tu negocio completo',
-    description: 'Digitaliza cada aspecto de tu negocio tradicional donde tus clientes ya están.',
+    subtitle: 'Digitaliza cada aspecto de tu negocio tradicional donde tus clientes ya están.',
     items: [
       {
-        title: 'Gestión de Reservas y Citas',
-        description: 'Sistema profesional de reservas y agenda. Perfecto para restaurantes, clínicas, salones de belleza.',
+        title: 'Reservas Automáticas Sin No-Shows',
+        description: 'Sistema profesional que confirma, recuerda y gestiona cancelaciones. Incrementa tus ingresos desde el primer mes.',
         icon: 'calendar',
         badge: 'Más Popular',
         benefits: [
-          'Confirmaciones automáticas',
-          'Recordatorios inteligentes',
-          'Gestión de cancelaciones'
+          'Reduce cancelaciones drásticamente con confirmaciones',
+          'Optimiza la ocupación en todos los horarios',
+          'Ahorra horas semanales en gestión manual',
+          'Follow-ups automáticos sin intervención'
         ]
       },
       {
-        title: 'Tienda y Catálogo Digital',
-        description: 'Tu negocio completo en WhatsApp. Ideal para comercios, ferreterías, panaderías.',
+        title: 'Recibe Pedidos 24/7 por WhatsApp',
+        description: 'La mayoría de pedidos llegan fuera de horario. Tu catálogo siempre disponible sin empleados adicionales.',
         icon: 'store',
         benefits: [
-          'Catálogo con fotos y precios',
-          'Carrito de compras integrado',
-          'Gestión de inventario en tiempo real'
+          'Catálogo visual con precios actualizados',
+          'Cobra directamente por WhatsApp',
+          'Stock sincronizado en tiempo real',
+          'Pedidos automáticos sin horarios'
         ]
       },
       {
-        title: 'Atención al Cliente con IA',
-        description: 'Respuestas instantáneas y personalizadas. Tu negocio atiende 24/7 sin descanso.',
+        title: 'Automatización Inteligente',
+        description: 'Responde la mayoría de consultas sin intervención. Equivale a varios empleados trabajando 24/7.',
         icon: 'automation',
         benefits: [
-          'Responde consultas frecuentes',
-          'Procesa pedidos automáticamente',
-          'Escala a humano cuando necesario'
+          'Respuesta instantánea aumenta conversión',
+          'Escalado inteligente a humano si necesario',
+          'Aprende y mejora automáticamente',
+          'Recupera clientes inactivos automáticamente'
         ]
       }
     ]

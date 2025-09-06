@@ -84,7 +84,7 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
       setShowFlow(false);
       setFlowStep('guests');
       setReservationData({ guests: 2, date: '', time: '' });
-    }, 12000);
+    }, 20000);
     timers.push(restartTimer);
 
     return () => {
@@ -95,10 +95,10 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
   // Flow sequence controller
   const startFlowSequence = () => {
     const flowSequence = [
-      { step: 'guests' as FlowStep, delay: 800 },
-      { step: 'date' as FlowStep, delay: 1600 },
-      { step: 'time' as FlowStep, delay: 2400 },
-      { step: 'confirmation' as FlowStep, delay: 3200 },
+      { step: 'guests' as FlowStep, delay: 3000 },
+      { step: 'date' as FlowStep, delay: 6000 },
+      { step: 'time' as FlowStep, delay: 9000 },
+      { step: 'confirmation' as FlowStep, delay: 12000 },
     ];
 
     const flowTimers: NodeJS.Timeout[] = [];
@@ -122,7 +122,7 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
     // Close flow after confirmation
     const closeTimer = setTimeout(() => {
       setShowFlow(false);
-    }, 4800);
+    }, 15000);
     flowTimers.push(closeTimer);
   };
 
@@ -278,7 +278,7 @@ export function HeroMobileDemo({ isInView }: HeroMobileDemoProps) {
 
   return (
     <motion.div
-      className="relative flex justify-center items-center w-full lg:justify-center"
+      className="relative flex justify-center items-center w-full lg:justify-end"
       initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
       animate={isInView ? { opacity: 1, scale: 1, rotateY: 0 } : { opacity: 0, scale: 0.8, rotateY: -15 }}
       transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}

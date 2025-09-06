@@ -1,0 +1,75 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient optimized for logo -->
+    <radialGradient id="neptuneFinalGradient" cx="0.35" cy="0.35" r="0.85">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#075985;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Single ring gradient - purple-blue -->
+    <linearGradient id="singleRingGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.4" />
+      <stop offset="25%" style="stop-color:#6366F1;stop-opacity:0.65" />
+      <stop offset="50%" style="stop-color:#4F46E5;stop-opacity:0.75" />
+      <stop offset="75%" style="stop-color:#6366F1;stop-opacity:0.65" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <!-- Clean shadow -->
+    <filter id="planetShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Mask to hide ring behind planet -->
+    <mask id="planetMask">
+      <!-- White allows the ring to show -->
+      <rect x="0" y="0" width="120" height="120" fill="white"/>
+      <!-- Black circle hides ring behind planet -->
+      <circle cx="60" cy="60" r="23" fill="black"/>
+    </mask>
+  </defs>
+  
+  <!-- Single ring - back portion (behind planet) -->
+  <ellipse cx="60" cy="60" rx="45" ry="16" 
+           fill="none" 
+           stroke="url(#singleRingGradient)" 
+           stroke-width="3" 
+           transform="rotate(-12 60 60)"
+           mask="url(#planetMask)"/>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptuneFinalGradient)"
+          filter="url(#planetShadow)"/>
+  
+  <!-- Volume enhancement areas -->
+  <!-- Light area -->
+  <ellipse cx="54" cy="52" rx="10" ry="5" 
+           fill="#60A5FA" 
+           opacity="0.3" 
+           transform="rotate(-30 54 52)"/>
+  
+  <!-- Dark area for depth -->
+  <ellipse cx="65" cy="68" rx="12" ry="4" 
+           fill="#075985" 
+           opacity="0.25" 
+           transform="rotate(35 65 68)"/>
+  
+  <!-- Single ring - front portion (in front of planet) -->
+  <!-- Using the same ellipse parameters but only drawing the front arc -->
+  <path d="M 15.5 64 A 45 16 -12 0 1 104.5 64" 
+        fill="none" 
+        stroke="url(#singleRingGradient)" 
+        stroke-width="3"
+        stroke-linecap="round"
+        opacity="0.9"/>
+  
+  <!-- Highlight for spherical effect -->
+  <ellipse cx="52" cy="50" rx="8" ry="4" 
+           fill="white" 
+           opacity="0.12" 
+           transform="rotate(-25 52 50)"/>
+</svg>

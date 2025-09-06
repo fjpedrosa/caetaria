@@ -32,10 +32,7 @@ export const businessFormSchema = z.object({
     'e-commerce', 'healthcare', 'education', 'finance', 'real-estate',
     'travel', 'food-beverage', 'technology', 'consulting', 'retail', 'other'
   ]),
-  employeeCount: z
-    .number()
-    .min(1, 'Employee count must be at least 1')
-    .max(1000000, 'Employee count seems too high'),
+  employeeRange: z.enum(['1-10', '11-50', '51-200', '201-500', '500+']),
   website: z
     .string()
     .url('Please enter a valid URL')
@@ -77,10 +74,18 @@ export const industries: Array<{ value: Industry; label: string }> = [
   { value: 'other', label: 'Other' },
 ];
 
+export const employeeRanges: Array<{ value: string; label: string; description?: string }> = [
+  { value: '1-10', label: '1-10 empleados', description: 'Pequeña empresa o startup' },
+  { value: '11-50', label: '11-50 empleados', description: 'Empresa en crecimiento' },
+  { value: '51-200', label: '51-200 empleados', description: 'Empresa mediana' },
+  { value: '201-500', label: '201-500 empleados', description: 'Empresa grande' },
+  { value: '500+', label: 'Más de 500 empleados', description: 'Corporación' },
+];
+
 export const volumeOptions: Array<{ value: VolumeLevel; label: string; description: string }> = [
-  { value: 'low', label: 'Low (< 1,000 messages/month)', description: 'Small scale operation' },
-  { value: 'medium', label: 'Medium (1,000 - 10,000 messages/month)', description: 'Growing business' },
-  { value: 'high', label: 'High (> 10,000 messages/month)', description: 'Large scale operation' },
+  { value: 'low', label: 'Bajo (< 1,000 mensajes/mes)', description: 'Operación pequeña' },
+  { value: 'medium', label: 'Medio (1,000 - 10,000 mensajes/mes)', description: 'Negocio en crecimiento' },
+  { value: 'high', label: 'Alto (> 10,000 mensajes/mes)', description: 'Operación a gran escala' },
 ];
 
 // =============================================================================
@@ -98,6 +103,7 @@ export interface UseBusinessInfoFormReturn {
   // Static data for rendering
   businessTypes: typeof businessTypes;
   industries: typeof industries;
+  employeeRanges: typeof employeeRanges;
   volumeOptions: typeof volumeOptions;
 }
 
@@ -141,7 +147,7 @@ export function useBusinessInfoForm(
       companyName: '',
       businessType: undefined,
       industry: undefined,
-      employeeCount: undefined,
+      employeeRange: undefined,
       website: '',
       description: '',
       expectedVolume: undefined,
@@ -202,6 +208,7 @@ export function useBusinessInfoForm(
     // Static data for rendering
     businessTypes,
     industries,
+    employeeRanges,
     volumeOptions,
   };
 }

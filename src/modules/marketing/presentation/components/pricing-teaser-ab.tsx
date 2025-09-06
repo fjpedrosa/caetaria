@@ -122,7 +122,7 @@ export function PricingTeaserAB() {
               </li>
             </ul>
 
-            <Button className="w-full" size="lg" variant="outline" onClick={handleStarterClick}>
+            <Button className="w-full" size="lg" variant="secondary" onClick={handleStarterClick}>
               Empezar gratis
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -188,7 +188,7 @@ export function PricingTeaserAB() {
               </li>
             </ul>
 
-            <Button className="w-full" size="lg" onClick={handleProClick}>
+            <Button className="w-full" size="lg" variant="default" onClick={handleProClick}>
               Elegir Pro
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -233,7 +233,7 @@ export function PricingTeaserAB() {
               </li>
             </ul>
 
-            <Button className="w-full" size="lg" variant="secondary">
+            <Button className="w-full" size="lg" variant="outline">
               Contactar
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

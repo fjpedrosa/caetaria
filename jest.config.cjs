@@ -112,7 +112,7 @@ const customJestConfig = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   setupFiles: [
-    'jest-canvas-mock',
+    // 'jest-canvas-mock', // Temporarily disabled
     '<rootDir>/src/__mocks__/supabase/setup.ts'
   ],
   testTimeout: 10000,

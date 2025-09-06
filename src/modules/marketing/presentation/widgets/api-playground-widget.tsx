@@ -223,13 +223,13 @@ export function ApiPlaygroundWidget() {
     <div className="text-white">
       {/* Section Header */}
       <div className="text-center mb-12">
-        <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 px-4 py-2 mb-6">
+        <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 px-4 py-2 mb-6">
           ⚡ Prueba en Vivo
         </Badge>
 
         <h2 className="text-4xl lg:text-5xl font-bold mb-6">
           Prueba WhatsApp
-          <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+          <span className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Automático Ahora
           </span>
         </h2>
@@ -245,7 +245,7 @@ export function ApiPlaygroundWidget() {
         <div className="xl:col-span-1">
           <Card className="p-6 bg-gray-800/50 backdrop-blur-sm border border-gray-700">
             <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-              <Code className="w-5 h-5 mr-2 text-yellow-400" />
+              <Code className="w-5 h-5 mr-2 text-blue-400" />
               Ejemplos en Vivo
             </h3>
 
@@ -258,13 +258,13 @@ export function ApiPlaygroundWidget() {
                     onClick={() => setSelectedExample(example)}
                     className={`w-full text-left p-4 rounded-lg border transition-all duration-200 ${
                       selectedExample.id === example.id
-                        ? 'border-yellow-500 bg-yellow-500/10'
+                        ? 'border-blue-500 bg-blue-500/10'
                         : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700/50'
                     }`}
                   >
                     <div className="flex items-center space-x-3 mb-2">
                       <IconComponent className={`w-5 h-5 ${
-                        selectedExample.id === example.id ? 'text-yellow-400' : 'text-gray-400'
+                        selectedExample.id === example.id ? 'text-blue-400' : 'text-gray-400'
                       }`} />
                       <div className={`text-xs font-mono px-2 py-1 rounded ${
                         getMethodColor(example.method)
@@ -326,7 +326,7 @@ export function ApiPlaygroundWidget() {
               <Button
                 onClick={executeExample}
                 disabled={isExecuting}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold"
               >
                 {isExecuting ? (
                   <>
@@ -351,7 +351,7 @@ export function ApiPlaygroundWidget() {
                 <div className="bg-gray-700 px-3 py-2 rounded-l-lg font-mono text-sm text-white border border-gray-600">
                   Tu WhatsApp conectado
                 </div>
-                <div className="bg-gray-900 px-3 py-2 rounded-r-lg font-mono text-sm text-yellow-400 border border-gray-600 border-l-0 flex-1">
+                <div className="bg-gray-900 px-3 py-2 rounded-r-lg font-mono text-sm text-blue-400 border border-gray-600 border-l-0 flex-1">
                   Listo para enviar
                 </div>
                 <Button

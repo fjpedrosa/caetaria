@@ -2,9 +2,6 @@ import type { Metadata } from 'next';
 
 import { SmoothScrollNav } from '@/modules/shared/presentation/components/ui/smooth-scroll-nav';
 
-// Enable ISR with 1 hour cache for legal content
-export const revalidate = 3600;
-
 export const metadata: Metadata = {
   title: 'Política de Privacidad - Plataforma WhatsApp Cloud API',
   description: 'Conoce cómo recopilamos, usamos y protegemos tus datos en nuestra plataforma WhatsApp Cloud API. Prácticas de privacidad conformes con RGPD.',
@@ -21,13 +18,11 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = '15 de enero de 2025';
 
-interface TableOfContentsItem {
+const tableOfContents: {
   id: string;
   title: string;
   subsections?: { id: string; title: string; }[];
-}
-
-const tableOfContents: TableOfContentsItem[] = [
+}[] = [
   { id: 'introduction', title: 'Introducción' },
   { id: 'information-we-collect', title: 'Información que Recopilamos' },
   { id: 'how-we-use-information', title: 'Cómo Usamos tu Información' },

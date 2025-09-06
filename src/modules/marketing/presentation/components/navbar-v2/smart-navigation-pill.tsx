@@ -7,8 +7,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 
+import { SmartLink } from '@/lib/prefetch';
 import { cn } from '@/lib/utils';
 
 // Import the base types from navigation-pill
@@ -17,12 +17,9 @@ import type { NavigationItem } from './navigation-pill';
 interface SmartNavigationPillProps {
   items: NavigationItem[];
   activeItem?: string;
-  onItemHover?: (href: string, event: React.MouseEvent) => void;
-  onItemLeave?: (href: string) => void;
   onItemClick?: (href: string, sectionId?: string) => void;
   sectionProgress?: Record<string, number>;
   isNavigating?: boolean;
-  isPrefetching?: (href: string) => boolean;
   scrollVelocity?: number;
   className?: string;
 }
@@ -37,12 +34,9 @@ interface SmartNavigationPillProps {
 export function SmartNavigationPill({
   items,
   activeItem,
-  onItemHover,
-  onItemLeave,
   onItemClick,
   sectionProgress = {},
   isNavigating = false,
-  isPrefetching = false,
   scrollVelocity = 0,
   className
 }: SmartNavigationPillProps) {
@@ -65,14 +59,11 @@ export function SmartNavigationPill({
   return (
     <motion.div
       className={cn(
-        // Base pill styling
-        'flex items-center gap-1 px-2 py-2 rounded-full',
-        'bg-white/10 backdrop-blur-md border border-white/20',
+        // Base pill styling - minimal style
+        'flex items-center gap-4',
         'transition-all duration-200 ease-out',
         // Performance optimizations
         'transform-gpu will-change-transform',
-        // Responsive adjustments
-        'h-12',
         className
       )}
       initial={{ opacity: 0, scale: 0.9 }}
@@ -98,21 +89,22 @@ export function SmartNavigationPill({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Link
+            <SmartLink
               href={item.href}
+              prefetchStrategy="hover"
+              priority="high"
+              delay={200}
               onClick={(e) => handleItemClick(item, e)}
-              onMouseEnter={(e) => onItemHover?.(item.href, e)}
-              onMouseLeave={() => onItemLeave?.(item.href)}
               className={cn(
                 // Base item styles
-                'px-4 py-2 rounded-full text-sm font-medium',
-                'transition-all duration-200 ease-out',
-                'focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-1',
+                'text-sm font-medium no-underline',
+                'transition-colors duration-200 ease-out',
+                'focus:outline-none focus:text-white',
                 'touch-manipulation select-none',
                 // State-based styling
                 isActive
-                  ? 'bg-white/20 text-white shadow-sm'
-                  : 'text-gray-200 hover:text-white hover:bg-white/15',
+                  ? 'text-white'
+                  : 'text-gray-200 hover:text-white',
                 // Navigation state feedback
                 isNavigating && isActive && 'animate-pulse'
               )}
@@ -135,7 +127,7 @@ export function SmartNavigationPill({
 
                 {/* Prefetch indicator - removed for debugging */}
               </span>
-            </Link>
+            </SmartLink>
 
             {/* Section Progress Indicator */}
             {progress > 0 && (
@@ -152,14 +144,6 @@ export function SmartNavigationPill({
               </motion.div>
             )}
 
-            {/* Active indicator */}
-            {isActive && (
-              <motion.div
-                layoutId="active-pill"
-                className="absolute inset-0 bg-white/10 rounded-full -z-10"
-                transition={{ duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }}
-              />
-            )}
           </motion.div>
         );
       })}

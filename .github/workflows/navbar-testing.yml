@@ -1,0 +1,449 @@
+name: 🧭 Navbar Testing Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/modules/marketing/navbar/**'
+      - 'src/shared/components/navbar/**'
+      - 'e2e/navbar-*.spec.ts'
+      - 'scripts/test-navbar.sh'
+      - '.lighthouserc.js'
+      - 'package.json'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/modules/marketing/navbar/**'
+      - 'src/shared/components/navbar/**'
+      - 'e2e/navbar-*.spec.ts'
+      - 'scripts/test-navbar.sh'
+      - '.lighthouserc.js'
+  workflow_dispatch:
+    inputs:
+      test_level:
+        description: 'Test level to run'
+        required: true
+        default: 'quick'
+        type: choice
+        options:
+          - 'quick'
+          - 'full'
+          - 'performance-only'
+          - 'e2e-only'
+          - 'lighthouse-only'
+
+# Cancel previous runs when a new commit is pushed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Quick smoke test for PRs and rapid development
+  navbar-smoke-test:
+    name: 🚀 Quick Navbar Smoke Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.test_level == 'quick')
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🧪 Run Quick Navbar Tests
+        run: npm run test:navbar:quick
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: navbar-smoke-test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  # Full E2E testing suite
+  navbar-e2e-tests:
+    name: 🧭 Full Navbar E2E Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.test_level == 'full') || (github.event_name == 'workflow_dispatch' && github.event.inputs.test_level == 'e2e-only')
+    timeout-minutes: 30
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        test-suite:
+          - navbar-e2e
+          - navbar-mobile
+          - navbar-accessibility
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: 🏗️ Build Application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 🧪 Run E2E Test Suite
+        run: npx playwright test e2e/${{ matrix.test-suite }}.spec.ts --reporter=html,json
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 📊 Upload E2E Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: ${{ matrix.test-suite }}-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: 💬 Comment PR with Test Results
+        uses: actions/github-script@v6
+        if: always() && github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const testSuite = '${{ matrix.test-suite }}';
+            
+            // Try to read test results
+            let results = '⚠️ No test results found';
+            try {
+              if (fs.existsSync('test-results/results.json')) {
+                const data = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
+                const passed = data.suites?.reduce((acc, suite) => acc + (suite.tests?.filter(t => t.outcome === 'expected').length || 0), 0) || 0;
+                const failed = data.suites?.reduce((acc, suite) => acc + (suite.tests?.filter(t => t.outcome !== 'expected').length || 0), 0) || 0;
+                
+                if (failed === 0) {
+                  results = `✅ ${testSuite}: All ${passed} tests passed`;
+                } else {
+                  results = `❌ ${testSuite}: ${failed} failed, ${passed} passed`;
+                }
+              }
+            } catch (error) {
+              results = `⚠️ ${testSuite}: Could not read test results`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🧭 Navbar Test Results\n\n${results}\n\nView detailed results in the [Actions tab](${context.payload.repository.html_url}/actions/runs/${context.runId}).`
+            });
+
+  # Performance and Lighthouse testing
+  navbar-performance:
+    name: ⚡ Navbar Performance Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && contains(fromJSON('["full", "performance-only", "lighthouse-only"]'), github.event.inputs.test_level))
+    timeout-minutes: 25
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🏗️ Build Application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: ⚡ Run Performance Tests
+        if: github.event.inputs.test_level != 'lighthouse-only'
+        run: npm run test:navbar:performance
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 🔍 Run Lighthouse CI Audits
+        if: github.event.inputs.test_level != 'performance-only'
+        run: npm run lighthouse:navbar
+        env:
+          CI: true
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: 📊 Upload Performance Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: navbar-performance-results
+          path: |
+            lighthouse-results/
+            test-results/
+            .lighthouseci/
+          retention-days: 30
+
+      - name: 📈 Performance Report Comment
+        uses: actions/github-script@v6
+        if: always() && github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let performanceReport = '## ⚡ Navbar Performance Report\n\n';
+            
+            // Check for Lighthouse results
+            try {
+              const lighthouseDir = '.lighthouseci';
+              if (fs.existsSync(lighthouseDir)) {
+                const files = fs.readdirSync(lighthouseDir);
+                const manifestFile = files.find(f => f.includes('manifest.json'));
+                
+                if (manifestFile) {
+                  const manifest = JSON.parse(fs.readFileSync(`${lighthouseDir}/${manifestFile}`, 'utf8'));
+                  const summary = manifest[0]?.summary || {};
+                  
+                  performanceReport += `### 🎯 Lighthouse Scores\n\n`;
+                  performanceReport += `- **Performance**: ${Math.round((summary.performance || 0) * 100)}% \n`;
+                  performanceReport += `- **Accessibility**: ${Math.round((summary.accessibility || 0) * 100)}% \n`;
+                  performanceReport += `- **Best Practices**: ${Math.round((summary['best-practices'] || 0) * 100)}% \n`;
+                  performanceReport += `- **SEO**: ${Math.round((summary.seo || 0) * 100)}% \n\n`;
+                }
+              }
+            } catch (error) {
+              performanceReport += '⚠️ Could not read Lighthouse results\n\n';
+            }
+            
+            performanceReport += `View detailed results in the [Actions tab](${context.payload.repository.html_url}/actions/runs/${context.runId}).`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: performanceReport
+            });
+
+  # Cross-browser testing on main branch
+  navbar-cross-browser:
+    name: 🌐 Cross-Browser Navbar Tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 45
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        include:
+          - browser: chromium
+            name: Chrome
+          - browser: firefox
+            name: Firefox
+          - browser: webkit
+            name: Safari
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: 🌐 Run Cross-Browser Tests
+        run: npx playwright test e2e/navbar-e2e.spec.ts --project=${{ matrix.browser }}
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 📊 Upload Browser Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: navbar-${{ matrix.name }}-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  # Mobile testing on specific devices
+  navbar-mobile-devices:
+    name: 📱 Mobile Device Testing
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 30
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        device: ['iPhone 12', 'Pixel 5', 'iPad']
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: 📱 Run Mobile Device Tests
+        run: npx playwright test e2e/navbar-mobile.spec.ts --project='${{ matrix.device }}'
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 📊 Upload Mobile Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: navbar-${{ matrix.device }}-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  # Accessibility audit with axe-core
+  navbar-a11y-audit:
+    name: ♿ Accessibility Audit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🔧 Install Dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: ♿ Run Accessibility Tests
+        run: npm run test:navbar:accessibility
+        env:
+          CI: true
+          NODE_ENV: test
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: 📊 Upload A11y Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: navbar-accessibility-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+  # Summary job that collects all results
+  navbar-test-summary:
+    name: 📋 Test Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [navbar-smoke-test, navbar-e2e-tests, navbar-performance, navbar-a11y-audit]
+    
+    steps:
+      - name: 📊 Generate Test Summary
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const jobs = [
+              { name: 'Smoke Test', result: '${{ needs.navbar-smoke-test.result }}' },
+              { name: 'E2E Tests', result: '${{ needs.navbar-e2e-tests.result }}' },
+              { name: 'Performance', result: '${{ needs.navbar-performance.result }}' },
+              { name: 'Accessibility', result: '${{ needs.navbar-a11y-audit.result }}' }
+            ];
+            
+            let summary = '# 🧭 Navbar Testing Summary\n\n';
+            let allPassed = true;
+            
+            jobs.forEach(job => {
+              if (job.result && job.result !== 'skipped') {
+                const icon = job.result === 'success' ? '✅' : '❌';
+                summary += `${icon} **${job.name}**: ${job.result}\n`;
+                if (job.result !== 'success') allPassed = false;
+              }
+            });
+            
+            summary += `\n## Overall Status: ${allPassed ? '✅ PASSED' : '❌ FAILED'}`;
+            
+            if (context.eventName === 'pull_request') {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            }
+            
+            console.log(summary);
+
+# Environment variables for all jobs
+env:
+  NODE_OPTIONS: '--max-old-space-size=8192'
+  NEXT_TELEMETRY_DISABLED: 1
+  CI: true

@@ -1,0 +1,74 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Deep Neptune gradient with smooth transitions -->
+    <radialGradient id="neptuneFinalGradient" cx="0.35" cy="0.35" r="0.85">
+      <stop offset="0%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="35%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#075985;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Vibrant purple-blue ring -->
+    <linearGradient id="vibrantRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#818CF8;stop-opacity:0" />
+      <stop offset="20%" style="stop-color:#6366F1;stop-opacity:0.6" />
+      <stop offset="40%" style="stop-color:#4F46E5;stop-opacity:0.7" />
+      <stop offset="50%" style="stop-color:#4338CA;stop-opacity:0.75" />
+      <stop offset="60%" style="stop-color:#4F46E5;stop-opacity:0.7" />
+      <stop offset="80%" style="stop-color:#6366F1;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#818CF8;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Dark front ring accent -->
+    <linearGradient id="darkAccentRing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:0" />
+      <stop offset="35%" style="stop-color:#1E3A8A;stop-opacity:0.3" />
+      <stop offset="65%" style="stop-color:#1E3A8A;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Premium shadow -->
+    <filter id="premiumShadow">
+      <feDropShadow dx="1.5" dy="1.5" stdDeviation="2.5" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Elegant purple-blue ring -->
+  <ellipse cx="60" cy="60" rx="44" ry="11" 
+           fill="none" 
+           stroke="url(#vibrantRingGradient)" 
+           stroke-width="3" 
+           transform="rotate(-12 60 60)"/>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptuneFinalGradient)"
+          filter="url(#premiumShadow)"/>
+  
+  <!-- Strategic volume areas -->
+  <!-- Upper light reflection -->
+  <ellipse cx="55" cy="53" rx="9" ry="4" 
+           fill="#38BDF8" 
+           opacity="0.35" 
+           transform="rotate(-30 55 53)"/>
+  
+  <!-- Lower depth shadow -->
+  <ellipse cx="64" cy="67" rx="11" ry="3" 
+           fill="#075985" 
+           opacity="0.3" 
+           transform="rotate(25 64 67)"/>
+  
+  <!-- Subtle front ring -->
+  <ellipse cx="60" cy="60" rx="44" ry="11" 
+           fill="none" 
+           stroke="url(#darkAccentRing)" 
+           stroke-width="1.8" 
+           transform="rotate(-12 60 60)"
+           stroke-dasharray="0 30 30 0"/>
+  
+  <!-- Premium highlight -->
+  <ellipse cx="53" cy="51" rx="7" ry="3.5" 
+           fill="white" 
+           opacity="0.15" 
+           transform="rotate(-28 53 51)"/>
+</svg>

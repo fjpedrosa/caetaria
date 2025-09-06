@@ -428,6 +428,33 @@ npm run test:all         # Complete test suite (Jest + Playwright)
 
 ## Development Guidelines
 
+### Styling Strategy - IMPORTANT
+
+**PRIORIDAD DE ESTILOS (en orden estricto):**
+
+1. **Tailwind CSS First**: Usar siempre clases de Tailwind como primera opción
+   - Utilizar las utilidades predefinidas de Tailwind
+   - Aprovechar las clases de espaciado, colores y tipografía del sistema
+   - NO crear clases CSS personalizadas si existe una utilidad de Tailwind
+
+2. **Module CSS para componentes específicos**: Cuando Tailwind no es suficiente
+   - Usar archivos `.module.css` para estilos específicos de componentes
+   - Mantener los estilos encapsulados y locales al componente
+   - Nombrar archivos como `ComponentName.module.css`
+
+3. **Global CSS solo para estilos verdaderamente globales**: Usar con extrema precaución
+   - Solo para reset de estilos, variables CSS globales o temas
+   - NO añadir estilos de componentes específicos en `globals.css`
+   - NO crear archivos CSS adicionales en carpetas de estilos compartidos
+
+**REGLAS ESTRICTAS:**
+- ❌ NUNCA crear archivos CSS en `/shared/styles/` para componentes específicos
+- ❌ NUNCA añadir estilos de navbar, botones o componentes en `globals.css`
+- ❌ NUNCA crear archivos como `navbar-animations.css` o `accessibility.css` separados
+- ✅ SIEMPRE usar Tailwind primero
+- ✅ SIEMPRE usar `.module.css` si necesitas CSS personalizado
+- ✅ SIEMPRE mantener `globals.css` mínimo y limpio
+
 ### Component Development
 
 - **UI Library**: Use existing components from `components/ui/` (Radix-based)

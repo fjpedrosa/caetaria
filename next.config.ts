@@ -1,10 +1,21 @@
 import path from 'path';
+import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const isTurbopack = process.env.TURBOPACK === '1';
+const isAnalyzing = process.env.ANALYZE === 'true';
+
+// Bundle analyzer config
+const withBundleAnalyzer = isAnalyzing
+  ? require('@next/bundle-analyzer')({ enabled: true })
+  : (config: any) => config;
 
 const nextConfig = {
   reactStrictMode: true,
+
+  // Move serverComponentsExternalPackages to top level (no longer experimental in Next.js 15)
+  serverExternalPackages: ['@sentry/profiling-node'],
+
   experimental: {
     optimizePackageImports: [
       'lucide-react',
@@ -157,4 +168,44 @@ if (!isTurbopack) {
   };
 }
 
-export default nextConfig;
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+  // Organization and project from environment
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+
+  // Only print logs in CI/dev
+  silent: !process.env.CI && process.env.NODE_ENV !== 'development',
+
+  // Upload source maps for better error tracking
+  widenClientFileUpload: true,
+
+  // Route tunnel to avoid ad blockers
+  tunnelRoute: '/monitoring',
+
+  // Hide source maps from client bundles
+  hideSourceMaps: true,
+
+  // Disable Sentry SDK debug logs in production
+  disableLogger: true,
+
+  // Automatically instrument Vercel Cron Monitors
+  automaticVercelMonitors: true,
+};
+
+// Apply configurations in order
+let config = nextConfig;
+
+// Apply bundle analyzer if analyzing
+config = withBundleAnalyzer(config);
+
+// Apply Sentry configuration only if enabled or in production
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isSentryEnabled = process.env.SENTRY_ENABLED === 'true';
+
+if (!isDevelopment || isSentryEnabled) {
+  config = withSentryConfig(config, sentryWebpackPluginOptions);
+}
+
+export default config;

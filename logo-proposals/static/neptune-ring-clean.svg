@@ -1,0 +1,64 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient optimized -->
+    <radialGradient id="neptuneCore" cx="0.3" cy="0.3" r="0.9">
+      <stop offset="0%" style="stop-color:#60A5FA" />
+      <stop offset="30%" style="stop-color:#38BDF8" />
+      <stop offset="60%" style="stop-color:#0EA5E9" />
+      <stop offset="85%" style="stop-color:#0284C7" />
+      <stop offset="100%" style="stop-color:#075985" />
+    </radialGradient>
+    
+    <!-- Ring gradient - purple-blue with better transitions -->
+    <linearGradient id="singleRing" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.3" />
+      <stop offset="15%" style="stop-color:#6366F1;stop-opacity:0.5" />
+      <stop offset="30%" style="stop-color:#4F46E5;stop-opacity:0.65" />
+      <stop offset="50%" style="stop-color:#4338CA;stop-opacity:0.7" />
+      <stop offset="70%" style="stop-color:#4F46E5;stop-opacity:0.65" />
+      <stop offset="85%" style="stop-color:#6366F1;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- Shadow for depth -->
+    <filter id="shadow">
+      <feDropShadow dx="1.5" dy="1.5" stdDeviation="2.5" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Back portion of ring -->
+  <path d="M 14 60 Q 37 72, 60 72 T 106 60" 
+        fill="none" 
+        stroke="url(#singleRing)" 
+        stroke-width="2.5"
+        opacity="0.6"/>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptuneCore)"
+          filter="url(#shadow)"/>
+  
+  <!-- Volume areas for 3D effect -->
+  <ellipse cx="54" cy="53" rx="9" ry="4.5" 
+           fill="#60A5FA" 
+           opacity="0.3" 
+           transform="rotate(-28 54 53)"/>
+  
+  <ellipse cx="64" cy="67" rx="11" ry="4" 
+           fill="#075985" 
+           opacity="0.25" 
+           transform="rotate(32 64 67)"/>
+  
+  <!-- Front portion of ring -->
+  <path d="M 14 60 Q 37 48, 60 48 T 106 60" 
+        fill="none" 
+        stroke="url(#singleRing)" 
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+  
+  <!-- Subtle highlight -->
+  <ellipse cx="52" cy="50" rx="7" ry="3.5" 
+           fill="white" 
+           opacity="0.13" 
+           transform="rotate(-25 52 50)"/>
+</svg>

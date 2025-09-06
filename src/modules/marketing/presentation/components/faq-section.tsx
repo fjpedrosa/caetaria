@@ -155,7 +155,7 @@ export function FaqSection() {
               transition={{ duration: 0.2 }}
             >
               <p className="text-foreground mb-3">
-                Still have questions? We're here to help!
+                ¿Tienes más preguntas? ¡Estamos aquí para ayudarte!
               </p>
               <motion.button
                 className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
@@ -165,7 +165,7 @@ export function FaqSection() {
                 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Contact Support
+                Contactar Soporte
               </motion.button>
             </motion.div>
           </motion.div>

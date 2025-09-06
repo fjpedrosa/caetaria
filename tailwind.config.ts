@@ -4,93 +4,94 @@ const config: Config = {
   // Enable class-based dark mode (required for next-themes)
   darkMode: 'class',
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
         },
         primary: {
-          DEFAULT: "var(--primary)",
-          hover: "var(--primary-hover)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
+          foreground: 'var(--primary-foreground)',
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          hover: "var(--secondary-hover)",
-          foreground: "var(--secondary-foreground)",
+          DEFAULT: 'var(--secondary)',
+          hover: 'var(--secondary-hover)',
+          foreground: 'var(--secondary-foreground)',
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
         },
         // State colors
         success: {
-          DEFAULT: "var(--success)",
-          foreground: "var(--success-foreground)",
+          DEFAULT: 'var(--success)',
+          foreground: 'var(--success-foreground)',
         },
         warning: {
-          DEFAULT: "var(--warning)",
-          foreground: "var(--warning-foreground)",
+          DEFAULT: 'var(--warning)',
+          foreground: 'var(--warning-foreground)',
         },
         info: {
-          DEFAULT: "var(--info)",
-          foreground: "var(--info-foreground)",
+          DEFAULT: 'var(--info)',
+          foreground: 'var(--info-foreground)',
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
         },
-        // Professional Brand Colors - Corporate Yellow
-        'brand-yellow': {
-          50: "oklch(0.97 0.05 95)",
-          100: "oklch(0.94 0.08 95)",
-          200: "oklch(0.91 0.11 95)",
-          300: "oklch(0.88 0.13 95)",
-          400: "oklch(0.85 0.14 95)",
-          500: "oklch(0.87 0.15 95)", // Primary - Corporate Yellow
-          600: "oklch(0.83 0.17 93)", // Primary hover
-          700: "oklch(0.79 0.19 91)",
-          800: "oklch(0.75 0.21 89)",
-          900: "oklch(0.71 0.23 87)",
-          DEFAULT: "var(--primary)",
+        // Professional Brand Colors - Neptune Electric Blue
+        'brand-neptune': {
+          50: 'oklch(0.97 0.02 220)',
+          100: 'oklch(0.94 0.05 220)',
+          200: 'oklch(0.88 0.12 220)',
+          300: 'oklch(0.78 0.18 220)',
+          400: 'oklch(0.68 0.20 220)',
+          500: 'oklch(0.62 0.22 220)', // Primary - Neptune Electric
+          600: 'oklch(0.55 0.23 225)', // Primary hover
+          700: 'oklch(0.48 0.21 230)',
+          800: 'oklch(0.40 0.18 235)',
+          900: 'oklch(0.32 0.15 240)',
+          DEFAULT: 'var(--primary)',
         },
+        // Removed legacy yellow - using Neptune Blue as primary brand color
         'whatsapp-green': {
-          50: "oklch(0.96 0.05 150)",
-          100: "oklch(0.92 0.08 150)",
-          200: "oklch(0.86 0.12 150)",
-          300: "oklch(0.80 0.16 150)",
-          400: "oklch(0.75 0.20 150)", // WhatsApp Green
-          500: "oklch(0.70 0.22 148)", // WhatsApp Green hover
-          600: "oklch(0.65 0.24 146)",
-          700: "oklch(0.58 0.26 144)",
-          800: "oklch(0.52 0.24 142)",
-          900: "oklch(0.46 0.22 140)",
-          DEFAULT: "var(--whatsapp)",
+          50: 'oklch(0.96 0.05 150)',
+          100: 'oklch(0.92 0.08 150)',
+          200: 'oklch(0.86 0.12 150)',
+          300: 'oklch(0.80 0.16 150)',
+          400: 'oklch(0.75 0.20 150)', // WhatsApp Green
+          500: 'oklch(0.70 0.22 148)', // WhatsApp Green hover
+          600: 'oklch(0.65 0.24 146)',
+          700: 'oklch(0.58 0.26 144)',
+          800: 'oklch(0.52 0.24 142)',
+          900: 'oklch(0.46 0.22 140)',
+          DEFAULT: 'var(--whatsapp)',
         },
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       // Mobile-first responsive breakpoints
       screens: {
@@ -126,11 +127,17 @@ const config: Config = {
         'fade-in-down': 'fadeInDown 0.6s ease-out',
         'scale-up': 'scaleUp 0.3s ease-out',
         'pulse-gentle': 'pulseGentle 2s ease-in-out infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
+        // 'glow': 'glow 2s ease-in-out infinite alternate', // Disabled - animation causes halo effect
         'float': 'float 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s ease-in-out infinite',
         'wave': 'wave 2s ease-in-out infinite',
         'typing-dot': 'typing-dot 1.2s infinite ease-in-out',
+        // Navbar specific animations
+        'underline-expand': 'underlineExpand 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        'mega-menu-enter': 'megaMenuEnter 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'mega-menu-exit': 'megaMenuExit 0.15s cubic-bezier(0.4, 0, 1, 1)',
+        'cta-press': 'ctaPress 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+        'nav-scroll-shrink': 'navScrollShrink 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       },
       keyframes: {
         fadeIn: {
@@ -153,10 +160,12 @@ const config: Config = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.8' },
         },
+        /* Glow animation disabled to prevent halo effects
         glow: {
-          '0%': { boxShadow: '0 0 20px oklch(0.87 0.15 95 / 0.4)' },
-          '100%': { boxShadow: '0 0 30px oklch(0.87 0.15 95 / 0.6)' },
+          '0%': { boxShadow: '0 0 20px oklch(0.62 0.22 220 / 0.4)' },
+          '100%': { boxShadow: '0 0 30px oklch(0.62 0.22 220 / 0.6), 0 0 40px oklch(0.68 0.20 220 / 0.3)' },
         },
+        */
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
@@ -198,19 +207,64 @@ const config: Config = {
           '100%': { transform: 'scale(1)' },
         },
         'typing-dot': {
-          '0%, 60%, 100%': { 
-            transform: 'translateY(0)', 
-            opacity: '0.4' 
+          '0%, 60%, 100%': {
+            transform: 'translateY(0)',
+            opacity: '0.4'
           },
-          '30%': { 
-            transform: 'translateY(-8px)', 
-            opacity: '1' 
+          '30%': {
+            transform: 'translateY(-8px)',
+            opacity: '1'
+          },
+        },
+        // Navbar specific keyframes
+        underlineExpand: {
+          '0%': { width: '0', transform: 'translateZ(0)' },
+          '100%': { width: '100%', transform: 'translateZ(0)' },
+        },
+        megaMenuEnter: {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.95) translateY(-8px)',
+            visibility: 'visible'
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1) translateY(0)',
+            visibility: 'visible'
+          },
+        },
+        megaMenuExit: {
+          '0%': {
+            opacity: '1',
+            transform: 'scale(1) translateY(0)',
+            visibility: 'visible'
+          },
+          '100%': {
+            opacity: '0',
+            transform: 'scale(0.95) translateY(-8px)',
+            visibility: 'hidden'
+          },
+        },
+        ctaPress: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(0.98)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        navScrollShrink: {
+          '0%': {
+            fontSize: '1rem',
+            padding: '0.625rem 1.25rem'
+          },
+          '100%': {
+            fontSize: '0.875rem',
+            padding: '0.5rem 1rem'
           },
         },
       },
       boxShadow: {
-        'brand': '0 4px 14px 0 oklch(0.87 0.15 95 / 0.25)',
-        'brand-lg': '0 10px 40px 0 oklch(0.87 0.15 95 / 0.3)',
+        'brand': '0 4px 14px 0 oklch(0.62 0.22 220 / 0.25)',
+        'brand-lg': '0 10px 40px 0 oklch(0.62 0.22 220 / 0.3)',
+        // 'brand-electric': '0 0 30px 0 oklch(0.62 0.22 220 / 0.4)', // Disabled - causes halo effect
         'whatsapp': '0 4px 14px 0 oklch(0.75 0.20 150 / 0.25)',
         'whatsapp-lg': '0 10px 40px 0 oklch(0.75 0.20 150 / 0.3)',
         // Mobile-optimized shadows
@@ -247,7 +301,7 @@ const config: Config = {
       },
       maxHeight: {
         'screen-small': '100svh',
-        'screen-large': '100lvh', 
+        'screen-large': '100lvh',
         'screen-dynamic': '100dvh',
       },
       minHeight: {
@@ -278,7 +332,7 @@ const config: Config = {
           backfaceVisibility: 'hidden',
         },
       });
-      
+
       // Touch-optimized components
       addComponents({
         '.touch-button': {

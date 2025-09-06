@@ -1,121 +1,14 @@
 import * as Sentry from '@sentry/nextjs';
-import { BrowserTracing } from '@sentry/tracing';
 
-// Sentry configuration for production monitoring
-const SENTRY_DSN = process.env.SENTRY_DSN;
-const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'development';
-const SENTRY_RELEASE = process.env.SENTRY_RELEASE || process.env.VERCEL_GIT_COMMIT_SHA || 'unknown';
+/**
+ * Sentry Monitoring Utilities
+ * This file provides utility functions for monitoring and tracking
+ * Note: Sentry initialization is handled automatically by instrumentation.ts
+ */
 
-export function initSentry() {
-  if (!SENTRY_DSN) {
-    console.warn('Sentry DSN not configured, skipping initialization');
-    return;
-  }
-
-  Sentry.init({
-    dsn: SENTRY_DSN,
-    environment: SENTRY_ENVIRONMENT,
-    release: SENTRY_RELEASE,
-
-    // Performance monitoring
-    tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1.0,
-
-    // Session replay for debugging
-    replaysSessionSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.01 : 0.1,
-    replaysOnErrorSampleRate: 1.0,
-
-    // Enhanced error tracking
-    beforeSend(event, hint) {
-      // Filter out development errors in production
-      if (SENTRY_ENVIRONMENT === 'production') {
-        // Skip localhost errors
-        if (event.request?.url?.includes('localhost')) {
-          return null;
-        }
-
-        // Skip known non-critical errors
-        const error = hint.originalException;
-        if (error instanceof Error) {
-          // Skip network errors that are user-related
-          if (error.message.includes('Network request failed') ||
-              error.message.includes('Failed to fetch') ||
-              error.message.includes('Load failed')) {
-            return null;
-          }
-
-          // Skip browser extension errors
-          if (error.stack?.includes('extension://') ||
-              error.stack?.includes('moz-extension://')) {
-            return null;
-          }
-        }
-      }
-
-      return event;
-    },
-
-    // Enhanced context
-    beforeBreadcrumb(breadcrumb, hint) {
-      // Enhanced logging for API calls
-      if (breadcrumb.category === 'fetch') {
-        breadcrumb.data = {
-          ...breadcrumb.data,
-          timestamp: new Date().toISOString(),
-        };
-      }
-
-      return breadcrumb;
-    },
-
-    // Integration configuration
-    integrations: [
-      new BrowserTracing({
-        // Enhanced route tracking
-        routingInstrumentation: Sentry.routingInstrumentation,
-
-        // Track Core Web Vitals
-        enableLongAnimationFrame: true,
-        enableInp: true,
-
-        // Custom transaction names
-        beforeNavigate: (context) => ({
-          ...context,
-          name: `${context.location.pathname}${context.location.search}`,
-        }),
-      }),
-
-      // Session replay for debugging
-      new Sentry.Replay({
-        maskAllText: SENTRY_ENVIRONMENT === 'production',
-        blockAllMedia: SENTRY_ENVIRONMENT === 'production',
-        maskAllInputs: true,
-      }),
-    ],
-
-    // Tag all events with deployment info
-    initialScope: {
-      tags: {
-        component: 'frontend',
-        deployment: process.env.VERCEL_ENV || 'unknown',
-        region: process.env.VERCEL_REGION || 'unknown',
-      },
-    },
-  });
-
-  // Set user context if available
-  if (typeof window !== 'undefined') {
-    // Get user info from local storage or other source
-    try {
-      const userContext = {
-        id: 'anonymous',
-        ip_address: '{{auto}}',
-      };
-
-      Sentry.setUser(userContext);
-    } catch (error) {
-      console.warn('Failed to set Sentry user context:', error);
-    }
-  }
+// Helper to check if Sentry is initialized
+export function isSentryEnabled(): boolean {
+  return !!Sentry.getClient();
 }
 
 // Custom error reporting functions

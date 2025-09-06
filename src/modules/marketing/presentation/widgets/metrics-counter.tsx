@@ -69,7 +69,7 @@ const METRICS: Metric[] = [
     suffix: 's',
     prefix: '<',
     icon: Zap,
-    color: 'text-yellow-600',
+    color: 'text-blue-600',
     description: 'Lightning-fast API responses'
   },
   {
@@ -254,7 +254,7 @@ export function MetricsCounter() {
                       metric.color.includes('green') ? 'from-green-400 to-green-600' :
                       metric.color.includes('purple') ? 'from-purple-400 to-purple-600' :
                       metric.color.includes('orange') ? 'from-orange-400 to-orange-600' :
-                      metric.color.includes('yellow') ? 'from-yellow-400 to-yellow-600' :
+                      metric.color.includes('yellow') ? 'from-blue-400 to-blue-600' :
                       metric.color.includes('red') ? 'from-red-400 to-red-600' :
                       metric.color.includes('indigo') ? 'from-indigo-400 to-indigo-600' :
                       metric.color.includes('pink') ? 'from-pink-400 to-pink-600' :

@@ -65,6 +65,7 @@ public/workbox-*.js.map
 
 # Sentry
 .sentryclirc
+sentry.properties
 
 # Testing
 cypress/videos
@@ -72,3 +73,7 @@ cypress/screenshots
 playwright-report
 test-results
 .env.local
+
+# MCPs
+.playwright-mcp/
+.serena/

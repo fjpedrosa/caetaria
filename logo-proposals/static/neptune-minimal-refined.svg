@@ -1,0 +1,75 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Enhanced Neptune gradient with better volume -->
+    <radialGradient id="neptuneRefinedGradient" cx="0.3" cy="0.3" r="0.9">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="20%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="45%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369A1;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Purple-blue ring gradient - more vibrant -->
+    <linearGradient id="purpleBlueRingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0" />
+      <stop offset="15%" style="stop-color:#6366F1;stop-opacity:0.5" />
+      <stop offset="35%" style="stop-color:#4F46E5;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#4338CA;stop-opacity:0.7" />
+      <stop offset="65%" style="stop-color:#4F46E5;stop-opacity:0.6" />
+      <stop offset="85%" style="stop-color:#6366F1;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Subtle front ring -->
+    <linearGradient id="subtleFrontRingRefined" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:0" />
+      <stop offset="30%" style="stop-color:#1E3A8A;stop-opacity:0.25" />
+      <stop offset="70%" style="stop-color:#1E3A8A;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Clean shadow -->
+    <filter id="cleanShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <!-- Single elegant back ring with purple-blue tint -->
+  <ellipse cx="60" cy="60" rx="42" ry="10" 
+           fill="none" 
+           stroke="url(#purpleBlueRingGradient)" 
+           stroke-width="2.5" 
+           transform="rotate(-10 60 60)"/>
+  
+  <!-- Neptune planet with refined gradient -->
+  <circle cx="60" cy="60" r="22" 
+          fill="url(#neptuneRefinedGradient)"
+          filter="url(#cleanShadow)"/>
+  
+  <!-- Minimal volume areas - just two strategic zones -->
+  <!-- Light zone for 3D effect -->
+  <ellipse cx="54" cy="54" rx="8" ry="5" 
+           fill="#60A5FA" 
+           opacity="0.3" 
+           transform="rotate(-25 54 54)"/>
+  
+  <!-- Dark zone for depth -->
+  <ellipse cx="65" cy="66" rx="10" ry="4" 
+           fill="#0369A1" 
+           opacity="0.25" 
+           transform="rotate(30 65 66)"/>
+  
+  <!-- Very subtle front ring segment -->
+  <ellipse cx="60" cy="60" rx="42" ry="10" 
+           fill="none" 
+           stroke="url(#subtleFrontRingRefined)" 
+           stroke-width="1.5" 
+           transform="rotate(-10 60 60)"
+           stroke-dasharray="0 25 35 0"/>
+  
+  <!-- Clean highlight for spherical effect -->
+  <ellipse cx="52" cy="52" rx="6" ry="3" 
+           fill="white" 
+           opacity="0.12" 
+           transform="rotate(-25 52 52)"/>
+</svg>

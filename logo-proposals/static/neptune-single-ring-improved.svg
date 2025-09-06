@@ -1,0 +1,75 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Neptune gradient with enhanced depth -->
+    <radialGradient id="neptuneGradient" cx="0.35" cy="0.35" r="0.85">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#075985;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Single ring gradient - purple-blue spectrum -->
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.4" />
+      <stop offset="20%" style="stop-color:#6366F1;stop-opacity:0.6" />
+      <stop offset="40%" style="stop-color:#4F46E5;stop-opacity:0.7" />
+      <stop offset="60%" style="stop-color:#4338CA;stop-opacity:0.7" />
+      <stop offset="80%" style="stop-color:#4F46E5;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <!-- Clean shadow effect -->
+    <filter id="planetShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Mask to hide ring behind planet -->
+    <mask id="ringMask">
+      <!-- White background allows ring to show -->
+      <rect x="0" y="0" width="120" height="120" fill="white"/>
+      <!-- Black circle hides ring behind planet -->
+      <circle cx="60" cy="60" r="24" fill="black"/>
+    </mask>
+  </defs>
+  
+  <!-- Single ring - using mask to hide portion behind planet -->
+  <ellipse cx="60" cy="60" rx="46" ry="15" 
+           fill="none" 
+           stroke="url(#ringGradient)" 
+           stroke-width="2.8" 
+           transform="rotate(-10 60 60)"
+           mask="url(#ringMask)"/>
+  
+  <!-- Neptune planet -->
+  <circle cx="60" cy="60" r="23" 
+          fill="url(#neptuneGradient)"
+          filter="url(#planetShadow)"/>
+  
+  <!-- Volume enhancement for 3D effect -->
+  <!-- Light zone -->
+  <ellipse cx="54" cy="52" rx="10" ry="5" 
+           fill="#60A5FA" 
+           opacity="0.3" 
+           transform="rotate(-30 54 52)"/>
+  
+  <!-- Dark zone for depth -->
+  <ellipse cx="65" cy="68" rx="12" ry="4" 
+           fill="#075985" 
+           opacity="0.25" 
+           transform="rotate(35 65 68)"/>
+  
+  <!-- Front portion of the same ring (reinforcement for visibility) -->
+  <path d="M 14 63 A 46 15 -10 0 1 106 63" 
+        fill="none" 
+        stroke="url(#ringGradient)" 
+        stroke-width="2.8"
+        stroke-linecap="round"
+        opacity="0.95"/>
+  
+  <!-- Highlight for spherical effect -->
+  <ellipse cx="52" cy="50" rx="8" ry="4" 
+           fill="white" 
+           opacity="0.12" 
+           transform="rotate(-25 52 50)"/>
+</svg>
