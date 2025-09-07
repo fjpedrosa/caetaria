@@ -227,6 +227,85 @@ export const MARKETING_COPY = {
     }
   },
 
+  howItWorks: {
+    badge: 'Configuración en minutos',
+    title: 'Activa WhatsApp Business en',
+    titleHighlight: '4 simples pasos',
+    subtitle: 'Desde registro hasta tu primer mensaje automático en menos de 10 minutos',
+    totalTime: '10 minutos totales',
+    steps: [
+      {
+        number: '01',
+        title: 'Regístrate',
+        verb: 'Crea',
+        object: 'tu cuenta gratis',
+        time: '2 min',
+        description: 'Crea tu cuenta y verifica tu negocio con Meta Business',
+        benefit: 'Sin tarjeta de crédito',
+        icon: 'UserPlus' as const,
+        details: [
+          'Email y contraseña',
+          'Datos básicos del negocio',
+          'Verificación instantánea'
+        ]
+      },
+      {
+        number: '02',
+        title: 'Conecta WhatsApp',
+        verb: 'Vincula',
+        object: 'tu número Business',
+        time: '3 min',
+        description: 'Conecta tu número de WhatsApp Business en segundos',
+        benefit: 'Proceso guiado paso a paso',
+        icon: 'Smartphone' as const,
+        details: [
+          'Escanea código QR',
+          'Autorización automática',
+          'Sincronización inmediata'
+        ]
+      },
+      {
+        number: '03',
+        title: 'Personaliza tu Bot',
+        verb: 'Configura',
+        object: 'respuestas automáticas',
+        time: '3 min',
+        description: 'Diseña flujos de conversación sin escribir código',
+        benefit: 'Plantillas pre-diseñadas',
+        icon: 'Bot' as const,
+        details: [
+          'Editor visual drag & drop',
+          'Plantillas por industria',
+          'Preview en tiempo real'
+        ]
+      },
+      {
+        number: '04',
+        title: 'Prueba y Lanza',
+        verb: 'Envía',
+        object: 'tu primer mensaje',
+        time: '2 min',
+        description: 'Prueba con nuestro simulador y activa cuando estés listo',
+        benefit: 'Simulador incluido gratis',
+        icon: 'Rocket' as const,
+        details: [
+          'Test en simulador real',
+          'Ajustes finales',
+          'Activación con un click'
+        ]
+      }
+    ],
+    cta: {
+      primary: 'Empieza Ahora - Es Gratis',
+      secondary: 'Ver Demo en Vivo'
+    },
+    trustBadges: [
+      { text: 'Sin código', icon: 'Code' },
+      { text: 'Sin tarjeta', icon: 'CreditCard' },
+      { text: 'Cancela cuando quieras', icon: 'Shield' }
+    ]
+  },
+
   finalCta: {
     title: '¿Listo para Vender 40% Más Este Mes?',
     subtitle: '5,247 negocios ya están facturando más con WhatsApp',

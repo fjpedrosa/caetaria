@@ -1,9 +1,11 @@
 export { CtaSection } from './cta-section';
+export { EvidenceSection } from './evidence-section';
 export { FaqSection } from './faq-section';
 export { FeaturesGridContainer as FeaturesGrid } from './features-grid';
 export { FinalCta } from './final-cta';
 export { HeroSection } from './hero-section';
 export { HowItWorks } from './how-it-works';
+export { HowItWorksV2 } from './how-it-works-v2';
 export { LandingFooter } from './landing-footer';
 export { LeadCaptureForm } from './lead-capture-form';
 export { LeadForm } from './lead-form';

@@ -1,8 +1,9 @@
+import { EvidenceSection } from '@/modules/marketing/presentation/components/evidence-section';
 import { FaqSection } from '@/modules/marketing/presentation/components/faq-section';
 import { FeaturesGridContainer as FeaturesGrid } from '@/modules/marketing/presentation/components/features-grid';
 import { FinalCta } from '@/modules/marketing/presentation/components/final-cta';
 import { HeroSection } from '@/modules/marketing/presentation/components/hero-section';
-import { HowItWorks } from '@/modules/marketing/presentation/components/how-it-works';
+import { HowItWorksV2 } from '@/modules/marketing/presentation/components/how-it-works-v2';
 import { SkipLinks } from '@/modules/marketing/navbar/presentation/components/skip-links';
 import { PricingTeaserAB } from '@/modules/marketing/presentation/components/pricing-teaser-ab';
 import { Testimonials } from '@/modules/marketing/presentation/components/testimonials';
@@ -29,22 +30,25 @@ export default function HomePage() {
         {/* 3. Use Cases - Interactive demonstrations */}
         <UseCasesSection />
 
-        {/* 4. How it Works - 3-4 step process */}
-        <HowItWorks />
+        {/* 4. Evidence - Real data and verified success stories */}
+        <EvidenceSection />
 
-        {/* 5. Benefits/Value Props - Value propositions */}
+        {/* 5. How it Works - 4 step process with visual timeline */}
+        <HowItWorksV2 />
+
+        {/* 6. Benefits/Value Props - Value propositions */}
         <ValueProps />
 
-        {/* 6. Testimonials - Customer reviews */}
+        {/* 7. Testimonials - Customer reviews */}
         <Testimonials />
 
-        {/* 7. Pricing - Plans comparison */}
+        {/* 8. Pricing - Plans comparison */}
         <PricingTeaserAB />
 
-        {/* 8. FAQ - Frequently asked questions */}
+        {/* 9. FAQ - Frequently asked questions */}
         <FaqSection />
 
-        {/* 9. Final CTA - Call to action */}
+        {/* 10. Final CTA - Call to action */}
         <FinalCta />
       </main>
 
