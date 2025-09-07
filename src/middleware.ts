@@ -44,8 +44,12 @@ export async function middleware(request: NextRequest) {
   const callbackResponse = await authCallback(request);
   if (callbackResponse) return callbackResponse;
 
-  // 3. Handle protected routes
-  const protectedResponse = await protectedRoutes(request);
+  // 3. Handle protected routes (including onboarding)
+  const protectedResponse = await protectedRoutes(
+    request,
+    ['/dashboard', '/profile', '/admin', '/onboarding'],
+    '/auth/login'
+  );
   if (protectedResponse) return protectedResponse;
 
   // 4. Use auth response as base if available, otherwise create new response

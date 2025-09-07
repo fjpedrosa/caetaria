@@ -97,7 +97,7 @@ export function useHoverIntent({
   // Handle focus (immediate, no delay)
   const handleFocus = useCallback(() => {
     if (disabled) return;
-    
+
     clearTimeouts();
     setIsHovered(true);
     onEnter?.();
@@ -106,7 +106,7 @@ export function useHoverIntent({
   // Handle blur (immediate, no delay)
   const handleBlur = useCallback(() => {
     if (disabled) return;
-    
+
     clearTimeouts();
     setIsHovered(false);
     onLeave?.();
@@ -116,7 +116,7 @@ export function useHoverIntent({
   const handleTouchStart = useCallback(() => {
     touchedRef.current = true;
     clearTimeouts();
-    
+
     // Reset touch flag after a delay
     setTimeout(() => {
       touchedRef.current = false;

@@ -12,7 +12,7 @@
  * ALL business logic is extracted to useBusinessInfoForm hook
  */
 
-import { ArrowRight, Building2, Loader2 } from 'lucide-react';
+import { ArrowRight, Building2, Check, CloudUpload,Loader2 } from 'lucide-react';
 
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Combobox, type ComboboxOption } from '@/modules/shared/presentation/components/ui/combobox';
@@ -51,6 +51,8 @@ export function BusinessInfoForm({
   const {
     form,
     isSubmitting,
+    isSaving,
+    lastSaved,
     onSubmit,
     businessTypes,
     industries,
@@ -65,6 +67,23 @@ export function BusinessInfoForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={`space-y-6 ${className || ''}`}>
+        {/* Auto-save Status Indicator */}
+        {(isSaving || lastSaved) && (
+          <div className="flex items-center justify-end text-sm text-muted-foreground">
+            {isSaving ? (
+              <>
+                <CloudUpload className="w-4 h-4 mr-2 animate-pulse" />
+                <span>Guardando...</span>
+              </>
+            ) : lastSaved ? (
+              <>
+                <Check className="w-4 h-4 mr-2 text-green-500" />
+                <span>Guardado automáticamente</span>
+              </>
+            ) : null}
+          </div>
+        )}
+
         {/* Company Name */}
         <FormField
           control={form.control}

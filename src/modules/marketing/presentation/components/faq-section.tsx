@@ -19,7 +19,11 @@ export function FaqSection() {
   const { title, subtitle, items } = MARKETING_COPY.faq;
 
   return (
-    <section className="py-20 bg-background relative overflow-hidden">
+    <section className="py-12 lg:py-16 relative overflow-hidden">
+      {/* Glass Elements */}
+      <div className="glass-circle w-24 h-24 top-32 left-1/6 animate-[glass-float_11s_ease-in-out_infinite]" />
+      <div className="glass-circle w-20 h-20 bottom-40 right-1/5 animate-[glass-float_14s_ease-in-out_infinite_reverse]" />
+
       {/* Background Patterns */}
       <div className="absolute inset-0 opacity-5">
         <motion.div

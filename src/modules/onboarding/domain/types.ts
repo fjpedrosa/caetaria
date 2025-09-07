@@ -71,7 +71,7 @@ export interface BusinessInfoData {
   companyName: string;
   businessType: BusinessType;
   industry: Industry;
-  employeeCount: number;
+  employeeRange: '1-10' | '11-50' | '51-200' | '201-500' | '500+';
   website?: string;
   description?: string;
   expectedVolume: VolumeLevel;

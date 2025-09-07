@@ -8,6 +8,7 @@ import { Button } from '@/modules/shared/presentation/components/ui/button'
 import { Card } from '@/modules/shared/presentation/components/ui/card'
 
 import type { OnboardingState, OnboardingStep } from '../../domain/types'
+// Using real API instead of fake
 import {
   useClearOnboardingSessionMutation,
   useCompleteRegistrationMutation,
@@ -15,7 +16,7 @@ import {
   useSaveAutoMessageMutation,
   useSaveBusinessInfoMutation,
   useSavePhoneNumberMutation,
-  useSavePlanSelectionMutation} from '../../infrastructure/fake-onboarding-api'
+  useSavePlanSelectionMutation} from '../../infrastructure/onboarding-api-rtk'
 
 import { OnboardingStepper } from './onboarding-stepper'
 import { StepAutoMessage } from './step-auto-message'

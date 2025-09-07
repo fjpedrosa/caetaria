@@ -4,13 +4,13 @@ import * as Sentry from '@sentry/nextjs';
 /**
  * Test Error API Route
  * GET /api/test-error
- * 
+ *
  * This endpoint intentionally throws an error to test Sentry integration
  */
 export async function GET(request: NextRequest) {
   // Capture a test error to Sentry
   const testError = new Error('Test error from Neptunik API - Sentry is working!');
-  
+
   // Add context to the error
   Sentry.withScope((scope) => {
     scope.setTag('test', true);
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       method: 'GET',
       headers: Object.fromEntries(request.headers.entries()),
     });
-    
+
     // Capture the error
     Sentry.captureException(testError);
   });

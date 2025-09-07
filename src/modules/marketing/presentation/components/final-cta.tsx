@@ -12,7 +12,7 @@ const { title, subtitle, description, buttons, guarantee } = MARKETING_COPY.fina
 export function FinalCta() {
 
   return (
-    <section className="py-20 bg-gradient-brand">
+    <section className="relative py-12 lg:py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white dark:text-white mb-4">
@@ -28,7 +28,7 @@ export function FinalCta() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Link href="/onboarding">
+            <Link href="/login?redirect=/onboarding">
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 px-8 py-6 text-lg font-semibold group"

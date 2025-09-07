@@ -90,7 +90,7 @@ export async function GET() {
         .from('leads')
         .delete()
         .eq('id', newLead.id);
-      
+
       tests.write_test = true;
     }
 
@@ -100,16 +100,16 @@ export async function GET() {
       environment: process.env.NODE_ENV || 'development',
       supabase_url: supabaseUrl,
       tests,
-      message: tests.connection 
-        ? '✅ Local Supabase is working correctly!' 
+      message: tests.connection
+        ? '✅ Local Supabase is working correctly!'
         : '❌ Connection issues detected'
     });
 
   } catch (error) {
     console.error('Test failed:', error);
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }

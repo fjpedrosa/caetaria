@@ -2,23 +2,23 @@
 
 import { useCallback, useMemo, useRef } from 'react';
 import { useInView } from 'framer-motion';
-import { 
-  Calendar, 
-  ShoppingCart, 
-  Bot, 
-  MessageCircle,
-  Check,
-  Target,
+import {
+  Bot,
+  Calendar,
   CalendarCheck,
-  TrendingUp,
+  Check,
   Clock,
-  ShoppingBag,
   CreditCard,
+  type LucideIcon,
+  MessageCircle,
   RefreshCw,
+  ShoppingBag,
+  ShoppingCart,
+  Target,
+  TrendingUp,
   Users,
-  Zap,
-  type LucideIcon 
-} from 'lucide-react';
+  Zap} from 'lucide-react';
+
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 
 // Tipos para el hook
@@ -91,27 +91,27 @@ const benefitIconMap: Record<string, LucideIcon> = {
  */
 export const useFeaturesGrid = () => {
   const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { 
-    once: true, 
-    margin: "-100px" 
+  const isInView = useInView(containerRef, {
+    once: true,
+    margin: '-100px'
   });
 
   // Helper para obtener el icono del beneficio - siempre usa iconos descriptivos
   const getBenefitIcon = (benefit: string): LucideIcon => {
     const lowerBenefit = benefit.toLowerCase();
-    
+
     // Buscar coincidencia exacta primero
     if (benefitIconMap[lowerBenefit]) {
       return benefitIconMap[lowerBenefit];
     }
-    
+
     // Buscar coincidencia parcial con las claves del mapa
     for (const [key, icon] of Object.entries(benefitIconMap)) {
       if (lowerBenefit === key.toLowerCase()) {
         return icon;
       }
     }
-    
+
     // Iconos por palabras clave si no hay coincidencia exacta
     if (lowerBenefit.includes('cancelacion') || lowerBenefit.includes('reduce')) return CalendarCheck;
     if (lowerBenefit.includes('optimiza') || lowerBenefit.includes('ocupación')) return TrendingUp;
@@ -125,7 +125,7 @@ export const useFeaturesGrid = () => {
     if (lowerBenefit.includes('escalado') || lowerBenefit.includes('humano')) return Users;
     if (lowerBenefit.includes('aprende') || lowerBenefit.includes('mejora')) return TrendingUp;
     if (lowerBenefit.includes('recupera') || lowerBenefit.includes('clientes')) return MessageCircle;
-    
+
     return Check; // Fallback to checkmark only if nothing matches
   };
 
@@ -135,17 +135,17 @@ export const useFeaturesGrid = () => {
       // Determinar si es popular (primera tarjeta) o premium (última)
       const isPopular = index === 0;
       const isPremium = index === MARKETING_COPY.features.items.length - 1;
-      
+
       // Obtener icono con mapeo correcto
       const IconComponent = featureIconMap[item.icon] || Calendar;
-      
+
       // Mapear beneficios con iconos descriptivos siempre
       const benefitsWithIcons: BenefitWithIcon[] = item.benefits.map(benefit => ({
         text: benefit,
         icon: getBenefitIcon(benefit), // Siempre usar icono descriptivo
         useCheckmark: false // Nunca usar checkmark por defecto
       }));
-      
+
       // Estilos consistentes para todas las tarjetas con soporte dark mode
       const cardStyles = {
         container: `
@@ -188,28 +188,28 @@ export const useFeaturesGrid = () => {
       },
     },
     item: {
-      hidden: { 
-        opacity: 0, 
+      hidden: {
+        opacity: 0,
         y: 20,
         scale: 0.95,
       },
-      visible: { 
-        opacity: 1, 
+      visible: {
+        opacity: 1,
         y: 0,
         scale: 1,
         transition: {
           duration: 0.5,
-          ease: "easeOut",
+          ease: 'easeOut',
         },
       },
     },
     badge: {
-      initial: { 
-        opacity: 0, 
-        x: -20 
+      initial: {
+        opacity: 0,
+        x: -20
       },
-      animate: { 
-        opacity: 1, 
+      animate: {
+        opacity: 1,
         x: 0,
         transition: {
           delay: 0.3,
@@ -253,24 +253,24 @@ export const useFeaturesGrid = () => {
   return {
     // Referencias
     containerRef,
-    
+
     // Estado
     isInView,
-    
+
     // Datos transformados
     features,
     headerData,
     backgroundEffects,
-    
+
     // Configuraciones
     animationConfig,
-    
+
     // Handlers
     handlers: {
       onFeatureClick: handleFeatureClick,
       onBenefitHover: handleBenefitHover,
     },
-    
+
     // Utilidades
     getCheckIcon: () => Check,
   };

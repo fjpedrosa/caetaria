@@ -5,18 +5,18 @@
 'use client';
 
 import { useState } from 'react';
-import { EnhancedNavbar } from '@/modules/marketing/navbar';
-import { 
-  CheckCircle, 
-  ArrowRight, 
-  Sparkles, 
-  Code, 
-  Palette, 
-  Zap,
+import {
+  ArrowRight,
+  BarChart3,
+  CheckCircle,
+  Code,
   Globe,
+  Palette,
   Shield,
-  BarChart3
-} from 'lucide-react';
+  Sparkles,
+  Zap} from 'lucide-react';
+
+import { EnhancedNavbar } from '@/modules/marketing/navbar';
 
 export default function NavbarDemoPage() {
   const [hideOnScroll, setHideOnScroll] = useState(false);
@@ -25,8 +25,8 @@ export default function NavbarDemoPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Enhanced Navbar */}
-      <EnhancedNavbar 
-        hideOnScroll={hideOnScroll} 
+      <EnhancedNavbar
+        hideOnScroll={hideOnScroll}
         showProgress={showProgress}
       />
 
@@ -40,11 +40,11 @@ export default function NavbarDemoPage() {
                 <Sparkles className="w-4 h-4" />
                 <span>Navbar Premium con Mega Menús</span>
               </div>
-              
+
               <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 Navbar Profesional estilo Stripe
               </h1>
-              
+
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                 Diseño premium con mega menús sofisticados, animaciones fluidas y experiencia de usuario de primera clase
               </p>
@@ -95,15 +95,15 @@ export default function NavbarDemoPage() {
                   className="relative group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity`} />
-                  
+
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4`}>
                     <feature.icon className="w-6 h-6 text-white" />
                   </div>
-                  
+
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {feature.title}
                   </h3>
-                  
+
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {feature.description}
                   </p>
@@ -117,7 +117,7 @@ export default function NavbarDemoPage() {
                 <CheckCircle className="w-6 h-6 text-green-500" />
                 Cómo probar el navbar
               </h2>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
@@ -183,7 +183,7 @@ export default function NavbarDemoPage() {
               {/* Controls */}
               <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Opciones del navbar</h3>
-                
+
                 <div className="flex flex-wrap gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -194,7 +194,7 @@ export default function NavbarDemoPage() {
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">Hide on scroll</span>
                   </label>
-                  
+
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"

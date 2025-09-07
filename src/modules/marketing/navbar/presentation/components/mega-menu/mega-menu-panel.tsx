@@ -3,11 +3,13 @@
  * Creates the professional dropdown panel with grid layout
  */
 
-import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+
 import { type MegaMenuConfig, type MegaMenuItem } from '../../../domain/types/mega-menu.types';
-import { MegaMenuColumnComponent } from './mega-menu-column';
 import { designTokens } from '../../styles/design-tokens';
+
+import { MegaMenuColumnComponent } from './mega-menu-column';
 
 interface MegaMenuPanelProps {
   config: MegaMenuConfig;
@@ -47,7 +49,7 @@ export function MegaMenuPanel({
       const triggerRect = triggerRef.current!.getBoundingClientRect();
       const panelWidth = panelRef.current!.offsetWidth;
       const windowWidth = window.innerWidth;
-      
+
       const triggerCenter = triggerRect.left + triggerRect.width / 2;
       const leftSpace = triggerCenter;
       const rightSpace = windowWidth - triggerCenter;
@@ -120,16 +122,16 @@ export function MegaMenuPanel({
   const [panelPosition, setPanelPosition] = useState({ left: '50%', transform: 'translateX(-50%)' });
   const [arrowPosition, setArrowPosition] = useState(0);
   const prevArrowPosition = useRef(0);
-  
+
   useEffect(() => {
     if (triggerRef?.current && isOpen) {
       const triggerRect = triggerRef.current.getBoundingClientRect();
       const windowWidth = window.innerWidth;
       const panelWidth = 800; // Adjusted width for content-only layout
-      
+
       // Calculate ideal panel position (centered under trigger)
       const idealLeft = triggerRect.left + (triggerRect.width / 2) - (panelWidth / 2);
-      
+
       // Adjust if panel would overflow viewport
       let actualLeft = idealLeft;
       if (idealLeft < 20) {
@@ -137,22 +139,22 @@ export function MegaMenuPanel({
       } else if (idealLeft + panelWidth > windowWidth - 20) {
         actualLeft = windowWidth - panelWidth - 20; // Minimum margin from right
       }
-      
+
       // Set panel position
       setPanelPosition({
         left: `${actualLeft}px`,
         transform: 'none'
       });
-      
+
       // Calculate arrow position relative to panel
       const arrowPos = triggerRect.left + (triggerRect.width / 2) - actualLeft;
       const newPosition = Math.max(20, Math.min(panelWidth - 20, arrowPos));
-      
+
       // Store previous position for smooth transitions
       if (arrowPosition !== 0) {
         prevArrowPosition.current = arrowPosition;
       }
-      
+
       setArrowPosition(newPosition);
     }
   }, [isOpen, triggerRef, arrowPosition]);
@@ -184,14 +186,14 @@ export function MegaMenuPanel({
           onMouseLeave={onMouseLeave}
         >
           {/* Arrow pointer with smooth animation */}
-          <motion.div 
+          <motion.div
             className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-900 rotate-45 border-l border-t border-gray-200 dark:border-gray-700"
             animate={{
               left: arrowPosition,
             }}
             initial={false}
             transition={{
-              type: "spring",
+              type: 'spring',
               stiffness: 400,
               damping: 30,
               mass: 0.8,
@@ -200,7 +202,7 @@ export function MegaMenuPanel({
               transform: 'translateX(-50%) rotate(45deg)',
             }}
           />
-          
+
           {/* Main panel container */}
           <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden pt-2">
             <AnimatePresence mode="wait">

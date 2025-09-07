@@ -13,7 +13,7 @@ export const designTokens = {
       overlay: 'rgba(0, 0, 0, 0.4)',
       blur: 'rgba(255, 255, 255, 0.85)',
     },
-    
+
     // Text colors
     text: {
       primary: '#0a2540', // Dark blue like Stripe
@@ -21,7 +21,7 @@ export const designTokens = {
       tertiary: '#6b7280',
       inverse: '#ffffff',
     },
-    
+
     // Brand colors
     brand: {
       primary: '#635bff', // Stripe purple
@@ -29,7 +29,7 @@ export const designTokens = {
       secondary: '#00d924', // Success green
       accent: '#00a8ff', // Info blue
     },
-    
+
     // Interactive states
     interactive: {
       hover: 'rgba(99, 91, 255, 0.08)',
@@ -37,7 +37,7 @@ export const designTokens = {
       focus: 'rgba(99, 91, 255, 0.2)',
       selected: 'rgba(99, 91, 255, 0.15)',
     },
-    
+
     // Semantic colors
     semantic: {
       success: '#00d924',
@@ -45,7 +45,7 @@ export const designTokens = {
       error: '#ef4444',
       info: '#3b82f6',
     },
-    
+
     // Borders
     border: {
       light: 'rgba(0, 0, 0, 0.08)',
@@ -53,14 +53,14 @@ export const designTokens = {
       dark: 'rgba(0, 0, 0, 0.2)',
     },
   },
-  
+
   // Typography system
   typography: {
     fontFamily: {
-      base: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      mono: "'SF Mono', 'Monaco', 'Inconsolata', monospace",
+      base: '\'Inter\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif',
+      mono: '\'SF Mono\', \'Monaco\', \'Inconsolata\', monospace',
     },
-    
+
     fontSize: {
       xs: '11px',
       sm: '13px',
@@ -69,27 +69,27 @@ export const designTokens = {
       lg: '16px',
       xl: '18px',
     },
-    
+
     fontWeight: {
       normal: 400,
       medium: 500,
       semibold: 600,
       bold: 700,
     },
-    
+
     lineHeight: {
       tight: 1.2,
       base: 1.5,
       relaxed: 1.75,
     },
-    
+
     letterSpacing: {
       tight: '-0.02em',
       normal: '-0.01em',
       wide: '0.025em',
     },
   },
-  
+
   // Spacing system (based on 4px grid)
   spacing: {
     px: '1px',
@@ -107,21 +107,21 @@ export const designTokens = {
     16: '64px',
     20: '80px',
   },
-  
+
   // Layout dimensions
   layout: {
     navbar: {
       height: '64px',
       mobileHeight: '56px',
     },
-    
+
     megaMenu: {
       maxWidth: '1280px',
       padding: '32px',
       columnGap: '48px',
       rowGap: '24px',
     },
-    
+
     container: {
       sm: '640px',
       md: '768px',
@@ -130,7 +130,7 @@ export const designTokens = {
       '2xl': '1536px',
     },
   },
-  
+
   // Border radius
   borderRadius: {
     sm: '4px',
@@ -140,7 +140,7 @@ export const designTokens = {
     xl: '24px',
     full: '9999px',
   },
-  
+
   // Shadows (multi-layered for depth)
   shadows: {
     xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -152,7 +152,7 @@ export const designTokens = {
     '2xl': '0 0 0 1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
     'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   },
-  
+
   // Animation configurations
   animation: {
     duration: {
@@ -162,7 +162,7 @@ export const designTokens = {
       slow: '400ms',
       slower: '600ms',
     },
-    
+
     easing: {
       linear: 'linear',
       easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
@@ -171,14 +171,14 @@ export const designTokens = {
       bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       smooth: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
     },
-    
+
     spring: {
       gentle: { type: 'spring', stiffness: 100, damping: 15 },
       snappy: { type: 'spring', stiffness: 300, damping: 25 },
       bouncy: { type: 'spring', stiffness: 400, damping: 20 },
     },
   },
-  
+
   // Hover intent delays
   interaction: {
     hoverDelay: 150, // ms to wait before showing menu
@@ -186,7 +186,7 @@ export const designTokens = {
     focusRingWidth: '2px',
     focusRingOffset: '2px',
   },
-  
+
   // Z-index layers
   zIndex: {
     base: 0,
@@ -199,7 +199,7 @@ export const designTokens = {
     tooltip: 70,
     notification: 80,
   },
-  
+
   // Breakpoints
   breakpoints: {
     sm: '640px',

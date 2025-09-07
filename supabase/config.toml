@@ -1,5 +1,5 @@
 # A string used to distinguish different Supabase projects on the same host. Defaults to the working directory name when running `supabase init`.
-project_id = "neptunik-whatsapp-landing"
+project_id = "neptunik"
 
 [api]
 # Port to use for the API URL.
@@ -43,9 +43,19 @@ api_url = "http://127.0.0.1:54321"
 [auth]
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://127.0.0.1:3000"
+site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://127.0.0.1:3000", "http://localhost:3000", "https://localhost:3000"]
+# Including both localhost and IP addresses for OrbStack compatibility
+additional_redirect_urls = [
+  "http://localhost:3000",
+  "https://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://127.0.0.1:3000",
+  "http://192.168.97.8:3000",
+  "http://localhost:3000/auth/callback",
+  "http://127.0.0.1:3000/auth/callback",
+  "http://192.168.97.8:3000/auth/callback"
+]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.
@@ -158,11 +168,12 @@ redirect_uri = ""
 url = ""
 
 [auth.external.google]
-enabled = false
-client_id = ""
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 # Overrides the default auth redirectUrl.
-redirect_uri = ""
+# Leave empty to use the default Supabase redirect URL
+redirect_uri = "http://localhost:3000/auth/callback"
 # Overrides the default auth provider URL. Used to support self-hosted gitlab, single-tenant Azure,
 # or any other third-party OIDC providers.
 url = ""

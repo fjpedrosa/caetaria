@@ -7,9 +7,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Phone, ExternalLink, FileText, Play } from 'lucide-react';
+import { ExternalLink, FileText, Phone, Play } from 'lucide-react';
 
 import type { MessageTemplate } from '@/modules/marketing/domain/types/whatsapp-features.types';
+
 import { QuickReplyButtons } from './quick-reply-buttons';
 
 interface MessageTemplateProps {
@@ -19,11 +20,11 @@ interface MessageTemplateProps {
   isVisible?: boolean;
 }
 
-export function MessageTemplateComponent({ 
-  template, 
+export function MessageTemplateComponent({
+  template,
   onButtonClick,
   onCallToAction,
-  isVisible = true 
+  isVisible = true
 }: MessageTemplateProps) {
   if (!isVisible) {
     return null;
@@ -39,7 +40,7 @@ export function MessageTemplateComponent({
             {template.header.content}
           </div>
         );
-      
+
       case 'image':
         return (
           <div className="mb-3 -mx-3 -mt-3">
@@ -50,7 +51,7 @@ export function MessageTemplateComponent({
             />
           </div>
         );
-      
+
       case 'video':
         return (
           <div className="mb-3 -mx-3 -mt-3 relative">
@@ -68,7 +69,7 @@ export function MessageTemplateComponent({
             </div>
           </div>
         );
-      
+
       case 'document':
         return (
           <div className="mb-3 p-3 bg-gray-50 rounded-lg flex items-center gap-3">
@@ -79,7 +80,7 @@ export function MessageTemplateComponent({
             </div>
           </div>
         );
-      
+
       default:
         return null;
     }

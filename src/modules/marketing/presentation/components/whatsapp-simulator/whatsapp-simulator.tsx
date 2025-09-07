@@ -5,33 +5,31 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MoreVertical, 
-  Phone, 
-  Video, 
-  Search,
+import React, { useCallback, useEffect, useRef,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+import {
   ArrowLeft,
-  Send,
-  Paperclip,
-  Mic,
-  Smile,
   Check,
-  CheckCheck
-} from 'lucide-react';
+  CheckCheck,
+  Mic,
+  MoreVertical,
+  Paperclip,
+  Phone,
+  Search,
+  Send,
+  Smile,
+  Video} from 'lucide-react';
 
-import type { 
-  WhatsAppMessage,
-  ConversationScenario 
-} from '@/modules/marketing/domain/types/whatsapp-features.types';
+import type {
+  ConversationScenario,
+  WhatsAppMessage} from '@/modules/marketing/domain/types/whatsapp-features.types';
 
-import { WhatsAppFlowComponent } from '../whatsapp-features/whatsapp-flow';
-import { QuickReplyButtons } from '../whatsapp-features/quick-reply-buttons';
-import { ProductCatalog } from '../whatsapp-features/product-catalog';
-import { MessageTemplateComponent } from '../whatsapp-features/message-template';
 import { ListMessageComponent } from '../whatsapp-features/list-message';
+import { MessageTemplateComponent } from '../whatsapp-features/message-template';
+import { ProductCatalog } from '../whatsapp-features/product-catalog';
+import { QuickReplyButtons } from '../whatsapp-features/quick-reply-buttons';
 import { ShoppingCartComponent } from '../whatsapp-features/shopping-cart';
+import { WhatsAppFlowComponent } from '../whatsapp-features/whatsapp-flow';
 
 interface WhatsAppSimulatorProps {
   scenario: ConversationScenario;
@@ -40,11 +38,11 @@ interface WhatsAppSimulatorProps {
   onScenarioComplete?: () => void;
 }
 
-export function WhatsAppSimulator({ 
-  scenario, 
+export function WhatsAppSimulator({
+  scenario,
   autoPlay = true,
   speed = 1,
-  onScenarioComplete 
+  onScenarioComplete
 }: WhatsAppSimulatorProps) {
   const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -52,10 +50,13 @@ export function WhatsAppSimulator({
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when new messages arrive
+  // Scroll to bottom when new messages arrive - only within the messages container
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, []);
 
   useEffect(() => {
@@ -71,11 +72,11 @@ export function WhatsAppSimulator({
     }
 
     const nextMessage = scenario.messages[currentMessageIndex];
-    
+
     // Show typing indicator for incoming messages
-    if (nextMessage.sender === 'business') {
+    if (nextMessage.sender === 'bot') {
       setIsTyping(true);
-      
+
       // Calculate typing duration based on message length
       const typingDuration = Math.min(
         Math.max(1000, nextMessage.content?.length ? nextMessage.content.length * 50 : 1500),
@@ -84,8 +85,8 @@ export function WhatsAppSimulator({
 
       setTimeout(() => {
         setIsTyping(false);
-        setMessages(prev => [...prev, { 
-          ...nextMessage, 
+        setMessages(prev => [...prev, {
+          ...nextMessage,
           status: 'delivered',
           timestamp: new Date().getTime()
         }]);
@@ -93,9 +94,9 @@ export function WhatsAppSimulator({
 
         // Mark as read after a short delay
         setTimeout(() => {
-          setMessages(prev => 
-            prev.map((msg, idx) => 
-              idx === prev.length - 1 
+          setMessages(prev =>
+            prev.map((msg, idx) =>
+              idx === prev.length - 1
                 ? { ...msg, status: 'read' }
                 : msg
             )
@@ -104,7 +105,7 @@ export function WhatsAppSimulator({
       }, typingDuration);
     } else {
       // User messages appear immediately
-      setMessages(prev => [...prev, { 
+      setMessages(prev => [...prev, {
         ...nextMessage,
         status: 'sent',
         timestamp: new Date().getTime()
@@ -127,9 +128,9 @@ export function WhatsAppSimulator({
 
   // Format timestamp
   const formatTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleTimeString('es-ES', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(timestamp).toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -159,31 +160,31 @@ export function WhatsAppSimulator({
 
       case 'flow':
         return message.flow ? (
-          <WhatsAppFlowComponent 
+          <WhatsAppFlowComponent
             flow={message.flow}
             onSubmit={(data) => console.log('Flow submitted:', data)}
           />
         ) : null;
 
-      case 'quick_reply':
+      case 'quick-reply':
         return message.quickReplyButtons ? (
-          <QuickReplyButtons 
+          <QuickReplyButtons
             buttons={message.quickReplyButtons}
             onButtonClick={(id) => console.log('Button clicked:', id)}
           />
         ) : null;
 
-      case 'product_catalog':
-        return message.products ? (
-          <ProductCatalog 
-            products={message.products}
+      case 'catalog':
+        return message.catalog ? (
+          <ProductCatalog
+            products={message.catalog}
             onAddToCart={(product, qty) => console.log('Added to cart:', product, qty)}
           />
         ) : null;
 
       case 'template':
         return message.template ? (
-          <MessageTemplateComponent 
+          <MessageTemplateComponent
             template={message.template}
             onButtonClick={(id) => console.log('Template button:', id)}
           />
@@ -191,16 +192,16 @@ export function WhatsAppSimulator({
 
       case 'list':
         return message.listMessage ? (
-          <ListMessageComponent 
+          <ListMessageComponent
             listMessage={message.listMessage}
             onOptionSelect={(id) => console.log('List option:', id)}
           />
         ) : null;
 
-      case 'shopping_cart':
-        return message.shoppingCart ? (
-          <ShoppingCartComponent 
-            cart={message.shoppingCart}
+      case 'cart':
+        return message.cart ? (
+          <ShoppingCartComponent
+            cart={message.cart}
             onCheckout={() => console.log('Checkout initiated')}
           />
         ) : null;
@@ -245,12 +246,14 @@ export function WhatsAppSimulator({
         </div>
 
         {/* Messages Container */}
-        <div 
+        <div
+          ref={messagesContainerRef}
           className="flex-1 overflow-y-auto p-4 space-y-2"
-          style={{ 
+          style={{
             height: 'calc(100% - 128px)',
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d5dbb3' fill-opacity='0.08'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundColor: '#e5ddd5'
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d5dbb3\' fill-opacity=\'0.08\'%3E%3Cpath d=\'M0 0h20v20H0V0zm20 20h20v20H20V20z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            backgroundColor: '#e5ddd5',
+            scrollBehavior: 'smooth'
           }}
         >
           <AnimatePresence mode="popLayout">
@@ -261,27 +264,27 @@ export function WhatsAppSimulator({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.3 }}
                 className={`flex ${
-                  message.sender === 'user' ? 'justify-end' : 'justify-start'
+                  message.sender === 'customer' ? 'justify-end' : 'justify-start'
                 }`}
               >
                 <div
                   className={`
                     max-w-[75%] rounded-lg p-2 shadow-sm
-                    ${message.sender === 'user' 
-                      ? 'bg-green-100 rounded-br-none' 
+                    ${message.sender === 'customer'
+                      ? 'bg-green-100 rounded-br-none'
                       : 'bg-white rounded-bl-none'
                     }
                   `}
                 >
                   {renderMessageContent(message)}
-                  
+
                   {/* Timestamp and status */}
                   {message.type === 'text' && (
                     <div className="flex items-center justify-end gap-1 mt-1">
                       <span className="text-xs text-gray-500">
                         {message.timestamp && formatTime(message.timestamp)}
                       </span>
-                      {message.sender === 'user' && renderStatus(message.status)}
+                      {message.sender === 'customer' && renderStatus(message.status)}
                     </div>
                   )}
                 </div>

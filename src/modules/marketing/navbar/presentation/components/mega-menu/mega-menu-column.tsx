@@ -6,8 +6,10 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+
 import { type MegaMenuColumn, type MegaMenuItem } from '../../../domain/types/mega-menu.types';
-import { MegaMenuItemComponent, MegaMenuItemCompact } from './mega-menu-item';
+
+import { MegaMenuItemCompact,MegaMenuItemComponent } from './mega-menu-item';
 
 interface MegaMenuColumnProps {
   column: MegaMenuColumn;
@@ -27,7 +29,7 @@ export function MegaMenuColumnComponent({
 }: MegaMenuColumnProps) {
   // Column animation with stagger
   const columnVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       x: -20,
     },
@@ -136,7 +138,7 @@ export function MegaMenuFeaturedSection({
     <motion.div
       className="relative overflow-hidden rounded-xl p-6"
       style={{
-        background: featured.gradient 
+        background: featured.gradient
           ? `linear-gradient(135deg, ${featured.gradient.from}, ${featured.gradient.to})`
           : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       }}
@@ -164,7 +166,7 @@ export function MegaMenuFeaturedSection({
         <p className="text-sm text-white/90 mb-4 line-clamp-2">
           {featured.description}
         </p>
-        
+
         {/* CTA Button */}
         <Link
           href={featured.cta.href}
@@ -179,9 +181,9 @@ export function MegaMenuFeaturedSection({
       {/* Featured image */}
       {featured.image && (
         <div className="absolute -right-4 -bottom-4 w-32 h-32 opacity-20">
-          <img 
-            src={featured.image} 
-            alt="" 
+          <img
+            src={featured.image}
+            alt=""
             className="w-full h-full object-cover rounded-lg"
           />
         </div>

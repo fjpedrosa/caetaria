@@ -1,8 +1,8 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
-import NextError from 'next/error';
 import { useEffect } from 'react';
+import NextError from 'next/error';
+import * as Sentry from '@sentry/nextjs';
 
 /**
  * Global Error Boundary for Next.js App Router
@@ -61,9 +61,9 @@ export default function GlobalError({
               <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
                 ¡Ups! Algo salió mal
               </h1>
-              
+
               <p className="text-gray-600 text-center mb-6">
-                Ha ocurrido un error inesperado. Nuestro equipo ha sido notificado 
+                Ha ocurrido un error inesperado. Nuestro equipo ha sido notificado
                 y estamos trabajando para solucionarlo.
               </p>
 
@@ -99,7 +99,7 @@ export default function GlobalError({
                 >
                   Intentar de nuevo
                 </button>
-                
+
                 <button
                   onClick={() => {
                     // Track user feedback

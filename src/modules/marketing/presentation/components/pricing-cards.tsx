@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, Check, Crown, Loader2, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Check, Crown, Loader2, Sparkles, Star, Zap } from 'lucide-react';
 
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import type { PricingCardsProps } from '@/modules/marketing/domain/types';
@@ -71,11 +71,11 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   // Calculate yearly pricing with discount
-  const getPrice = (monthlyPrice: number) => {
+  const getPrice = (priceObj: { monthly: number; yearly: number; currency: string }) => {
     if (billingPeriod === 'yearly') {
-      return Math.round(monthlyPrice * 10); // 2 months free
+      return priceObj.yearly;
     }
-    return monthlyPrice;
+    return priceObj.monthly;
   };
 
   const handlePlanSelect = async (planName: string) => {
@@ -223,13 +223,13 @@ export function PricingCards({ plans = defaultPlans }: PricingCardsProps) {
                   {/* Price - Mobile responsive */}
                   <div className="mb-4">
                     <div className="flex items-center justify-center">
-                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">${currentPrice}</span>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">{plan.price.currency}{currentPrice}</span>
                       <span className="text-gray-500 ml-2 text-sm sm:text-base">/{billingPeriod === 'yearly' ? 'year' : 'month'}</span>
                     </div>
 
                     {billingPeriod === 'yearly' && (
                       <div className="text-xs sm:text-sm text-green-600 font-semibold mt-2">
-                        <span className="block sm:inline">Save ${plan.price * 2}/year</span>
+                        <span className="block sm:inline">Save {plan.price.currency}{(plan.price.monthly * 12) - plan.price.yearly}/year</span>
                         <span className="hidden sm:inline"> • </span>
                         <span className="block sm:inline">2 months free</span>
                       </div>

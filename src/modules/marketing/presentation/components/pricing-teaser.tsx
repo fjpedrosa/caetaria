@@ -66,7 +66,7 @@ export function PricingTeaser() {
                   ))}
                 </ul>
 
-                <Link href="/onboarding" className="block">
+                <Link href="/login?redirect=/onboarding" className="block">
                   <Button
                     className={`w-full ${
                       plan.popular

@@ -1,0 +1,88 @@
+/* Seamless Section Utilities */
+
+/* Optimización de renderizado para elementos superpuestos */
+.seamless-container {
+  /* Crear nuevo contexto de stacking */
+  isolation: isolate;
+  /* Optimizar composición */
+  will-change: transform;
+  /* Mejorar performance en móviles */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Suavizar animaciones */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevenir repaint innecesario */
+.seamless-static {
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Optimización para blobs decorativos */
+.seamless-blob {
+  /* GPU acceleration */
+  transform: translate3d(0, 0, 0);
+  /* Reducir cálculos de blur */
+  filter: blur(100px);
+  /* Optimizar composición */
+  mix-blend-mode: multiply;
+  /* Prevenir interacción */
+  pointer-events: none;
+  /* Mejorar performance */
+  contain: layout style paint;
+}
+
+/* Transiciones suaves entre secciones */
+.seamless-transition {
+  /* Timing function optimizada */
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  /* GPU acceleration */
+  transform: translateZ(0);
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+  .seamless-blob {
+    /* Reducir complejidad en móviles */
+    filter: blur(60px);
+    opacity: 0.15;
+  }
+  
+  .seamless-transition {
+    /* Transiciones más rápidas en móviles */
+    transition-duration: 0.3s;
+  }
+}
+
+/* Reducir animaciones para usuarios con preferencias */
+@media (prefers-reduced-motion: reduce) {
+  .seamless-transition {
+    transition: none;
+  }
+  
+  .seamless-blob {
+    animation: none;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .seamless-blob {
+    opacity: 0.1;
+    mix-blend-mode: screen;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .seamless-blob {
+    display: none;
+  }
+  
+  .seamless-transition {
+    transition: none;
+  }
+}

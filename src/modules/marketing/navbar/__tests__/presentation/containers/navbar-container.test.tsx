@@ -1,6 +1,6 @@
 /**
  * Presentation Layer Tests - NavbarContainer Component
- * 
+ *
  * Tests de integración para el contenedor principal del navbar.
  * Verifica:
  * - Integración correcta de todos los hooks
@@ -13,11 +13,13 @@
  */
 
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
-import '@testing-library/jest-dom';
-import { NavbarContainer } from '../../../presentation/containers/navbar-container';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+
 import type { NavbarContainerProps } from '../../../domain/types';
+import { NavbarContainer } from '../../../presentation/containers/navbar-container';
+
+import '@testing-library/jest-dom';
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -99,7 +101,7 @@ jest.mock('../../../presentation/components/navbar-presentation', () => ({
         Neptunik
       </button>
       {navigationItems?.map((item: any) => (
-        <button 
+        <button
           key={item.label}
           onClick={() => onNavItemClick(item)}
           data-testid={`nav-item-${item.label.toLowerCase()}`}
@@ -226,10 +228,10 @@ describe('NavbarContainer', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup mocks
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    
+
     const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
     const { useNavbarScroll } = require('../../../application/hooks/use-navbar-scroll');
     const { useNavbarAccessibility } = require('../../../application/hooks/use-navbar-accessibility');
@@ -238,7 +240,7 @@ describe('NavbarContainer', () => {
     const { useMobileOptimization } = require('../../../application/hooks/use-mobile-optimization');
     const { createNavigationAdapter } = require('../../../infrastructure/adapters/navigation-adapter');
     const { createAccessibilityAdapter } = require('../../../infrastructure/adapters/accessibility-adapter');
-    
+
     useNavbarState.mockReturnValue(mockNavbarState);
     useNavbarScroll.mockReturnValue(mockScrollHook);
     useNavbarAccessibility.mockReturnValue(mockAccessibilityHook);
@@ -256,7 +258,7 @@ describe('NavbarContainer', () => {
   describe('Basic Rendering', () => {
     it('should render navbar with all components', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(screen.getByTestId('navbar-presentation')).toBeInTheDocument();
       expect(screen.getByTestId('progress-bar')).toBeInTheDocument();
       expect(screen.getByText('Neptunik')).toBeInTheDocument();
@@ -264,7 +266,7 @@ describe('NavbarContainer', () => {
 
     it('should render navigation items', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(screen.getByTestId('nav-item-productos')).toBeInTheDocument();
       expect(screen.getByTestId('nav-item-precios')).toBeInTheDocument();
       expect(screen.getByTestId('nav-item-contacto')).toBeInTheDocument();
@@ -272,7 +274,7 @@ describe('NavbarContainer', () => {
 
     it('should render with custom className', () => {
       render(<NavbarContainer {...defaultProps} className="custom-navbar" />);
-      
+
       const navbar = screen.getByRole('banner');
       expect(navbar).toBeInTheDocument();
     });
@@ -281,22 +283,22 @@ describe('NavbarContainer', () => {
   describe('Hook Integration', () => {
     it('should initialize all hooks with correct configuration', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
       const { useNavbarScroll } = require('../../../application/hooks/use-navbar-scroll');
       const { useNavbarAccessibility } = require('../../../application/hooks/use-navbar-accessibility');
-      
+
       expect(useNavbarState).toHaveBeenCalledWith({
         config: defaultProps.config,
         navigationItems: defaultProps.navigationItems,
         ctaConfig: defaultProps.ctaConfig
       });
-      
+
       expect(useNavbarScroll).toHaveBeenCalledWith(expect.objectContaining({
         threshold: 10,
         onScrollChange: expect.any(Function)
       }));
-      
+
       expect(useNavbarAccessibility).toHaveBeenCalled();
     });
 
@@ -307,16 +309,16 @@ describe('NavbarContainer', () => {
         maxPrefetchQueue: 10,
         enableHapticFeedback: true
       };
-      
+
       render(
-        <NavbarContainer 
-          {...defaultProps} 
+        <NavbarContainer
+          {...defaultProps}
           performanceConfig={performanceConfig}
         />
       );
-      
+
       const { useNavbarPrefetch } = require('../../../application/hooks/use-navbar-prefetch');
-      
+
       expect(useNavbarPrefetch).toHaveBeenCalledWith({
         enabled: true,
         delay: 200,
@@ -332,16 +334,16 @@ describe('NavbarContainer', () => {
         enableAriaLive: true,
         minTouchTarget: 44
       };
-      
+
       render(
-        <NavbarContainer 
-          {...defaultProps} 
+        <NavbarContainer
+          {...defaultProps}
           accessibilityConfig={accessibilityConfig}
         />
       );
-      
+
       const { useNavbarAccessibility } = require('../../../application/hooks/use-navbar-accessibility');
-      
+
       expect(useNavbarAccessibility).toHaveBeenCalledWith({
         config: accessibilityConfig,
         onAnnouncement: expect.any(Function)
@@ -352,9 +354,9 @@ describe('NavbarContainer', () => {
   describe('Event Handling', () => {
     it('should handle logo click and navigate to home', async () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('logo-button'));
-      
+
       expect(mockRouter.push).toHaveBeenCalledWith('/');
       expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
         'Navegando a página principal'
@@ -363,9 +365,9 @@ describe('NavbarContainer', () => {
 
     it('should handle navigation item click with section', async () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('nav-item-productos'));
-      
+
       await waitFor(() => {
         expect(mockNavigationService.navigateToSection).toHaveBeenCalledWith('products');
         expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
@@ -378,26 +380,26 @@ describe('NavbarContainer', () => {
     it('should handle external navigation item click', async () => {
       const originalOpen = window.open;
       window.open = jest.fn();
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('nav-item-contacto'));
-      
+
       await waitFor(() => {
         expect(window.open).toHaveBeenCalledWith('/contacto', '_blank', 'noopener,noreferrer');
         expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
           'Abriendo Contacto en nueva pestaña'
         );
       });
-      
+
       window.open = originalOpen;
     });
 
     it('should handle mobile menu toggle', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('mobile-menu-toggle'));
-      
+
       expect(mockNavbarState.actions.toggleMobileMenu).toHaveBeenCalledWith(true);
       expect(mockMobileOptimization.triggerHapticFeedback).toHaveBeenCalledWith('medium');
       expect(mockScrollHook.lockScroll).toHaveBeenCalled();
@@ -408,17 +410,17 @@ describe('NavbarContainer', () => {
 
     it('should call onNavigate callback when provided', async () => {
       const onNavigate = jest.fn();
-      
+
       render(<NavbarContainer {...defaultProps} onNavigate={onNavigate} />);
-      
+
       // Simulate navigation to regular href (not section)
       const navItem = { label: 'About', href: '/about' };
-      
+
       // We need to mock this differently since it's handling both section and href navigation
       mockNavigationService.navigateToSection.mockRejectedValueOnce(new Error('No section'));
-      
+
       fireEvent.click(screen.getByTestId('nav-item-productos'));
-      
+
       await waitFor(() => {
         expect(mockNavigationService.navigateToSection).toHaveBeenCalled();
       });
@@ -434,12 +436,12 @@ describe('NavbarContainer', () => {
           mobileMenu: { isOpen: true, isAnimating: false, focusTrapActive: true }
         }
       };
-      
+
       const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
       useNavbarState.mockReturnValue(openMobileMenuState);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(screen.getByTestId('mobile-menu')).toBeInTheDocument();
     });
 
@@ -451,14 +453,14 @@ describe('NavbarContainer', () => {
           mobileMenu: { isOpen: true, isAnimating: false, focusTrapActive: true }
         }
       };
-      
+
       const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
       useNavbarState.mockReturnValue(openMobileMenuState);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('mobile-menu-close'));
-      
+
       expect(mockNavbarState.actions.toggleMobileMenu).toHaveBeenCalledWith(false);
       expect(mockScrollHook.unlockScroll).toHaveBeenCalled();
       expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
@@ -474,14 +476,14 @@ describe('NavbarContainer', () => {
           mobileMenu: { isOpen: true, isAnimating: false, focusTrapActive: true }
         }
       };
-      
+
       const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
       useNavbarState.mockReturnValue(openMobileMenuState);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.keyDown(document, { key: 'Escape' });
-      
+
       expect(mockNavbarState.actions.toggleMobileMenu).toHaveBeenCalledWith(false);
     });
   });
@@ -493,12 +495,12 @@ describe('NavbarContainer', () => {
         activeMenu: 'productos',
         isOpen: true
       };
-      
+
       const { useMegaMenuInteraction } = require('../../../application/hooks/use-mega-menu-interaction');
       useMegaMenuInteraction.mockReturnValue(activeMegaMenuHook);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(screen.getByTestId('mega-menu-productos')).toBeInTheDocument();
     });
 
@@ -508,29 +510,29 @@ describe('NavbarContainer', () => {
         activeMenu: 'productos',
         isOpen: true
       };
-      
+
       const { useMegaMenuInteraction } = require('../../../application/hooks/use-mega-menu-interaction');
       useMegaMenuInteraction.mockReturnValue(activeMegaMenuHook);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('mega-menu-close'));
-      
+
       expect(activeMegaMenuHook.closeMenu).toHaveBeenCalledWith('productos');
     });
 
     it('should announce mega menu state changes', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       const { useMegaMenuInteraction } = require('../../../application/hooks/use-mega-menu-interaction');
       const mockCall = useMegaMenuInteraction.mock.calls[0][0];
-      
+
       // Test onMenuOpen callback
       mockCall.onMenuOpen('productos');
       expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
         'Menú productos abierto'
       );
-      
+
       // Test onMenuClose callback
       mockCall.onMenuClose('productos');
       expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
@@ -542,7 +544,7 @@ describe('NavbarContainer', () => {
   describe('Progress Bar Integration', () => {
     it('should render progress bar when enabled', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       const progressBar = screen.getByTestId('progress-bar');
       expect(progressBar).toBeInTheDocument();
       expect(progressBar).toHaveAttribute('data-progress', '25');
@@ -550,9 +552,9 @@ describe('NavbarContainer', () => {
 
     it('should handle progress bar section click', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('progress-section-click'));
-      
+
       expect(mockScrollHook.scrollToElement).toHaveBeenCalledWith('hero');
       expect(mockNavbarState.actions.setCurrentSection).toHaveBeenCalledWith('hero');
       expect(mockAccessibilityHook.announceToScreenReader).toHaveBeenCalledWith(
@@ -568,9 +570,9 @@ describe('NavbarContainer', () => {
           showProgress: false
         }
       };
-      
+
       render(<NavbarContainer {...configWithoutProgress} />);
-      
+
       expect(screen.queryByTestId('progress-bar')).not.toBeInTheDocument();
     });
   });
@@ -578,26 +580,26 @@ describe('NavbarContainer', () => {
   describe('Prefetch Integration', () => {
     it('should handle link hover for prefetching', async () => {
       render(
-        <NavbarContainer 
-          {...defaultProps} 
+        <NavbarContainer
+          {...defaultProps}
           performanceConfig={{ enablePrefetch: true }}
         />
       );
-      
+
       // We would need to simulate the hover event from the navbar presentation
       // This is more of an integration test that requires the actual presentation component
     });
 
     it('should disable prefetch when performance config disables it', () => {
       render(
-        <NavbarContainer 
-          {...defaultProps} 
+        <NavbarContainer
+          {...defaultProps}
           performanceConfig={{ enablePrefetch: false }}
         />
       );
-      
+
       const { useNavbarPrefetch } = require('../../../application/hooks/use-navbar-prefetch');
-      
+
       expect(useNavbarPrefetch).toHaveBeenCalledWith(
         expect.objectContaining({ enabled: false })
       );
@@ -607,20 +609,20 @@ describe('NavbarContainer', () => {
   describe('Responsive Behavior', () => {
     it('should handle mobile optimization', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(mockMobileOptimization.optimizeTouchTargets).toHaveBeenCalled();
     });
 
     it('should handle swipe gestures on mobile', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       const { useMobileOptimization } = require('../../../application/hooks/use-mobile-optimization');
       const mockCall = useMobileOptimization.mock.calls[0][0];
-      
+
       // Test swipe left callback
       mockCall.onSwipeLeft();
       expect(mockNavbarState.actions.toggleMobileMenu).toHaveBeenCalledWith(true);
-      
+
       // Test swipe right callback (when menu is open)
       const openMenuState = {
         ...mockNavbarState,
@@ -629,10 +631,10 @@ describe('NavbarContainer', () => {
           mobileMenu: { isOpen: true, isAnimating: false, focusTrapActive: true }
         }
       };
-      
+
       const { useNavbarState } = require('../../../application/hooks/use-navbar-state');
       useNavbarState.mockReturnValue(openMenuState);
-      
+
       mockCall.onSwipeRight();
       expect(mockNavbarState.actions.toggleMobileMenu).toHaveBeenCalledWith(false);
     });
@@ -642,12 +644,12 @@ describe('NavbarContainer', () => {
         ...mockMobileOptimization,
         isCompactMode: true
       };
-      
+
       const { useMobileOptimization } = require('../../../application/hooks/use-mobile-optimization');
       useMobileOptimization.mockReturnValue(compactMobileOptimization);
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       // The presentation component should receive isCompactMode: true
       expect(screen.getByTestId('navbar-presentation')).toBeInTheDocument();
     });
@@ -656,10 +658,10 @@ describe('NavbarContainer', () => {
   describe('Accessibility Features', () => {
     it('should handle scroll state changes for accessibility', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       const { useNavbarScroll } = require('../../../application/hooks/use-navbar-scroll');
       const scrollCallback = useNavbarScroll.mock.calls[0][0].onScrollChange;
-      
+
       const scrollState = {
         isVisible: true,
         isAtTop: false,
@@ -668,15 +670,15 @@ describe('NavbarContainer', () => {
         scrollDirection: 'down' as const,
         scrollProgress: 50
       };
-      
+
       scrollCallback(scrollState);
-      
+
       expect(mockNavbarState.actions.updateScrollState).toHaveBeenCalledWith(scrollState);
     });
 
     it('should update current section based on scroll', () => {
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(mockNavigationService.getCurrentSection).toHaveBeenCalled();
       expect(mockNavbarState.actions.setCurrentSection).toHaveBeenCalledWith('hero');
     });
@@ -688,7 +690,7 @@ describe('NavbarContainer', () => {
         ...defaultProps,
         navigationItems: undefined
       };
-      
+
       expect(() => {
         render(<NavbarContainer {...propsWithoutNavItems} />);
       }).not.toThrow();
@@ -699,7 +701,7 @@ describe('NavbarContainer', () => {
         ...defaultProps,
         ctaConfig: undefined
       };
-      
+
       expect(() => {
         render(<NavbarContainer {...propsWithoutCTA} />);
       }).not.toThrow();
@@ -709,9 +711,9 @@ describe('NavbarContainer', () => {
       mockNavigationService.navigateToSection.mockRejectedValueOnce(
         new Error('Navigation failed')
       );
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(() => {
         fireEvent.click(screen.getByTestId('nav-item-productos'));
       }).not.toThrow();
@@ -721,9 +723,9 @@ describe('NavbarContainer', () => {
       mockRouter.push.mockImplementationOnce(() => {
         throw new Error('Router error');
       });
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       expect(() => {
         fireEvent.click(screen.getByTestId('logo-button'));
       }).not.toThrow();
@@ -733,20 +735,20 @@ describe('NavbarContainer', () => {
   describe('Cleanup and Memory Management', () => {
     it('should cleanup services on unmount', () => {
       const { unmount } = render(<NavbarContainer {...defaultProps} />);
-      
+
       unmount();
-      
+
       expect(mockNavigationService.cleanup).toHaveBeenCalled();
       expect(mockAccessibilityService.cleanup).toHaveBeenCalled();
     });
 
     it('should remove event listeners on unmount', () => {
       const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-      
+
       const { unmount } = render(<NavbarContainer {...defaultProps} />);
-      
+
       unmount();
-      
+
       expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
       expect(removeEventListenerSpy).toHaveBeenCalledWith('navbar:escape-pressed', expect.any(Function));
     });
@@ -755,23 +757,23 @@ describe('NavbarContainer', () => {
   describe('Performance Optimizations', () => {
     it('should optimize touch targets after render', () => {
       jest.useFakeTimers();
-      
+
       render(<NavbarContainer {...defaultProps} />);
-      
+
       jest.advanceTimersByTime(100);
-      
+
       expect(mockMobileOptimization.optimizeTouchTargets).toHaveBeenCalled();
-      
+
       jest.useRealTimers();
     });
 
     it('should handle rapid state changes efficiently', () => {
       const { rerender } = render(<NavbarContainer {...defaultProps} />);
-      
+
       // Simulate rapid config changes
       for (let i = 0; i < 10; i++) {
         rerender(
-          <NavbarContainer 
+          <NavbarContainer
             {...defaultProps}
             config={{
               ...defaultProps.config,
@@ -780,7 +782,7 @@ describe('NavbarContainer', () => {
           />
         );
       }
-      
+
       // Should not crash
       expect(screen.getByTestId('navbar-presentation')).toBeInTheDocument();
     });
@@ -795,9 +797,9 @@ describe('NavbarContainer', () => {
           variant: { type: 'transparent' as const, blurEffect: true }
         }
       };
-      
+
       render(<NavbarContainer {...transparentConfig} />);
-      
+
       expect(screen.getByTestId('navbar-presentation')).toBeInTheDocument();
     });
 
@@ -809,9 +811,9 @@ describe('NavbarContainer', () => {
           sticky: false
         }
       };
-      
+
       render(<NavbarContainer {...nonStickyConfig} />);
-      
+
       // Should not render spacer when not sticky
       const spacer = screen.queryByLabelText('');
       expect(spacer).not.toBeInTheDocument();

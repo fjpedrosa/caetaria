@@ -6,6 +6,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+
 import { type MegaMenuItem } from '../../../domain/types/mega-menu.types';
 import { designTokens } from '../../styles/design-tokens';
 
@@ -26,11 +27,11 @@ export function MegaMenuItemComponent({
   isActive = false,
 }: MegaMenuItemComponentProps) {
   const Icon = item.icon;
-  
+
   // Stagger animation for items
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 10,
     },
     visible: {
@@ -56,33 +57,33 @@ export function MegaMenuItemComponent({
     <>
       {/* Icon container with subtle background */}
       {Icon && (
-        <div 
+        <div
           className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 bg-gray-100 dark:bg-gray-800"
         >
           <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
         </div>
       )}
-      
+
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
             {item.title}
           </h3>
-          
+
           {/* Badge */}
           {item.badge && (
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ${badgeStyles[item.badge.variant]}`}>
               {item.badge.text}
             </span>
           )}
-          
+
           {/* External link indicator */}
           {item.isExternal && (
             <ExternalLink className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
           )}
         </div>
-        
+
         {/* Description */}
         {item.description && (
           <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
@@ -90,7 +91,7 @@ export function MegaMenuItemComponent({
           </p>
         )}
       </div>
-      
+
       {/* Arrow indicator for highlighted items */}
       {item.isHighlighted && (
         <ArrowRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all" />

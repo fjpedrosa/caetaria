@@ -15,6 +15,8 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useAuthContext } from '@/contexts/auth-context';
+
 import { useMegaMenuInteraction } from '../../application/hooks/use-mega-menu-interaction';
 import { useMobileOptimization } from '../../application/hooks/use-mobile-optimization';
 import { useNavbarAccessibility } from '../../application/hooks/use-navbar-accessibility';
@@ -44,6 +46,9 @@ export const NavbarContainer: React.FC<NavbarContainerProps> = ({
   className
 }) => {
   const router = useRouter();
+
+  // ============= Auth Context =============
+  const { user, isAuthenticated, signOut } = useAuthContext();
 
   // ============= State Management =============
   const {
@@ -187,6 +192,22 @@ export const NavbarContainer: React.FC<NavbarContainerProps> = ({
     announceToScreenReader('Navegando a página de registro');
   }, [router, state.ctaConfig.primary.href, announceToScreenReader]);
 
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut();
+      router.push('/');
+      announceToScreenReader('Has cerrado sesión exitosamente');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      announceToScreenReader('Error al cerrar sesión. Por favor intenta de nuevo');
+    }
+  }, [signOut, router, announceToScreenReader]);
+
+  const handleUserNavigate = useCallback((path: string) => {
+    router.push(path);
+    announceToScreenReader(`Navegando a ${path}`);
+  }, [router, announceToScreenReader]);
+
   const handleMobileMenuToggle = useCallback(() => {
     const newState = !state.mobileMenu.isOpen;
     actions.toggleMobileMenu(newState);
@@ -301,12 +322,18 @@ export const NavbarContainer: React.FC<NavbarContainerProps> = ({
         logoText="Neptunik"
         ariaLabel="Navegación principal del sitio"
 
+        // Auth props
+        user={user}
+        isAuthenticated={isAuthenticated}
+
         // Event handlers
         onLogoClick={handleLogoClick}
         onNavItemClick={handleNavItemClick}
         onSignInClick={handleSignInClick}
         onPrimaryCtaClick={handlePrimaryCtaClick}
         onMobileMenuToggle={handleMobileMenuToggle}
+        onSignOut={handleSignOut}
+        onUserNavigate={handleUserNavigate}
 
         // Visual states
         isMobileMenuOpen={state.mobileMenu.isOpen}

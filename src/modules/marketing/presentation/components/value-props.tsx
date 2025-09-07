@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { BarChart3, Bot, Calendar, ShoppingCart, Zap } from 'lucide-react';
 
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/modules/shared/presentation/components/ui/card';
+import { Card, CardDescription, CardHeader } from '@/modules/shared/presentation/components/ui/card';
 
 const iconMap = {
   Zap,

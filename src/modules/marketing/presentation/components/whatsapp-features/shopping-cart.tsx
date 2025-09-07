@@ -6,10 +6,10 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart as CartIcon, Plus, Minus, Trash2, CreditCard } from 'lucide-react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { CreditCard,Minus, Plus, ShoppingCart as CartIcon, Trash2 } from 'lucide-react';
 
-import type { ShoppingCart, CartItem } from '@/modules/marketing/domain/types/whatsapp-features.types';
+import type { CartItem,ShoppingCart } from '@/modules/marketing/domain/types/whatsapp-features.types';
 
 interface ShoppingCartProps {
   cart: ShoppingCart;
@@ -19,12 +19,12 @@ interface ShoppingCartProps {
   isVisible?: boolean;
 }
 
-export function ShoppingCartComponent({ 
-  cart, 
+export function ShoppingCartComponent({
+  cart,
   onUpdateQuantity,
   onRemoveItem,
   onCheckout,
-  isVisible = true 
+  isVisible = true
 }: ShoppingCartProps) {
   if (!isVisible || cart.items.length === 0) {
     return null;
@@ -78,13 +78,13 @@ export function ShoppingCartComponent({
                   <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
                     {item.product.description}
                   </p>
-                  
+
                   {/* Price and Quantity */}
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-bold text-green-600">
                       {(item.product.price * item.quantity).toFixed(2)}{cart.currency}
                     </span>
-                    
+
                     {/* Quantity Controls */}
                     <div className="flex items-center gap-1">
                       <button
@@ -128,13 +128,13 @@ export function ShoppingCartComponent({
               {cart.total.toFixed(2)}{cart.currency}
             </span>
           </div>
-          
+
           {/* Delivery */}
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600">Envío</span>
             <span className="font-medium text-green-600">GRATIS</span>
           </div>
-          
+
           {/* Total */}
           <div className="flex items-center justify-between pt-2 border-t border-gray-200">
             <span className="font-semibold text-gray-900">Total</span>

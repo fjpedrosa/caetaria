@@ -1,6 +1,6 @@
 /**
  * Test Setup Configuration for Navbar Tests
- * 
+ *
  * Configuración específica de testing para el módulo del navbar.
  * Incluye:
  * - Mocks globales para testing
@@ -10,8 +10,9 @@
  * - Performance testing utilities
  */
 
-import '@testing-library/jest-dom';
 import { configure } from '@testing-library/react';
+
+import '@testing-library/jest-dom';
 import 'jest-axe/extend-expect';
 
 // Configure testing library
@@ -204,7 +205,7 @@ export const mockScrollBehavior = (scrollY: number) => {
     value: scrollY,
     configurable: true
   });
-  
+
   // Trigger scroll event
   const scrollEvent = new Event('scroll');
   window.dispatchEvent(scrollEvent);
@@ -216,12 +217,12 @@ export const mockResizeBehavior = (width: number, height: number = 768) => {
     value: width,
     configurable: true
   });
-  
+
   Object.defineProperty(window, 'innerHeight', {
     value: height,
     configurable: true
   });
-  
+
   // Trigger resize event
   const resizeEvent = new Event('resize');
   window.dispatchEvent(resizeEvent);
@@ -281,7 +282,7 @@ export const waitForAnimation = (duration: number = 300) => {
 
 // Custom keyboard event helper
 export const createKeyboardEvent = (
-  key: string, 
+  key: string,
   options: Partial<KeyboardEventInit> = {}
 ): KeyboardEvent => {
   return new KeyboardEvent('keydown', {
@@ -341,21 +342,21 @@ export const testFocusTrap = async (
   const focusableElements = container.querySelectorAll<HTMLElement>(
     'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
-  
+
   if (focusableElements.length === 0) return;
-  
+
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
-  
+
   // Focus first element
   firstElement.focus();
   expect(firstElement).toHaveFocus();
-  
+
   // Tab from last element should cycle to first
   lastElement.focus();
   await user.tab();
   expect(firstElement).toHaveFocus();
-  
+
   // Shift+Tab from first element should cycle to last
   await user.tab({ shift: true });
   expect(lastElement).toHaveFocus();
@@ -364,7 +365,7 @@ export const testFocusTrap = async (
 // Screen reader testing helper
 export const expectScreenReaderText = (text: string) => {
   const srElements = document.querySelectorAll('.sr-only, [aria-hidden="false"]');
-  const found = Array.from(srElements).some(el => 
+  const found = Array.from(srElements).some(el =>
     el.textContent?.includes(text)
   );
   expect(found).toBe(true);
@@ -415,13 +416,13 @@ export const detectMemoryLeaks = () => {
     document: Object.keys((document as any)._events || {}).length,
     window: Object.keys((window as any)._events || {}).length
   };
-  
+
   return () => {
     const finalListeners = {
       document: Object.keys((document as any)._events || {}).length,
       window: Object.keys((window as any)._events || {}).length
     };
-    
+
     expect(finalListeners.document).toBeLessThanOrEqual(initialListeners.document + 1);
     expect(finalListeners.window).toBeLessThanOrEqual(initialListeners.window + 1);
   };
@@ -441,23 +442,23 @@ declare global {
 // Reset all mocks before each test
 beforeEach(() => {
   jest.clearAllMocks();
-  
+
   // Reset window properties
   Object.defineProperty(window, 'scrollY', {
     value: 0,
     configurable: true
   });
-  
+
   Object.defineProperty(window, 'innerWidth', {
     value: 1024,
     configurable: true
   });
-  
+
   Object.defineProperty(window, 'innerHeight', {
     value: 768,
     configurable: true
   });
-  
+
   // Reset performance timer
   (performance.now as jest.Mock).mockReturnValue(Date.now());
 });

@@ -223,7 +223,7 @@ function HeroContent({ isInView, prefersReducedMotion }: ExtendedHeroContentProp
         {...animationConfigs.ctaVariants}
       >
         <Link
-          href="/onboarding"
+          href="/signup"
           aria-label="Comenzar proceso de registro para prueba gratuita"
         >
           <motion.div

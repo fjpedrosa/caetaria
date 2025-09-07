@@ -1,4 +1,5 @@
 export { CtaSection } from './cta-section';
+export { DigitalBusinessesSection } from './digital-businesses-section';
 export { EvidenceSection } from './evidence-section';
 export { FaqSection } from './faq-section';
 export { FeaturesGridContainer as FeaturesGrid } from './features-grid';

@@ -69,7 +69,7 @@ export const NavbarPresentation: React.FC<NavbarPresentationProps> = ({
   return (
     <>
       {/* Skip Links for Keyboard Navigation - WCAG 2.1 AA */}
-      <SkipLinks 
+      <SkipLinks
         mainContentId="main-content"
         navigationId="main-navigation"
         footerId="footer-content"

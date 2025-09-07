@@ -1,6 +1,6 @@
 /**
  * Application Layer Tests - useMegaMenuInteraction Hook
- * 
+ *
  * Tests completos para el hook de interacción con mega menus.
  * Cubre funcionalidades avanzadas:
  * - Triangle safe zone detection
@@ -12,8 +12,9 @@
  * - Edge cases and error handling
  */
 
-import { act, renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+
 import { useMegaMenuInteraction } from '../../application/hooks/use-mega-menu-interaction';
 
 // Mock the triangle safe zone utilities
@@ -62,7 +63,7 @@ describe('useMegaMenuInteraction', () => {
   let mockTouchEvent: (type: string, options?: Partial<TouchEvent>) => TouchEvent;
   let mockMenuElement: HTMLElement;
   let mockTriggerElement: HTMLElement;
-  
+
   const createMockElement = (tagName: string = 'div') => {
     const element = document.createElement(tagName);
     element.getBoundingClientRect = jest.fn().mockReturnValue({
@@ -86,22 +87,22 @@ describe('useMegaMenuInteraction', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Setup mock elements
     mockMenuElement = createMockElement('div');
     mockTriggerElement = createMockElement('button');
-    
+
     // Mock touch device detection
     Object.defineProperty(window, 'ontouchstart', {
       value: undefined,
       configurable: true
     });
-    
+
     Object.defineProperty(navigator, 'maxTouchPoints', {
       value: 0,
       configurable: true
     });
-    
+
     // Setup event creators
     mockMouseEvent = (type: string, options: Partial<MouseEvent> = {}) => {
       return new MouseEvent(type, {
@@ -111,7 +112,7 @@ describe('useMegaMenuInteraction', () => {
         ...options
       } as MouseEventInit);
     };
-    
+
     mockKeyboardEvent = (key: string, options: Partial<KeyboardEvent> = {}) => {
       return new KeyboardEvent('keydown', {
         key,
@@ -120,7 +121,7 @@ describe('useMegaMenuInteraction', () => {
         ...options
       });
     };
-    
+
     mockTouchEvent = (type: string, options: Partial<TouchEvent> = {}) => {
       return new TouchEvent(type, {
         touches: [{ clientX: 150, clientY: 150 } as any],
@@ -128,7 +129,7 @@ describe('useMegaMenuInteraction', () => {
         ...options
       } as TouchEventInit);
     };
-    
+
     // Mock document methods
     document.createElement = jest.fn().mockImplementation((tagName) => {
       const element = createMockElement(tagName);
@@ -137,7 +138,7 @@ describe('useMegaMenuInteraction', () => {
       }
       return element;
     });
-    
+
     document.body.appendChild = jest.fn();
     document.head.appendChild = jest.fn();
     document.querySelector = jest.fn().mockReturnValue(null);
@@ -152,7 +153,7 @@ describe('useMegaMenuInteraction', () => {
   describe('Initial State and Configuration', () => {
     it('should initialize with correct default state', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(result.current.activeMenu).toBeNull();
       expect(result.current.isOpen).toBe(false);
       expect(result.current.isPending).toBe(false);
@@ -164,11 +165,11 @@ describe('useMegaMenuInteraction', () => {
         hoverDelay: { enter: 200, exit: 500, keyboard: 0 },
         triangleSafeZone: { enabled: false }
       };
-      
-      const { result } = renderHook(() => 
+
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({ config: customConfig })
       );
-      
+
       expect(result.current.config.hoverDelay.enter).toBe(200);
       expect(result.current.config.hoverDelay.exit).toBe(500);
       expect(result.current.config.triangleSafeZone.enabled).toBe(false);
@@ -179,13 +180,13 @@ describe('useMegaMenuInteraction', () => {
         value: true,
         configurable: true
       });
-      
+
       const onInteractionModeChange = jest.fn();
-      
-      renderHook(() => 
+
+      renderHook(() =>
         useMegaMenuInteraction({ onInteractionModeChange })
       );
-      
+
       await waitFor(() => {
         expect(onInteractionModeChange).toHaveBeenCalledWith('touch');
       });
@@ -195,15 +196,15 @@ describe('useMegaMenuInteraction', () => {
       const onMenuOpen = jest.fn();
       const onMenuClose = jest.fn();
       const onInteractionModeChange = jest.fn();
-      
-      const { result } = renderHook(() => 
+
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           onMenuOpen,
           onMenuClose,
           onInteractionModeChange
         })
       );
-      
+
       expect(result.current).toBeDefined();
     });
   });
@@ -211,7 +212,7 @@ describe('useMegaMenuInteraction', () => {
   describe('Menu Registration System', () => {
     it('should register menu element and trigger', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         const cleanup = result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         expect(typeof cleanup).toBe('function');
@@ -219,7 +220,7 @@ describe('useMegaMenuInteraction', () => {
     });
 
     it('should add expanded hit area when enabled', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             expandedHitArea: {
@@ -229,11 +230,11 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       expect(mockTriggerElement.style.position).toBe('relative');
       expect(document.head.appendChild).toHaveBeenCalled();
       expect(mockTriggerElement.setAttribute).toHaveBeenCalledWith('data-menu-trigger', 'test-menu');
@@ -241,17 +242,17 @@ describe('useMegaMenuInteraction', () => {
 
     it('should cleanup registration properly', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       let cleanup: () => void;
-      
+
       act(() => {
         cleanup = result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       act(() => {
         cleanup();
       });
-      
+
       // Should not throw
       expect(result.current.isMenuOpen('test-menu')).toBe(false);
     });
@@ -268,7 +269,7 @@ describe('useMegaMenuInteraction', () => {
 
     it('should open menu on mouse enter with delay', async () => {
       const onMenuOpen = jest.fn();
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           onMenuOpen,
           config: {
@@ -276,23 +277,23 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockMouseEvent('mouseenter', { clientX: 100, clientY: 100 });
-      
+
       act(() => {
         result.current.handleMouseEnter('test-menu', event as any);
       });
-      
+
       expect(result.current.isPending).toBe(true);
-      
+
       act(() => {
         jest.advanceTimersByTime(100);
       });
-      
+
       await waitFor(() => {
         expect(onMenuOpen).toHaveBeenCalledWith('test-menu');
         expect(result.current.activeMenu).toBe('test-menu');
@@ -303,7 +304,7 @@ describe('useMegaMenuInteraction', () => {
 
     it('should close menu on mouse leave with delay', async () => {
       const onMenuClose = jest.fn();
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           onMenuClose,
           config: {
@@ -312,26 +313,26 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       // First open the menu
       act(() => {
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockMouseEvent('mouseleave');
-      
+
       act(() => {
         result.current.handleMouseLeave('test-menu', event as any);
       });
-      
+
       act(() => {
         jest.advanceTimersByTime(200);
       });
-      
+
       await waitFor(() => {
         expect(onMenuClose).toHaveBeenCalledWith('test-menu');
         expect(result.current.activeMenu).toBeNull();
@@ -340,7 +341,7 @@ describe('useMegaMenuInteraction', () => {
     });
 
     it('should respect movement threshold for accidental hover prevention', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             performance: {
@@ -351,50 +352,50 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       // Small movement (should be ignored)
       const smallMoveEvent = mockMouseEvent('mouseenter', { clientX: 102, clientY: 102 });
-      
+
       act(() => {
         result.current.handleMouseEnter('test-menu', smallMoveEvent as any);
       });
-      
+
       expect(result.current.isPending).toBe(false);
     });
 
     it('should handle menu switching with triangle safe zone', async () => {
       const { isInEnhancedSafeZone } = require('../../application/utils/triangle-safe-zone');
       isInEnhancedSafeZone.mockReturnValue(true);
-      
-      const { result } = renderHook(() => 
+
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true }
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('menu1', mockMenuElement, mockTriggerElement);
         result.current.registerMenu('menu2', createMockElement(), createMockElement());
       });
-      
+
       // Open first menu
       act(() => {
         result.current.openMenu('menu1', true);
       });
-      
+
       // Try to hover over second menu (should be delayed due to safe zone)
       const event = mockMouseEvent('mouseenter');
-      
+
       act(() => {
         result.current.handleMouseEnter('menu2', event as any);
       });
-      
+
       // Should not switch immediately due to safe zone
       expect(result.current.activeMenu).toBe('menu1');
     });
@@ -403,31 +404,31 @@ describe('useMegaMenuInteraction', () => {
   describe('Click and Touch Interactions', () => {
     it('should handle click interaction and toggle menu', async () => {
       const onInteractionModeChange = jest.fn();
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({ onInteractionModeChange })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockMouseEvent('click');
-      
+
       act(() => {
         result.current.handleClick('test-menu', event as any);
       });
-      
+
       await waitFor(() => {
         expect(onInteractionModeChange).toHaveBeenCalledWith('click');
         expect(result.current.activeMenu).toBe('test-menu');
         expect(result.current.isOpen).toBe(true);
       });
-      
+
       // Click again should close
       act(() => {
         result.current.handleClick('test-menu', event as any);
       });
-      
+
       await waitFor(() => {
         expect(result.current.activeMenu).toBeNull();
         expect(result.current.isOpen).toBe(false);
@@ -436,7 +437,7 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle touch events', async () => {
       const onInteractionModeChange = jest.fn();
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           onInteractionModeChange,
           config: {
@@ -447,18 +448,18 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockTouchEvent('touchstart');
       event.stopPropagation = jest.fn();
-      
+
       act(() => {
         result.current.handleClick('test-menu', event as any);
       });
-      
+
       expect(event.stopPropagation).toHaveBeenCalled();
       await waitFor(() => {
         expect(onInteractionModeChange).toHaveBeenCalledWith('touch');
@@ -466,7 +467,7 @@ describe('useMegaMenuInteraction', () => {
     });
 
     it('should prevent click propagation when configured', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             touchMode: {
@@ -476,14 +477,14 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       const event = mockMouseEvent('click');
       event.stopPropagation = jest.fn();
-      
+
       act(() => {
         result.current.handleClick('test-menu', event as any);
       });
-      
+
       expect(event.stopPropagation).toHaveBeenCalled();
     });
   });
@@ -496,19 +497,19 @@ describe('useMegaMenuInteraction', () => {
         createMockElement('button'),
         createMockElement('input')
       ];
-      
+
       focusableElements.forEach(el => {
         el.click = jest.fn();
         el.getAttribute = jest.fn().mockReturnValue('Test Item');
       });
-      
+
       mockMenuElement.querySelectorAll = jest.fn().mockImplementation((selector) => {
         if (selector.includes('role="group"')) {
           return [mockMenuElement]; // Return column containers
         }
         return focusableElements;
       });
-      
+
       document.querySelector = jest.fn().mockImplementation((selector) => {
         if (selector === '[role="navigation"]') {
           const nav = createMockElement('nav');
@@ -521,18 +522,18 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle Enter key to toggle menu', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockKeyboardEvent('Enter');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
       await waitFor(() => {
         expect(result.current.activeMenu).toBe('test-menu');
@@ -541,18 +542,18 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle Space key to toggle menu', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockKeyboardEvent(' ');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
       await waitFor(() => {
         expect(result.current.activeMenu).toBe('test-menu');
@@ -561,19 +562,19 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle Escape key to close menu', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('Escape');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
       expect(mockTriggerElement.focus).toHaveBeenCalled();
       await waitFor(() => {
@@ -583,18 +584,18 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle ArrowDown to open menu and navigate', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockKeyboardEvent('ArrowDown');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
       await waitFor(() => {
         expect(result.current.activeMenu).toBe('test-menu');
@@ -603,87 +604,87 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle arrow key navigation within menu', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('ArrowRight');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('should handle Home key to focus first item', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('Home');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('should handle End key to focus last item', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('End');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
     it('should handle Tab key for focus trapping', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('Tab');
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       // Focus trapping logic should be executed
     });
 
     it('should handle Shift+Tab for reverse tab navigation', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       const event = mockKeyboardEvent('Tab', { shiftKey: true });
       event.preventDefault = jest.fn();
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
@@ -691,20 +692,20 @@ describe('useMegaMenuInteraction', () => {
 
     it('should set keyboard navigation mode when using keyboard', async () => {
       const onInteractionModeChange = jest.fn();
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({ onInteractionModeChange })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       const event = mockKeyboardEvent('Enter');
-      
+
       act(() => {
         result.current.handleKeyDown(event as any, 'test-menu');
       });
-      
+
       await waitFor(() => {
         expect(onInteractionModeChange).toHaveBeenCalledWith('keyboard');
       });
@@ -714,9 +715,9 @@ describe('useMegaMenuInteraction', () => {
   describe('Utility Props and Helpers', () => {
     it('should provide menu props helper', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       const menuProps = result.current.getMenuProps('test-menu');
-      
+
       expect(menuProps).toHaveProperty('onMouseEnter');
       expect(menuProps).toHaveProperty('onMouseLeave');
       expect(menuProps).toHaveProperty('onClick');
@@ -729,9 +730,9 @@ describe('useMegaMenuInteraction', () => {
 
     it('should provide trigger props helper', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       const triggerProps = result.current.getTriggerProps('test-menu');
-      
+
       expect(triggerProps).toHaveProperty('data-menu-trigger');
       expect(triggerProps).toHaveProperty('data-menu-active');
       expect(triggerProps).toHaveProperty('data-menu-pending');
@@ -739,17 +740,17 @@ describe('useMegaMenuInteraction', () => {
 
     it('should provide menu state helpers', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(typeof result.current.isMenuOpen).toBe('function');
       expect(typeof result.current.isMenuPending).toBe('function');
-      
+
       expect(result.current.isMenuOpen('test-menu')).toBe(false);
       expect(result.current.isMenuPending('test-menu')).toBe(false);
     });
 
     it('should provide cursor tracking information', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(result.current.cursorPosition).toBeDefined();
       expect(result.current.cursorVelocity).toBeDefined();
     });
@@ -763,19 +764,19 @@ describe('useMegaMenuInteraction', () => {
     });
 
     it('should setup global mouse tracking when triangle safe zone is enabled', () => {
-      renderHook(() => 
+      renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true }
           }
         })
       );
-      
+
       expect(document.addEventListener).toHaveBeenCalledWith('mousemove', expect.any(Function), { passive: true });
     });
 
     it('should throttle mouse move events', () => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true },
@@ -786,13 +787,13 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       // Global mouse tracking should be active
       expect(document.addEventListener).toHaveBeenCalled();
     });
 
     it('should use requestAnimationFrame when enabled', () => {
-      renderHook(() => 
+      renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true },
@@ -803,7 +804,7 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       expect(document.addEventListener).toHaveBeenCalled();
     });
   });
@@ -811,33 +812,33 @@ describe('useMegaMenuInteraction', () => {
   describe('Outside Click Handling', () => {
     it('should close menu on outside click in click mode', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       // Set to click mode and open menu
       const clickEvent = mockMouseEvent('click');
       act(() => {
         result.current.handleClick('test-menu', clickEvent as any);
       });
-      
+
       await waitFor(() => {
         expect(result.current.activeMenu).toBe('test-menu');
       });
-      
+
       // Simulate outside click
       const outsideElement = createMockElement();
       mockMenuElement.contains = jest.fn().mockReturnValue(false);
-      
+
       const outsideClickEvent = new MouseEvent('mousedown', {
         target: outsideElement
       } as any);
-      
+
       act(() => {
         document.dispatchEvent(outsideClickEvent);
       });
-      
+
       await waitFor(() => {
         expect(result.current.activeMenu).toBeNull();
       });
@@ -845,27 +846,27 @@ describe('useMegaMenuInteraction', () => {
 
     it('should not close menu on inside click', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       // Open menu
       act(() => {
         result.current.openMenu('test-menu', true);
       });
-      
+
       // Simulate inside click
       mockMenuElement.contains = jest.fn().mockReturnValue(true);
-      
+
       const insideClickEvent = new MouseEvent('mousedown', {
         target: mockMenuElement
       } as any);
-      
+
       act(() => {
         document.dispatchEvent(insideClickEvent);
       });
-      
+
       // Menu should remain open
       expect(result.current.activeMenu).toBe('test-menu');
     });
@@ -874,12 +875,12 @@ describe('useMegaMenuInteraction', () => {
   describe('Performance and Memory Management', () => {
     it('should cleanup timers on unmount', () => {
       const { unmount } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(() => unmount()).not.toThrow();
     });
 
     it('should cancel animation frames on unmount', () => {
-      const { unmount } = renderHook(() => 
+      const { unmount } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true },
@@ -887,33 +888,33 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       unmount();
-      
+
       expect(mockCancelRaf).toHaveBeenCalled();
     });
 
     it('should remove global event listeners on unmount', () => {
-      const { unmount } = renderHook(() => 
+      const { unmount } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true }
           }
         })
       );
-      
+
       unmount();
-      
+
       expect(document.removeEventListener).toHaveBeenCalledWith('mousemove', expect.any(Function));
     });
 
     it('should handle rapid state changes without memory leaks', async () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       // Rapid open/close cycles
       for (let i = 0; i < 10; i++) {
         act(() => {
@@ -921,7 +922,7 @@ describe('useMegaMenuInteraction', () => {
           result.current.closeMenu('test-menu', true);
         });
       }
-      
+
       expect(result.current.activeMenu).toBeNull();
     });
   });
@@ -929,7 +930,7 @@ describe('useMegaMenuInteraction', () => {
   describe('Edge Cases and Error Handling', () => {
     it('should handle menu registration with missing elements', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(() => {
         act(() => {
           result.current.registerMenu('test-menu', mockMenuElement);
@@ -939,7 +940,7 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle opening non-existent menu', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(() => {
         act(() => {
           result.current.openMenu('non-existent-menu');
@@ -949,7 +950,7 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle closing non-active menu', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       expect(() => {
         act(() => {
           result.current.closeMenu('non-active-menu');
@@ -959,9 +960,9 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle events with invalid targets', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       const invalidEvent = { ...mockMouseEvent('click'), target: null } as any;
-      
+
       expect(() => {
         act(() => {
           result.current.handleClick('test-menu', invalidEvent);
@@ -971,9 +972,9 @@ describe('useMegaMenuInteraction', () => {
 
     it('should handle keyboard events with missing elements', () => {
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       mockMenuElement.querySelectorAll = jest.fn().mockReturnValue([]);
-      
+
       expect(() => {
         act(() => {
           result.current.handleKeyDown(mockKeyboardEvent('ArrowDown') as any, 'test-menu');
@@ -992,19 +993,19 @@ describe('useMegaMenuInteraction', () => {
         start: jest.fn(),
         stop: jest.fn()
       }));
-      
-      const { result } = renderHook(() => 
+
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             triangleSafeZone: { enabled: true }
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       expect(() => {
         act(() => {
           result.current.openMenu('test-menu');
@@ -1017,8 +1018,8 @@ describe('useMegaMenuInteraction', () => {
     it('should focus first item when menu opens via keyboard', async () => {
       const focusableElement = createMockElement('button');
       mockMenuElement.querySelector = jest.fn().mockReturnValue(focusableElement);
-      
-      const { result } = renderHook(() => 
+
+      const { result } = renderHook(() =>
         useMegaMenuInteraction({
           config: {
             accessibility: {
@@ -1028,15 +1029,15 @@ describe('useMegaMenuInteraction', () => {
           }
         })
       );
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
       });
-      
+
       act(() => {
         result.current.openMenu('test-menu', false, true); // isKeyboard = true
       });
-      
+
       await waitFor(() => {
         expect(focusableElement.focus).toHaveBeenCalled();
       });
@@ -1047,22 +1048,22 @@ describe('useMegaMenuInteraction', () => {
       elements.forEach(el => {
         el.setAttribute = jest.fn();
       });
-      
+
       mockMenuElement.querySelectorAll = jest.fn().mockReturnValue(elements);
-      
+
       const { result } = renderHook(() => useMegaMenuInteraction());
-      
+
       act(() => {
         result.current.registerMenu('test-menu', mockMenuElement, mockTriggerElement);
         result.current.openMenu('test-menu', true);
       });
-      
+
       // Simulate keyboard navigation
       const keyEvent = mockKeyboardEvent('ArrowDown');
       act(() => {
         result.current.handleKeyDown(keyEvent as any, 'test-menu');
       });
-      
+
       // Elements should have tabindex set
       elements.forEach(el => {
         expect(el.setAttribute).toHaveBeenCalledWith('tabindex', expect.any(String));

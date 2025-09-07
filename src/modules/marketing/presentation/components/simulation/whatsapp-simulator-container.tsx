@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { lazy, Suspense, useMemo, useEffect, useRef } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useSimulationEngine } from '@/modules/marketing/application/hooks/use-simulation-engine';

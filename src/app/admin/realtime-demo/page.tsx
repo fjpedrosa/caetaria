@@ -7,6 +7,9 @@
 
 'use client';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect,useState } from 'react';
 import { motion } from 'framer-motion';
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Badge } from '@/modules/shared/presentation/components/ui/badge';
 import { motion } from 'framer-motion';
 import { type LucideIcon } from 'lucide-react';
+
+import { Badge } from '@/modules/shared/presentation/components/ui/badge';
 
 interface FeaturesHeaderProps {
   badge: {
@@ -33,15 +34,15 @@ export const FeaturesHeader: React.FC<FeaturesHeaderProps> = ({
   animationConfig,
 }) => {
   const IconComponent = badge.icon;
-  
+
   return (
     <div className="text-center max-w-3xl mx-auto mb-16">
-      <motion.div 
+      <motion.div
         className="inline-block mb-4"
         initial={animationConfig?.badge.initial}
         animate={animationConfig?.badge.animate}
       >
-        <Badge 
+        <Badge
           variant={badge.variant}
           className="px-4 py-1.5 text-sm font-medium flex items-center gap-2"
         >
@@ -49,12 +50,12 @@ export const FeaturesHeader: React.FC<FeaturesHeaderProps> = ({
           {badge.text}
         </Badge>
       </motion.div>
-      
+
       <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
         {title.main}
         <span className="text-primary"> {title.highlight}</span>
       </h2>
-      
+
       <p className="text-lg text-gray-600 dark:text-gray-400">
         {subtitle}
       </p>

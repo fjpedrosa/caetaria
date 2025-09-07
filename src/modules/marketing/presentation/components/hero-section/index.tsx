@@ -37,9 +37,13 @@ export function HeroSection() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen bg-background"
+      className="relative min-h-screen"
       aria-label="Sección principal de presentación"
     >
+      {/* Glass Morphism Elements */}
+      <div className="glass-circle w-32 h-32 right-1/4 animate-[glass-float_8s_ease-in-out_infinite]" />
+      <div className="glass-circle w-24 h-24 bottom-32 left-1/3 animate-[glass-float_10s_ease-in-out_infinite_reverse]" />
+
       {/* Animated Background Elements - Only render if motion is preferred and ready */}
       {!prefersReducedMotion && animationsReady && (
       <div className="absolute inset-0">

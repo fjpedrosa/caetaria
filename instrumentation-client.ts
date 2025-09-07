@@ -217,3 +217,6 @@ function getUserContext() {
 
 // Export for use in other parts of the application
 export { Sentry };
+
+// Required hook for Sentry navigation instrumentation
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

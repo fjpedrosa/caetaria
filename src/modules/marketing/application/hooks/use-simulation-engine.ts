@@ -248,21 +248,21 @@ export const useSimulationEngine = (options: SimulationEngineOptions = {}) => {
     const currentScenario = scenario;
     const currentSequence = sequenceRef.current;
     const currentSpeed = state.animationSpeed || 1;
-    
+
     if (!currentScenario || !currentSequence || currentSequence.length === 0 || state.isPaused) {
-      log('Cannot start simulation', { 
-        hasScenario: !!currentScenario, 
+      log('Cannot start simulation', {
+        hasScenario: !!currentScenario,
         sequenceLength: currentSequence?.length || 0,
-        isPaused: state.isPaused 
+        isPaused: state.isPaused
       });
       return;
     }
 
     clearTimers();
-    log('Starting simulation', { 
-      scenario: currentScenario.id, 
+    log('Starting simulation', {
+      scenario: currentScenario.id,
       messages: currentScenario.messages.length,
-      sequenceItems: currentSequence.length 
+      sequenceItems: currentSequence.length
     });
 
     // Schedule all actions from sequence
@@ -369,7 +369,7 @@ export const useSimulationEngine = (options: SimulationEngineOptions = {}) => {
       const timer = setTimeout(() => {
         // Clear any existing timers first
         clearTimers();
-        
+
         // Schedule all actions from sequence
         const currentSpeed = state.animationSpeed || 1;
         sequenceRef.current.forEach(item => {
@@ -384,14 +384,14 @@ export const useSimulationEngine = (options: SimulationEngineOptions = {}) => {
           executeAction({ type: 'complete' });
         }, (scenario.duration || 30000) / currentSpeed);
         timersRef.current.push(completeTimer);
-        
-        log('Simulation started via effect', { 
-          scenario: scenario.id, 
+
+        log('Simulation started via effect', {
+          scenario: scenario.id,
           messages: scenario.messages.length,
-          sequenceItems: sequenceRef.current.length 
+          sequenceItems: sequenceRef.current.length
         });
       }, 200);
-      
+
       return () => clearTimeout(timer);
     }
   }, [scenario, autoPlay, state.isPaused, state.isComplete, state.animationSpeed, clearTimers, executeAction, log]);

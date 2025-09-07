@@ -9,32 +9,31 @@ export { EnhancedNavbar } from './presentation/components/enhanced-navbar';
 
 // Mega menu components
 export { MegaMenuBackdrop } from './presentation/components/mega-menu/mega-menu-backdrop';
-export { MegaMenuPanel } from './presentation/components/mega-menu/mega-menu-panel';
-export { MegaMenuItemComponent } from './presentation/components/mega-menu/mega-menu-item';
 export { MegaMenuColumnComponent } from './presentation/components/mega-menu/mega-menu-column';
+export { MegaMenuItemComponent } from './presentation/components/mega-menu/mega-menu-item';
+export { MegaMenuPanel } from './presentation/components/mega-menu/mega-menu-panel';
 
 // Hooks
 export { useHoverIntent, useMultiHoverIntent } from './application/hooks/use-hover-intent';
 
 // Types
 export type {
-  MegaMenuItem,
+  MegaMenuAnimationVariants,
   MegaMenuColumn,
   MegaMenuConfig,
   MegaMenuFeatured,
+  MegaMenuItem,
   MegaMenuState,
   MegaMenuTheme,
-  MegaMenuAnimationVariants,
 } from './domain/types/mega-menu.types';
 
 // Configuration data
-export { 
+export {
+  companyMegaMenu,
   megaMenuConfigs,
   productsMegaMenu,
-  solutionsMegaMenu,
   resourcesMegaMenu,
-  companyMegaMenu 
-} from './infrastructure/data/mega-menu-config';
+  solutionsMegaMenu} from './infrastructure/data/mega-menu-config';
 
 // Design tokens
 export { designTokens } from './presentation/styles/design-tokens';

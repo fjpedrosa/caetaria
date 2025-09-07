@@ -2,8 +2,9 @@
 
 import { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight,Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+import { Star } from '@/lib/icons';
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import { Button } from '@/modules/shared/presentation/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/modules/shared/presentation/components/ui/card';

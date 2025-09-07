@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { FeaturesGrid } from './features-grid';
+
 import { useFeaturesGrid } from './hooks/use-features-grid';
+import { FeaturesGrid } from './features-grid';
 
 /**
  * Container Component - Conecta el hook con el componente presentacional

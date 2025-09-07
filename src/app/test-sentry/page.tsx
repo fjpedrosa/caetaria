@@ -57,10 +57,10 @@ export default function TestSentryPage() {
 
     try {
       setMessage('⏱️ Running performance test...');
-      
+
       // Simulate some work
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       transaction.setStatus({ code: 1, message: 'ok' });
       setMessage('✅ Performance transaction sent to Sentry');
     } finally {

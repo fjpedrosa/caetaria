@@ -3,7 +3,7 @@
  * Allows diagonal cursor movement without accidentally triggering other items
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback,useEffect, useRef, useState } from 'react';
 
 interface Point {
   x: number;
@@ -25,7 +25,7 @@ export function useTriangularSafeZone(activeItemId: string | null) {
   // Check if a point is inside a triangle using barycentric coordinates
   const isPointInTriangle = useCallback((point: Point, triangle: TriangleZone): boolean => {
     const { anchor, topCorner, bottomCorner } = triangle;
-    
+
     // Calculate barycentric coordinates
     const v0x = bottomCorner.x - anchor.x;
     const v0y = bottomCorner.y - anchor.y;

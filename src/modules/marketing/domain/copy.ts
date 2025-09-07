@@ -228,17 +228,15 @@ export const MARKETING_COPY = {
   },
 
   howItWorks: {
-    badge: 'Configuración en minutos',
-    title: 'Activa WhatsApp Business en',
-    titleHighlight: '4 simples pasos',
-    subtitle: 'Desde registro hasta tu primer mensaje automático en menos de 10 minutos',
+    badge: 'Setup en minutos',
+    title: 'Activa WhatsApp Business en solo 4 pasos',
+    titleHighlight: 'Y empieza a vender automáticamente hoy',
+    subtitle: 'Setup ultra-rápido en 10 minutos totales. Sin necesidad de código ni conocimientos técnicos. Nuestro equipo te guía en cada paso.',
     totalTime: '10 minutos totales',
     steps: [
       {
-        number: '01',
-        title: 'Regístrate',
-        verb: 'Crea',
-        object: 'tu cuenta gratis',
+        number: '1',
+        title: 'Crea tu cuenta gratis',
         time: '2 min',
         description: 'Crea tu cuenta y verifica tu negocio con Meta Business',
         benefit: 'Sin tarjeta de crédito',
@@ -250,10 +248,8 @@ export const MARKETING_COPY = {
         ]
       },
       {
-        number: '02',
+        number: '2',
         title: 'Conecta WhatsApp',
-        verb: 'Vincula',
-        object: 'tu número Business',
         time: '3 min',
         description: 'Conecta tu número de WhatsApp Business en segundos',
         benefit: 'Proceso guiado paso a paso',
@@ -265,10 +261,8 @@ export const MARKETING_COPY = {
         ]
       },
       {
-        number: '03',
-        title: 'Personaliza tu Bot',
-        verb: 'Configura',
-        object: 'respuestas automáticas',
+        number: '3',
+        title: 'Configura respuestas automáticas',
         time: '3 min',
         description: 'Diseña flujos de conversación sin escribir código',
         benefit: 'Plantillas pre-diseñadas',
@@ -280,10 +274,8 @@ export const MARKETING_COPY = {
         ]
       },
       {
-        number: '04',
-        title: 'Prueba y Lanza',
-        verb: 'Envía',
-        object: 'tu primer mensaje',
+        number: '4',
+        title: 'Prueba y lanza',
         time: '2 min',
         description: 'Prueba con nuestro simulador y activa cuando estés listo',
         benefit: 'Simulador incluido gratis',
@@ -296,13 +288,14 @@ export const MARKETING_COPY = {
       }
     ],
     cta: {
-      primary: 'Empieza Ahora - Es Gratis',
-      secondary: 'Ver Demo en Vivo'
+      primary: 'Empezar Ahora - Es Gratis',
+      secondary: 'Ver Demo en Vivo',
+      preText: 'Miles de negocios ya están vendiendo más. Es tu turno.'
     },
     trustBadges: [
-      { text: 'Sin código', icon: 'Code' },
-      { text: 'Sin tarjeta', icon: 'CreditCard' },
-      { text: 'Cancela cuando quieras', icon: 'Shield' }
+      { text: 'Sin código necesario', icon: 'Code' },
+      { text: 'Soporte 24/7', icon: 'Shield' },
+      { text: 'Cancela cuando quieras', icon: 'Clock' }
     ]
   },
 
@@ -343,12 +336,12 @@ export const MARKETING_COPY = {
       solutions: {
         title: 'Soluciones',
         links: [
-          { name: 'Comercio Electrónico', href: '/soluciones/ecommerce' },
-          { name: 'Atención al Cliente', href: '/soluciones/soporte' },
-          { name: 'Marketing', href: '/soluciones/marketing' },
-          { name: 'Ventas', href: '/soluciones/ventas' },
-          { name: 'Salud', href: '/soluciones/salud' },
-          { name: 'Educación', href: '/soluciones/educacion' }
+          { name: 'Comercio', href: '/soluciones/industrias/comercio' },
+          { name: 'Salud', href: '/soluciones/industrias/salud' },
+          { name: 'Hostelería', href: '/soluciones/industrias/hosteleria' },
+          { name: 'Educación', href: '/soluciones/industrias/educacion' },
+          { name: 'Servicios Profesionales', href: '/soluciones/industrias/servicios-profesionales' },
+          { name: 'Ver todas', href: '/soluciones/industrias' }
         ]
       },
       company: {

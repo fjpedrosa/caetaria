@@ -5,8 +5,8 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
 import { ChevronDown, List } from 'lucide-react';
 
 import type { ListMessage, ListMessageOption } from '@/modules/marketing/domain/types/whatsapp-features.types';
@@ -17,10 +17,10 @@ interface ListMessageProps {
   isVisible?: boolean;
 }
 
-export function ListMessageComponent({ 
-  listMessage, 
+export function ListMessageComponent({
+  listMessage,
   onOptionSelect,
-  isVisible = true 
+  isVisible = true
 }: ListMessageProps) {
   const [isListOpen, setIsListOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -29,7 +29,7 @@ export function ListMessageComponent({
     setSelectedOption(option.id);
     setIsListOpen(false);
     onOptionSelect?.(option.id);
-    
+
     // Clear selection after animation
     setTimeout(() => {
       setSelectedOption(null);
@@ -177,9 +177,9 @@ export function ListMessageComponent({
                         className="w-full px-4 py-3 text-left hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-50 last:border-b-0"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ 
+                        transition={{
                           delay: sectionIndex * 0.1 + optionIndex * 0.05,
-                          duration: 0.2 
+                          duration: 0.2
                         }}
                       >
                         <div className="flex items-center gap-3">

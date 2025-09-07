@@ -5,14 +5,14 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus, ShoppingCart, X, Check } from 'lucide-react';
+import React, { useCallback,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
+import { Check,Minus, Plus, ShoppingCart, X } from 'lucide-react';
 
-import type { 
-  CatalogProduct, 
-  CartItem, 
-  ShoppingCart as ShoppingCartType 
+import type {
+  CartItem,
+  CatalogProduct,
+  ShoppingCart as ShoppingCartType
 } from '@/modules/marketing/domain/types/whatsapp-features.types';
 
 interface ProductCatalogProps {
@@ -23,8 +23,8 @@ interface ProductCatalogProps {
   currency?: string;
 }
 
-export function ProductCatalog({ 
-  products, 
+export function ProductCatalog({
+  products,
   onAddToCart,
   onViewCart,
   isVisible = true,
@@ -52,10 +52,10 @@ export function ProductCatalog({
 
   const handleAddToCart = useCallback((product: CatalogProduct) => {
     const quantity = quantities[product.id] || 1;
-    
+
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.product.id === product.id);
-      
+
       if (existingItem) {
         return prevCart.map(item =>
           item.product.id === product.id
@@ -74,7 +74,7 @@ export function ProductCatalog({
     }, 2000);
 
     onAddToCart?.(product, quantity);
-    
+
     // Reset quantity
     setQuantities(prev => ({ ...prev, [product.id]: 1 }));
   }, [quantities, onAddToCart]);
@@ -159,7 +159,7 @@ export function ProductCatalog({
               <p className="text-xs text-gray-500 line-clamp-2 mt-1">
                 {product.description}
               </p>
-              
+
               {/* Price */}
               <div className="mt-2 flex items-center justify-between">
                 <span className="text-lg font-bold text-green-600">
@@ -249,7 +249,7 @@ export function ProductCatalog({
                   <X className="w-4 h-4 text-gray-600" />
                 </button>
               </div>
-              
+
               <div className="p-4">
                 <h3 className="font-bold text-lg text-gray-900">{selectedProduct.name}</h3>
                 <p className="text-sm text-gray-600 mt-2">{selectedProduct.description}</p>

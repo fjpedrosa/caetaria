@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { OnboardingWizard } from '@/modules/onboarding/presentation/components/onboarding-wizard'
+import { OnboardingWithRecovery } from '@/modules/onboarding/presentation/components/onboarding-with-recovery'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,7 +18,7 @@ function OnboardingLoading() {
 export default function OnboardingPage() {
   return (
     <Suspense fallback={<OnboardingLoading />}>
-      <OnboardingWizard />
+      <OnboardingWithRecovery />
     </Suspense>
   )
 }

@@ -15,7 +15,7 @@ export interface QuickReplyButton {
 /**
  * WhatsApp Flow Step Types
  */
-export type FlowStepType = 
+export type FlowStepType =
   | 'text-input'
   | 'number-input'
   | 'date-picker'
@@ -97,7 +97,7 @@ export interface ShoppingCart {
 /**
  * Message Template Types
  */
-export type MessageTemplateType = 
+export type MessageTemplateType =
   | 'marketing'
   | 'utility'
   | 'authentication';
@@ -180,7 +180,7 @@ export interface LoyaltyReward {
 /**
  * Use Case Scenario Type
  */
-export type UseCaseScenarioType = 
+export type UseCaseScenarioType =
   | 'restaurant-reservation'
   | 'restaurant-orders'
   | 'medical-appointments'
@@ -199,7 +199,7 @@ export interface AnimationConfig {
 /**
  * WhatsApp Message Types for Simulation
  */
-export type WhatsAppMessageType = 
+export type WhatsAppMessageType =
   | 'text'
   | 'template'
   | 'flow'

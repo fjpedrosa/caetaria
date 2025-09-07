@@ -51,7 +51,11 @@ export function PricingTeaserAB() {
   }
 
   return (
-    <section className="bg-gradient-to-br from-background via-muted/20 to-background py-24">
+    <section className="relative py-12 lg:py-16 overflow-hidden">
+      {/* Glass Cards */}
+      <div className="glass-card w-40 h-32 top-20 left-1/3 animate-[glass-float_15s_ease-in-out_infinite]" />
+      <div className="glass-card w-32 h-24 bottom-24 right-1/4 animate-[glass-float_12s_ease-in-out_infinite_reverse]" />
+
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4">

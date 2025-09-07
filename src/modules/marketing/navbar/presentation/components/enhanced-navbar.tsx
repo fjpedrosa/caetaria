@@ -6,7 +6,10 @@ import { ChevronDown,Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import { UserMenu } from '@/components/ui/user-menu';
+import { RegionSelector } from '@/modules/marketing/presentation/components/region-selector';
 import { ThemeToggle } from '@/modules/shared/presentation/components/theme-toggle';
+import { useAuth } from '@/shared/hooks/use-auth';
 
 import { useMultiHoverIntent } from '../../application/hooks/use-hover-intent';
 import { useTriangularSafeZone } from '../../application/hooks/use-triangular-safe-zone';
@@ -28,6 +31,10 @@ export function EnhancedNavbar({
   showProgress = false,
 }: EnhancedNavbarProps) {
   const router = useRouter();
+  const { user, isAuthenticated, signOut } = useAuth();
+
+  // Debug logging
+  console.log('[Navbar] Auth state:', { isAuthenticated, userEmail: user?.email });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -56,10 +63,10 @@ export function EnhancedNavbar({
     if (activeMegaMenuId && activeMegaMenuId !== itemId) {
       clearLeaveTimeout(activeMegaMenuId);
     }
-    
+
     // Direct switching without artificial delays
     handleItemEnter(itemId);
-    
+
     // Update triangle zone after the menu opens
     requestAnimationFrame(() => {
       const itemElement = navItemRefs.current.get(itemId);
@@ -144,6 +151,22 @@ export function EnhancedNavbar({
       document.body.style.overflow = '';
     }
   };
+
+  // Handle user sign out
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  }, [signOut, router]);
+
+  // Handle user navigation
+  const handleUserNavigate = useCallback((path: string) => {
+    router.push(path);
+    resetHover();
+  }, [router, resetHover]);
 
   // Navbar animation variants
   const navbarVariants = {
@@ -293,25 +316,41 @@ export function EnhancedNavbar({
 
               {/* CTA buttons */}
               <div className="hidden lg:flex lg:items-center lg:gap-4">
+                <RegionSelector variant="navbar" />
                 <ThemeToggle />
-                <Link
-                  href="/signin"
-                  className="group inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-                >
-                  <span>Iniciar sesión</span>
-                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
-                <Link
-                  href="/signup"
-                  className="group inline-flex items-center gap-1 px-4 py-2 text-sm font-medium btn-primary rounded-full transition-all duration-200"
-                >
-                  <span>Comenzar gratis</span>
-                  <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
+                {isAuthenticated && user ? (
+                  <UserMenu
+                    user={{
+                      name: user.name,
+                      email: user.email,
+                      avatar: user.avatar
+                    }}
+                    onSignOut={handleSignOut}
+                    onNavigate={handleUserNavigate}
+                    className="ml-2"
+                  />
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="group inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+                    >
+                      <span>Iniciar sesión</span>
+                      <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="group inline-flex items-center gap-1 px-4 py-2 text-sm font-medium btn-primary rounded-full transition-all duration-200"
+                    >
+                      <span>Comenzar gratis</span>
+                      <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </Link>
+                  </>
+                )}
               </div>
 
               {/* Mobile menu button */}
@@ -380,20 +419,79 @@ export function EnhancedNavbar({
 
                 {/* Mobile CTAs */}
                 <div className="pt-4 space-y-3">
-                  <Link
-                    href="/signup"
-                    className="block w-full px-5 py-3 text-center text-sm font-medium btn-primary rounded-lg shadow-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Comenzar gratis →
-                  </Link>
-                  <Link
-                    href="/signin"
-                    className="block w-full px-5 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 rounded-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Iniciar sesión
-                  </Link>
+                  {/* Region Selector for Mobile */}
+                  <div className="pb-3 border-b border-gray-200 dark:border-gray-700">
+                    <RegionSelector variant="settings" />
+                  </div>
+
+                  {isAuthenticated && user ? (
+                    <>
+                      <div className="px-3 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
+                            {user.name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            {user.name && (
+                              <div className="font-medium text-sm text-gray-900 dark:text-white">
+                                {user.name}
+                              </div>
+                            )}
+                            <div className="text-xs text-gray-600 dark:text-gray-400">
+                              {user.email}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <Link
+                        href="/dashboard"
+                        className="block w-full px-5 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        href="/profile"
+                        className="block w-full px-5 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/settings"
+                        className="block w-full px-5 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Settings
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="block w-full px-5 py-3 text-left text-sm font-medium text-red-600 dark:text-red-400 border-t border-gray-200 dark:border-gray-700"
+                      >
+                        Sign out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/signup"
+                        className="block w-full px-5 py-3 text-center text-sm font-medium btn-primary rounded-lg shadow-md"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Comenzar gratis →
+                      </Link>
+                      <Link
+                        href="/login"
+                        className="block w-full px-5 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 rounded-lg"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Iniciar sesión
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

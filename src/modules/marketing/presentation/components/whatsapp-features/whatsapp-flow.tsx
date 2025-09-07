@@ -5,8 +5,8 @@
 
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect,useState } from 'react';
+import { AnimatePresence,motion } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 import type { WhatsAppFlow, WhatsAppFlowStep } from '@/modules/marketing/domain/types/whatsapp-features.types';
@@ -18,11 +18,11 @@ interface WhatsAppFlowProps {
   isVisible: boolean;
 }
 
-export function WhatsAppFlowComponent({ 
-  flow, 
-  onSubmit, 
+export function WhatsAppFlowComponent({
+  flow,
+  onSubmit,
   onClose,
-  isVisible 
+  isVisible
 }: WhatsAppFlowProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -72,7 +72,7 @@ export function WhatsAppFlowComponent({
 
   const handleNext = useCallback(() => {
     const error = validateStep(currentStep, formData[currentStep.id]);
-    
+
     if (error) {
       setErrors({ ...errors, [currentStep.id]: error });
       return;
@@ -253,7 +253,7 @@ export function WhatsAppFlowComponent({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="w-full bg-green-600 rounded-full h-1.5 overflow-hidden">
               <motion.div
@@ -263,7 +263,7 @@ export function WhatsAppFlowComponent({
                 transition={{ duration: 0.3 }}
               />
             </div>
-            
+
             <div className="mt-2 text-sm opacity-90">
               Paso {currentStepIndex + 1} de {flow.steps.length}
             </div>
@@ -282,9 +282,9 @@ export function WhatsAppFlowComponent({
                 <h4 className="text-lg font-semibold text-gray-900 mb-4">
                   {currentStep.label}
                 </h4>
-                
+
                 {renderStepInput()}
-                
+
                 {errors[currentStep.id] && (
                   <motion.p
                     initial={{ opacity: 0, y: -5 }}

@@ -12,6 +12,944 @@
     text-wrap: balance;
   }
 
+  /* ======================================== */
+  /* Unified Background System - SINGLE SOLID COLOR */
+  /* ======================================== */
+
+  /* All sections use the same solid background - NO gradients */
+  .gradient-light,
+  .gradient-medium,
+  .gradient-accent {
+    background: white; /* Solid white - no gradient */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .dark .gradient-light,
+  .dark .gradient-medium,
+  .dark .gradient-accent {
+    background: hsl(220, 15%, 5%); /* Solid dark - no gradient */
+  }
+
+  /* Legacy gradient class mappings for compatibility */
+  .gradient-hero,
+  .gradient-features,
+  .gradient-usecases,
+  .gradient-business,
+  .gradient-process,
+  .gradient-pricing,
+  .gradient-faq {
+    background: white; /* All use the same solid white */
+  }
+  
+  .dark .gradient-hero,
+  .dark .gradient-features,
+  .dark .gradient-usecases,
+  .dark .gradient-business,
+  .dark .gradient-process,
+  .dark .gradient-pricing,
+  .dark .gradient-faq {
+    background: hsl(220, 15%, 5%); /* All use the same solid dark */
+  }
+
+  /* ========================================== */
+  /* Seamless Section System - No Visible Lines */
+  /* ========================================== */
+  
+  /* Allow blobs to extend beyond section boundaries */
+  .seamless-section {
+    position: relative;
+    overflow: visible !important;
+  }
+  
+  /* Extended blob system for cross-section continuity */
+  .blob-extended {
+    position: absolute;
+    pointer-events: none;
+    transform: translateZ(0); /* GPU acceleration */
+    will-change: transform;
+    contain: layout;
+  }
+  
+  /* Blob that spans from one section to another */
+  .blob-cross-section {
+    z-index: 15;
+    filter: blur(100px);
+  }
+  
+  /* Top blob extends into section below */
+  .blob-extend-bottom {
+    bottom: -30%;
+    height: 160%;
+  }
+  
+  /* Bottom blob extends into section above */
+  .blob-extend-top {
+    top: -30%;
+    height: 160%;
+  }
+  
+  /* Z-index system for proper layering */
+  .z-blob-back { z-index: -1; }
+  .z-content { z-index: 10; }
+  .z-blend { z-index: 5; }
+  .z-blob-front { z-index: 15; }
+  .z-modal { z-index: 50; }
+  
+  /* Performance optimizations */
+  @supports (backdrop-filter: blur(10px)) {
+    .glass-blend {
+      backdrop-filter: blur(10px) saturate(180%);
+      -webkit-backdrop-filter: blur(10px) saturate(180%);
+    }
+  }
+  
+  /* Animate morph for organic blobs */
+  @keyframes morph {
+    0%, 100% {
+      border-radius: 45% 55% 65% 35% / 35% 60% 40% 65%;
+    }
+    25% {
+      border-radius: 55% 45% 35% 65% / 65% 35% 65% 35%;
+    }
+    50% {
+      border-radius: 45% 55% 65% 35% / 35% 60% 40% 65%;
+    }
+    75% {
+      border-radius: 55% 45% 35% 65% / 65% 35% 65% 35%;
+    }
+  }
+  
+  .animate-morph {
+    animation: morph 20s ease-in-out infinite;
+  }
+  
+  /* Wave animation for blends */
+  @keyframes wave-slow {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-50px);
+    }
+  }
+  
+  .animate-wave-slow {
+    animation: wave-slow 30s ease-in-out infinite;
+  }
+  
+  /* Respect user preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-morph,
+    .animate-wave-slow {
+      animation: none !important;
+    }
+  }
+
+  /* ========================================== */
+  /* CONTINUOUS FLOW SHAPES - BRAND COLORS ONLY */
+  /* Fixed positioning for cross-section continuity */
+  /* ========================================== */
+  
+  /* Primary Neptune Blue Flow - Spans Hero to Features */
+  .flow-primary {
+    position: fixed;
+    width: 180vw;
+    height: 900px;
+    top: 5vh;
+    left: -30vw;
+    background: radial-gradient(
+      ellipse 800px 400px at 50% 50%,
+      hsla(220, 100%, 62%, 0.3) 0%,
+      hsla(220, 100%, 62%, 0.18) 30%,
+      hsla(220, 100%, 62%, 0.08) 60%,
+      hsla(220, 100%, 62%, 0) 100%
+    );
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+    animation: flow-horizontal 35s ease-in-out infinite;
+  }
+  
+  .dark .flow-primary {
+    background: radial-gradient(
+      ellipse 800px 400px at 50% 50%,
+      hsla(220, 100%, 68%, 0.35) 0%,
+      hsla(220, 100%, 68%, 0.2) 30%,
+      hsla(220, 100%, 68%, 0.1) 60%,
+      hsla(220, 100%, 68%, 0) 100%
+    );
+  }
+  
+  /* WhatsApp Green Flow - Spans Features to Use Cases */
+  .flow-whatsapp {
+    position: fixed;
+    width: 150vw;
+    height: 800px;
+    top: 45vh;
+    right: -25vw;
+    background: radial-gradient(
+      ellipse 700px 350px at 50% 50%,
+      hsla(150, 100%, 75%, 0.25) 0%,
+      hsla(150, 100%, 75%, 0.15) 35%,
+      hsla(150, 100%, 75%, 0.06) 65%,
+      hsla(150, 100%, 75%, 0) 100%
+    );
+    filter: blur(75px);
+    pointer-events: none;
+    z-index: 1;
+    animation: flow-diagonal 40s ease-in-out infinite;
+  }
+  
+  .dark .flow-whatsapp {
+    background: radial-gradient(
+      ellipse 700px 350px at 50% 50%,
+      hsla(150, 100%, 78%, 0.3) 0%,
+      hsla(150, 100%, 78%, 0.18) 35%,
+      hsla(150, 100%, 78%, 0.08) 65%,
+      hsla(150, 100%, 78%, 0) 100%
+    );
+  }
+  
+  /* Secondary Neptune Flow - Spans Use Cases to Business */
+  .flow-secondary {
+    position: fixed;
+    width: 160vw;
+    height: 700px;
+    top: 90vh;
+    left: -20vw;
+    background: radial-gradient(
+      ellipse 750px 375px at 50% 50%,
+      hsla(220, 100%, 62%, 0.22) 0%,
+      hsla(220, 100%, 62%, 0.12) 40%,
+      hsla(220, 100%, 62%, 0.05) 70%,
+      hsla(220, 100%, 62%, 0) 100%
+    );
+    filter: blur(85px);
+    pointer-events: none;
+    z-index: 1;
+    animation: flow-horizontal 32s ease-in-out infinite reverse;
+  }
+  
+  .dark .flow-secondary {
+    background: radial-gradient(
+      ellipse 750px 375px at 50% 50%,
+      hsla(220, 100%, 68%, 0.28) 0%,
+      hsla(220, 100%, 68%, 0.15) 40%,
+      hsla(220, 100%, 68%, 0.06) 70%,
+      hsla(220, 100%, 68%, 0) 100%
+    );
+  }
+  
+  /* Tertiary WhatsApp Flow - Spans Business to Pricing */
+  .flow-tertiary {
+    position: fixed;
+    width: 140vw;
+    height: 750px;
+    top: 140vh;
+    right: -15vw;
+    background: radial-gradient(
+      ellipse 650px 325px at 50% 50%,
+      hsla(150, 100%, 75%, 0.2) 0%,
+      hsla(150, 100%, 75%, 0.11) 40%,
+      hsla(150, 100%, 75%, 0.04) 70%,
+      hsla(150, 100%, 75%, 0) 100%
+    );
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 1;
+    animation: flow-diagonal 38s ease-in-out infinite reverse;
+  }
+  
+  .dark .flow-tertiary {
+    background: radial-gradient(
+      ellipse 650px 325px at 50% 50%,
+      hsla(150, 100%, 78%, 0.25) 0%,
+      hsla(150, 100%, 78%, 0.14) 40%,
+      hsla(150, 100%, 78%, 0.05) 70%,
+      hsla(150, 100%, 78%, 0) 100%
+    );
+  }
+  
+  /* Mixed Brand Wave - Spans Pricing to FAQ */
+  .wave-brand {
+    position: fixed;
+    width: 100vw;
+    height: 1200px;
+    top: 180vh;
+    left: 0;
+    background: linear-gradient(
+      180deg,
+      hsla(220, 100%, 62%, 0.18) 0%,
+      hsla(220, 100%, 62%, 0.1) 20%,
+      hsla(150, 100%, 75%, 0.12) 50%,
+      hsla(150, 100%, 75%, 0.16) 80%,
+      hsla(220, 100%, 62%, 0.14) 100%
+    );
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 1;
+    animation: wave-vertical 45s ease-in-out infinite;
+  }
+  
+  .dark .wave-brand {
+    background: linear-gradient(
+      180deg,
+      hsla(220, 100%, 68%, 0.22) 0%,
+      hsla(220, 100%, 68%, 0.13) 20%,
+      hsla(150, 100%, 78%, 0.15) 50%,
+      hsla(150, 100%, 78%, 0.2) 80%,
+      hsla(220, 100%, 68%, 0.17) 100%
+    );
+  }
+  
+  /* Final Flow - FAQ to CTA */
+  .flow-final {
+    position: fixed;
+    width: 170vw;
+    height: 600px;
+    top: 240vh;
+    left: -35vw;
+    background: radial-gradient(
+      ellipse 850px 425px at 50% 50%,
+      hsla(220, 100%, 62%, 0.25) 0%,
+      hsla(150, 100%, 75%, 0.15) 25%,
+      hsla(220, 100%, 62%, 0.12) 50%,
+      hsla(150, 100%, 75%, 0.08) 75%,
+      hsla(220, 100%, 62%, 0) 100%
+    );
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 1;
+    animation: flow-horizontal 50s ease-in-out infinite;
+  }
+  
+  .dark .flow-final {
+    background: radial-gradient(
+      ellipse 850px 425px at 50% 50%,
+      hsla(220, 100%, 68%, 0.3) 0%,
+      hsla(150, 100%, 78%, 0.18) 25%,
+      hsla(220, 100%, 68%, 0.15) 50%,
+      hsla(150, 100%, 78%, 0.1) 75%,
+      hsla(220, 100%, 68%, 0) 100%
+    );
+  }
+  
+  /* Position classes removed - using fixed positioning inline */
+  
+  /* ========================================== */
+  /* NUEVAS FORMAS CONTINUAS PRINCIPALES */
+  /* Atraviesan múltiples secciones para continuidad real */
+  /* ========================================== */
+  
+  /* Ola Neptune Principal - Atraviesa Hero → Features → Use Cases */
+  .neptune-wave-primary {
+    position: fixed;
+    width: 120vw;
+    height: 1400px;
+    top: -5vh;
+    left: -10vw;
+    background: radial-gradient(
+      ellipse 900px 400px at 30% 70%,
+      hsla(220, 100%, 62%, 0.15) 0%,
+      hsla(220, 100%, 62%, 0.1) 40%,
+      hsla(220, 100%, 62%, 0.04) 70%,
+      transparent 100%
+    );
+    border-radius: 45% 55% 60% 40% / 50% 50% 50% 50%;
+    filter: blur(60px);
+    z-index: 1;
+    pointer-events: none;
+    animation: wave-flow 40s ease-in-out infinite;
+  }
+  
+  .dark .neptune-wave-primary {
+    background: radial-gradient(
+      ellipse 900px 400px at 30% 70%,
+      hsla(220, 100%, 68%, 0.22) 0%,
+      hsla(220, 100%, 68%, 0.14) 40%,
+      hsla(220, 100%, 68%, 0.06) 70%,
+      transparent 100%
+    );
+  }
+  
+  /* Blob WhatsApp Continuo - Features → Use Cases → Business */
+  .whatsapp-blob-continuous {
+    position: fixed;
+    width: 900px;
+    height: 1600px;
+    top: 30vh;
+    right: -250px;
+    background: radial-gradient(
+      ellipse 600px 500px at 60% 40%,
+      hsla(150, 100%, 75%, 0.18) 0%,
+      hsla(150, 100%, 75%, 0.12) 35%,
+      hsla(150, 100%, 75%, 0.06) 65%,
+      transparent 100%
+    );
+    border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
+    z-index: 1;
+    pointer-events: none;
+    animation: blob-morph-continuous 35s ease-in-out infinite;
+  }
+  
+  .dark .whatsapp-blob-continuous {
+    background: radial-gradient(
+      ellipse 600px 500px at 60% 40%,
+      hsla(150, 100%, 78%, 0.25) 0%,
+      hsla(150, 100%, 78%, 0.16) 35%,
+      hsla(150, 100%, 78%, 0.08) 65%,
+      transparent 100%
+    );
+  }
+  
+  /* Espiral de Marca - Business → How It Works → Pricing */
+  /* COMENTADO - Elemento decorativo giratorio eliminado
+  .brand-spiral {
+    position: fixed;
+    width: 100vw;
+    height: 1800px;
+    top: 100vh;
+    left: 0;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      hsla(220, 100%, 62%, 0.1) 0deg,
+      hsla(150, 100%, 75%, 0.14) 90deg,
+      hsla(220, 100%, 62%, 0.12) 180deg,
+      hsla(150, 100%, 75%, 0.1) 270deg,
+      hsla(220, 100%, 62%, 0.1) 360deg
+    );
+    clip-path: ellipse(85% 65% at 50% 50%);
+    z-index: 1;
+    pointer-events: none;
+    animation: spiral-rotation 60s linear infinite;
+  }
+  
+  .dark .brand-spiral {
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      hsla(220, 100%, 68%, 0.15) 0deg,
+      hsla(150, 100%, 78%, 0.2) 90deg,
+      hsla(220, 100%, 68%, 0.17) 180deg,
+      hsla(150, 100%, 78%, 0.15) 270deg,
+      hsla(220, 100%, 68%, 0.15) 360deg
+    );
+  }
+  */
+  
+  /* Conectores de Sección - Gradientes de transición suaves */
+  .section-connector-top {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsla(220, 100%, 62%, 0.03) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  .section-connector-bottom {
+    position: absolute;
+    bottom: -100px;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      hsla(150, 100%, 75%, 0.03) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  .dark .section-connector-top {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsla(220, 100%, 68%, 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  .dark .section-connector-bottom {
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      hsla(150, 100%, 78%, 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  /* Neptune Blue blobs for Features section - Using ONLY official colors */
+  .blob-neptune {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border-radius: 45% 55% 65% 35% / 35% 60% 40% 65%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 62%, 0.25) 0%,
+      hsla(220, 100%, 62%, 0.15) 50%,
+      hsla(220, 100%, 62%, 0.05) 100%
+    );
+    animation: morph 16s ease-in-out infinite, float 21s ease-in-out infinite;
+    filter: blur(45px);
+    pointer-events: none;
+  }
+  
+  .dark .blob-neptune {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 68%, 0.3) 0%,
+      hsla(220, 100%, 68%, 0.18) 50%,
+      hsla(220, 100%, 68%, 0.06) 100%
+    );
+  }
+  
+  .blob-whatsapp {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 55% 45% 35% 65% / 45% 35% 65% 55%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 75%, 0.22) 0%,
+      hsla(150, 100%, 75%, 0.12) 50%,
+      hsla(150, 100%, 75%, 0.04) 100%
+    );
+    animation: morph 19s ease-in-out infinite reverse, float 24s ease-in-out infinite reverse;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  
+  .dark .blob-whatsapp {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 78%, 0.28) 0%,
+      hsla(150, 100%, 78%, 0.15) 50%,
+      hsla(150, 100%, 78%, 0.05) 100%
+    );
+  }
+  
+  /* Wave shapes for Use Cases - Using Brand Colors */
+  .wave-1 {
+    position: absolute;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(
+      90deg,
+      hsla(220, 100%, 62%, 0.15) 0%,
+      hsla(220, 100%, 62%, 0.1) 50%,
+      hsla(220, 100%, 62%, 0.05) 100%
+    );
+    clip-path: ellipse(100% 100% at 50% 100%);
+    animation: wave-motion 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+  
+  .dark .wave-1 {
+    background: linear-gradient(
+      90deg,
+      hsla(220, 100%, 68%, 0.18) 0%,
+      hsla(220, 100%, 68%, 0.12) 50%,
+      hsla(220, 100%, 68%, 0.06) 100%
+    );
+  }
+  
+  .wave-2 {
+    position: absolute;
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(
+      -90deg,
+      hsla(150, 100%, 75%, 0.12) 0%,
+      hsla(150, 100%, 75%, 0.08) 50%,
+      hsla(150, 100%, 75%, 0.04) 100%
+    );
+    clip-path: ellipse(100% 100% at 50% 0%);
+    animation: wave-motion 25s ease-in-out infinite reverse;
+    pointer-events: none;
+  }
+  
+  .dark .wave-2 {
+    background: linear-gradient(
+      -90deg,
+      hsla(150, 100%, 78%, 0.15) 0%,
+      hsla(150, 100%, 78%, 0.10) 50%,
+      hsla(150, 100%, 78%, 0.05) 100%
+    );
+  }
+  
+  .wave-top {
+    top: 0;
+  }
+  
+  .wave-bottom {
+    bottom: 0;
+  }
+  
+  /* Success blobs for Business section - Using WhatsApp Green */
+  .blob-success {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 42% 58% 62% 38% / 38% 62% 38% 62%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 75%, 0.2) 0%,
+      hsla(150, 100%, 75%, 0.12) 50%,
+      hsla(150, 100%, 75%, 0.04) 100%
+    );
+    animation: morph 17s ease-in-out infinite, float 22s ease-in-out infinite;
+    filter: blur(42px);
+    pointer-events: none;
+  }
+  
+  .dark .blob-success {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 78%, 0.25) 0%,
+      hsla(150, 100%, 78%, 0.15) 50%,
+      hsla(150, 100%, 78%, 0.05) 100%
+    );
+  }
+  
+  .blob-success-2 {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 58% 42% 38% 62% / 62% 38% 62% 38%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 75%, 0.18) 0%,
+      hsla(150, 100%, 75%, 0.10) 50%,
+      hsla(150, 100%, 75%, 0.03) 100%
+    );
+    animation: morph 20s ease-in-out infinite reverse, float 26s ease-in-out infinite reverse;
+    filter: blur(38px);
+    pointer-events: none;
+  }
+  
+  .dark .blob-success-2 {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 78%, 0.22) 0%,
+      hsla(150, 100%, 78%, 0.12) 50%,
+      hsla(150, 100%, 78%, 0.04) 100%
+    );
+  }
+  
+  /* Removed geometric shapes - Now using organic blobs only */
+  
+  /* Flow shapes for Process section - Using Neptune Blue */
+  .flow-shape-1 {
+    position: absolute;
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 62%, 0.18) 0%,
+      hsla(220, 100%, 62%, 0.10) 50%,
+      hsla(220, 100%, 62%, 0.03) 100%
+    );
+    border-radius: 100% 0% 100% 0% / 50% 50% 50% 50%;
+    animation: flow-motion 20s ease-in-out infinite;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  
+  .dark .flow-shape-1 {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 68%, 0.22) 0%,
+      hsla(220, 100%, 68%, 0.12) 50%,
+      hsla(220, 100%, 68%, 0.04) 100%
+    );
+  }
+  
+  .flow-shape-2 {
+    position: absolute;
+    width: 450px;
+    height: 250px;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 75%, 0.15) 0%,
+      hsla(150, 100%, 75%, 0.08) 50%,
+      hsla(150, 100%, 75%, 0.02) 100%
+    );
+    border-radius: 0% 100% 0% 100% / 50% 50% 50% 50%;
+    animation: flow-motion 25s ease-in-out infinite reverse;
+    filter: blur(35px);
+    pointer-events: none;
+  }
+  
+  .dark .flow-shape-2 {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 78%, 0.18) 0%,
+      hsla(150, 100%, 78%, 0.10) 50%,
+      hsla(150, 100%, 78%, 0.03) 100%
+    );
+  }
+  
+  .flow-top {
+    top: 5%;
+  }
+  
+  .flow-bottom {
+    bottom: 5%;
+  }
+  
+  /* Soft blobs for FAQ - Using Brand Colors */
+  .soft-blob-1 {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 48% 52% 58% 42% / 42% 58% 42% 58%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 62%, 0.15) 0%,
+      hsla(220, 100%, 62%, 0.08) 50%,
+      hsla(220, 100%, 62%, 0.02) 100%
+    );
+    animation: morph 22s ease-in-out infinite, float 28s ease-in-out infinite;
+    filter: blur(50px);
+    pointer-events: none;
+  }
+  
+  .dark .soft-blob-1 {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(220, 100%, 68%, 0.18) 0%,
+      hsla(220, 100%, 68%, 0.10) 50%,
+      hsla(220, 100%, 68%, 0.03) 100%
+    );
+  }
+  
+  .soft-blob-2 {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 52% 48% 42% 58% / 58% 42% 58% 42%;
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 75%, 0.12) 0%,
+      hsla(150, 100%, 75%, 0.06) 50%,
+      hsla(150, 100%, 75%, 0.02) 100%
+    );
+    animation: morph 25s ease-in-out infinite reverse, float 32s ease-in-out infinite reverse;
+    filter: blur(45px);
+    pointer-events: none;
+  }
+  
+  .dark .soft-blob-2 {
+    background: radial-gradient(
+      ellipse at center,
+      hsla(150, 100%, 78%, 0.15) 0%,
+      hsla(150, 100%, 78%, 0.08) 50%,
+      hsla(150, 100%, 78%, 0.02) 100%
+    );
+  }
+  
+  .soft-blob-top {
+    top: 10%;
+  }
+  
+  .soft-blob-bottom {
+    bottom: 10%;
+  }
+  
+  /* Blob positioning classes */
+  .blob-top-left {
+    top: -150px;
+    left: -150px;
+  }
+  
+  .blob-top-right {
+    top: -100px;
+    right: -100px;
+  }
+  
+  .blob-bottom-left {
+    bottom: -120px;
+    left: -120px;
+  }
+  
+  .blob-bottom-right {
+    bottom: -150px;
+    right: -150px;
+  }
+  
+  .blob-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Grain Texture Overlay - Adds organic texture */
+  .grain-overlay {
+    position: relative;
+  }
+
+  .grain-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23grain)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Glass Morphism Effects - Modern Frosted Glass */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  }
+  
+  .dark .glass-card {
+    background: rgba(20, 20, 20, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  .glass-element {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .glass-element {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Floating Glass Shapes */
+  .glass-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+  }
+  
+  .dark .glass-circle {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  .glass-hexagon {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 45% 55% 60% 40% / 40% 60% 40% 60%;
+    pointer-events: none;
+  }
+  
+  .dark .glass-hexagon {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Glow Effects - Subtle radial glows */
+  .glow-top {
+    position: relative;
+  }
+
+  .glow-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(220, 90%, 60%, 0.3) 50%,
+      transparent 100%
+    );
+    filter: blur(20px);
+    pointer-events: none;
+  }
+
+  .glow-bottom {
+    position: relative;
+  }
+
+  .glow-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(220, 90%, 60%, 0.3) 50%,
+      transparent 100%
+    );
+    filter: blur(20px);
+    pointer-events: none;
+  }
+
+  /* Legacy subtle background variations - kept for compatibility */
+  .bg-warm-accent {
+    background-color: oklch(0.98 0.01 80);
+  }
+  
+  .bg-success-subtle {
+    background-color: oklch(0.98 0.015 150);
+  }
+  
+  .bg-premium-subtle {
+    background-color: oklch(0.98 0.01 280);
+  }
+  
+  .bg-energy-subtle {
+    background-color: oklch(0.98 0.01 40);
+  }
+
+  /* Dark mode variations - legacy */
+  .dark .bg-warm-accent {
+    background-color: oklch(0.12 0.01 80);
+  }
+  
+  .dark .bg-success-subtle {
+    background-color: oklch(0.12 0.015 150);
+  }
+  
+  .dark .bg-premium-subtle {
+    background-color: oklch(0.12 0.01 280);
+  }
+  
+  .dark .bg-energy-subtle {
+    background-color: oklch(0.12 0.01 40);
+  }
+
   /* SIMPLE HIGHLIGHT TEXT EFFECT */
   /* Clean blue text for emphasis without background effects */
   .highlight-text {
@@ -353,6 +1291,206 @@
     .desktop-grid-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+}
+
+/* Blob Morph Animation - Organic Shape Shifting */
+@keyframes morph {
+  0%, 100% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+  25% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 70% 50% 50% / 30% 70% 30% 70%;
+  }
+  75% {
+    border-radius: 70% 30% 40% 60% / 70% 40% 60% 30%;
+  }
+}
+
+/* Float Animation - Gentle Floating Motion */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-30px) translateX(20px) rotate(3deg);
+  }
+  66% {
+    transform: translateY(20px) translateX(-15px) rotate(-2deg);
+  }
+}
+
+/* Continuous Flow Animations - Enhanced for smooth transitions */
+@keyframes flow-horizontal {
+  0%, 100% {
+    transform: translateX(-20%) translateY(0);
+  }
+  25% {
+    transform: translateX(10%) translateY(-30px);
+  }
+  50% {
+    transform: translateX(-10%) translateY(20px);
+  }
+  75% {
+    transform: translateX(5%) translateY(-10px);
+  }
+}
+
+@keyframes flow-diagonal {
+  0%, 100% {
+    transform: translate(-10%, -10%) rotate(0deg);
+  }
+  33% {
+    transform: translate(15%, 5%) rotate(2deg);
+  }
+  66% {
+    transform: translate(-5%, 15%) rotate(-1deg);
+  }
+}
+
+@keyframes wave-vertical {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-50px) scaleY(1.1);
+  }
+}
+
+/* Glass Float Animation - Used by glass elements */
+@keyframes glass-float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(10px) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(-10px);
+  }
+}
+
+/* Wave Flow Animation - For continuous wave shapes */
+@keyframes wave-flow {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateX(50px) translateY(-30px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-30px) translateY(20px);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translateX(30px) translateY(-10px);
+    opacity: 1;
+  }
+}
+
+/* Blob Morph Continuous - For large continuous blobs */
+@keyframes blob-morph-continuous {
+  0%, 100% {
+    border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%;
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  25% {
+    border-radius: 60% 40% 70% 30% / 40% 70% 30% 60%;
+    transform: translateX(-30px) translateY(40px) rotate(45deg);
+  }
+  50% {
+    border-radius: 30% 70% 40% 60% / 70% 40% 60% 30%;
+    transform: translateX(40px) translateY(-20px) rotate(90deg);
+  }
+  75% {
+    border-radius: 70% 30% 60% 40% / 30% 60% 40% 70%;
+    transform: translateX(-20px) translateY(30px) rotate(135deg);
+  }
+}
+
+/* Spiral Rotation - For brand spiral */
+@keyframes spiral-rotation {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Original animations kept for compatibility */
+@keyframes wave-motion {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  25% {
+    transform: translateY(-10px) scaleY(1.05);
+  }
+  50% {
+    transform: translateY(0) scaleY(0.95);
+  }
+  75% {
+    transform: translateY(10px) scaleY(1.02);
+  }
+}
+
+@keyframes flow-motion {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(20px) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-10px) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(15px) rotate(1deg);
+  }
+}
+
+/* Rotate Slow Animation */
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Glass Float Animation - For Glass Elements */
+@keyframes glass-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Pulse Animation - Gentle Pulsing */
+@keyframes gentle-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
   }
 }
 

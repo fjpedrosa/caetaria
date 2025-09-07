@@ -16,6 +16,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { baseApi } from '../api/base-api'
 
 import { persistenceMiddleware } from './middleware/persistence'
+import authSlice from './slices/auth-slice'
 import { uiSlice } from './slices/ui-slice'
 
 /**
@@ -30,12 +31,14 @@ const rootReducer = {
   // RTK Query reducers - automatically generated
   [baseApi.reducerPath]: baseApi.reducer,
 
+  // Auth state slice - for authentication state
+  auth: authSlice,
+
   // UI state slice - for global UI state
   ui: uiSlice.reducer,
 
   // Add more slices here as needed
   // Examples:
-  // - auth: authSlice.reducer (if not using NextAuth)
   // - preferences: preferencesSlice.reducer
   // - notifications: notificationsSlice.reducer
 }

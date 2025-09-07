@@ -16,10 +16,10 @@ interface QuickReplyButtonsProps {
   isVisible?: boolean;
 }
 
-export function QuickReplyButtons({ 
-  buttons, 
+export function QuickReplyButtons({
+  buttons,
   onButtonClick,
-  isVisible = true 
+  isVisible = true
 }: QuickReplyButtonsProps) {
   // WhatsApp allows maximum 3 quick reply buttons
   const displayButtons = buttons.slice(0, 3);
@@ -40,10 +40,10 @@ export function QuickReplyButtons({
             key={button.id}
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ 
-              duration: 0.3, 
+            transition={{
+              duration: 0.3,
               delay: index * 0.1,
-              type: "spring",
+              type: 'spring',
               stiffness: 300,
               damping: 25
             }}
@@ -61,7 +61,7 @@ export function QuickReplyButtons({
           </motion.button>
         ))}
       </div>
-      
+
       {/* WhatsApp branding hint */}
       <motion.div
         initial={{ opacity: 0 }}

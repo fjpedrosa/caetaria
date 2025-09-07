@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/nextjs';
 /**
  * Health Check API Route
  * GET /api/health
- * 
+ *
  * This endpoint provides system health status and demonstrates
  * Sentry performance monitoring integration
  */
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
           span.setStatus({ code: 1, message: 'ok' });
         } else if (overallStatus === 'degraded') {
           span.setStatus({ code: 1, message: 'degraded' });
-          
+
           // Log degraded status to Sentry
           Sentry.captureMessage('System health degraded', {
             level: 'warning',
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
           });
         } else {
           span.setStatus({ code: 2, message: 'unhealthy' });
-          
+
           // Log unhealthy status to Sentry
           Sentry.captureMessage('System health critical', {
             level: 'error',
@@ -101,8 +101,8 @@ export async function GET(request: NextRequest) {
           {
             status: 'error',
             message: 'Failed to perform health check',
-            error: process.env.NODE_ENV === 'development' 
-              ? (error as Error).message 
+            error: process.env.NODE_ENV === 'development'
+              ? (error as Error).message
               : 'Internal server error',
           },
           { status: 500 }
@@ -167,13 +167,13 @@ async function checkDatabase() {
   try {
     // This is a placeholder - implement actual Supabase health check
     // For example, you could ping the Supabase API or run a simple query
-    
+
     // Simulate database check
     const startTime = Date.now();
-    
+
     // In production, replace with actual database ping
     // const { error } = await supabase.from('_health').select('1').single();
-    
+
     const responseTime = Date.now() - startTime;
 
     return {
@@ -198,7 +198,7 @@ function checkMemory() {
   const heapUsedMB = Math.round(used.heapUsed / 1024 / 1024);
   const heapTotalMB = Math.round(used.heapTotal / 1024 / 1024);
   const rssMB = Math.round(used.rss / 1024 / 1024);
-  
+
   const heapPercentage = (used.heapUsed / used.heapTotal) * 100;
 
   return {
@@ -217,10 +217,10 @@ function checkMemory() {
 async function checkApiLatency() {
   try {
     const startTime = Date.now();
-    
+
     // Simulate API call - in production, call an actual internal endpoint
     await new Promise(resolve => setTimeout(resolve, 10));
-    
+
     const latency = Date.now() - startTime;
 
     return {

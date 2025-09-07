@@ -10,9 +10,9 @@ interface FeatureBadgeProps {
  * Badge consistente para las tarjetas de features
  * Soluciona el problema de z-index y visibilidad
  */
-export const FeatureBadge: React.FC<FeatureBadgeProps> = ({ 
-  text, 
-  variant = 'popular' 
+export const FeatureBadge: React.FC<FeatureBadgeProps> = ({
+  text,
+  variant = 'popular'
 }) => {
   const variantStyles = {
     popular: 'bg-primary text-white',

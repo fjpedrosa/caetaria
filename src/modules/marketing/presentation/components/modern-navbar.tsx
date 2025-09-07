@@ -6,15 +6,22 @@ import type { LucideIcon } from 'lucide-react';
 import {
   BarChart3,
   Bot,
+  Briefcase,
   Building2,
   ChevronDown,
   CreditCard,
   FileText,
+  GraduationCap,
+  Heart,
   HelpCircle,
   Menu,
   MessageCircle,
   Shield,
+  ShoppingCart,
+  Target,
+  TrendingUp,
   Users,
+  UtensilsCrossed,
   Zap} from '@/lib/icons';
 import { HoverLink, ImmediateLink, SmartLink } from '@/lib/prefetch/smart-link';
 import { cn } from '@/lib/utils';
@@ -97,22 +104,41 @@ const solutionSections: MegaMenuSection[] = [
     title: 'Por Industria',
     items: [
       {
-        title: 'E-commerce',
-        description: 'Automatiza ventas y atención al cliente',
-        href: '/soluciones/ecommerce',
-        icon: Building2
+        title: 'Comercio',
+        description: 'Vende más con catálogos interactivos',
+        href: '/soluciones/industrias/comercio',
+        icon: ShoppingCart,
+        badge: 'Popular'
       },
       {
-        title: 'Servicios',
-        description: 'Gestiona citas y consultas',
-        href: '/soluciones/servicios',
-        icon: Users
+        title: 'Salud',
+        description: 'Gestiona citas y recordatorios médicos',
+        href: '/soluciones/industrias/salud',
+        icon: Heart
+      },
+      {
+        title: 'Hostelería',
+        description: 'Reservas y pedidos automatizados',
+        href: '/soluciones/industrias/hosteleria',
+        icon: UtensilsCrossed
       },
       {
         title: 'Educación',
         description: 'Soporte estudiantil automatizado',
-        href: '/soluciones/educacion',
-        icon: FileText
+        href: '/soluciones/industrias/educacion',
+        icon: GraduationCap
+      },
+      {
+        title: 'Servicios Profesionales',
+        description: 'Gestión de clientes y proyectos',
+        href: '/soluciones/industrias/servicios-profesionales',
+        icon: Briefcase
+      },
+      {
+        title: 'Ver todas',
+        description: 'Explora todas las industrias',
+        href: '/soluciones/industrias',
+        icon: Building2
       }
     ]
   },
@@ -120,23 +146,29 @@ const solutionSections: MegaMenuSection[] = [
     title: 'Casos de Uso',
     items: [
       {
-        title: 'Atención al Cliente',
-        description: 'Respuestas 24/7 con IA',
-        href: '/soluciones/atencion-cliente',
-        icon: HelpCircle,
+        title: 'Ventas y Conversión',
+        description: 'Cierra más ventas automáticamente',
+        href: '/soluciones',
+        icon: TrendingUp,
         badge: 'Top'
       },
       {
-        title: 'Ventas Automatizadas',
-        description: 'Convierte leads en clientes',
-        href: '/soluciones/ventas',
-        icon: BarChart3
+        title: 'Atención al Cliente',
+        description: 'Respuestas 24/7 con IA conversacional',
+        href: '/soluciones',
+        icon: MessageCircle
       },
       {
-        title: 'Seguridad Garantizada',
-        description: 'Tus datos siempre protegidos',
-        href: '/soluciones/seguridad',
-        icon: Shield
+        title: 'Marketing y Engagement',
+        description: 'Campañas personalizadas que convierten',
+        href: '/soluciones',
+        icon: Target
+      },
+      {
+        title: 'Operaciones',
+        description: 'Automatiza procesos repetitivos',
+        href: '/soluciones',
+        icon: Zap
       }
     ]
   }
@@ -485,7 +517,7 @@ export function ModernNavbar({
                 Iniciar sesión
               </HoverLink>
               <ImmediateLink
-                href="/onboarding"
+                href="/login?redirect=/onboarding"
                 priority="high"
                 highPriority={true}
                 className="nav-link--button bg-primary text-primary-foreground px-4 py-2 text-sm font-medium rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 no-underline"
@@ -597,7 +629,7 @@ export function ModernNavbar({
                       Iniciar sesión
                     </HoverLink>
                     <ImmediateLink
-                      href="/onboarding"
+                      href="/login?redirect=/onboarding"
                       priority="high"
                       highPriority={true}
                       className="w-full justify-center bg-primary text-primary-foreground px-3 py-2 text-sm font-medium rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 min-h-[44px] touch-manipulation flex items-center no-underline"

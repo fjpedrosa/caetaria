@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { type LucideIcon } from 'lucide-react';
-import { FeatureBadge } from './feature-badge';
-import { BenefitsList } from './benefits-list';
+
 import type { BenefitWithIcon } from '../hooks/use-features-grid';
+
+import { BenefitsList } from './benefits-list';
+import { FeatureBadge } from './feature-badge';
 
 interface FeatureCardProps {
   title: string;
@@ -51,13 +53,13 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       className={cardStyles.container}
       onClick={onFeatureClick}
       whileHover={{ y: -4 }}
-      transition={{ duration: 0.15, ease: "easeInOut" }}
+      transition={{ duration: 0.15, ease: 'easeInOut' }}
     >
       {/* Badge mejorado con z-index correcto */}
       {badge && (
-        <FeatureBadge 
-          text={badge} 
-          variant={isPopular ? 'popular' : isPremium ? 'premium' : 'new'} 
+        <FeatureBadge
+          text={badge}
+          variant={isPopular ? 'popular' : isPremium ? 'premium' : 'new'}
         />
       )}
 

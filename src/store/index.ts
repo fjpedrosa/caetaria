@@ -2,6 +2,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 import { fakeOnboardingApi } from '@/modules/onboarding/infrastructure/fake-onboarding-api'
+import { realOnboardingApi } from '@/modules/onboarding/infrastructure/onboarding-api-rtk'
+import authSlice from '@/shared/state/slices/auth-slice'
+import { uiSlice } from '@/shared/state/slices/ui-slice'
 
 import { analyticsApi } from './api/analytics-api'
 import { baseApi } from './api/base-api'
@@ -12,6 +15,12 @@ import { onboardingApi } from './api/onboarding-api'
 export const makeStore = () => {
   const store = configureStore({
     reducer: {
+      // Auth state slice - for authentication state (user profile only, no tokens)
+      auth: authSlice,
+
+      // UI state slice - for global UI state
+      ui: uiSlice.reducer,
+
       // Base API (generic operations)
       [baseApi.reducerPath]: baseApi.reducer,
 
@@ -19,6 +28,9 @@ export const makeStore = () => {
       [leadsApi.reducerPath]: leadsApi.reducer,
       [analyticsApi.reducerPath]: analyticsApi.reducer,
       [onboardingApi.reducerPath]: onboardingApi.reducer,
+
+      // Real Onboarding API (Supabase-backed)
+      [realOnboardingApi.reducerPath]: realOnboardingApi.reducer,
 
       // Legacy API (will be removed)
       [fakeOnboardingApi.reducerPath]: fakeOnboardingApi.reducer,
@@ -53,6 +65,7 @@ export const makeStore = () => {
         .concat(leadsApi.middleware)
         .concat(analyticsApi.middleware)
         .concat(onboardingApi.middleware)
+        .concat(realOnboardingApi.middleware)
         .concat(fakeOnboardingApi.middleware),
     devTools: process.env.NODE_ENV !== 'production' && {
       // Enhanced DevTools configuration

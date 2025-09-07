@@ -54,7 +54,7 @@ export default function TestLocalPage() {
           testResult.flows = flowsCount;
         }
 
-        // Test 3: Count analytics events  
+        // Test 3: Count analytics events
         const { count: eventsCount } = await supabase
           .from('analytics_events')
           .select('*', { count: 'exact', head: true });
@@ -91,7 +91,7 @@ export default function TestLocalPage() {
             .from('leads')
             .delete()
             .eq('id', newLead.id);
-          
+
           testResult.writeTest = true;
         }
 

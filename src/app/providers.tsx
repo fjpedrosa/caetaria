@@ -6,8 +6,10 @@ import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { Provider as ReduxProvider } from 'react-redux'
 
+import { AuthListener } from '@/components/auth-listener'
 import { clientConfig, debugLog,shouldEnableAnalytics } from '@/lib/config/client-config'
 import { PrefetchProvider } from '@/lib/prefetch'
+import { RegionProvider } from '@/modules/marketing/application/contexts/region-context'
 import ErrorBoundary from '@/modules/shared/presentation/components/error-boundary'
 import type { AppStore } from '@/store'
 import { makeStore } from '@/store'
@@ -17,9 +19,11 @@ import { makeStore } from '@/store'
  *
  * Wraps the application with essential providers:
  * - ReduxProvider: State management with Redux Toolkit
+ * - AuthListener: Listens to Supabase auth changes and updates Redux store
  * - ThemeProvider: Theme management for dark/light mode
  * - ErrorBoundary: Error handling with graceful fallbacks
  * - PostHogProvider: Analytics tracking with PostHog
+ * - RegionProvider: Regional context management
  * - PrefetchProvider: Smart prefetch system for Next.js 15
  *
  * This component creates a per-request store instance for proper
@@ -97,32 +101,36 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary>
       <ReduxProvider store={store}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="neptunik-theme"
-          themes={['light', 'dark', 'system']}
-        >
-          <PostHogProvider client={posthog}>
-            <PrefetchProvider
-              options={{
-                debug: clientConfig.app.isDevelopment,
-                analytics: shouldEnableAnalytics(),
-                constraints: {
-                  maxConcurrentPrefetch: 3,
-                  maxMemoryUsage: 50, // 50MB
-                  minConnectionSpeed: 1.5, // 1.5 Mbps
-                  maxPrefetchPerMinute: 20
-                }
-              }}
-              enableMonitoring={clientConfig.features.performanceMonitoring}
-            >
-              {children}
-            </PrefetchProvider>
-          </PostHogProvider>
-        </ThemeProvider>
+        <AuthListener>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="neptunik-theme"
+            themes={['light', 'dark', 'system']}
+          >
+            <PostHogProvider client={posthog}>
+              <RegionProvider defaultRegion="spain">
+                <PrefetchProvider
+                  options={{
+                    debug: clientConfig.app.isDevelopment,
+                    analytics: shouldEnableAnalytics(),
+                    constraints: {
+                      maxConcurrentPrefetch: 3,
+                      maxMemoryUsage: 50, // 50MB
+                      minConnectionSpeed: 1.5, // 1.5 Mbps
+                      maxPrefetchPerMinute: 20
+                    }
+                  }}
+                  enableMonitoring={clientConfig.features.performanceMonitoring}
+                >
+                  {children}
+                </PrefetchProvider>
+              </RegionProvider>
+            </PostHogProvider>
+          </ThemeProvider>
+        </AuthListener>
       </ReduxProvider>
     </ErrorBoundary>
   )

@@ -1,13 +1,12 @@
 /**
  * Use Case Card Component
  * Interactive card that displays a use case with hover and selected states
- * Inspired by Canny.io card design pattern
+ * Simplified version with always-visible numbers and reduced animations
  */
 
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 
 interface UseCaseMetric {
@@ -35,16 +34,18 @@ interface UseCaseCardProps {
   useCase: UseCaseCategory;
   isSelected: boolean;
   onClick: () => void;
+  index: number; // Para mostrar el número del paso
 }
 
 /**
  * Use Case Card Component
- * Interactive card with smooth animations and clear visual hierarchy
+ * Tarjeta simplificada con números siempre visibles y animaciones sutiles
  */
 export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
   useCase,
   isSelected,
-  onClick
+  onClick,
+  index
 }) {
   const Icon = useCase.icon;
   const PrimaryIcon = useCase.metrics.primary.icon;
@@ -52,18 +53,16 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
   const TertiaryIcon = useCase.metrics.tertiary.icon;
 
   return (
-    <motion.button
+    <button
       className={`
         w-full text-left p-5 lg:p-6 rounded-2xl border-2
         group relative overflow-hidden
-        transform transition-all duration-200 ease-out
-        hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl
+        transition-all duration-200 ease-out
         ${isSelected
           ? 'bg-primary/10 dark:bg-primary/15 border-primary shadow-xl ring-2 ring-primary/30 dark:ring-primary/40'
-          : 'bg-card dark:bg-card/50 hover:bg-primary/5 dark:hover:bg-primary/10 border-border dark:border-border/50 hover:border-primary/60'
+          : 'bg-card dark:bg-card/50 hover:bg-primary/5 dark:hover:bg-primary/10 border-border dark:border-border/50 hover:border-primary/60 hover:shadow-lg'
         }
       `}
-      whileTap={{ scale: 0.98 }}
       onClick={onClick}
       role="tab"
       aria-label={`Seleccionar caso de uso: ${useCase.title}`}
@@ -71,41 +70,37 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
       aria-controls={`panel-${useCase.id}`}
       id={`tab-${useCase.id}`}
     >
-      {/* Selected indicator */}
-      {isSelected && (
-        <motion.div
-          className="absolute top-4 lg:top-5 right-4 lg:right-5 z-10"
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        >
-          <div className="w-7 h-7 rounded-full bg-primary dark:bg-primary flex items-center justify-center shadow-md">
-            <svg className="w-4 h-4 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-        </motion.div>
-      )}
+      {/* Número del paso - siempre visible */}
+      <div className="absolute top-4 lg:top-5 right-4 lg:right-5 z-10">
+        <div className={`
+          w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg
+          ${isSelected
+            ? 'bg-primary text-white shadow-lg'
+            : 'bg-primary/20 text-primary'
+          }
+          transition-all duration-200
+        `}>
+          {String(index + 1).padStart(2, '0')}
+        </div>
+      </div>
 
       {/* Card Content */}
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-start gap-3">
           {/* Icon */}
-          <motion.div
+          <div
             className={`
               flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center
               ${isSelected
-                ? 'bg-primary dark:bg-primary text-primary-foreground'
-                : 'bg-muted dark:bg-muted/30 text-muted-foreground dark:text-muted-foreground group-hover:bg-primary/10 dark:group-hover:bg-primary/20 group-hover:text-primary'
+                ? 'bg-primary text-white'
+                : 'bg-primary/10 text-primary group-hover:bg-primary/20'
               }
               transition-all duration-200
             `}
-            animate={isSelected ? { rotate: [0, -5, 5, 0] } : {}}
-            transition={{ duration: 0.5 }}
           >
             <Icon className="w-6 h-6" aria-hidden="true" />
-          </motion.div>
+          </div>
 
           {/* Title and Subtitle */}
           <div className="flex-1 min-w-0 pr-8">
@@ -125,7 +120,7 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
           </div>
         </div>
 
-        {/* Description */}
+        {/* Description - Siempre visible */}
         <p className={`
           text-sm lg:text-[15px] leading-relaxed
           ${isSelected
@@ -137,13 +132,8 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
           {useCase.description}
         </p>
 
-        {/* Metrics Grid */}
-        <motion.div
-          className="grid grid-cols-3 gap-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.3 }}
-        >
+        {/* Metrics Grid - Siempre visible y expandido */}
+        <div className="grid grid-cols-3 gap-2">
           {/* Primary Metric */}
           <div className={`
             flex flex-col items-center p-2.5 rounded-lg transition-all
@@ -152,7 +142,7 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
               : 'bg-muted/50 dark:bg-muted/20 group-hover:bg-muted dark:group-hover:bg-muted/30'
             }
           `}>
-            <PrimaryIcon className="w-4 h-4 text-primary dark:text-primary mb-1" aria-hidden="true" />
+            <PrimaryIcon className="w-4 h-4 text-primary mb-1" aria-hidden="true" />
             <span className="text-xs font-bold text-foreground dark:text-foreground">
               {useCase.metrics.primary.value}
             </span>
@@ -169,7 +159,7 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
               : 'bg-muted/50 dark:bg-muted/20 group-hover:bg-muted dark:group-hover:bg-muted/30'
             }
           `}>
-            <SecondaryIcon className="w-4 h-4 text-green-600 dark:text-green-500 mb-1" aria-hidden="true" />
+            <SecondaryIcon className="w-4 h-4 text-green-600 mb-1" aria-hidden="true" />
             <span className="text-xs font-bold text-foreground dark:text-foreground">
               {useCase.metrics.secondary.value}
             </span>
@@ -186,7 +176,7 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
               : 'bg-muted/50 dark:bg-muted/20 group-hover:bg-muted dark:group-hover:bg-muted/30'
             }
           `}>
-            <TertiaryIcon className="w-4 h-4 text-blue-600 dark:text-blue-500 mb-1" aria-hidden="true" />
+            <TertiaryIcon className="w-4 h-4 text-blue-600 mb-1" aria-hidden="true" />
             <span className="text-xs font-bold text-foreground dark:text-foreground">
               {useCase.metrics.tertiary.value}
             </span>
@@ -194,27 +184,14 @@ export const UseCaseCard = React.memo<UseCaseCardProps>(function UseCaseCard({
               {useCase.metrics.tertiary.label}
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Hover Effect Background - Improved for dark mode */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/3 to-transparent dark:from-primary/10 dark:via-primary/5 dark:to-transparent opacity-0 group-hover:opacity-100 pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 0.5 }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Selection Effect Background */}
+      {/* Indicador sutil de selección */}
       {isSelected && (
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 -z-10"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent -z-10 pointer-events-none" />
       )}
-    </motion.button>
+    </button>
   );
 });
 

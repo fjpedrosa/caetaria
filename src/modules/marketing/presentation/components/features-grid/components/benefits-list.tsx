@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+
 import type { BenefitWithIcon } from '../hooks/use-features-grid';
 
 interface BenefitsListProps {
@@ -23,7 +24,7 @@ export const BenefitsList: React.FC<BenefitsListProps> = ({
         const IconComponent = benefit.icon;
         const iconColor = benefit.useCheckmark ? checkColor : 'text-primary';
         const bgColor = benefit.useCheckmark ? 'bg-success/10' : 'bg-primary/10';
-        
+
         return (
           <motion.li
             key={index}

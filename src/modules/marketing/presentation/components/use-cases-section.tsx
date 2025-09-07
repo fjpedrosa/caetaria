@@ -22,7 +22,7 @@ import {
 
 import { SimulationType } from '@/modules/marketing/domain/types/simulation.types';
 
-import { WhatsAppSimulatorContainer } from './simulation/whatsapp-simulator-container';
+import { EnhancedWhatsAppSimulator } from './whatsapp-simulator/enhanced-whatsapp-simulator';
 import { UseCaseCard } from './use-case-card';
 
 /**
@@ -159,10 +159,21 @@ export function UseCasesSection() {
   return (
     <section
       ref={ref}
-      className="py-16 lg:py-24 bg-gradient-to-b from-background to-muted/30"
+      className="relative py-12 lg:py-16 overflow-hidden"
       aria-label="Casos de uso de WhatsApp automation"
       role="region"
     >
+      {/* Section Fade Mask - Seamless transition */}
+      <div className="section-fade-mask section-fade-top" />
+
+      {/* Organic Wave Shapes */}
+      <div className="wave-1 wave-top" />
+      <div className="wave-2 wave-bottom" />
+
+      {/* Glass Elements */}
+      <div className="glass-circle w-28 h-28 top-24 right-1/4 animate-[glass-float_10s_ease-in-out_infinite]" />
+      <div className="glass-circle w-20 h-20 bottom-32 left-1/5 animate-[glass-float_13s_ease-in-out_infinite_reverse]" />
+
       {/* Screen reader announcements */}
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {announcement}
@@ -228,6 +239,7 @@ export function UseCasesSection() {
                     useCase={useCase}
                     isSelected={selectedUseCase.id === useCase.id}
                     onClick={() => handleUseCaseChange(useCase)}
+                    index={index}
                   />
                 </motion.div>
               ))}
@@ -243,16 +255,16 @@ export function UseCasesSection() {
             >
               <div className="text-center">
                 <h4 className="font-bold text-foreground dark:text-foreground text-lg mb-2">
-                  ¿Listo para automatizar tu {selectedUseCase.title.toLowerCase()}?
+                  ¿Listo para automatizar tu negocio?
                 </h4>
                 <p className="text-muted-foreground dark:text-muted-foreground/90 text-sm mb-4">
                   Configuración en 2 horas · Sin permanencia · Soporte en español
                 </p>
                 <button
                   className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  aria-label={`Ver demo personalizada para ${selectedUseCase.title}`}
+                  aria-label="Empezar ahora con WhatsApp automation"
                 >
-                  Ver demo personalizada →
+                  Empezar ahora
                 </button>
               </div>
             </motion.div>
@@ -292,7 +304,7 @@ export function UseCasesSection() {
 
                       {/* WhatsApp Simulator */}
                       <div className="h-full">
-                        <WhatsAppSimulatorContainer
+                        <EnhancedWhatsAppSimulator
                           key={selectedUseCase.id} // Force remount on scenario change
                           simulationType={selectedUseCase.id as SimulationType}
                           isInView={isInView && !isTransitioning}

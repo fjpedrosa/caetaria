@@ -5,7 +5,7 @@
  * Application Layer - Contains ALL business logic for business info form
  */
 
-import { useState } from 'react';
+import { useCallback, useEffect,useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -156,6 +156,67 @@ export function useBusinessInfoForm(
   });
 
   // =============================================================================
+  // AUTO-SAVE FUNCTIONALITY - Save on field changes with debounce
+  // =============================================================================
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const autoSave = useCallback(async (data: BusinessFormData) => {
+    // Clear any existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Set a new timeout for debounced save (2 seconds)
+    saveTimeoutRef.current = setTimeout(async () => {
+      setIsSaving(true);
+      try {
+        const transformedData = transformFormDataToBusinessInfo(data);
+
+        const response = await fetch('/api/onboarding/save-step', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            step: 'business-info',
+            data: transformedData,
+            flowId: 'default'
+          }),
+        });
+
+        if (response.ok) {
+          setLastSaved(new Date());
+          console.log('Auto-saved successfully');
+        }
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 2000); // 2 second debounce
+  }, []);
+
+  // Watch form changes and trigger auto-save
+  useEffect(() => {
+    const subscription = form.watch((data) => {
+      // Only auto-save if form has some data
+      if (data.companyName || data.businessType) {
+        autoSave(data as BusinessFormData);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [form, autoSave]);
+
+  // =============================================================================
   // BUSINESS LOGIC - Form submission and API integration
   // =============================================================================
 
@@ -166,8 +227,29 @@ export function useBusinessInfoForm(
       // Log submission for debugging
       console.log('Business info submitted:', data);
 
-      // Simulate API call - Replace with real API integration
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Transform data to domain model
+      const transformedData = transformFormDataToBusinessInfo(data);
+
+      // Call real API endpoint to save step data
+      const response = await fetch('/api/onboarding/save-step', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          step: 'business-info',
+          data: transformedData,
+          flowId: 'default'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al guardar los datos');
+      }
+
+      const result = await response.json();
+      console.log('Data saved successfully:', result);
 
       // Call success callback if provided
       if (options.onSuccess) {
@@ -201,6 +283,10 @@ export function useBusinessInfoForm(
     // Form management
     form,
     isSubmitting,
+
+    // Auto-save status
+    isSaving,
+    lastSaved,
 
     // Event handlers
     onSubmit,
@@ -237,7 +323,7 @@ export function transformFormDataToBusinessInfo(data: BusinessFormData): Busines
     companyName: data.companyName,
     businessType: data.businessType,
     industry: data.industry,
-    employeeCount: data.employeeCount,
+    employeeRange: data.employeeRange,
     website: data.website || undefined,
     description: data.description || undefined,
     expectedVolume: data.expectedVolume,
@@ -252,16 +338,20 @@ export function calculateRecommendedPlan(data: BusinessFormData): {
   reasoning: string;
 } {
   // Business logic for plan recommendation
-  const { businessType, employeeCount, expectedVolume } = data;
+  const { businessType, employeeRange, expectedVolume } = data;
 
-  if (businessType === 'enterprise' || employeeCount > 100 || expectedVolume === 'high') {
+  // Map employee range to size category
+  const isLargeCompany = employeeRange === '201-500' || employeeRange === '500+';
+  const isMediumCompany = employeeRange === '11-50' || employeeRange === '51-200';
+
+  if (businessType === 'enterprise' || isLargeCompany || expectedVolume === 'high') {
     return {
       planType: 'enterprise',
       reasoning: 'High volume or large organization detected'
     };
   }
 
-  if (businessType === 'sme' || employeeCount > 10 || expectedVolume === 'medium') {
+  if (businessType === 'sme' || isMediumCompany || expectedVolume === 'medium') {
     return {
       planType: 'pro',
       reasoning: 'Medium volume or growing business detected'

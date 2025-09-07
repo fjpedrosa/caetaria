@@ -138,6 +138,38 @@ export default function RootLayout({
       </head>
       <body className={`antialiased font-sans ${inter.className}`}>
         <Providers>
+          {/* Continuous Flow Shapes - Cross-section visual continuity */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+            {/* NUEVAS FORMAS PRINCIPALES - Atraviesan múltiples secciones */}
+            {/* Ola Neptune Principal - Hero → Features → Use Cases */}
+            <div className="neptune-wave-primary" />
+
+            {/* Blob WhatsApp Continuo - Features → Use Cases → Business */}
+            <div className="whatsapp-blob-continuous" />
+
+            {/* Espiral de Marca - Business → How It Works → Pricing */}
+            {/* <div className="brand-spiral" /> */}
+
+            {/* FORMAS ORIGINALES - Mantener para capas adicionales */}
+            {/* Primary Neptune Blue Flow - Hero to Features */}
+            <div className="flow-primary" />
+
+            {/* WhatsApp Green Flow - Features to Use Cases */}
+            <div className="flow-whatsapp" />
+
+            {/* Secondary Neptune Flow - Use Cases to Business */}
+            <div className="flow-secondary" />
+
+            {/* Tertiary WhatsApp Flow - Business to Pricing */}
+            <div className="flow-tertiary" />
+
+            {/* Mixed Brand Wave - Pricing to FAQ */}
+            <div className="wave-brand" />
+
+            {/* Final Flow - FAQ to CTA */}
+            <div className="flow-final" />
+          </div>
+
           {/* Global Effects */}
           <SmoothScroll />
 

@@ -1,22 +1,24 @@
 'use client';
 
-import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
-import { 
-  UserPlus, 
-  Smartphone, 
-  Bot, 
-  Rocket,
+import { useEffect,useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  ArrowRight,
+  Bot,
+  Check,
+  Clock,
   Code,
   CreditCard,
+  Rocket,
   Shield,
-  Clock,
-  Check,
-  ArrowRight,
-  Sparkles
+  Smartphone,
+  Sparkles,
+  UserPlus,
+  Zap
 } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 
 // Icon mapping for dynamic icon rendering
 const iconMap = {
@@ -33,22 +35,23 @@ const iconMap = {
 const badgeIconMap = {
   Code,
   CreditCard,
-  Shield
+  Shield,
+  Clock,
+  Zap
 } as const;
 
 export function HowItWorksV2() {
   const [isInView, setIsInView] = useState(false);
-  const [activeStep, setActiveStep] = useState<number | null>(null);
-  
-  const { 
-    badge, 
-    title, 
-    titleHighlight, 
-    subtitle, 
+
+  const {
+    badge,
+    title,
+    titleHighlight,
+    subtitle,
     totalTime,
-    steps, 
+    steps,
     cta,
-    trustBadges 
+    trustBadges
   } = MARKETING_COPY.howItWorks;
 
   useEffect(() => {
@@ -67,69 +70,79 @@ export function HowItWorksV2() {
   }, []);
 
   return (
-    <section 
+    <section
       id="how-it-works"
-      className="relative py-24 lg:py-32 overflow-hidden bg-gradient-to-b from-background to-muted/20"
+      className="relative py-12 lg:py-16 overflow-hidden"
       aria-labelledby="how-it-works-title"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 -z-10" aria-hidden="true">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
-      </div>
+      {/* Glass Elements */}
+      <div className="glass-circle w-20 h-20 top-40 left-1/5 animate-[glass-float_13s_ease-in-out_infinite]" />
+      <div className="glass-circle w-28 h-28 bottom-28 right-1/6 animate-[glass-float_15s_ease-in-out_infinite_reverse]" />
 
-      <div className="container mx-auto px-4">
-        {/* Header Section */}
-        <motion.div 
+      <div className="container mx-auto px-6 lg:px-12">
+        {/* Header Section - Following Use Cases Pattern */}
+        <motion.div
           className="text-center mb-16 lg:mb-20"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-            <Clock className="w-4 h-4" />
-            <span className="text-sm font-medium">{badge}</span>
+          {/* Animated Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-full mb-6">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+            <span className="text-primary font-semibold text-sm">{badge}</span>
           </div>
 
-          {/* Title */}
-          <h2 id="how-it-works-title" className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          {/* Main Title */}
+          <h2 id="how-it-works-title" className="text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground dark:text-foreground mb-6">
             {title}
-            <span className="block lg:inline text-primary mt-2 lg:mt-0 lg:ml-2">
+            <span className="block text-2xl lg:text-3xl xl:text-4xl mt-2 text-primary">
               {titleHighlight}
             </span>
           </h2>
 
-          {/* Subtitle */}
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+          {/* Description */}
+          <p className="text-lg lg:text-xl text-muted-foreground dark:text-muted-foreground/90 max-w-3xl mx-auto leading-relaxed">
             {subtitle}
           </p>
-
-          {/* Total Time Badge */}
-          <div className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <span className="text-base font-semibold text-foreground">{totalTime}</span>
-          </div>
         </motion.div>
 
         {/* Desktop Timeline (Horizontal) */}
         <div className="hidden lg:block" role="list" aria-label="Pasos de configuración">
-          <div className="relative max-w-7xl mx-auto">
-            {/* Connecting Line */}
-            <div className="absolute top-[88px] left-[10%] right-[10%] h-1 bg-gradient-to-r from-muted via-primary/20 to-muted" aria-hidden="true">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-primary to-primary/60"
+          <div className="relative max-w-6xl mx-auto">
+            {/* Enhanced Connecting Line */}
+            <div className="absolute top-[100px] left-[12%] right-[12%] h-1 bg-primary/10" aria-hidden="true">
+              <motion.div
+                className="relative h-full bg-gradient-to-r from-primary via-primary to-primary"
                 initial={{ width: '0%' }}
                 animate={isInView ? { width: '100%' } : {}}
                 transition={{ duration: 2, delay: 0.5, ease: 'easeInOut' }}
-              />
+              >
+                {/* Animated Glow */}
+                <motion.div
+                  className="absolute inset-0 bg-primary/30 blur-sm"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </motion.div>
+              {/* Connection Nodes */}
+              {[0, 1, 2, 3].map((i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-3 h-3 bg-white rounded-full border-2 border-primary -top-[5px]"
+                  style={{ left: `${25 * i + 12.5}%` }}
+                  initial={{ scale: 0 }}
+                  animate={isInView ? { scale: 1 } : {}}
+                  transition={{ duration: 0.3, delay: 0.8 + (i * 0.2) }}
+                />
+              ))}
             </div>
 
             {/* Steps */}
-            <div className="relative grid grid-cols-4 gap-8">
+            <div className="relative grid grid-cols-4 gap-6">
               {steps.map((step, index) => {
                 const IconComponent = iconMap[step.icon as keyof typeof iconMap];
-                
+
                 return (
                   <motion.div
                     key={index}
@@ -138,31 +151,18 @@ export function HowItWorksV2() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.2 * (index + 1) }}
-                    onMouseEnter={() => setActiveStep(index)}
-                    onMouseLeave={() => setActiveStep(null)}
                   >
-                    {/* Step Card */}
-                    <div className={cn(
-                      "relative bg-card rounded-2xl p-6 border transition-all duration-300",
-                      activeStep === index ? "border-primary shadow-lg scale-105" : "border-border hover:border-primary/50"
-                    )}>
-                      {/* Step Number Circle */}
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <div className="relative">
-                          <div className={cn(
-                            "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300",
-                            activeStep === index 
-                              ? "bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25" 
-                              : "bg-gradient-to-br from-primary/80 to-primary/60"
-                          )}>
-                            <span className="text-2xl font-bold text-white" aria-label={`Paso ${step.number}`}>
-                              {step.number}
-                            </span>
-                          </div>
-                          {/* Pulse animation for active step */}
-                          {activeStep === index && (
-                            <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-25" aria-hidden="true" />
-                          )}
+                    {/* Compact Step Card */}
+                    <motion.div
+                      className="relative bg-white rounded-xl p-4 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-primary/30"
+                      whileHover={{ y: -4 }}
+                    >
+                      {/* Step Badge */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <div className="px-3 py-1 bg-white rounded-full border-2 border-primary shadow-sm">
+                          <span className="text-xs font-semibold text-primary">
+                            Paso {step.number}
+                          </span>
                         </div>
                       </div>
 
@@ -174,20 +174,18 @@ export function HowItWorksV2() {
                         </div>
                       </div>
 
-                      {/* Icon */}
-                      <div className="mt-12 mb-4 flex justify-center">
-                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                          <IconComponent className="w-8 h-8 text-primary" aria-hidden="true" />
+                      {/* Icon and Title Row */}
+                      <div className="mt-6 mb-3 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <IconComponent className="w-5 h-5 text-primary" aria-hidden="true" />
                         </div>
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {step.title}
+                        </h3>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-foreground mb-2 text-center">
-                        {step.title}
-                      </h3>
-
                       {/* Description */}
-                      <p className="text-sm text-muted-foreground text-center mb-4">
+                      <p className="text-sm text-gray-600 text-center mb-4">
                         {step.description}
                       </p>
 
@@ -199,25 +197,18 @@ export function HowItWorksV2() {
                         </div>
                       </div>
 
-                      {/* Details (shown on hover) */}
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={activeStep === index ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-4 border-t border-border/50">
-                          <ul className="space-y-2">
-                            {step.details.map((detail, idx) => (
-                              <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span>{detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </motion.div>
-                    </div>
+                      {/* Compact Details */}
+                      <div className="pt-3 border-t border-gray-100">
+                        <ul className="space-y-1.5">
+                          {step.details.map((detail, idx) => (
+                            <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                              <Check className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </motion.div>
                   </motion.div>
                 );
               })}
@@ -228,21 +219,28 @@ export function HowItWorksV2() {
         {/* Mobile Timeline (Vertical Cards) */}
         <div className="lg:hidden" role="list" aria-label="Pasos de configuración">
           <div className="relative">
-            {/* Vertical Connecting Line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-muted via-primary/20 to-muted" aria-hidden="true">
-              <motion.div 
-                className="w-full bg-gradient-to-b from-primary to-primary/60"
+            {/* Enhanced Vertical Connecting Line */}
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-white/20" aria-hidden="true">
+              <motion.div
+                className="relative w-full bg-gradient-to-b from-primary via-primary to-primary"
                 initial={{ height: '0%' }}
                 animate={isInView ? { height: '100%' } : {}}
                 transition={{ duration: 2, delay: 0.5, ease: 'easeInOut' }}
-              />
+              >
+                {/* Animated Glow */}
+                <motion.div
+                  className="absolute inset-0 bg-primary/30 blur-sm"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </motion.div>
             </div>
 
             {/* Mobile Steps */}
             <div className="relative space-y-12">
               {steps.map((step, index) => {
                 const IconComponent = iconMap[step.icon as keyof typeof iconMap];
-                
+
                 return (
                   <motion.div
                     key={index}
@@ -252,33 +250,34 @@ export function HowItWorksV2() {
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.2 * (index + 1) }}
                   >
-                    {/* Number Circle */}
+                    {/* Compact Number Circle */}
                     <div className="relative z-10 flex-shrink-0">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
-                        <span className="text-xl font-bold text-white" aria-label={`Paso ${step.number}`}>
+                      <div className="w-12 h-12 rounded-full bg-white border-2 border-primary flex items-center justify-center shadow-sm">
+                        <span className="text-lg font-bold text-primary">
                           {step.number}
                         </span>
                       </div>
                     </div>
 
-                    {/* Card Content */}
-                    <div className="flex-1 bg-card rounded-xl p-6 border border-border">
+                    {/* Compact Card Content */}
+                    <div className="flex-1 bg-white rounded-xl p-4 border border-white/50 shadow-sm hover:shadow-lg transition-all duration-200">
                       {/* Time Badge */}
                       <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary mb-4">
                         <Clock className="w-3 h-3" />
                         <span className="text-xs font-semibold">{step.time}</span>
                       </div>
 
+
                       {/* Icon and Title */}
-                      <div className="flex items-start gap-4 mb-3">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center flex-shrink-0">
-                          <IconComponent className="w-6 h-6 text-primary" aria-hidden="true" />
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <IconComponent className="w-5 h-5 text-primary" aria-hidden="true" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-foreground mb-1">
+                          <h3 className="text-base font-bold text-gray-900 mb-1">
                             {step.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs text-gray-600">
                             {step.description}
                           </p>
                         </div>
@@ -290,11 +289,11 @@ export function HowItWorksV2() {
                         <span className="text-xs font-medium">{step.benefit}</span>
                       </div>
 
-                      {/* Details */}
-                      <ul className="space-y-2">
+                      {/* Compact Details */}
+                      <ul className="space-y-1.5">
                         {step.details.map((detail, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                            <Check className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
                             <span>{detail}</span>
                           </li>
                         ))}
@@ -307,44 +306,66 @@ export function HowItWorksV2() {
           </div>
         </div>
 
-        {/* Trust Badges & CTA Section */}
-        <motion.div 
+        {/* CTA Section */}
+        <motion.div
           className="mt-16 lg:mt-20 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          {/* Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {trustBadges.map((badge, index) => {
-              const BadgeIcon = badgeIconMap[badge.icon as keyof typeof badgeIconMap];
-              return (
-                <div 
-                  key={index}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border"
-                >
-                  <BadgeIcon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-muted-foreground">{badge.text}</span>
-                </div>
-              );
-            })}
-          </div>
+          {/* Persuasive Text Before CTA */}
+          {cta.preText && (
+            <p className="text-lg lg:text-xl text-foreground font-medium mb-6">
+              {cta.preText}
+            </p>
+          )}
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-primary/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              aria-label={cta.primary}
+          {/* Enhanced CTA Button */}
+          <div className="flex justify-center">
+            <motion.button
+              className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg overflow-hidden"
+              aria-label={cta.primary || 'Empezar ahora'}
+              whileHover={{ scale: 1.02, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             >
-              {cta.primary}
-              <ArrowRight className="w-5 h-5" />
-            </button>
-            <button 
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-muted/50 border border-border text-foreground font-semibold hover:bg-muted transition-all duration-300"
-              aria-label={cta.secondary}
-            >
-              {cta.secondary}
-            </button>
+              {/* Hover Background Effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+
+              {/* Button Text */}
+              <span className="relative font-semibold">
+                {cta.primary || 'Empezar ahora'}
+              </span>
+
+              {/* Animated Arrow */}
+              <motion.div
+                className="relative"
+                animate={{ x: 0 }}
+                whileHover={{ x: 4 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </motion.div>
+
+              {/* Sparkle Effect */}
+              <motion.div
+                className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full opacity-60"
+                animate={{
+                  opacity: [0, 0.6, 0],
+                  scale: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  repeatDelay: 3
+                }}
+              />
+            </motion.button>
           </div>
         </motion.div>
       </div>
