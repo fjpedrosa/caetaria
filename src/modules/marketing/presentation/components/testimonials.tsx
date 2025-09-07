@@ -2,7 +2,7 @@
 
 import { useEffect,useState } from 'react';
 import { AnimatePresence,motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight,Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 import { MARKETING_COPY } from '@/modules/marketing/domain/copy';
 import { Button } from '@/modules/shared/presentation/components/ui/button';

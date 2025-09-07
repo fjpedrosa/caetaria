@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect,useState } from 'react';
-import { ChevronLeft, ChevronRight, Quote,Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react';
 
 import { Badge } from '@/modules/shared/presentation/components/ui/badge';
 import { Button } from '@/modules/shared/presentation/components/ui/button';
